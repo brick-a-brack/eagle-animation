@@ -1,0 +1,59 @@
+.comp-AnimationScreen .playerContainer
+{
+	max-width: 125vh;
+	padding-top: 5vh;
+	margin:auto;
+	position:relative;
+}
+
+
+.comp-AnimationScreen .player
+{
+	width: 100%;
+	background-color: #000;
+	position: relative;
+	padding-top: 56.25%;
+	overflow: hidden;
+}
+
+.comp-AnimationScreen .player .content{
+	position: absolute;
+    left: 50%;
+    top: 50%;
+    bottom: 0;
+	right: 0;
+	transform: translate(-50%, -50%);
+	min-width: 100%;
+	min-height: 100%;
+	width:100%;
+}
+
+.comp-AnimationScreen .comp-AnimationScreen-buttons
+{
+	width: 100%;
+	text-align:center;
+
+}
+
+.comp-AnimationScreen .comp-AnimationScreen-buttons button{
+	width: 10vh;
+	background-color: red;
+	border-radius : 50%;
+	height: 10vh;
+	display: inline-block;
+}
+
+.comp-AnimationScreen .comp-AnimationScreen-timeline{
+	height: 10vh;
+	background-color: #8E1294;
+	width: 100%;
+	display: block;
+	bottom: 0;
+	position:absolute;
+	overflow-x:scroll;
+}
+
+.comp-AnimationScreen .comp-AnimationScreen-timeline img{
+	height: 10vh;
+    display: inline-block;
+}

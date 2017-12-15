@@ -1,0 +1,101 @@
+import React from 'react';
+
+import css from './AnimationScreen.css';
+
+import Player from '../../engine/Player'
+
+
+class AnimationScreen extends React.Component {
+  render() {
+
+	const takePicture = () => {
+		console.log('TK pict');
+		if (this.props.config.camera.isInitialized()) {
+			console.log('save pict');
+			this.props.config.project.addPicture(this.props.config.camera.getBufferPicture())
+
+		}
+	};
+
+	const play = () => {
+		this.props.config.player.play();
+	}
+
+	const loop = () => {
+		this.props.config.player.setLoop(!this.props.config.player.loop);
+	}
+
+	const shortPlay = () => {
+		this.props.config.player.setShortPlay(!this.props.config.player.shortPlay);
+	}
+
+	const setFPS = (nb) => {
+		console.log(nb)
+		this.props.config.project.setFramerate(nb);
+		window.refresh();
+	};
+
+    return <div className="comp-AnimationScreen">
+				<div className="playerContainer">
+				<div className="player">
+					<video id="video" className="content"></video>
+					<canvas id="preview" className="content"></canvas>
+					<canvas id="grid" className="content"></canvas>
+				</div>
+				</div>
+				<div className="comp-AnimationScreen-buttons">
+					<button id="startbutton" onClick={takePicture} className="button">take</button>
+					<button id="startbutton" onClick={play} className="button">play</button>
+					<button id="startbutton" onClick={loop} className="button">loop</button>
+					<button id="startbutton" onClick={shortPlay} className="button">shortPlay</button>
+					<button id="startbutton" className="button"></button>
+					<button id="startbutton" className="button"></button>
+					<input type="number" value={this.props.config.project.getCurrentScene().framerate} onChange={(e) => {setFPS(e.target.value)}} onKeyDown={(e) => {setFPS(e.target.value)}} />
+				</div>
+				<div className="comp-AnimationScreen-timeline">
+					{this.props.config.project.getCurrentScene().pictures.map((img, idx) => {
+						return <img key={idx} src={this.props.config.project.getDirectory() + '/' + this.props.config.project.getSceneId() + '/' + img.filename}/>
+					})}
+				</div>
+			</div>;
+  }
+
+  componentDidMount() {
+
+	let initPlayer = () => {
+		if (this.props.config.player === false)
+			this.props.config.player = new Player();
+		if (!this.props.config.player.isInitialized())
+		{
+			this.props.config.player.init(document.querySelector('#video'), document.querySelector('#preview'), document.querySelector('#grid'));
+			this.props.config.player.setResolution(this.props.config.camera.getVideoWidth(), this.props.config.camera.getVideoHeight());
+			this.props.config.player.setProject(this.props.config.project);
+		}
+		document.querySelector('#video').src = this.props.config.camera.getVideoLink();
+		document.querySelector('#video').play();
+	}
+
+	if (!this.props.config.camera.isInitialized()) {
+		this.props.config.camera.init().then(() =>{
+			initPlayer();
+		}).catch(err => console.log.bind);
+
+	} else {
+		initPlayer();
+	}
+		
+  }
+
+  componentWillUnmount() {
+	if (!document.querySelector('#video'))
+		return;
+	document.querySelector('#video').pause();
+	document.querySelector('#video').src = '';
+	this.props.config.player.stop();
+	this.props.config.player = false;
+  }
+
+  
+}
+
+export default AnimationScreen;
