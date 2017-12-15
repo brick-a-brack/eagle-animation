@@ -39,8 +39,13 @@ class Player {
         return (!(this.video === false || this.canvas === false));
     }
 
+    isPlaying() {
+        return (this.playing);
+    }
+
     stop() {
         this.playing = false;
+        this.showFrame(false);
     }
 
     play()
@@ -88,11 +93,32 @@ class Player {
         this.shortPlay = value;
     }
 
+    setOnion(value) {
+        this.onion = value;
+        this.video.style.opacity = 1 - this.onion;
+        this.canvas.style.opacity = this.onion;
+
+        this.showFrame(false);
+    }
+
+    getOnion() {
+        return (this.onion);
+    }
+
     showFrame(id) {
+
+        let pictures = this.project.getCurrentScene().pictures;
+
         if (id === false) {
-            // Display video player            
-            this.video.style.opacity = '1';
-            this.canvas.style.opacity = '0';
+            // Display video player
+
+            this.showFrame(pictures.length - 1)
+
+            console.log('OPACITY', 1 - this.onion, this.onion);
+            this.video.style.opacity = 1 - this.onion;
+            this.canvas.style.opacity = this.onion;
+
+
         } else {
 
                
@@ -102,7 +128,7 @@ class Player {
             // Display frame player
             let ctx = this.canvas.getContext('2d');
 
-            let pictures = this.project.getCurrentScene().pictures;
+            
 
             if (id < pictures.length)
             {
