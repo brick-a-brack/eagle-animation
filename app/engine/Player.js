@@ -11,21 +11,19 @@ class Player {
 
         this.playing = false;
         this.loop = false;
-        this.onion = 1;
+        this.onion = 0;
         this.shortPlay = false;
         this.shortPlaySize = 10;
         this.project = {};
     }
 
     init(video, canvas, grid) {
-        console.log('init');
         this.video = video;
         this.canvas = canvas;
         this.grid = grid;
     }
 
     setResolution (width, height) {
-        console.log('set resolution', width, height);
         this.width = width;
         this.height = height;
         this.canvas.width = width;
@@ -35,7 +33,6 @@ class Player {
     }
 
     isInitialized() {
-        console.log('stt', (!(this.video === false || this.canvas === false)));
         return (!(this.video === false || this.canvas === false));
     }
 
@@ -110,26 +107,15 @@ class Player {
         let pictures = this.project.getCurrentScene().pictures;
 
         if (id === false) {
-            // Display video player
-
             this.showFrame(pictures.length - 1)
-
-            console.log('OPACITY', 1 - this.onion, this.onion);
             this.video.style.opacity = 1 - this.onion;
             this.canvas.style.opacity = this.onion;
-
-
         } else {
-
-               
             this.video.style.opacity = '0';
             this.canvas.style.opacity = '1';
 
             // Display frame player
             let ctx = this.canvas.getContext('2d');
-
-            
-
             if (id < pictures.length)
             {
                 var img = new Image();
@@ -144,12 +130,7 @@ class Player {
         }
     }
 
-    playStream() {
-
-    }
-
     setProject(project) {
-        console.log(project);
         this.project = project;
     }
 }
