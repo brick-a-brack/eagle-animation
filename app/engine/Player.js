@@ -11,10 +11,12 @@ class Player {
 
         this.playing = false;
         this.loop = false;
-        this.onion = 0;
+        this.onion = 1;
         this.shortPlay = false;
         this.shortPlaySize = 10;
         this.project = {};
+
+        this.selectedFrame = false;
     }
 
     init(video, canvas, grid) {
@@ -54,7 +56,7 @@ class Player {
         }
 
         var frame = (!this.shortPlay || this.project.getCurrentScene().pictures.length <= this.shortPlaySize) ? 0 : (this.project.getCurrentScene().pictures.length - this.shortPlaySize);
-        
+
         var showNextFrame = () => {
             if (!this.playing)
                 return;
@@ -95,6 +97,7 @@ class Player {
         this.video.style.opacity = 1 - this.onion;
         this.canvas.style.opacity = this.onion;
 
+        this.stop();
         this.showFrame(false);
     }
 
@@ -102,14 +105,18 @@ class Player {
         return (this.onion);
     }
 
-    showFrame(id) {
+    setFrame(id) {
+        this.selectedFrame = id;
+    }
 
+    showFrame(id) {
+        
         let pictures = this.project.getCurrentScene().pictures;
 
         if (id === false) {
-            this.showFrame(pictures.length - 1)
-            this.video.style.opacity = 1 - this.onion;
-            this.canvas.style.opacity = this.onion;
+            this.showFrame(pictures.length - 1);
+            this.video.style.opacity = 1;
+            this.canvas.style.opacity = 1 - this.onion;
         } else {
             this.video.style.opacity = '0';
             this.canvas.style.opacity = '1';

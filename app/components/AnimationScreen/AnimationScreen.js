@@ -9,11 +9,8 @@ class AnimationScreen extends React.Component {
   render() {
 
 	const takePicture = () => {
-		console.log('TK pict');
 		if (this.props.config.camera.isInitialized()) {
-			console.log('save pict');
 			this.props.config.project.addPicture(this.props.config.camera.getBufferPicture())
-
 		}
 	};
 
@@ -33,7 +30,6 @@ class AnimationScreen extends React.Component {
 	}
 
 	const setFPS = (nb) => {
-		console.log(nb)
 		this.props.config.project.setFramerate(nb);
 		window.refresh();
 	};
@@ -49,6 +45,11 @@ class AnimationScreen extends React.Component {
 		return (this.props.config.player.getOnion())
 	}
 
+	const selectFrame = (id) => {
+		this.props.config.player.setFrame(id);
+		this.props.config.player.showFrame(id);
+	}
+
     return <div className="comp-AnimationScreen">
 				<div className="playerContainer">
 				<div className="player">
@@ -58,19 +59,18 @@ class AnimationScreen extends React.Component {
 				</div>
 				</div>
 				<div className="comp-AnimationScreen-buttons">
-					<button id="startbutton" onClick={takePicture} className="button">take</button>
-					<button id="startbutton" onClick={play} className="button">play</button>
-					<button id="startbutton" onClick={loop} className="button">loop</button>
-					<button id="startbutton" onClick={shortPlay} className="button">shortPlay</button>
-					<button id="startbutton" className="button"></button>
-					<button id="startbutton" className="button"></button>
+					<button id="startbutton" onClick={takePicture} className="button">Take</button>
+					<button id="startbutton" onClick={play} className="button">Play</button>
+					<button id="startbutton" onClick={loop} className="button">Loop</button>
+					<button id="startbutton" onClick={shortPlay} className="button">ShortPlay</button>
 					<input type="number" value={this.props.config.project.getCurrentScene().framerate} onChange={(e) => {setFPS(e.target.value)}} onKeyDown={(e) => {setFPS(e.target.value)}} />
 					<input type="range" min="0" step="0.001" max="1" value={getOnion()} onChange={(e) => {setOnion(e.target.value)}} onKeyDown={(e) => {setOnion(e.target.value)}} />
 				</div>
 				<div className="comp-AnimationScreen-timeline">
 					{this.props.config.project.getCurrentScene().pictures.map((img, idx) => {
-						return <img key={idx} src={this.props.config.project.getDirectory() + '/' + this.props.config.project.getSceneId() + '/' + img.filename}/>
+						return <img key={idx} src={this.props.config.project.getDirectory() + '/' + this.props.config.project.getSceneId() + '/' + img.filename} onClick={() => {selectFrame(idx);}}/>
 					})}
+					<span onClick={() => {selectFrame(false);}}></span>
 				</div>
 			</div>;
   }
@@ -109,8 +109,6 @@ class AnimationScreen extends React.Component {
 	this.props.config.player.stop();
 	this.props.config.player = false;
   }
-
-  
 }
 
 export default AnimationScreen;

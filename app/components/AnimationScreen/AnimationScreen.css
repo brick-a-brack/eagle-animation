@@ -36,24 +36,61 @@
 }
 
 .comp-AnimationScreen .comp-AnimationScreen-buttons button{
-	width: 10vh;
-	background-color: red;
+	width: 8vh;
+	background-color: #484B51;
+	color:#7E8084;
 	border-radius : 50%;
-	height: 10vh;
+	font-size : 14px;
+	height: 8vh;
 	display: inline-block;
+	border: none;
 }
 
 .comp-AnimationScreen .comp-AnimationScreen-timeline{
 	height: 10vh;
-	background-color: #8E1294;
+	background-color: #484B51;
 	width: 100%;
-	display: block;
 	bottom: 0;
 	position:absolute;
-	overflow-x:scroll;
+	display: flex;
+    overflow-x: scroll;
+    overflow-y: hidden;
+	width: 100%;
 }
 
 .comp-AnimationScreen .comp-AnimationScreen-timeline img{
-	height: 10vh;
+	height: calc(10vh - 8px);
+	margin-bottom: 15px;
+	display: inline-block;
+	margin-left:2px;
+	margin-right:2px;
+	cursor:pointer;
+}
+
+.comp-AnimationScreen .comp-AnimationScreen-timeline span{
+	height: calc(10vh - 8px);
+    margin-bottom: 15px;
     display: inline-block;
+    margin-left: 2px;
+    margin-right: 2px;
+    background-color: #0e7de6;
+    display: inline-block;
+    position: relative;
+	padding-left: calc(10vh - 8px);
+	cursor:pointer;
+}
+
+.comp-AnimationScreen .comp-AnimationScreen-timeline::-webkit-scrollbar {
+	width: 6px;
+	max-width:6px;
+}
+.comp-AnimationScreen .comp-AnimationScreen-timeline::-webkit-scrollbar-thumb {
+    min-height: 50px;
+    background-color: hsla(0,0%,100%,.15);
+    border: 3px solid transparent;
+    border-radius: 8px;
+    background-clip: padding-box;
+}
+.comp-AnimationScreen .comp-AnimationScreen-timeline::-webkit-scrollbar-track, {
+    background-color: rgba(0,0,0,.2);
 }
