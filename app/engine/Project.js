@@ -40,6 +40,24 @@ class Project {
 		this.config.title = title;
 		this.save(directory);
 	}
+
+	getMaxHeight() {
+		let size = 0;
+		for (let i = 0; i < this.config.scenes[this.selectedScene].pictures.length; i++) {
+			if (this.config.scenes[this.selectedScene].pictures[i].height > size)
+				size = this.config.scenes[this.selectedScene].pictures[i].height;
+		}
+		return (size);
+	}
+
+	getMaxWidth() {
+		let size = 0;
+		for (let i = 0; i < this.config.scenes[this.selectedScene].pictures.length; i++) {
+			if (this.config.scenes[this.selectedScene].pictures[i].width > size)
+				size = this.config.scenes[this.selectedScene].pictures[i].width;
+		}
+		return (size);
+	}
 	
 	load(directory) {
 		return new Promise((resolve, reject) => {
@@ -88,8 +106,6 @@ class Project {
 			this.config.scenes[this.selectedScene].pictures.push({
 				"id": (newId + 1),
 				"filename": (newId + 1) + ".jpg",
-				"height": 1080,
-				"width": 1920,
 				"deleted": false,
 				"length": 1
 			});
@@ -103,7 +119,6 @@ class Project {
 
 	setFramerate(fps)
 	{
-		console.log(fps);
 		this.config.scenes[this.selectedScene].framerate = (parseInt(fps) > 0) ? parseInt(fps) : this.config.scenes[this.selectedScene].framerate;
 		this.save();
 	}

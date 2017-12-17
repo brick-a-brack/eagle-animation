@@ -2,41 +2,157 @@ class Player {
 
 	constructor() {
 
-        this.video = false;
-        this.canvas = false;
-        this.grid = false;
+        this.video = false;  // Dom element to video player
+        this.canvas = false; // Dom element to viewer
+        this.grid = false; // Dom element to grid
 
-        this.width = false;
-        this.height = false;
+        this.project = false; // Project
 
+        this.videoWidth = false; // Video Player Width
+        this.videoHeight = false; // Video Player Height
+
+        this.canvasWidth = false; // Viewer Width
+        this.canvasHeight = false; // Viewer Height
+
+        
+        this.diffMode = false; // Diff mode between camera and latest frame 
+        this.onion = 1; // Onion skin value
+
+        this.loop = false; // Play infinite loop
+        this.shortPlay = false; // Only play the X latest pictures
+        this.shortPlaySize = 10; // Number of pictures to play in the short play mode
+
+        this.selectedFrame = false; // Frame show
+
+        // BEURK
         this.playing = false;
-        this.loop = false;
-        this.onion = 1;
-        this.shortPlay = false;
-        this.shortPlaySize = 10;
-        this.project = {};
-
-        this.selectedFrame = false;
+        
     }
 
     init(video, canvas, grid) {
         this.video = video;
         this.canvas = canvas;
         this.grid = grid;
+        console.log('INIT', video, canvas, grid);
     }
 
-    setResolution (width, height) {
-        this.width = width;
-        this.height = height;
-        this.canvas.width = width;
-        this.canvas.height = height;
+    setCameraResolution (width, height) {
+        this.videoWidth = width;
+        this.videoHeight = height;
         this.video.width = width;
         this.video.height = height;
     }
 
-    isInitialized() {
-        return (!(this.video === false || this.canvas === false));
+    setViewerResolution (width, height) {
+        this.canvasWidth = width;
+        this.canvasHeight = height;
+        this.canvas.width = width;
+        this.canvas.height = height;
     }
+
+    setProject(project) {
+        this.project = project;
+    }
+
+    isInitialized() {
+        return (!(this.video === false || this.canvas === false || this.grid === false));
+    }
+
+    getLoop() {
+        return (this.loop);
+    }
+
+    setLoop(value) {
+        this.loop = !!value;
+    }
+
+    getDiff() {
+        return (this.diff);
+    }
+
+    setDiff(value) {
+        this.diff = !!value;
+    }
+
+    getShortPlay() {
+        if (this.shortPlay) {
+            return (this.shortPlaySize);
+        }
+        return (false);
+    }
+
+    setShortPlay(value) {
+        this.shortPlay = !!value;
+    }
+
+    getOnion() {
+        return (this.onion);
+    }
+
+    setOnion(value) {
+        this.onion = value;
+    }
+
+    getCanvasBlendMode() {
+        if (this.diff) {
+            return ('difference');
+        }
+        return ('');
+    }
+
+    getVideoOpacity() {
+        return (1);
+    }
+
+    getCanvasOpacity() {
+        if (!this.diff && this.selectedFrame === false) {
+            return (1 - this.onion);
+        }
+        return (1);
+    }
+
+    showFrame(id) {
+        let pictures = this.project.getCurrentScene().pictures;
+
+        let drawFrame = (id) => {
+            let ctx = this.canvas.getContext('2d');
+            if (id < pictures.length)
+            {
+                var img = new Image();
+                img.addEventListener('load', () => {
+                    ctx.fillStyle = "#000";
+                    ctx.fillRect(0, 0, this.canvasWidth, this.canvasHeight);
+
+                    let ratioX = this.canvasWidth / img.width;
+                    let ratioY = this.canvasHeight / img.height;
+
+                    let minRatio = Math.min(ratioX, ratioY);
+                    let width = Math.round(img.width * minRatio);
+                    let height = Math.round(img.height * minRatio);
+
+                    ctx.drawImage(img, 0, 0, img.width, img.height, Math.round((this.canvasWidth - width) / 2), Math.round((this.canvasHeight - height) / 2), width, height);
+
+                    window.refresh();
+                }, false);
+                img.src = this.project.getDirectory() + '/' + this.project.getSceneId() + '/' + pictures[id].filename;
+            }
+        };
+
+        if (id === false) {
+            this.selectedFrame = false;
+            drawFrame(pictures.length - 1);
+        } else {
+            this.selectedFrame = id;
+            drawFrame(id);
+        }
+    }
+
+
+
+
+
+
+
 
     isPlaying() {
         return (this.playing);
@@ -82,63 +198,6 @@ class Player {
         }
 
         showNextFrame();
-    }
-
-    setLoop(value) {
-        this.loop = value;
-    }
-
-    setShortPlay(value) {
-        this.shortPlay = value;
-    }
-
-    setOnion(value) {
-        this.onion = value;
-        this.video.style.opacity = 1 - this.onion;
-        this.canvas.style.opacity = this.onion;
-
-        this.stop();
-        this.showFrame(false);
-    }
-
-    getOnion() {
-        return (this.onion);
-    }
-
-    setFrame(id) {
-        this.selectedFrame = id;
-    }
-
-    showFrame(id) {
-        
-        let pictures = this.project.getCurrentScene().pictures;
-
-        if (id === false) {
-            this.showFrame(pictures.length - 1);
-            this.video.style.opacity = 1;
-            this.canvas.style.opacity = 1 - this.onion;
-        } else {
-            this.video.style.opacity = '0';
-            this.canvas.style.opacity = '1';
-
-            // Display frame player
-            let ctx = this.canvas.getContext('2d');
-            if (id < pictures.length)
-            {
-                var img = new Image();
-                img.addEventListener('load', () => {
-                    ctx.drawImage(img, 0, 0, pictures[id].width, pictures[id].height, 0, 0, this.width, this.height);
-                    console.log(img, 0, 0, pictures[id].width, pictures[id].height, 0, 0, this.width, this.height);
-                }, false);
-                img.src = this.project.getDirectory() + '/' + this.project.getSceneId() + '/' + pictures[id].filename;
-
-            }
-
-        }
-    }
-
-    setProject(project) {
-        this.project = project;
     }
 }
 
