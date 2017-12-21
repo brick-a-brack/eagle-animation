@@ -57,9 +57,7 @@ class AnimationScreen extends React.Component {
 	}
 
 	const selectFrame = (id) => {
-		console.log('select', id);
 		this.props.config.player.showFrame(id);
-		console.log(player.getCanvasOpacity());
 		window.refresh();
 	}
 
@@ -91,7 +89,7 @@ class AnimationScreen extends React.Component {
 			</div>;
   }
 
-  componentDidMount() {
+  async componentDidMount() {
 	if (this.props.config.player === false) {
 		this.props.config.player = new Player();
 	}
@@ -99,7 +97,7 @@ class AnimationScreen extends React.Component {
 	if (!this.props.config.player.isInitialized())
 	{
 		this.props.config.player.init(document.querySelector('#video'), document.querySelector('#preview'), document.querySelector('#grid'));
-		this.props.config.player.setViewerResolution(this.props.config.project.getMaxWidth(), this.props.config.project.getMaxHeight());
+		this.props.config.player.setViewerResolution(await this.props.config.project.getMaxWidth(), await this.props.config.project.getMaxHeight());
 		this.props.config.player.setProject(this.props.config.project);
 		this.props.config.player.showFrame(false);
 		window.refresh();

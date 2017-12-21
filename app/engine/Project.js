@@ -42,21 +42,51 @@ class Project {
 	}
 
 	getMaxHeight() {
-		let size = 0;
-		for (let i = 0; i < this.config.scenes[this.selectedScene].pictures.length; i++) {
-			if (this.config.scenes[this.selectedScene].pictures[i].height > size)
-				size = this.config.scenes[this.selectedScene].pictures[i].height;
-		}
-		return (size);
+		return new Promise((resolve, reject) => {
+			let size = 0;
+			let nbElements = this.config.scenes[this.selectedScene].pictures.length;
+			let nbElementsDone = 0;
+			for (let i = 0; i < nbElements; i++) {
+				var img = new Image();
+				img.addEventListener('load', () => {
+					if (img.height > size) {
+						size = img.height;
+					}
+					nbElementsDone++;
+					if (nbElements === nbElementsDone) {
+						resolve(size);
+					}
+				}, false);
+				img.addEventListener('error', () => {
+					reject(false);
+				}, false);
+				img.src = this.getDirectory() + '/' + this.getSceneId() + '/' + this.config.scenes[this.selectedScene].pictures[i].filename;
+			}
+		});
 	}
 
 	getMaxWidth() {
-		let size = 0;
-		for (let i = 0; i < this.config.scenes[this.selectedScene].pictures.length; i++) {
-			if (this.config.scenes[this.selectedScene].pictures[i].width > size)
-				size = this.config.scenes[this.selectedScene].pictures[i].width;
-		}
-		return (size);
+		return new Promise((resolve, reject) => {
+			let size = 0;
+			let nbElements = this.config.scenes[this.selectedScene].pictures.length;
+			let nbElementsDone = 0;
+			for (let i = 0; i < nbElements; i++) {
+				var img = new Image();
+				img.addEventListener('load', () => {
+					if (img.width > size) {
+						size = img.width;
+					}
+					nbElementsDone++;
+					if (nbElements === nbElementsDone) {
+						resolve(size);
+					}
+				}, false);
+				img.addEventListener('error', () => {
+					reject(false);
+				}, false);
+				img.src = this.getDirectory() + '/' + this.getSceneId() + '/' + this.config.scenes[this.selectedScene].pictures[i].filename;
+			}
+		});
 	}
 	
 	load(directory) {

@@ -33,7 +33,7 @@ class Player {
         this.video = video;
         this.canvas = canvas;
         this.grid = grid;
-        console.log('INIT', video, canvas, grid);
+        console.log('INIT PLAYER', video, canvas, grid);
     }
 
     setCameraResolution (width, height) {
@@ -116,7 +116,7 @@ class Player {
 
         let drawFrame = (id) => {
             let ctx = this.canvas.getContext('2d');
-            if (id < pictures.length)
+            if (id < pictures.length && id >= 0)
             {
                 var img = new Image();
                 img.addEventListener('load', () => {
@@ -129,7 +129,6 @@ class Player {
                     let minRatio = Math.min(ratioX, ratioY);
                     let width = Math.round(img.width * minRatio);
                     let height = Math.round(img.height * minRatio);
-
                     ctx.drawImage(img, 0, 0, img.width, img.height, Math.round((this.canvasWidth - width) / 2), Math.round((this.canvasHeight - height) / 2), width, height);
 
                     window.refresh();
