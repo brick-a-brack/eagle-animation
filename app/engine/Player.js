@@ -112,6 +112,7 @@ class Player {
     }
 
     showFrame(id) {
+        console.log(this.project)
         let pictures = this.project.getCurrentScene().pictures;
 
         let drawFrame = (id) => {
@@ -146,13 +147,6 @@ class Player {
         }
     }
 
-
-
-
-
-
-
-
     isPlaying() {
         return (this.playing);
     }
@@ -167,6 +161,7 @@ class Player {
         this.playing = true;
         if (this.project.getCurrentScene().pictures.length === 0) {
             this.showFrame(false);
+            this.playing = false;
             return;
         }
 
@@ -184,6 +179,8 @@ class Player {
                     window.setTimeout(() => {
                         showNextFrame();
                     }, (1000 / this.project.getCurrentScene().framerate));
+                } else {
+                    this.playing = false;
                 }
             }
             else

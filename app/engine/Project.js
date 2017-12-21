@@ -46,6 +46,10 @@ class Project {
 			let size = 0;
 			let nbElements = this.config.scenes[this.selectedScene].pictures.length;
 			let nbElementsDone = 0;
+			if (nbElements === nbElementsDone) {
+				resolve(size);
+				return;
+			}
 			for (let i = 0; i < nbElements; i++) {
 				var img = new Image();
 				img.addEventListener('load', () => {
@@ -55,10 +59,12 @@ class Project {
 					nbElementsDone++;
 					if (nbElements === nbElementsDone) {
 						resolve(size);
+						return;
 					}
 				}, false);
 				img.addEventListener('error', () => {
 					reject(false);
+					return;
 				}, false);
 				img.src = this.getDirectory() + '/' + this.getSceneId() + '/' + this.config.scenes[this.selectedScene].pictures[i].filename;
 			}
@@ -70,6 +76,10 @@ class Project {
 			let size = 0;
 			let nbElements = this.config.scenes[this.selectedScene].pictures.length;
 			let nbElementsDone = 0;
+			if (nbElements === nbElementsDone) {
+				resolve(size);
+				return;
+			}
 			for (let i = 0; i < nbElements; i++) {
 				var img = new Image();
 				img.addEventListener('load', () => {
@@ -79,10 +89,12 @@ class Project {
 					nbElementsDone++;
 					if (nbElements === nbElementsDone) {
 						resolve(size);
+						return;
 					}
 				}, false);
 				img.addEventListener('error', () => {
 					reject(false);
+					return;
 				}, false);
 				img.src = this.getDirectory() + '/' + this.getSceneId() + '/' + this.config.scenes[this.selectedScene].pictures[i].filename;
 			}

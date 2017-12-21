@@ -12,7 +12,8 @@ class AnimationScreen extends React.Component {
 	let player = this.props.config.player;
 	let camera = this.props.config.camera;
 
-	const takePicture = () => {
+	const takePicture = async () => {
+		this.props.config.player.setViewerResolution(await this.props.config.project.getMaxWidth(), await this.props.config.project.getMaxHeight());
 		if (this.props.config.camera.isInitialized()) {
 			this.props.config.project.addPicture(this.props.config.camera.getBufferPicture())
 			this.props.config.player.showFrame(false);
@@ -97,8 +98,8 @@ class AnimationScreen extends React.Component {
 	if (!this.props.config.player.isInitialized())
 	{
 		this.props.config.player.init(document.querySelector('#video'), document.querySelector('#preview'), document.querySelector('#grid'));
-		this.props.config.player.setViewerResolution(await this.props.config.project.getMaxWidth(), await this.props.config.project.getMaxHeight());
 		this.props.config.player.setProject(this.props.config.project);
+		this.props.config.player.setViewerResolution(await this.props.config.project.getMaxWidth(), await this.props.config.project.getMaxHeight());
 		this.props.config.player.showFrame(false);
 		window.refresh();
 	}
