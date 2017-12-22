@@ -1,2 +1,5 @@
 node_modules
+build
+dist
 package-lock.json
+npm-debug.log

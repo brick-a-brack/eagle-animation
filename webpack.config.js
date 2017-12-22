@@ -1,4 +1,5 @@
 var webpack = require('webpack');
+var CopyWebpackPlugin = require('copy-webpack-plugin');
 const path = require('path')
 
 module.exports = {
@@ -6,13 +7,13 @@ module.exports = {
   app: ['webpack/hot/dev-server', './app/main.js'],
 },
 output: {
-  path: path.join(__dirname, '/public/build/'),
+  path: path.join(__dirname, '/build/'),
   filename: 'bundle.js',
   publicPath: 'http://localhost:8080/build/'
 },
 devServer: {
-  contentBase: './public',
-  publicPath: 'http://localhost:8080/build/'
+  contentBase: './assets',
+  publicPath: 'http://localhost:8080/'
 },
 module: {
  loaders: [
@@ -24,6 +25,9 @@ module: {
  ]
 },
  plugins: [
+  new CopyWebpackPlugin([
+    { from: 'assets', to: '' }
+  ]),
    new webpack.HotModuleReplacementPlugin()
  ],
  target: "electron",
