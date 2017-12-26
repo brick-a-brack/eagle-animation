@@ -94,7 +94,7 @@ class Player {
     }
 
     getCanvasBlendMode() {
-        if (this.diff) {
+        if (this.diff && this.selectedFrame === false) {
             return ('difference');
         }
         return ('');
