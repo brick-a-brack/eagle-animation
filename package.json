@@ -4,19 +4,17 @@
   "description": "An awesome, free and open-source animation software",
   "main": "assets/electron.js",
   "scripts": {
-    "electron-dev": "concurrently \"webpack-dev-server\" \"wait-on http://localhost:8080 && electron .\"",
-    "electron-pack": "webpack && build --em.main=build/electron.js"
+    "electron-dev": "concurrently \"webpack-dev-server\" \"wait-on http://localhost:8080 && electron ./\"",
+    "electron-pack": "webpack && build --em.main=./build/electron.js"
   },
   "homepage": "./",
   "build": {
+    "asar": true,
     "appId": "com.stop-motion-animator.app",
     "files": [
       "build/**/*",
       "node_modules/**/*"
-    ],
-    "directories": {
-      "buildResources": "assets"
-    }
+    ]
   },
   "author": "Maxime Baconnais",
   "devDependencies": {
@@ -36,9 +34,20 @@
     "webpack-dev-server": "^2.9.7"
   },
   "dependencies": {
+    "@fortawesome/fontawesome": "^1.1.0",
+    "@fortawesome/fontawesome-free-solid": "^5.0.2",
+    "@fortawesome/react-fontawesome": "0.0.17",
     "electron-is-dev": "^0.3.0",
     "ffmpeg-static": "^2.1.0",
     "react": "^16.2.0",
-    "react-dom": "^16.2.0"
+    "react-dom": "^16.2.0",
+    "winattr": "^2.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Maxou44/StopMotionAnimator.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Maxou44/StopMotionAnimator/issues"
   }
 }

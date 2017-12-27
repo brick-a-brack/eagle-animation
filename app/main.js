@@ -12,6 +12,7 @@ import Player from './engine/Player';
 window.state = {
 	project: false,
 	player: false,
+	exporter: false,
 	camera: new Webcam(),
 	page: 'Home',
 };

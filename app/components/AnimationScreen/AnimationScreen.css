@@ -35,15 +35,40 @@
 
 }
 
-.comp-AnimationScreen .comp-AnimationScreen-buttons button{
+.comp-AnimationScreen .comp-AnimationScreen-buttons .button{
 	width: 8vh;
+    background-color: #484B51;
+    color: #7E8084;
+    border-radius: 50%;
+    font-size: 4.2vh;
+    height: 8vh;
+    display: inline-block;
+    border: none;
+    padding: 9px;
+    margin: 10px;
+    user-select: none;
+    box-sizing: border-box;
+    font-family: "Alegreya Sans", Verdana, Arial;
+    overflow: hidden;
+	position: relative;
+	cursor:pointer;
+}
+
+.comp-AnimationScreen .comp-AnimationScreen-buttons .button:hover, .comp-AnimationScreen .comp-AnimationScreen-buttons .button.selected:hover{
+	background-color: rgb(157, 159, 163);
+    color: rgb(115, 119, 128);
+}
+
+.comp-AnimationScreen .comp-AnimationScreen-buttons .button.selected{
 	background-color: #484B51;
-	color:#7E8084;
-	border-radius : 50%;
-	font-size : 14px;
-	height: 8vh;
-	display: inline-block;
-	border: none;
+    color: #007ACC;
+}
+
+.comp-AnimationScreen .comp-AnimationScreen-buttons .button svg{
+	left: 50%;
+	top: 49%;
+	transform: translate(-50%, -50%);
+	position:absolute;
 }
 
 .comp-AnimationScreen .comp-AnimationScreen-timeline{

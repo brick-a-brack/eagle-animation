@@ -13,8 +13,8 @@ class App extends React.Component {
           <span onClick={((evt) => {window.goTo('Home');})}>HOME</span>
         </div>
         <div className="container">
-          {this.props.config.page == 'Home' && <HomeScreen config={this.props.config}/>}
-          {this.props.config.page == 'Animation' && <AnimationScreen config={this.props.config}/>}
+          {window.state.page == 'Home' && <HomeScreen/>}
+          {window.state.page == 'Animation' && <AnimationScreen/>}
         </div>
 			</div>;
   }
