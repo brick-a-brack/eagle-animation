@@ -1,0 +1,49 @@
+:local(.button) {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: inline-block;
+    padding: 20px;
+    background-color: #7F8186;
+    cursor:pointer;
+    line-height: 60px;
+    text-align: center;
+}
+
+:local(.button_mini) {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: inline-block;
+    padding: 10px;
+    background-color: #7F8186;
+    cursor:pointer;
+    line-height: 40px;
+    text-align: center;
+}
+
+:local(.button):hover {
+    transform: scale(1.1);
+    background-color:#fefefe;
+    
+}
+
+:local(.icon) {
+    width: 40px;
+    height: 40px;
+    background-size: contain;
+    display: inline-block;
+    padding: 10px;
+    background-repeat: no-repeat;
+    background-position: center center;
+}
+
+:local(.icon_mini) {
+    width: 30px;
+    height: 30px;
+    background-size: contain;
+    display: inline-block;
+    padding: 5px;
+    background-repeat: no-repeat;
+    background-position: center center;
+}
