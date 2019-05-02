@@ -1,5 +1,5 @@
 import { observable } from 'mobx'
-import { getProjectsList } from '../core/projects'
+import { getProjectsList, renameProject } from '../core/projects'
 
 const defaultData = {
     path: false,
@@ -34,6 +34,21 @@ export default class ObservableProjectsStore {
                 path: false,
                 data: [],
                 isLoading: false,
+                errors: [err.message]
+            }
+        })
+    }
+
+    rename(pathProject, name) {
+        this.data = {
+            ...this.data,
+            errors: false
+        }
+        renameProject(pathProject, name).then(() => {
+            this.loadProjectsList(this.data.path);
+        }).catch(err => {
+            this.data = {
+                ...this.data,
                 errors: [err.message]
             }
         })

@@ -23,15 +23,23 @@ class App extends Component {
                         ObservableProjectsStore.loadProjectsList(DEFAULT_PATH)
                     }}
                         onLoad={(path) => {
-                            console.log('DBG', path)
                             ObservableProjectStore.load(path);
                             ObservableAppStore.setAppView('animator')
                         }}
                         onOpen={() => {
-
+                            ObservableProjectStore.prompt().then((path) => {
+                                if (path) {
+                                    ObservableProjectStore.load(path)
+                                    ObservableAppStore.setAppView('animator')
+                                }
+                            });
                         }}
-                        onCreate={() => {
-
+                        onCreate={(name) => {
+                            ObservableProjectStore.create(DEFAULT_PATH, name);
+                            ObservableAppStore.setAppView('animator')
+                        }}
+                        onRename={(path, name) => {
+                            ObservableProjectsStore.rename(path, name);
                         }}
                         projects={ObservableProjectsStore.data.data}
                     />

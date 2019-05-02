@@ -1,5 +1,5 @@
 import { observable } from 'mobx'
-import { getProjectData } from '../core/projects'
+import { getProjectData, createProject, projectSelector } from '../core/projects'
 
 const defaultData = {
     path: false,
@@ -15,7 +15,7 @@ export default class ObservableProjectStore {
     load(path) {
         this.data = {
             ...this.data,
-            path,
+            path: false,
             data: false,
             isLoading: true,
             errors: false
@@ -23,7 +23,7 @@ export default class ObservableProjectStore {
         getProjectData(path).then(data => {
             this.data = {
                 ...this.data,
-                path,
+                path: data._path,
                 data,
                 isLoading: false,
                 errors: false
@@ -37,5 +37,36 @@ export default class ObservableProjectStore {
                 errors: [err.message]
             }
         })
+    }
+
+    create(path, name) {
+        this.data = {
+            ...this.data,
+            path: false,
+            data: false,
+            isLoading: true,
+            errors: false
+        }
+        createProject(path, name).then(data => {
+            this.data = {
+                ...this.data,
+                path: data._path,
+                data,
+                isLoading: false,
+                errors: false
+            }
+        }).catch(err => {
+            this.data = {
+                ...this.data,
+                path: false,
+                data: false,
+                isLoading: false,
+                errors: [err.message]
+            }
+        })
+    }
+
+    prompt() {
+        return projectSelector();
     }
 }

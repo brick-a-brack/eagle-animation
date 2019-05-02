@@ -1,8 +1,9 @@
-
-import { readdirSync, statSync, readFile, writeFile } from 'fs'
-import { join, format } from 'path'
+import { readdirSync, statSync, readFile, writeFile, existsSync } from 'fs'
+import { join, dirname, format } from 'path'
 import Electron from 'electron'
-import { PROJECT_FILE, PROJECT_FILE_EXTENSION } from '../config'
+import { StripChar } from 'stripchar';
+import { PROJECT_FILE, PROJECT_FILE_EXTENSION, EA_VERSION, DEFAULT_FPS } from '../config'
+import { time, createDirectory } from './utils';
 
 // Read the project.json file in a specified directory
 export const getProjectData = (path) => {
@@ -51,7 +52,7 @@ export const projectSelector = () => {
     return new Promise((resolve, reject) => {
         Electron.remote.dialog.showOpenDialog({ properties: ['openFile'], filters: [{ name: 'Eagle Animation Project', extensions: [PROJECT_FILE_EXTENSION] }] }, (paths) => {
             if (paths && paths.length)
-                return resolve(paths[0])
+                return resolve(dirname(paths[0]))
             return resolve(false)
         })
     })
@@ -60,10 +61,53 @@ export const projectSelector = () => {
 // Project save 
 export const projectSave = (path, data) => {
     return new Promise((resolve, reject) => {
-        writeFile(format({ dir: path, base: PROJECT_FILE }), JSON.stringify(data), (err) => {
+        const newData = { ...data, updated: time() }
+        const file = format({ dir: path, base: PROJECT_FILE });
+        writeFile(file, JSON.stringify({ ...data, updated: time() }), (err) => {
             if (err)
                 return reject(err)
-            return resolve(data)
+            return resolve({ project: newData, _path: path, _file: file })
         });
     })
 }
+
+// Rename a project
+export const renameProject = (path, name) => new Promise((resolve, reject) => {
+    getProjectData(path).then((data) => {
+        return projectSave(path, { ...data.project, title: name }).then(data => {
+            resolve(data);
+        })
+    }).catch(err => {
+        reject(err)
+    })
+})
+
+// Project create
+export const createProject = (path, name) => new Promise((resolve, reject) => {
+    const dirname = StripChar.RSExceptUnsAlpNum(name) + '-' + (new Date()).YYYYMMDDHHMM();
+    const projectPath = join(path, dirname)
+    if (existsSync(projectPath))
+        return reject('DIR_ALREADY_CREATED');
+    createDirectory(projectPath).then(() => {
+        return projectSave(projectPath, generateProjectObject(name)).then(data => {
+            resolve(data);
+        })
+    }).catch(err => {
+        reject(err)
+    })
+})
+
+// Generate empty project
+export const generateProjectObject = (name) => ({
+    title: name,
+    version: EA_VERSION,
+    creation: time(),
+    updated: time(),
+    scenes: [
+        {
+            title: "SHOT #1",
+            framerate: DEFAULT_FPS,
+            pictures: []
+        }
+    ]
+})
