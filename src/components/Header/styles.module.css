@@ -1,0 +1,70 @@
+.container {
+  width: 100%;
+  height: 300px;
+  position: relative;
+  overflow: hidden;
+}
+
+.logo {
+  width: 100%;
+}
+
+.logo svg {
+  margin-left: 50%;
+  transform: translateX(-50%);
+  left: 0;
+}
+
+.logo svg g {
+  fill: #486ee5;
+}
+
+.title {
+  text-align: center;
+  position: relative;
+  line-height: 50px;
+  font-size: 50px;
+  font-weight: 600;
+  font-family: 'Open Sans', sans-serif;
+  color: #486ee5;
+  letter-spacing: 3px;
+  margin-top: 0;
+  user-select: none;
+  text-transform: uppercase;
+  white-space: nowrap;
+  width: 100%;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.version {
+  position: absolute;
+  line-height: 10px;
+  font-size: 10px;
+  font-weight: 600;
+  font-family: 'Open Sans', sans-serif;
+  letter-spacing: 3px;
+  margin-top: 0;
+  user-select: none;
+  right: 6px;
+  top: 6px;
+  cursor: pointer;
+}
+
+.version span {
+  color: #fefefe;
+}
+
+.line {
+  width: 100%;
+  height: 3px;
+  background: #486ee5;
+  position: absolute;
+  bottom: 0;
+}
+
+@media screen and (max-height: 600px) {
+  .container {
+    display: none;
+  }
+}

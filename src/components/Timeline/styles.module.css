@@ -1,0 +1,33 @@
+.container {
+  max-height: 10vh;
+  background-color: #484b51;
+  width: 100%;
+  bottom: 0;
+  position: absolute;
+  display: flex;
+  overflow-x: scroll;
+  overflow-y: hidden;
+  width: 100%;
+}
+
+.img {
+  height: calc(10vh - 8px);
+  margin-bottom: 15px;
+  display: inline-block;
+  margin-left: 2px;
+  margin-right: 2px;
+  cursor: pointer;
+}
+
+.camera {
+  height: calc(10vh - 8px);
+  margin-bottom: 15px;
+  display: inline-block;
+  margin-left: 2px;
+  margin-right: 2px;
+  background-color: #0e7de6;
+  display: inline-block;
+  position: relative;
+  padding-left: calc(10vh - 8px);
+  cursor: pointer;
+}

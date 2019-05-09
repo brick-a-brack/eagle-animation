@@ -1,4 +1,4 @@
-import { observable } from 'mobx'
+import { observable } from 'mobx';
 
 const defaultData = {
     parameters: {
@@ -12,10 +12,9 @@ const defaultData = {
         onion: '1',
         grid: false
     }
-}
+};
 
 export default class ObservableAnimatorStore {
-
     @observable data = defaultData
 
     setParameter(name, value) {
@@ -25,6 +24,6 @@ export default class ObservableAnimatorStore {
                 ...this.data.parameters,
                 [name]: value
             }
-        }
+        };
     }
 }

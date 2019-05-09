@@ -1,0 +1,128 @@
+.wrapper {
+  margin: auto;
+  text-align: center;
+  padding: 20px;
+  width: 100%;
+  height: calc(100vh - 300px);
+  box-sizing: border-box;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  line-height: 0;
+  flex-flow: row wrap;
+  font-size: 0;
+  align-content: flex-start;
+  overflow-y: auto;
+}
+
+.wrapper::-webkit-scrollbar,
+.wrapper::-webkit-scrollbar {
+  width: 15px;
+}
+.wrapper::-webkit-scrollbar-thumb,
+.wrapper::-webkit-scrollbar-thumb {
+  min-height: 50px;
+  background-color: #486ee5;
+  border: 3px solid transparent;
+  border-radius: 8px;
+  background-clip: padding-box;
+  cursor: pointer;
+}
+.wrapper::-webkit-scrollbar-track,
+.wrapper::-webkit-scrollbar-track {
+  background-color: rgba(0, 0, 0, 0);
+}
+
+.box {
+  background-color: #484c52;
+  color: #fff;
+  width: 300px;
+  height: 220px;
+  display: inline-block;
+  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14),
+    0 3px 1px -2px rgba(0, 0, 0, 0.12), 0 1px 5px 0 rgba(0, 0, 0, 0.2);
+  margin: 20px;
+  overflow: hidden;
+}
+
+.box.empty {
+  height: 0;
+  opacity: 0;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.banner {
+  width: 100%;
+  height: 164px;
+  overflow: hidden;
+  position: relative;
+  background: black;
+  cursor: pointer;
+}
+.bannerhover {
+  margin-top: -164px;
+  height: 164px;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.9);
+  overflow: hidden;
+  cursor: pointer;
+  position: relative;
+  opacity: 0;
+  line-height: 164px;
+  transition: opacity 0.4s ease-in-out;
+}
+
+.bannerhover svg {
+  width: 20%;
+  height: 20%;
+  vertical-align: middle;
+  display: inline-block;
+  height: 50px;
+  fill: #aaabad;
+  transform: scale(0.7);
+  transition: transform 0.4s ease-in-out;
+}
+
+.bannerhover:hover svg {
+  transform: scale(1);
+}
+
+.bannerhover:hover {
+  opacity: 1;
+}
+
+.banner img {
+  width: 100%;
+  left: 50%;
+  top: 50%;
+  position: absolute;
+  transform: translate(-50%, -50%);
+  user-select: none;
+  cursor: pointer;
+}
+
+.title {
+  overflow: hidden;
+  width: 100%;
+}
+
+.title input {
+  border: none;
+  width: calc(100% - 1em);
+  margin: 0;
+  outline: none;
+  padding: 0.5em;
+  line-height: 32px;
+  font-size: 24px;
+  font-weight: 300;
+  font-family: 'Open Sans', sans-serif;
+  color: #aaabad;
+  background: transparent;
+}
+
+@media screen and (max-height: 600px) {
+  .wrapper {
+    height: calc(100vh);
+  }
+}

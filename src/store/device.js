@@ -1,5 +1,5 @@
-import { observable } from 'mobx'
-import { initDevice, getDeviceResolution } from '../core/devices'
+import { observable } from 'mobx';
+import { initDevice, getDeviceResolution } from '../core/devices';
 
 const defaultData = {
     device: {
@@ -14,11 +14,10 @@ const defaultData = {
         }
     },
     isLoading: false,
-    errors: false,
+    errors: false
 };
 
 export default class ObservableDeviceStore {
-
     @observable data = defaultData
 
     load(dom) {
@@ -26,8 +25,8 @@ export default class ObservableDeviceStore {
             ...this.data,
             isLoading: true,
             errors: false
-        }
-        initDevice(dom).then(async data => {
+        };
+        initDevice(dom).then(async () => {
             const resolution = await getDeviceResolution();
             this.data = {
                 ...this.data,
@@ -38,13 +37,13 @@ export default class ObservableDeviceStore {
                     preview: resolution.preview,
                     picture: resolution.picture
                 }
-            }
-        }).catch(err => {
+            };
+        }).catch((err) => {
             this.data = {
                 ...this.data,
                 isLoading: false,
                 errors: [err.message]
-            }
-        })
+            };
+        });
     }
 }

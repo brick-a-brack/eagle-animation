@@ -1,5 +1,4 @@
 class Webcam {
-
     constructor() {
         this.stream = false;
         this.imageCapture = false;
@@ -10,7 +9,7 @@ class Webcam {
     }
 
     init(video = false) {
-        console.log('WEBCAM: INIT', video)
+        console.log('WEBCAM: INIT', video);
         return new Promise((resolve, reject) => {
             navigator.mediaDevices.getUserMedia({
                 video: {
@@ -34,16 +33,15 @@ class Webcam {
                 this.imageCapture = new ImageCapture(track);
                 if (this.video) {
                     this.video.srcObject = this.stream;
-                    this.video.addEventListener('canplay', (ev) => {
+                    this.video.addEventListener('canplay', () => {
                         this.video.play();
                         this.width = this.video.videoWidth;
                         this.height = this.video.videoHeight;
                         console.log('WEBCAM: OK');
                         resolve();
                     });
-                } else {
+                } else
                     reject();
-                }
             }).catch((err) => {
                 console.log('WEBCAM: Failed to initialize');
                 reject(err);
@@ -74,13 +72,13 @@ class Webcam {
     takePicture() {
         return new Promise((resolve, reject) => {
             this.imageCapture.grabFrame().then((bitmap) => {
-                let canvas = document.createElement('canvas');
+                const canvas = document.createElement('canvas');
                 canvas.width = bitmap.width;
                 canvas.height = bitmap.height;
-                let context = canvas.getContext('2d');
-                context.drawImage(bitmap, 0, 0, bitmap.width, bitmap.height)
-                let data = canvas.toDataURL('image/jpeg');
-                resolve(Buffer.from(data.replace(/^data:image\/\w+;base64,/, ""), 'base64'));
+                const context = canvas.getContext('2d');
+                context.drawImage(bitmap, 0, 0, bitmap.width, bitmap.height);
+                const data = canvas.toDataURL('image/jpeg');
+                resolve(Buffer.from(data.replace(/^data:image\/\w+;base64,/, ''), 'base64'));
             }).catch((err) => {
                 reject(err);
             });
