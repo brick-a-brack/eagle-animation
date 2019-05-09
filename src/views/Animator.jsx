@@ -106,24 +106,26 @@ class Animator extends Component {
         const pictures = this._getPictures().map(e => e.path);
         return (
             <div>
-                <Player
-                    onInit={(dom) => {
-                        this._onPlayerInit(dom);
-                    }}
-                    onReady={() => { }}
-                    mode={currentFrame === false ? 'video' : 'picture'}
-                    picture={
-                        currentFrame === false
-                            ? pictures[pictures.length - 1]
-                            : pictures[currentFrame]
-                    }
-                    opacity={
-                        currentFrame === false
-                            ? StoreAnimator.data.parameters.onion
-                            : 1
-                    }
-                    showGrid={false}
-                />
+                <div style={{ width: '70%', margin: 'auto' }}>
+                    <Player
+                        onInit={(dom) => {
+                            this._onPlayerInit(dom);
+                        }}
+                        onReady={() => { }}
+                        mode={currentFrame === false ? 'video' : 'picture'}
+                        picture={
+                            currentFrame === false
+                                ? pictures[pictures.length - 1]
+                                : pictures[currentFrame]
+                        }
+                        opacity={
+                            currentFrame === false
+                                ? StoreAnimator.data.parameters.onion
+                                : 1
+                        }
+                        showGrid={false}
+                    />
+                </div>
                 <ControlBar
                     onPlay={() => {
                         this.setState({ currentFrame: 0 });

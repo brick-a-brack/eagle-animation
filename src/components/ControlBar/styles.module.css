@@ -9,6 +9,9 @@
   line-height: 60px;
   text-align: center;
 }
+.button:hover {
+  background-color: #fefefe;
+}
 
 .button_mini {
   width: 40px;
@@ -22,27 +25,21 @@
   text-align: center;
 }
 
-.button:hover {
-  transform: scale(1.1);
+.button_mini:hover {
   background-color: #fefefe;
 }
 
-.icon {
-  width: 40px;
-  height: 40px;
-  background-size: contain;
+.button > svg {
+  width: 55px;
+  height: 55px;
   display: inline-block;
-  padding: 10px;
-  background-repeat: no-repeat;
-  background-position: center center;
+  vertical-align: middle;
 }
 
-.icon_mini {
-  width: 30px;
-  height: 30px;
+.button_mini > svg{
+  width: 35px;
+  height: 35px;
   background-size: contain;
   display: inline-block;
-  padding: 5px;
-  background-repeat: no-repeat;
-  background-position: center center;
+  vertical-align: middle;
 }
