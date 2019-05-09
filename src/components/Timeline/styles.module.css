@@ -54,6 +54,7 @@
   opacity:0;
   transition: opacity .5s ease-in-out, background-color .5s ease-in-out;
   text-transform: uppercase;
+  user-select: none;
 }
 
 .img:hover .title {

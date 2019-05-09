@@ -18,7 +18,7 @@ class Timeline extends Component {
 
     render() {
         const { pictures, select } = this.props;
-        console.log('s', select)
+        console.log('s', select);
         return (
             <aside className={styles.container}>
                 {pictures.map((img, idx) => (
