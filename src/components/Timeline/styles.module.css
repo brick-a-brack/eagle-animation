@@ -38,6 +38,33 @@
   background-color: #486ee5;
 }
 
+.title {
+  color: #fff;
+  background-color:#486ee5;
+  font-size: 13px;
+  line-height:25px;
+  height:25px;
+  width:100%;
+  text-align:center;
+  vertical-align: middle;
+  font-weight: 600;
+  font-family: 'Open Sans', sans-serif;
+  letter-spacing: 3px;
+  position: absolute;
+  opacity:0;
+  transition: opacity .5s ease-in-out, background-color .5s ease-in-out;
+  text-transform: uppercase;
+}
+
+.img:hover .title {
+  opacity:1;
+}
+
+.selected .title {
+  background-color:#e54848;
+  opacity:1;
+}
+
 .container::-webkit-scrollbar,
 .container::-webkit-scrollbar {
   width: 15px;

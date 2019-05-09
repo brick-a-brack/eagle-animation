@@ -171,6 +171,7 @@ class Animator extends Component {
                     onSelect={(frame) => {
                         this._selectFrame(frame);
                     }}
+                    select={currentFrame}
                 />
             </div>
         );
