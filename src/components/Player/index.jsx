@@ -32,11 +32,11 @@ class Player extends Component {
             this.drawFrame(picture);
     }
 
-    static getRatio() {
+    getRatio() { // eslint-disable-line class-methods-use-this
         return '16:9';
     }
 
-    static getSize() {
+    getSize() { // eslint-disable-line class-methods-use-this
         return {
             width: 1280,
             height: 720
