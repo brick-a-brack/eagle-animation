@@ -29,17 +29,14 @@ class Timeline extends Component {
                         onKeyPress={() => {
                             this.actionSelectFrame(img);
                         }}
+                        className={styles.img}
+                        key={img.id}
                     >
-                        <img
-                            alt=""
-                            key={img.id}
-                            className={styles.img}
-                            src={img.path}
-                        />
+                        <img alt="" className={styles.imgcontent} src={img.path} />
                     </span>
                 ))}
                 <span
-                    className={styles.camera}
+                    className={`${styles.img} ${styles.camera}`}
                     role="button"
                     tabIndex={0}
                     onClick={() => {

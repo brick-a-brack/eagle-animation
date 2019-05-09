@@ -1,33 +1,57 @@
 .container {
-  max-height: 10vh;
+  max-height: 97px; /* Height img + scollbar */
   background-color: #484b51;
   width: 100%;
   bottom: 0;
   position: absolute;
-  display: flex;
   overflow-x: scroll;
   overflow-y: hidden;
   width: 100%;
+  white-space: nowrap;
+  padding-left: 2px;
+  padding-right: 2px;
+  box-sizing: border-box;
 }
 
 .img {
-  height: calc(10vh - 8px);
-  margin-bottom: 15px;
+  height: 80px;
+  min-width:80px;
+  background: #000;
   display: inline-block;
   margin-left: 2px;
   margin-right: 2px;
   cursor: pointer;
+  overflow:hidden;
+  position:relative;
 }
 
-.camera {
-  height: calc(10vh - 8px);
-  margin-bottom: 15px;
-  display: inline-block;
-  margin-left: 2px;
-  margin-right: 2px;
-  background-color: #0e7de6;
-  display: inline-block;
-  position: relative;
-  padding-left: calc(10vh - 8px);
+.imgcontent {
+  position:absolute;
+  transform: translateX(-50%);
+  margin-left:50%;
+  min-height:80px;
+  min-width:80px;
+  height:100%;
+}
+
+.img.camera {
+  background-color: #486ee5;
+}
+
+.container::-webkit-scrollbar,
+.container::-webkit-scrollbar {
+  width: 15px;
+}
+.container::-webkit-scrollbar-thumb,
+.container::-webkit-scrollbar-thumb {
+  min-height: 50px;
+  background-color: #486ee5;
+  border: 3px solid transparent;
+  border-radius: 8px;
+  background-clip: padding-box;
   cursor: pointer;
+}
+.container::-webkit-scrollbar-track,
+.container::-webkit-scrollbar-track {
+  background-color: rgba(0, 0, 0, 0);
 }

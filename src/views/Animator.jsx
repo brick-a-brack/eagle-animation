@@ -23,9 +23,9 @@ class Animator extends Component {
 
     _getPictures(sceneId = 0) {
         const { StoreProject } = this.props;
-        if (!StoreProject.data.project)
+        if (!StoreProject.data.data.project)
             return [];
-        const { project, _path } = StoreProject.data;
+        const { project, _path } = StoreProject.data.data;
         if (
             !project
             || !project.scenes
