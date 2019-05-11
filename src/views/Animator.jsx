@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { observer } from 'mobx-react';
+import arrayMove from 'array-move';
 import Player from '../components/Player';
 import Timeline from '../components/Timeline';
 import ControlBar from '../components/ControlBar';
@@ -12,8 +13,22 @@ class Animator extends Component {
 
         this.state = {
             currentFrame: false,
-            timeClock: false
+            timeClock: false,
+            scene: 0
         };
+    }
+
+    _onMove({ oldIndex, newIndex }) {
+        const { StoreProject } = this.props;
+        const { scene } = this.state;
+        if (StoreProject.data.data.project) {
+            StoreProject.data.data.project.scenes[scene].pictures = arrayMove(
+                StoreProject.data.data.project.scenes[scene].pictures,
+                oldIndex,
+                newIndex
+            );
+            StoreProject.save();
+        }
     }
 
     _onPlayerInit(dom) {
@@ -21,8 +36,9 @@ class Animator extends Component {
         StoreDevice.load(dom);
     }
 
-    _getPictures(sceneId = 0) {
+    _getPictures() {
         const { StoreProject } = this.props;
+        const { scene } = this.state;
         if (!StoreProject.data.data.project)
             return [];
         const { project, _path } = StoreProject.data.data;
@@ -30,14 +46,14 @@ class Animator extends Component {
             !project
             || !project.scenes
             || !project.scenes.length
-            || !project.scenes[sceneId].pictures
+            || !project.scenes[scene].pictures
         )
             return [];
-        if (Array.isArray(project.scenes[sceneId].pictures)) {
-            return project.scenes[sceneId].pictures.map((e, idx) => ({
+        if (Array.isArray(project.scenes[scene].pictures)) {
+            return project.scenes[scene].pictures.map((e, idx) => ({
                 ...e,
                 idx,
-                path: `${_path}/${sceneId}/${e.filename}`
+                path: `${_path}/${scene}/${e.filename}`
             }));
         }
         return [];
@@ -104,6 +120,7 @@ class Animator extends Component {
         const { StoreAnimator } = this.props;
         const { currentFrame } = this.state;
         const pictures = this._getPictures().map(e => e.path);
+        const frame = (pictures.length === 0) ? false : ((currentFrame === false) ? pictures[pictures.length - 1] : pictures[currentFrame]);
         return (
             <div>
                 <div style={{ width: '70%', margin: 'auto' }}>
@@ -113,11 +130,7 @@ class Animator extends Component {
                         }}
                         onReady={() => { }}
                         mode={currentFrame === false ? 'video' : 'picture'}
-                        picture={
-                            currentFrame === false
-                                ? pictures[pictures.length - 1]
-                                : pictures[currentFrame]
-                        }
+                        picture={frame}
                         opacity={
                             currentFrame === false
                                 ? StoreAnimator.data.parameters.onion
@@ -170,9 +183,10 @@ class Animator extends Component {
                 />
                 <Timeline
                     pictures={this._getPictures()}
-                    onSelect={(frame) => {
-                        this._selectFrame(frame);
+                    onSelect={(selectedFrame) => {
+                        this._selectFrame(selectedFrame);
                     }}
+                    onMove={(e) => { this._onMove(e); }}
                     select={currentFrame}
                 />
             </div>

@@ -18,6 +18,9 @@ function createWindow() {
     mainWindow = new BrowserWindow({
         width: 1280,
         height: 720,
+        minWidth: 1024,
+        minHeight: 576,
+        title: 'Eagle Animation',
         webPreferences: {
             ...disableSecurity,
             nodeIntegration: true
@@ -29,11 +32,11 @@ function createWindow() {
     else {
         mainWindow.loadURL(
             process.env.ELECTRON_START_URL
-      || url.format({
-          pathname: path.join(__dirname, '/../build/index.html'),
-          protocol: 'file:',
-          slashes: true
-      })
+            || url.format({
+                pathname: path.join(__dirname, '/../build/index.html'),
+                protocol: 'file:',
+                slashes: true
+            })
         );
     }
 

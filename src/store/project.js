@@ -1,5 +1,7 @@
 import { observable } from 'mobx';
-import { getProjectData, createProject, projectSelector } from '../core/projects';
+import {
+    getProjectData, createProject, projectSelector, projectSave
+} from '../core/projects';
 
 const defaultData = {
     path: false,
@@ -63,6 +65,10 @@ export default class ObservableProjectStore {
                 errors: [err.message]
             };
         });
+    }
+
+    save() {
+        projectSave(this.data.data._path, this.data.data.project, true);
     }
 
     static prompt() {

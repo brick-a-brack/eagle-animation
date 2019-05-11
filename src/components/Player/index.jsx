@@ -26,8 +26,9 @@ class Player extends Component {
     componentDidUpdate(prevProps) {
         const { mode, picture } = this.props;
         if (
-            (prevProps.mode !== mode && mode === 'picture')
-            || prevProps.picture !== picture
+            picture
+            && ((prevProps.mode !== mode && mode === 'picture')
+            || prevProps.picture !== picture)
         )
             this.drawFrame(picture);
     }

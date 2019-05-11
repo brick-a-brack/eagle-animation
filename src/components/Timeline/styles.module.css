@@ -23,6 +23,7 @@
   cursor: pointer;
   overflow:hidden;
   position:relative;
+  user-select: none;
 }
 
 .imgcontent {
@@ -32,6 +33,7 @@
   min-height:80px;
   min-width:80px;
   height:100%;
+  user-select: none;
 }
 
 .img.camera {

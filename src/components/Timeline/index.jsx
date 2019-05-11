@@ -1,7 +1,35 @@
 import React, { Component } from 'react';
+import { SortableContainer, SortableElement } from 'react-sortable-hoc';
 import PropTypes from 'prop-types';
 import { ANIMATOR_LIVE } from '../../languages';
 import styles from './styles.module.css';
+
+const SortableItem = SortableElement(({
+    img, selected, onSelect, index
+}) => (
+    <span
+        role="button"
+        tabIndex={0}
+        onClick={() => {
+            onSelect(img);
+        }}
+        onKeyPress={() => {
+            onSelect(img);
+        }}
+        className={`${styles.img} ${((selected) ? styles.selected : '')}`}
+    >
+        <img alt="" className={styles.imgcontent} src={img.path} />
+        <span className={styles.title}>{index + 1}</span>
+    </span>
+));
+
+const SortableList = SortableContainer(({ items, selected, onSelect }) => (
+    <span>
+        {items.map((img, index) => (
+            <SortableItem key={`timeline-item-${img.id}`} index={index} img={img} selected={(selected === index)} onSelect={onSelect} />
+        ))}
+    </span>
+));
 
 class Timeline extends Component {
     constructor(props) {
@@ -17,27 +45,24 @@ class Timeline extends Component {
     }
 
     render() {
-        const { pictures, select } = this.props;
-        console.log('s', select);
+        const { pictures, select, onMove } = this.props;
         return (
             <aside className={styles.container}>
-                {pictures.map((img, idx) => (
-                    <span
-                        role="button"
-                        tabIndex={0}
-                        onClick={() => {
-                            this.actionSelectFrame(img);
-                        }}
-                        onKeyPress={() => {
-                            this.actionSelectFrame(img);
-                        }}
-                        className={`${styles.img} ${((select === idx) ? styles.selected : '')}`}
-                        key={img.id}
-                    >
-                        <img alt="" className={styles.imgcontent} src={img.path} />
-                        <span className={styles.title}>{idx + 1}</span>
-                    </span>
-                ))}
+                <SortableList
+                    axis="x"
+                    lockAxis="x"
+                    distance={1}
+                    items={pictures}
+                    selected={select}
+                    onSelect={(img) => {
+                        this.actionSelectFrame(img);
+                    }}
+                    onSortEnd={(evt) => {
+                        if (evt.newIndex === evt.oldIndex)
+                            return this.actionSelectFrame(pictures[evt.oldIndex]);
+                        return onMove(evt);
+                    }}
+                />
                 <span
                     className={`${styles.img} ${styles.camera} ${((select === false) ? styles.selected : '')}`}
                     role="button"
@@ -59,6 +84,7 @@ class Timeline extends Component {
 Timeline.propTypes = {
     pictures: PropTypes.array.isRequired,
     onSelect: PropTypes.func.isRequired,
+    onMove: PropTypes.func.isRequired,
     select: PropTypes.any.isRequired
 };
 
