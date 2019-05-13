@@ -52,8 +52,8 @@ class SentryLogger extends Component {
                                     role="button"
                                     tabIndex={0}
                                     className={styles.button}
-                                    onClick={() => { this.onReport() }}
-                                    onKeyPress={() => { this.onReport() }}
+                                    onClick={() => { this.onReport(); }}
+                                    onKeyPress={() => { this.onReport(); }}
                                 >
                                     {FATAL_ERROR_FEEDBACK}
                                 </span>
