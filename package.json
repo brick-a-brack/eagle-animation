@@ -5,8 +5,8 @@
   "private": true,
   "author": "Maxime Baconnais / Brick à Brack",
   "dependencies": {
+    "@sentry/browser": "^5.2.1",
     "array-move": "^2.1.0",
-    "electron": "^5.0.1",
     "ffmpeg-static": "^2.4.0",
     "mkdirp": "^0.5.1",
     "mobx": "^5.9.4",
@@ -22,8 +22,8 @@
     "start": "concurrently \"cross-env BROWSER=none craco start\" \"wait-on http://localhost:3000 && cross-env ENV=development electron ./\"",
     "build": "cross-env BROWSER=none craco build && cross-env ENV=production build -c.extraMetadata.main=build/electron.js",
     "postinstall": "install-app-deps",
-    "lint": "eslint ./ --ext .js,.vue,.jsx",
-    "lint-fix": "eslint ./ --ext .js,.vue,.jsx --fix"
+    "lint": "eslint ./ --ext .js,.vue,.jsx --ignore-path .gitignore",
+    "lint-fix": "eslint ./ --ext .js,.vue,.jsx --fix --ignore-path .gitignore"
   },
   "browserslist": [
     ">0.2%",
@@ -32,6 +32,7 @@
     "not op_mini all"
   ],
   "devDependencies": {
+    "electron": "^5.0.1",
     "@babel/plugin-proposal-decorators": "^7.4.4",
     "@craco/craco": "^5.0.2",
     "babel-eslint": "^10.0.1",

@@ -21,6 +21,11 @@ class Player extends Component {
         this.dom.picture.current.height = this.getSize().height;
         this.dom.picture.current.style.width = this.getSize().width;
         this.dom.picture.current.style.height = this.getSize().height;
+        this.dom.grid.current.width = this.getSize().width;
+        this.dom.grid.current.height = this.getSize().height;
+        this.dom.grid.current.style.width = this.getSize().width;
+        this.dom.grid.current.style.height = this.getSize().height;
+        this.drawGrid();
     }
 
     componentDidUpdate(prevProps) {
@@ -28,7 +33,7 @@ class Player extends Component {
         if (
             picture
             && ((prevProps.mode !== mode && mode === 'picture')
-            || prevProps.picture !== picture)
+                || prevProps.picture !== picture)
         )
             this.drawFrame(picture);
     }
@@ -42,6 +47,16 @@ class Player extends Component {
             width: 1280,
             height: 720
         };
+    }
+
+    drawGrid() {
+        const { width, height } = this.getSize();
+        const ctx = this.dom.grid.current.getContext('2d');
+        ctx.fillStyle = '#FFFFFF';
+        ctx.fillRect(Math.round(width * 1 / 3), 0, 1, height);
+        ctx.fillRect(Math.round(width * 2 / 3), 0, 1, height);
+        ctx.fillRect(0, Math.round(height * 1 / 3), width, 1);
+        ctx.fillRect(0, Math.round(height * 2 / 3), width, 1);
     }
 
     drawFrame(src) {
@@ -75,7 +90,9 @@ class Player extends Component {
     }
 
     render() {
-        const { mode, showGrid, opacity } = this.props;
+        const {
+            mode, showGrid, opacity, blendMode
+        } = this.props;
         return (
             <div className={styles.container}>
                 <video
@@ -86,7 +103,10 @@ class Player extends Component {
                 <canvas
                     ref={this.dom.picture}
                     className={styles.layout}
-                    style={{ opacity: mode === 'picture' ? 1 : 1 - opacity }}
+                    style={{
+                        opacity: (mode === 'picture' || blendMode) ? 1 : 1 - opacity,
+                        mixBlendMode: (!blendMode) ? 'normal' : 'difference'
+                    }}
                 />
                 <canvas
                     ref={this.dom.grid}
@@ -100,7 +120,8 @@ class Player extends Component {
 
 Player.propTypes = {
     mode: PropTypes.string.isRequired,
-    picture: PropTypes.any.isRequired,
+    blendMode: PropTypes.any.isRequired,
+    picture: PropTypes.bool.isRequired,
     opacity: PropTypes.any.isRequired,
     showGrid: PropTypes.bool.isRequired,
     onInit: PropTypes.func.isRequired

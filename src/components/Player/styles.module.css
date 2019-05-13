@@ -5,6 +5,7 @@
     height: 0;
     padding-bottom: 56.25%;
     overflow: hidden;
+    background: rgb(0, 0, 0);
 }
 
 .layout {
@@ -13,5 +14,4 @@
     position: absolute;
     left: 0;
     top: 0;
-    background: rgb(0, 0, 0);
 }

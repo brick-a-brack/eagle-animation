@@ -1,9 +1,9 @@
+
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import Container from './components/Container';
 import Animator from './views/Animator';
 import Home from './views/Home';
-
 import {
     App as ObservableAppStore,
     Project as ObservableProjectStore,
@@ -33,6 +33,7 @@ class App extends Component {
                     />
                 )}
             </Container>
+
         );
     }
 }

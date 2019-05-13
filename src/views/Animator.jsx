@@ -13,9 +13,10 @@ class Animator extends Component {
 
         this.state = {
             currentFrame: false,
-            timeClock: false,
             scene: 0
         };
+
+        this.timer = false;
     }
 
     _onMove({ oldIndex, newIndex }) {
@@ -61,43 +62,35 @@ class Animator extends Component {
 
     _play() {
         const { StoreAnimator } = this.props;
-        const { currentFrame } = this.state;
         const exec = () => {
-            if (
-                !currentFrame
-                && !StoreAnimator.data.parameters.loop
-            )
-                return false;
+            const { currentFrame } = this.state;
             if (currentFrame === false)
                 this.setState({ currentFrame: 0 });
-            else if (currentFrame >= this._getPictures().length - 1)
+
+            else if (currentFrame >= this._getPictures().length - 1) {
                 this.setState({ currentFrame: false });
-            else
+                return (StoreAnimator.data.parameters.loop);
+            } else
                 this.setState({ currentFrame: currentFrame + 1 });
 
             return true;
         };
-        this.setState(
-            {
-                timeClock: setTimeout(() => {
-                    if (!exec())
-                        return this._stop();
-                    this._play();
-                }, 1000 / StoreAnimator.data.parameters.FPS)
-            },
-            () => {
-                if (!StoreAnimator.data.parameters.play)
-                    StoreAnimator.setParameter('play', true);
-            }
-        );
+
+        this.timer = setInterval(() => {
+            if (!exec())
+                return this._stop();
+        }, 1000 / StoreAnimator.data.parameters.FPS);
+
+        if (!StoreAnimator.data.parameters.play)
+            StoreAnimator.setParameter('play', true);
     }
 
     _stop() {
         const { StoreAnimator } = this.props;
-        const { timeClock } = this.state;
-        if (timeClock)
-            clearTimeout(timeClock);
-        this.setState({ timeClock: false, currentFrame: false }, () => {
+        if (this.timer)
+            clearInterval(this.timer);
+        this.timer = false;
+        this.setState({ currentFrame: false }, () => {
             if (StoreAnimator.data.parameters.play)
                 StoreAnimator.setParameter('play', false);
         });
@@ -136,7 +129,8 @@ class Animator extends Component {
                                 ? StoreAnimator.data.parameters.onion
                                 : 1
                         }
-                        showGrid={false}
+                        showGrid={StoreAnimator.data.parameters.grid}
+                        blendMode={StoreAnimator.data.parameters.diff}
                     />
                 </div>
                 <ControlBar

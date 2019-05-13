@@ -65,6 +65,12 @@
             "error",
             "below"
         ],
-        "no-nested-ternary": "off"
+        "no-nested-ternary": "off",
+        "import/no-extraneous-dependencies": [
+            "error",
+            {
+                "devDependencies": true
+            }
+        ]
     }
 }

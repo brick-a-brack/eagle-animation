@@ -1,6 +1,9 @@
 import { homedir } from 'os';
 import { join } from 'path';
 
+// Internal app name
+export const APP_NAME = 'eagle-animation';
+
 // Eagle Animation directory name
 export const DIRECTORY_NAME = 'EagleAnimation';
 
@@ -27,3 +30,6 @@ export const EA_VERSION = '1.0.0-indev';
 
 // Github link
 export const CONTRIBUTE_LINK = 'https://github.com/Maxou44/EagleAnimation';
+
+// Sentry DSN
+export const SENTRY_DSN = 'https://750d3c23387f46b8922dee52580eb607@sentry.io/1458572';
