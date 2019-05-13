@@ -21,7 +21,6 @@ const SortableItem = SortableElement(({
     >
         <span className={styles.img}>
             <img alt="" className={styles.imgcontent} src={img.path} />
-
         </span>
         <span className={styles.title}>{`#${index + 1}${((img.length > 1) ? ` x ${img.length}` : '')}`}</span>
     </span>
