@@ -10,16 +10,20 @@ const SortableItem = SortableElement(({
     <span
         role="button"
         tabIndex={0}
+        style={{ minWidth: `${(img.length) * 80}px` }}
+        className={`${styles.containerImg} ${((selected) ? styles.selected : '')}`}
         onClick={() => {
             onSelect(img);
         }}
         onKeyPress={() => {
             onSelect(img);
         }}
-        className={`${styles.img} ${((selected) ? styles.selected : '')}`}
     >
-        <img alt="" className={styles.imgcontent} src={img.path} />
-        <span className={styles.title}>{index + 1}</span>
+        <span className={styles.img}>
+            <img alt="" className={styles.imgcontent} src={img.path} />
+
+        </span>
+        <span className={styles.title}>{`#${index + 1}${((img.length > 1) ? ` x ${img.length}` : '')}`}</span>
     </span>
 ));
 
@@ -63,17 +67,18 @@ class Timeline extends Component {
                         return onMove(evt);
                     }}
                 />
-                <span
-                    className={`${styles.img} ${styles.camera} ${((select === false) ? styles.selected : '')}`}
-                    role="button"
-                    tabIndex={0}
-                    onClick={() => {
-                        this.actionSelectFrame();
-                    }}
-                    onKeyPress={() => {
-                        this.actionSelectFrame();
-                    }}
-                >
+                <span className={`${styles.containerImg} ${styles.camera} ${((select === false) ? styles.selected : '')}`}>
+                    <span
+                        className={styles.img}
+                        role="button"
+                        tabIndex={0}
+                        onClick={() => {
+                            this.actionSelectFrame();
+                        }}
+                        onKeyPress={() => {
+                            this.actionSelectFrame();
+                        }}
+                    />
                     <span className={styles.title}>{ANIMATOR_LIVE}</span>
                 </span>
             </aside>

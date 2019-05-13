@@ -13,7 +13,7 @@
   box-sizing: border-box;
 }
 
-.img {
+.containerImg {
   height: 80px;
   min-width:80px;
   background: #000;
@@ -26,6 +26,18 @@
   user-select: none;
 }
 
+.img {
+  height: 80px;
+  min-width:80px;
+  background: #000;
+  display: inline-block;
+  cursor: pointer;
+  overflow:hidden;
+  position:relative;
+  user-select: none;
+  position: absolute;
+}
+
 .imgcontent {
   position:absolute;
   transform: translateX(-50%);
@@ -36,7 +48,7 @@
   user-select: none;
 }
 
-.img.camera {
+.camera .img {
   background-color: #486ee5;
 }
 
@@ -51,15 +63,14 @@
   vertical-align: middle;
   font-weight: 600;
   font-family: 'Open Sans', sans-serif;
-  letter-spacing: 3px;
+  letter-spacing: 1px;
   position: absolute;
   opacity:0;
   transition: opacity .5s ease-in-out, background-color .5s ease-in-out;
-  text-transform: uppercase;
   user-select: none;
 }
 
-.img:hover .title {
+.containerImg:hover .title {
   opacity:1;
 }
 
