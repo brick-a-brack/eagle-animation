@@ -71,6 +71,15 @@ export default class ObservableProjectStore {
         projectSave(this.data.data._path, this.data.data.project, true);
     }
 
+    savePicture(buffData) {
+        this.data = {
+            ...this.data,
+            isLoading: true,
+            errors: false
+        };
+        console.log(buffData);
+    }
+
     static prompt() {
         return projectSelector();
     }

@@ -1,5 +1,5 @@
 import { observable } from 'mobx';
-import { initDevice, getDeviceResolution } from '../core/devices';
+import { initDevice, getDeviceResolution, takePicture } from '../core/devices';
 
 const defaultData = {
     device: {
@@ -44,6 +44,31 @@ export default class ObservableDeviceStore {
                 isLoading: false,
                 errors: [err.message]
             };
+        });
+    }
+
+    takePicture() {
+        return new Promise((resolve, reject) => {
+            this.data = {
+                ...this.data,
+                isLoading: true,
+                errors: false
+            };
+            takePicture().then((data) => {
+                this.data = {
+                    ...this.data,
+                    isLoading: false,
+                    errors: false
+                };
+                return resolve(data);
+            }).catch((err) => {
+                this.data = {
+                    ...this.data,
+                    isLoading: false,
+                    errors: [err.message]
+                };
+                return reject(err);
+            });
         });
     }
 }

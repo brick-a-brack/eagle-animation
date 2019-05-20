@@ -23,3 +23,5 @@ export const getDeviceResolution = () => new Promise((resolve) => {
         }
     });
 });
+
+export const takePicture = () => device.takePicture();
