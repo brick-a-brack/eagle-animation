@@ -43,9 +43,17 @@
 }
 
 .button_mini > svg{
-    width: 30px;
-    height: 30px;
+    width: 24px;
+    height: 24px;
     background-size: contain;
     display: inline-block;
     vertical-align: middle;
+}
+
+.button_mini > svg path {
+    fill: #dddddd;
+}
+
+.button > svg path {
+    fill: #dddddd;
 }
