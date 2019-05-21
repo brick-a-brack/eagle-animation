@@ -109,3 +109,20 @@ export const createProject = (path, name) => new Promise((resolve, reject) => {
         reject(err);
     });
 });
+
+// Create image file
+export const createImageFile = (projectPath, scene, filename, data) => new Promise((resolve, reject) => {
+    const directoryPath = join(projectPath, `/${scene}/`);
+    const filePath = join(projectPath, `/${scene}/`, filename);
+    createDirectory(directoryPath).then(() => {
+        if (existsSync(filePath))
+            return reject(new Error('FILE_ALREADY_EXISTS'));
+        writeFile(filePath, data, (err) => {
+            if (err)
+                return reject(err);
+            return resolve({ filename, scene, path: filePath });
+        });
+    }).catch((err) => {
+        reject(err);
+    });
+});
