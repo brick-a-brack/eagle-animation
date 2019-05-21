@@ -10,7 +10,7 @@ __EagleAnimation__ is an awesome, free and open-source animation software.
 - Run `npm run build` to build the application.
 - Software will be bundled in the `dist` directory.
 
-### Developpement mode
+### Development mode
 
 - Run `npm i` to install dependencies.
 - Run `npm start` to launch the application in dev mode (Hot reloading and toolbar).
