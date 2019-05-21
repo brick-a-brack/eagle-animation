@@ -5,12 +5,12 @@ import { ANIMATOR_LIVE } from '../../languages';
 import styles from './styles.module.css';
 
 const SortableItem = SortableElement(({
-    img, selected, onSelect, index
+    img, selected, onSelect
 }) => (
     <span
         role="button"
         tabIndex={0}
-        style={{ minWidth: `${(img.length) * 80}px` }}
+        style={{ minWidth: `${(img.length) * 80}px`, display: (img.deleted ? 'none' : '') }}
         className={`${styles.containerImg} ${((selected) ? styles.selected : '')}`}
         onClick={() => {
             onSelect(img);
@@ -22,17 +22,26 @@ const SortableItem = SortableElement(({
         <span className={styles.img}>
             <img alt="" className={styles.imgcontent} src={img.path} />
         </span>
-        <span className={styles.title}>{`#${index + 1}${((img.length > 1) ? ` (${img.length})` : '')}`}</span>
+        <span className={styles.title}>{`#${img.realIndex + 1}${((img.length > 1) ? ` (${img.length})` : '')}`}</span>
     </span>
 ));
 
-const SortableList = SortableContainer(({ items, selected, onSelect }) => (
-    <span>
-        {items.map((img, index) => (
-            <SortableItem key={`timeline-item-${img.id}`} index={index} img={img} selected={(selected === index)} onSelect={onSelect} />
-        ))}
-    </span>
-));
+const SortableList = SortableContainer(({ items, selected, onSelect }) => {
+    const imgs = [];
+    let realIndex = 0;
+    items.forEach((e) => {
+        imgs.push({ ...e, realIndex });
+        if (!e.deleted)
+            realIndex++;
+    });
+    return (
+        <span>
+            {imgs.map((img, index) => (
+                <SortableItem key={`timeline-item-${img.id}`} index={index} img={img} selected={(selected === index)} onSelect={onSelect} />
+            ))}
+        </span>
+    );
+});
 
 class Timeline extends Component {
     constructor(props) {

@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-
 import styles from './styles.module.css';
 
 class Player extends Component {
@@ -121,7 +120,7 @@ class Player extends Component {
 Player.propTypes = {
     mode: PropTypes.string.isRequired,
     blendMode: PropTypes.any.isRequired,
-    picture: PropTypes.bool.isRequired,
+    picture: PropTypes.any.isRequired,
     opacity: PropTypes.any.isRequired,
     showGrid: PropTypes.bool.isRequired,
     onInit: PropTypes.func.isRequired

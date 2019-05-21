@@ -1,9 +1,26 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import styles from './styles.module.css';
+import Slider from 'rc-slider';
+import ReactTooltip from 'react-tooltip';
+import Button from '../Button';
 import { ReactComponent as Camera } from './assets/camera.svg';
 import { ReactComponent as IconPlay } from './assets/play.svg';
 import { ReactComponent as IconPause } from './assets/pause.svg';
+import { ReactComponent as IconShortPlay } from './assets/short-play.svg';
+import { ReactComponent as IconLoop } from './assets/loop.svg';
+import { ReactComponent as IconCompare } from './assets/compare.svg';
+import {
+    ANIMATOR_LIVE,
+    ANIMATOR_BUTTON_PLAY,
+    ANIMATOR_BUTTON_PAUSE,
+    ANIMATOR_BUTTON_DIFFERENCE,
+    ANIMATOR_BUTTON_LOOP,
+    ANIMATOR_BUTTON_SHORT_PLAY,
+    ANIMATOR_BUTTON_ONION,
+    ANIMATOR_BUTTON_MORE
+} from '../../languages';
+import 'rc-slider/assets/index.css';
+import styles from './styles.module.css';
 
 class ControlBar extends Component {
     render() {
@@ -11,121 +28,68 @@ class ControlBar extends Component {
             onPlay,
             onLoop,
             onTakePicture,
-            onShortPlay,
             onDiff,
-            onExport,
             onFPS,
             onOnion,
-            onGrid
+            // onGrid,
+            onShortPlay
         } = this.props;
 
         const {
             playStatus,
             loopStatus,
             takePictureStatus,
-            shortPlayStatus,
             diffStatus,
-            exportStatus,
             FPSStatus,
             onionStatus,
-            gridStatus
+            // gridStatus,
+            shortPlayStatus,
+            frameIndex,
+            frameQuantity
+
         } = this.props;
 
         return (
             <div className={styles.container}>
-                <span
-                    role="button"
-                    tabIndex={0}
-                    onClick={() => {
-                        onTakePicture(!takePictureStatus);
-                    }}
-                    onKeyPress={() => {
-                        onTakePicture(!takePictureStatus);
-                    }}
-                    className={styles.button}
-                >
-                    <Camera />
-                </span>
 
-                <span
-                    role="button"
-                    tabIndex={0}
-                    onClick={() => {
-                        onPlay(!playStatus);
-                    }}
-                    onKeyPress={() => {
-                        onPlay(!playStatus);
-                    }}
-                    className={styles.button_mini}
-                >
-                    {playStatus ? <IconPause /> : <IconPlay />}
-                </span>
+                <Button title={ANIMATOR_BUTTON_MORE} onClick={() => { }} size="mini" icon={<IconCompare />} />
+                <Button title={ANIMATOR_BUTTON_DIFFERENCE} onClick={() => { onDiff(!diffStatus); }} size="mini" icon={<IconCompare />} />
 
-                <span
-                    role="button"
-                    tabIndex={-1}
-                    onClick={() => {
-                        onLoop(!loopStatus);
+                <div
+                    style={{
+                        width: '100px', display: 'inline-block', marginLeft: '22px', marginRight: '22px'
                     }}
-                    onKeyPress={() => {
-                        onLoop(!loopStatus);
-                    }}
-                    className="button"
+                    data-tip={ANIMATOR_BUTTON_ONION}
                 >
-          LOOP
-                </span>
-                <span
-                    role="button"
-                    tabIndex={-1}
-                    onClick={() => {
-                        onShortPlay(!shortPlayStatus);
-                    }}
-                    onKeyPress={() => {
-                        onShortPlay(!shortPlayStatus);
-                    }}
-                    className="button"
-                >
-          SHORT PLAY
-                </span>
-                <span
-                    role="button"
-                    tabIndex={-1}
-                    onClick={() => {
-                        onDiff(!diffStatus);
-                    }}
-                    onKeyPress={() => {
-                        onDiff(!diffStatus);
-                    }}
-                    className="button"
-                >
-          DIFF
-                </span>
-                <span
-                    role="button"
-                    tabIndex={-1}
-                    onClick={() => {
-                        onGrid(!gridStatus);
-                    }}
-                    onKeyPress={() => {
-                        onGrid(!gridStatus);
-                    }}
-                    className="button"
-                >
-          GRID
-                </span>
-                <span
-                    role="button"
-                    tabIndex={-1}
-                    onClick={() => {
-                        onExport(!exportStatus);
-                    }}
-                    onKeyPress={() => {
-                        onExport(!exportStatus);
-                    }}
-                    className="button"
-                >
-          EXPORT
-                </span>
+                    <Slider
+                        step={0.01}
+                        min={0}
+                        max={1}
+                        defaultValue={onionStatus}
+                        trackStyle={{ backgroundColor: '#7f8186', height: '10px' }}
+                        railStyle={{ backgroundColor: '#7f8186', height: '10px' }}
+                        handleStyle={{
+                            backgroundColor: '#486ee5', height: '24px', width: '24px', marginLeft: '-12px', marginTop: '-7px', boxShadow: 'none', borderColor: 'rgba(0,0,0,0)'
+                        }}
+                        onChange={(e) => {
+                            onOnion(e);
+                        }}
+                    />
+                </div>
+
+                <div className={styles.progress}>
+                    {frameIndex === false && <span className={styles.live}>{ANIMATOR_LIVE}</span>}
+                    {frameIndex !== false && frameIndex}
+                    {' / '}
+                    {frameQuantity}
+
+                </div>
+
+                <Button onClick={() => { onTakePicture(!takePictureStatus); }} size="normal" icon={<Camera />} />
+                <Button title={(!playStatus) ? ANIMATOR_BUTTON_PLAY : ANIMATOR_BUTTON_PAUSE} onClick={() => { onPlay(!playStatus); }} size="mini" icon={playStatus ? <IconPause /> : <IconPlay />} />
+                <Button title={ANIMATOR_BUTTON_LOOP} onClick={() => { onLoop(!loopStatus); }} size="mini" icon={<IconLoop />} />
+                <Button title={ANIMATOR_BUTTON_SHORT_PLAY} onClick={() => { onShortPlay(!shortPlayStatus); }} size="mini" icon={<IconShortPlay />} />
+
                 <input
                     type="number"
                     value={FPSStatus}
@@ -136,18 +100,16 @@ class ControlBar extends Component {
                         onFPS(e.target.value);
                     }}
                 />
-                <input
-                    type="range"
-                    min="0"
-                    step="0.001"
-                    max="1"
-                    value={onionStatus}
-                    onChange={(e) => {
-                        onOnion(e.target.value);
-                    }}
-                    onKeyDown={(e) => {
-                        onOnion(e.target.value);
-                    }}
+                <ReactTooltip
+                    effect="solid"
+                    getContent={value => (
+                        <div className={styles.tooltip}>
+                            {' '}
+                            {value}
+                        </div>
+                    )}
+                    delayShow={0}
+                    delayHide={0}
                 />
             </div>
         );
@@ -158,22 +120,23 @@ ControlBar.propTypes = {
     onPlay: PropTypes.func.isRequired,
     onLoop: PropTypes.func.isRequired,
     onTakePicture: PropTypes.func.isRequired,
-    onShortPlay: PropTypes.func.isRequired,
     onDiff: PropTypes.func.isRequired,
-    onExport: PropTypes.func.isRequired,
     onFPS: PropTypes.func.isRequired,
     onOnion: PropTypes.func.isRequired,
-    onGrid: PropTypes.func.isRequired,
+    // onGrid: PropTypes.func.isRequired,
+    onShortPlay: PropTypes.func.isRequired,
 
     playStatus: PropTypes.bool.isRequired,
     loopStatus: PropTypes.bool.isRequired,
     takePictureStatus: PropTypes.bool.isRequired,
-    shortPlayStatus: PropTypes.bool.isRequired,
     diffStatus: PropTypes.bool.isRequired,
-    exportStatus: PropTypes.bool.isRequired,
     FPSStatus: PropTypes.string.isRequired,
-    onionStatus: PropTypes.string.isRequired,
-    gridStatus: PropTypes.bool.isRequired
+    onionStatus: PropTypes.number.isRequired,
+    // gridStatus: PropTypes.bool.isRequired,
+    shortPlayStatus: PropTypes.bool.isRequired,
+
+    frameIndex: PropTypes.any.isRequired,
+    frameQuantity: PropTypes.number.isRequired
 };
 
 export default ControlBar;

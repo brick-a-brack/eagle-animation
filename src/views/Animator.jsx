@@ -6,6 +6,8 @@ import Player from '../components/Player';
 import Timeline from '../components/Timeline';
 import ControlBar from '../components/ControlBar';
 
+// Todo: support deleted and duplicated frames
+
 @observer
 class Animator extends Component {
     constructor(props) {
@@ -112,8 +114,11 @@ class Animator extends Component {
     render() {
         const { StoreAnimator } = this.props;
         const { currentFrame } = this.state;
-        const pictures = this._getPictures().map(e => e.path);
-        const frame = (pictures.length === 0) ? false : ((currentFrame === false) ? pictures[pictures.length - 1] : pictures[currentFrame]);
+        const picturesArray = this._getPictures();
+        const pictures = picturesArray.map(e => e.path);
+        const realFrameIndex = (picturesArray.reduce((acc, e, idx) => (acc + ((!e.deleted && idx <= currentFrame) ? 1 : 0)), 0));
+        const picturesQuantity = picturesArray.filter(e => !e.deleted).length;
+        const selectedFramePath = ((currentFrame === false) ? pictures[pictures.length - 1] : pictures[currentFrame]);
         return (
             <div>
                 <div style={{ width: '70%', margin: 'auto' }}>
@@ -123,7 +128,7 @@ class Animator extends Component {
                         }}
                         onReady={() => { }}
                         mode={currentFrame === false ? 'video' : 'picture'}
-                        picture={frame}
+                        picture={(pictures.length === 0) ? false : selectedFramePath}
                         opacity={
                             currentFrame === false
                                 ? StoreAnimator.data.parameters.onion
@@ -174,6 +179,8 @@ class Animator extends Component {
                     FPSStatus={StoreAnimator.data.parameters.FPS}
                     onionStatus={StoreAnimator.data.parameters.onion}
                     gridStatus={StoreAnimator.data.parameters.grid}
+                    frameQuantity={picturesQuantity}
+                    frameIndex={(currentFrame === false) ? false : realFrameIndex}
                 />
                 <Timeline
                     pictures={this._getPictures()}

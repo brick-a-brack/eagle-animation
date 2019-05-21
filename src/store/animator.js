@@ -9,7 +9,7 @@ const defaultData = {
         diff: false,
         export: false,
         FPS: '12',
-        onion: '1',
+        onion: 1,
         grid: false
     }
 };
