@@ -11,6 +11,7 @@
     line-height: 80px;
     text-align: center;
     opacity:1;
+    user-select:none;
 }
 .button:hover {
     opacity:0.8;
@@ -36,6 +37,7 @@
     line-height: 40px;
     text-align: center;
     opacity:0.9;
+    user-select:none;
 }
 
 .button_mini:hover {
