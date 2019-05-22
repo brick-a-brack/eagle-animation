@@ -110,19 +110,40 @@ export const createProject = (path, name) => new Promise((resolve, reject) => {
     });
 });
 
+// Choose picture id
+export const choosePictureId = (projectPath, scene) => new Promise((resolve) => {
+    getProjectData(projectPath).then((dataOriginal) => {
+        const data = { ...dataOriginal };
+        if (!data.project.scenes[scene]) {
+            data.project.scenes[scene] = {
+                pictures: []
+            };
+        }
+        let newId = Math.max(...data.project.scenes[scene].pictures.map(e => (e.id)));
+        let filePath = false;
+        while (filePath === false || existsSync(filePath)) {
+            newId++;
+            filePath = join(projectPath, `/${scene}/`, `${newId}.jpg`);
+        }
+        return resolve(newId);
+    });
+});
+
 // Create image file
-export const createImageFile = (projectPath, scene, filename, data) => new Promise((resolve, reject) => {
+export const createImageFile = (projectPath, scene, ext, data) => new Promise((resolve, reject) => {
     const directoryPath = join(projectPath, `/${scene}/`);
-    const filePath = join(projectPath, `/${scene}/`, filename);
-    createDirectory(directoryPath).then(() => {
+    createDirectory(directoryPath).then(() => choosePictureId(projectPath, scene).then((id) => {
+        const filePath = join(projectPath, `/${scene}/`, `${id}.${ext}`);
         if (existsSync(filePath))
             return reject(new Error('FILE_ALREADY_EXISTS'));
         writeFile(filePath, data, (err) => {
             if (err)
                 return reject(err);
-            return resolve({ filename, scene, path: filePath });
+            return resolve({
+                id, filename: `${id}.${ext}`, scene, path: filePath
+            });
         });
-    }).catch((err) => {
+    })).catch((err) => {
         reject(err);
     });
 });

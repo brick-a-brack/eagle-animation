@@ -1,6 +1,6 @@
 import { observable } from 'mobx';
 import {
-    getProjectData, createProject, projectSelector, projectSave
+    getProjectData, createProject, projectSelector, projectSave, createImageFile
 } from '../core/projects';
 
 const defaultData = {
@@ -71,13 +71,35 @@ export default class ObservableProjectStore {
         projectSave(this.data.data._path, this.data.data.project, true);
     }
 
-    savePicture(buffData) {
+    savePicture(scene = 0, buffData) {
         this.data = {
             ...this.data,
             isLoading: true,
             errors: false
         };
-        console.log(buffData);
+
+        // Create scene if needed
+        if (!this.data.data.project.scenes[scene]) {
+            this.data.data.project.scenes[scene] = {
+                pictures: [],
+                title: `Shot #${scene + 1}`,
+                framerate: 91
+            };
+        }
+
+        // Save the image on disk
+        return createImageFile(this.data.data._path, scene, 'jpg', buffData).then((file) => {
+            // Update scene in project
+            this.data.data.project.scenes[scene].pictures.push({
+                id: file.id,
+                filename: file.filename,
+                deleted: false,
+                length: 1
+            });
+
+            // Save project on disk
+            this.save();
+        });
     }
 
     static prompt() {

@@ -42,7 +42,7 @@ export default class ObservableDeviceStore {
             this.data = {
                 ...this.data,
                 isLoading: false,
-                errors: [err.message]
+                errors: [err]
             };
         });
     }
@@ -65,7 +65,7 @@ export default class ObservableDeviceStore {
                 this.data = {
                     ...this.data,
                     isLoading: false,
-                    errors: [err.message]
+                    errors: [err]
                 };
                 return reject(err);
             });
