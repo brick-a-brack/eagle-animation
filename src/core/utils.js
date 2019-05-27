@@ -1,5 +1,6 @@
 import mkdirp from 'mkdirp';
 import Electron from 'electron';
+import { copyFile } from 'fs';
 
 // Recursively create directory
 export const createDirectory = path => new Promise((resolve, reject) => {
@@ -33,3 +34,12 @@ export const YYYYMMDDHHMM = () => {
 export const openLink = (link) => {
     Electron.remote.shell.openExternal(link);
 };
+
+// Copy file
+export const copy = (from, to) => new Promise((resolve, reject) => {
+    copyFile(from, to, (err) => {
+        if (err)
+            return reject(err);
+        return resolve(to);
+    });
+});
