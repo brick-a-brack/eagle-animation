@@ -18,3 +18,9 @@ export const ANIMATOR_BUTTON_PLAY = 'Play';
 export const ANIMATOR_BUTTON_PAUSE = 'Pause';
 export const ANIMATOR_BUTTON_ONION = 'Onion blending';
 export const ANIMATOR_BUTTON_MORE = 'More options';
+export const ANIMATOR_BUTTON_BACK = 'Back';
+export const ANIMATOR_BUTTON_EXPORT = 'Export';
+export const ANIMATOR_BUTTON_SETTINGS = 'Settings';
+export const ANIMATOR_FPS = 'FPS';
+
+export const SOON = 'Soon...';

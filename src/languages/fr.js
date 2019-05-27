@@ -18,3 +18,9 @@ export const ANIMATOR_BUTTON_PLAY = 'Lecture';
 export const ANIMATOR_BUTTON_PAUSE = 'Pause';
 export const ANIMATOR_BUTTON_ONION = 'Transparence';
 export const ANIMATOR_BUTTON_MORE = 'Plus d\'options';
+export const ANIMATOR_BUTTON_BACK = 'Retour';
+export const ANIMATOR_BUTTON_EXPORT = 'Exporter';
+export const ANIMATOR_BUTTON_SETTINGS = 'Options';
+export const ANIMATOR_FPS = 'IPS';
+
+export const SOON = 'Prochainement...';
