@@ -3,6 +3,8 @@
   text-align:center;
   margin-top:10px;
   margin-bottom:10px;
+  position: fixed;
+  bottom: 100px;
 }
 
 .progress {
@@ -25,4 +27,34 @@
   line-height: 14px;
   font-size: 14px;
   font-family: 'Open Sans', sans-serif;
+}
+
+.fpsZone {
+  background-color: #7f8186;
+  width: 85px;
+  margin: 10px;
+  height: 30px;
+  color: #dddddd;
+  font-family: 'Open Sans', sans-serif;
+  display:inline-block;
+  user-select:none;
+  border-radius:3px;
+  overflow:hidden;
+  vertical-align: middle;
+}
+
+.input {
+  background-color: #7f8186;
+  border: none;
+  text-align: center;
+  line-height: 28px;
+  box-sizing: border-box;
+  color: #dddddd;
+  font-family: 'Open Sans', sans-serif;
+  text-transform: uppercase;
+  font-size: 16px;
+}
+
+.input::-webkit-outer-spin-button, .input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
 }

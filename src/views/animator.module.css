@@ -1,0 +1,12 @@
+.playerContainer {
+    height: calc(100vh - 250px);
+    width: calc(100% - 150px);
+    max-width: 1315px;
+    top: 25px;
+    left: 50%;
+    position: fixed;
+    overflow: hidden;
+    transform: translateX(-50%);
+}
+
+/* TODO: Improve Responsive */

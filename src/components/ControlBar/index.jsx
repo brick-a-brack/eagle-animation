@@ -5,6 +5,7 @@ import ReactTooltip from 'react-tooltip';
 import Button from '../Button';
 import { ReactComponent as Camera } from './assets/camera.svg';
 import { ReactComponent as IconPlay } from './assets/play.svg';
+import { ReactComponent as IconDots } from './assets/dots.svg';
 import { ReactComponent as IconPause } from './assets/pause.svg';
 import { ReactComponent as IconShortPlay } from './assets/short-play.svg';
 import { ReactComponent as IconLoop } from './assets/loop.svg';
@@ -17,7 +18,9 @@ import {
     ANIMATOR_BUTTON_LOOP,
     ANIMATOR_BUTTON_SHORT_PLAY,
     ANIMATOR_BUTTON_ONION,
-    ANIMATOR_BUTTON_MORE
+    ANIMATOR_BUTTON_MORE,
+    ANIMATOR_FPS,
+    SOON
 } from '../../languages';
 import 'rc-slider/assets/index.css';
 import styles from './styles.module.css';
@@ -52,7 +55,7 @@ class ControlBar extends Component {
         return (
             <div className={styles.container}>
 
-                <Button title={ANIMATOR_BUTTON_MORE} onClick={() => { }} size="mini" icon={<IconCompare />} />
+                <Button title={ANIMATOR_BUTTON_MORE} onClick={() => { window.alert(SOON); }} size="mini" icon={<IconDots />} />
                 <Button title={ANIMATOR_BUTTON_DIFFERENCE} onClick={() => { onDiff(!diffStatus); }} size="mini" icon={<IconCompare />} />
 
                 <div
@@ -90,16 +93,21 @@ class ControlBar extends Component {
                 <Button title={ANIMATOR_BUTTON_LOOP} onClick={() => { onLoop(!loopStatus); }} size="mini" icon={<IconLoop />} />
                 <Button title={ANIMATOR_BUTTON_SHORT_PLAY} onClick={() => { onShortPlay(!shortPlayStatus); }} size="mini" icon={<IconShortPlay />} />
 
-                <input
-                    type="number"
-                    value={FPSStatus}
-                    onChange={(e) => {
-                        onFPS(e.target.value);
-                    }}
-                    onKeyDown={(e) => {
-                        onFPS(e.target.value);
-                    }}
-                />
+                <span className={styles.fpsZone}>
+                    <input
+                        className={styles.input}
+                        min="1"
+                        max="60"
+                        type="number"
+                        value={FPSStatus}
+                        maxLength="2"
+                        onChange={(e) => {
+                            onFPS(e.target.value);
+                        }}
+                        onKeyDown={(e) => { onFPS(e.target.value); }}
+                    />
+                    {ANIMATOR_FPS}
+                </span>
                 <ReactTooltip
                     effect="solid"
                     getContent={value => (

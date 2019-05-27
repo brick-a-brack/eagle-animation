@@ -71,6 +71,7 @@
             {
                 "devDependencies": true
             }
-        ]
+        ],
+        "no-alert": "off"
     }
 }

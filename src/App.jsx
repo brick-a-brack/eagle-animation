@@ -1,4 +1,3 @@
-
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import Container from './components/Container';
@@ -9,7 +8,8 @@ import {
     Project as ObservableProjectStore,
     Projects as ObservableProjectsStore,
     Animator as ObservableAnimatorStore,
-    Device as ObservableDeviceStore
+    Device as ObservableDeviceStore,
+    Export as ObservableExportStore
 } from './store';
 
 @observer
@@ -30,6 +30,7 @@ class App extends Component {
                         StoreApp={ObservableAppStore}
                         StoreDevice={ObservableDeviceStore}
                         StoreAnimator={ObservableAnimatorStore}
+                        StoreExport={ObservableExportStore}
                     />
                 )}
             </Container>

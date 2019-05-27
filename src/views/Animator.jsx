@@ -5,8 +5,11 @@ import arrayMove from 'array-move';
 import Player from '../components/Player';
 import Timeline from '../components/Timeline';
 import ControlBar from '../components/ControlBar';
+import LeftBar from '../components/LeftBar';
+import RightBar from '../components/RightBar';
+import styles from './animator.module.css';
 
-// Todo: support deleted and duplicated frames
+// Todo: support deleted and duplicated frames on preview
 
 @observer
 class Animator extends Component {
@@ -107,7 +110,9 @@ class Animator extends Component {
 
     _takePicture() {
         const { scene } = this.state;
-        const { StoreAnimator, StoreDevice, StoreProject } = this.props;
+        const {
+            StoreAnimator, StoreDevice, StoreProject
+        } = this.props;
         StoreAnimator.setParameter('takePicture', true);
 
         // Take picture
@@ -121,7 +126,9 @@ class Animator extends Component {
     }
 
     render() {
-        const { StoreAnimator } = this.props;
+        const {
+            StoreAnimator, StoreExport, StoreProject, StoreApp
+        } = this.props;
         const { currentFrame } = this.state;
         const picturesArray = this._getPictures();
         const pictures = picturesArray.map(e => e.path);
@@ -130,7 +137,7 @@ class Animator extends Component {
         const selectedFramePath = ((currentFrame === false) ? pictures[pictures.length - 1] : pictures[currentFrame]);
         return (
             <div>
-                <div style={{ width: '70%', margin: 'auto' }}>
+                <div className={styles.playerContainer}>
                     <Player
                         onInit={(dom) => {
                             this._onPlayerInit(dom);
@@ -147,6 +154,19 @@ class Animator extends Component {
                         blendMode={StoreAnimator.data.parameters.diff}
                     />
                 </div>
+                <LeftBar
+                    onBack={() => {
+                        StoreApp.setAppView('home');
+                    }}
+                />
+                <RightBar
+                    onExport={() => {
+                        StoreExport.exportVideo(StoreProject.data.data._path, 0);
+                    }}
+                    onSettings={() => {
+                        // Todo
+                    }}
+                />
                 <ControlBar
                     onPlay={() => {
                         this.setState({ currentFrame: 0 });
@@ -207,7 +227,9 @@ class Animator extends Component {
 Animator.propTypes = {
     StoreProject: PropTypes.object.isRequired,
     StoreDevice: PropTypes.object.isRequired,
-    StoreAnimator: PropTypes.object.isRequired
+    StoreAnimator: PropTypes.object.isRequired,
+    StoreExport: PropTypes.object.isRequired,
+    StoreApp: PropTypes.object.isRequired
 };
 
 export default Animator;
