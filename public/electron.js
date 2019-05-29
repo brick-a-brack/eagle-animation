@@ -3,6 +3,9 @@ const electron = require('electron');
 const { app } = electron;
 const { BrowserWindow } = electron;
 
+// Force color space
+app.commandLine.appendSwitch('force-color-profile', 'srgb');
+
 const path = require('path');
 const url = require('url');
 
