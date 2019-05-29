@@ -1,7 +1,7 @@
 .playerContainer {
     height: calc(100vh - 250px);
     width: calc(100% - 150px);
-    max-width: 1315px;
+    max-width: 1330px;
     top: 25px;
     left: 50%;
     position: fixed;
