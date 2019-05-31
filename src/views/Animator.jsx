@@ -78,7 +78,6 @@ class Animator extends Component {
                 return (StoreAnimator.data.parameters.loop);
             } else
                 this.setState({ currentFrame: currentFrame + 1 });
-
             return true;
         };
 
@@ -126,15 +125,8 @@ class Animator extends Component {
         });
     }
 
-    _onFPSchange(value) {
-        const { scene } = this.state;
-        const {
-            StoreProject
-        } = this.props;
-        StoreProject.changeFPS(scene, value);
-    }
-
     _eventsHandler(action, param = false) {
+        const { scene } = this.state;
         const {
             StoreAnimator, StoreExport, StoreProject, StoreApp
         } = this.props;
@@ -173,9 +165,9 @@ class Animator extends Component {
             StoreAnimator.setParameter('grid', !StoreAnimator.data.parameters.grid);
         else if (action === 'DIFFERENCE')
             StoreAnimator.setParameter('diff', !StoreAnimator.data.parameters.diff);
-        else if (action === 'CHANGE_FPS') {
+        else if (action === 'FPS_CHANGE') {
             StoreAnimator.setParameter('FPS', param);
-            this._onFPSchange(param);
+            StoreProject.changeFPS(scene, param);
         } else if (action === 'SETTINGS')
             window.alert('TODO SOON');
         else if (action === 'MORE')
