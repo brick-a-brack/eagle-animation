@@ -6,7 +6,6 @@ import Button from '../Button';
 import { ReactComponent as Camera } from './assets/camera.svg';
 import { ReactComponent as IconPlay } from './assets/play.svg';
 import { ReactComponent as IconDots } from './assets/dots.svg';
-import { ReactComponent as IconPause } from './assets/pause.svg';
 import { ReactComponent as IconShortPlay } from './assets/short-play.svg';
 import { ReactComponent as IconLoop } from './assets/loop.svg';
 import { ReactComponent as IconCompare } from './assets/compare.svg';
@@ -33,17 +32,11 @@ class ControlBar extends Component {
             onAction
         } = this.props;
 
-        const {
-            play,
-            FPS,
-            onion
-        } = status;
-
         return (
             <div className={styles.container}>
 
                 <Button title={ANIMATOR_BUTTON_MORE} onClick={() => { onAction('MORE'); }} size="mini" icon={<IconDots />} />
-                <Button title={ANIMATOR_BUTTON_DIFFERENCE} onClick={() => { onAction('DIFFERENCE'); }} size="mini" icon={<IconCompare />} />
+                <Button title={ANIMATOR_BUTTON_DIFFERENCE} selected={status.diff} onClick={() => { onAction('DIFFERENCE'); }} size="mini" icon={<IconCompare />} />
 
                 <div
                     style={{
@@ -55,7 +48,7 @@ class ControlBar extends Component {
                         step={0.01}
                         min={0}
                         max={1}
-                        value={onion}
+                        value={status.onion}
                         trackStyle={{ backgroundColor: '#7f8186', height: '10px' }}
                         railStyle={{ backgroundColor: '#7f8186', height: '10px' }}
                         handleStyle={{
@@ -75,9 +68,9 @@ class ControlBar extends Component {
                 </div>
 
                 <Button onClick={() => { onAction('TAKE_PICTURE'); }} size="normal" icon={<Camera />} />
-                <Button title={(!play) ? ANIMATOR_BUTTON_PLAY : ANIMATOR_BUTTON_PAUSE} onClick={() => { onAction('PLAY'); }} size="mini" icon={play ? <IconPause /> : <IconPlay />} />
-                <Button title={ANIMATOR_BUTTON_LOOP} onClick={() => { onAction('LOOP'); }} size="mini" icon={<IconLoop />} />
-                <Button title={ANIMATOR_BUTTON_SHORT_PLAY} onClick={() => { onAction('SHORT_PLAY'); }} size="mini" icon={<IconShortPlay />} />
+                <Button title={(!status.play) ? ANIMATOR_BUTTON_PLAY : ANIMATOR_BUTTON_PAUSE} selected={status.play} onClick={() => { onAction('PLAY'); }} size="mini" icon={<IconPlay />} />
+                <Button title={ANIMATOR_BUTTON_LOOP} onClick={() => { onAction('LOOP'); }} selected={status.loop} size="mini" icon={<IconLoop />} />
+                <Button title={ANIMATOR_BUTTON_SHORT_PLAY} onClick={() => { onAction('SHORT_PLAY'); }} selected={status.shortPlay} size="mini" icon={<IconShortPlay />} />
 
                 <span className={styles.fpsZone}>
                     <input
@@ -85,7 +78,7 @@ class ControlBar extends Component {
                         min="1"
                         max="60"
                         type="number"
-                        value={FPS}
+                        value={status.FPS}
                         maxLength="2"
                         onChange={(e) => {
                             onAction('FPS_CHANGE', e.target.value);

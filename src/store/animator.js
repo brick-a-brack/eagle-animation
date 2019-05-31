@@ -7,7 +7,6 @@ const defaultData = {
         takePicture: false,
         shortPlay: false,
         diff: false,
-        export: false,
         FPS: '12',
         onion: 1,
         grid: false
