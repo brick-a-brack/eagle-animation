@@ -102,7 +102,30 @@ export default class ObservableProjectStore {
         });
     }
 
-    static prompt() {
+    changeFPS(scene = 0, value) {
+        this.data = {
+            ...this.data,
+            isLoading: true,
+            errors: false
+        };
+
+        // Create scene if needed
+        if (!this.data.data.project.scenes[scene]) {
+            this.data.data.project.scenes[scene] = {
+                pictures: [],
+                title: `Shot #${scene + 1}`
+            };
+        }
+
+        // Update framerate
+        this.data.data.project.scenes[scene].framerate = value;
+
+        // Save project on disk
+        this.save();
+    }
+
+    // eslint-disable-next-line
+    prompt() {
         return projectSelector();
     }
 }

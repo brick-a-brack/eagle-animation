@@ -43,8 +43,8 @@ class Player extends Component {
 
     getSize() { // eslint-disable-line class-methods-use-this
         return {
-            width: 1280,
-            height: 720
+            width: 1920,
+            height: 1080
         };
     }
 
@@ -59,12 +59,12 @@ class Player extends Component {
     }
 
     drawFrame(src) {
-        const ctx = this.dom.picture.current.getContext('2d');
+        const ctx = this.dom.picture.current.getContext('2d', { alpha: false });
         const img = new Image();
         img.addEventListener(
             'load',
             () => {
-                ctx.fillStyle = '#000';
+                ctx.fillStyle = '#000000';
                 ctx.fillRect(0, 0, this.getSize().width, this.getSize().height);
                 const ratioX = this.getSize().width / img.width;
                 const ratioY = this.getSize().height / img.height;

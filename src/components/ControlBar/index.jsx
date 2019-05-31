@@ -19,8 +19,7 @@ import {
     ANIMATOR_BUTTON_SHORT_PLAY,
     ANIMATOR_BUTTON_ONION,
     ANIMATOR_BUTTON_MORE,
-    ANIMATOR_FPS,
-    SOON
+    ANIMATOR_FPS
 } from '../../languages';
 import 'rc-slider/assets/index.css';
 import styles from './styles.module.css';
@@ -28,35 +27,23 @@ import styles from './styles.module.css';
 class ControlBar extends Component {
     render() {
         const {
-            onPlay,
-            onLoop,
-            onTakePicture,
-            onDiff,
-            onFPS,
-            onOnion,
-            // onGrid,
-            onShortPlay
+            status,
+            frameIndex,
+            frameQuantity,
+            onAction
         } = this.props;
 
         const {
-            playStatus,
-            loopStatus,
-            takePictureStatus,
-            diffStatus,
-            FPSStatus,
-            onionStatus,
-            // gridStatus,
-            shortPlayStatus,
-            frameIndex,
-            frameQuantity
-
-        } = this.props;
+            play,
+            FPS,
+            onion
+        } = status;
 
         return (
             <div className={styles.container}>
 
-                <Button title={ANIMATOR_BUTTON_MORE} onClick={() => { window.alert(SOON); }} size="mini" icon={<IconDots />} />
-                <Button title={ANIMATOR_BUTTON_DIFFERENCE} onClick={() => { onDiff(!diffStatus); }} size="mini" icon={<IconCompare />} />
+                <Button title={ANIMATOR_BUTTON_MORE} onClick={() => { onAction('MORE'); }} size="mini" icon={<IconDots />} />
+                <Button title={ANIMATOR_BUTTON_DIFFERENCE} onClick={() => { onAction('DIFFERENCE'); }} size="mini" icon={<IconCompare />} />
 
                 <div
                     style={{
@@ -68,14 +55,14 @@ class ControlBar extends Component {
                         step={0.01}
                         min={0}
                         max={1}
-                        defaultValue={onionStatus}
+                        value={onion}
                         trackStyle={{ backgroundColor: '#7f8186', height: '10px' }}
                         railStyle={{ backgroundColor: '#7f8186', height: '10px' }}
                         handleStyle={{
                             backgroundColor: '#486ee5', height: '24px', width: '24px', marginLeft: '-12px', marginTop: '-7px', boxShadow: 'none', borderColor: 'rgba(0,0,0,0)'
                         }}
                         onChange={(e) => {
-                            onOnion(e);
+                            onAction('ONION_CHANGE', e);
                         }}
                     />
                 </div>
@@ -85,13 +72,12 @@ class ControlBar extends Component {
                     {frameIndex !== false && frameIndex}
                     {' / '}
                     {frameQuantity}
-
                 </div>
 
-                <Button onClick={() => { onTakePicture(!takePictureStatus); }} size="normal" icon={<Camera />} />
-                <Button title={(!playStatus) ? ANIMATOR_BUTTON_PLAY : ANIMATOR_BUTTON_PAUSE} onClick={() => { onPlay(!playStatus); }} size="mini" icon={playStatus ? <IconPause /> : <IconPlay />} />
-                <Button title={ANIMATOR_BUTTON_LOOP} onClick={() => { onLoop(!loopStatus); }} size="mini" icon={<IconLoop />} />
-                <Button title={ANIMATOR_BUTTON_SHORT_PLAY} onClick={() => { onShortPlay(!shortPlayStatus); }} size="mini" icon={<IconShortPlay />} />
+                <Button onClick={() => { onAction('TAKE_PICTURE'); }} size="normal" icon={<Camera />} />
+                <Button title={(!play) ? ANIMATOR_BUTTON_PLAY : ANIMATOR_BUTTON_PAUSE} onClick={() => { onAction('PLAY'); }} size="mini" icon={play ? <IconPause /> : <IconPlay />} />
+                <Button title={ANIMATOR_BUTTON_LOOP} onClick={() => { onAction('LOOP'); }} size="mini" icon={<IconLoop />} />
+                <Button title={ANIMATOR_BUTTON_SHORT_PLAY} onClick={() => { onAction('SHORT_PLAY'); }} size="mini" icon={<IconShortPlay />} />
 
                 <span className={styles.fpsZone}>
                     <input
@@ -99,12 +85,14 @@ class ControlBar extends Component {
                         min="1"
                         max="60"
                         type="number"
-                        value={FPSStatus}
+                        value={FPS}
                         maxLength="2"
                         onChange={(e) => {
-                            onFPS(e.target.value);
+                            onAction('FPS_CHANGE', e.target.value);
                         }}
-                        onKeyDown={(e) => { onFPS(e.target.value); }}
+                        onKeyDown={(e) => {
+                            onAction('FPS_CHANGE', e.target.value);
+                        }}
                     />
                     {ANIMATOR_FPS}
                 </span>
@@ -125,23 +113,9 @@ class ControlBar extends Component {
 }
 
 ControlBar.propTypes = {
-    onPlay: PropTypes.func.isRequired,
-    onLoop: PropTypes.func.isRequired,
-    onTakePicture: PropTypes.func.isRequired,
-    onDiff: PropTypes.func.isRequired,
-    onFPS: PropTypes.func.isRequired,
-    onOnion: PropTypes.func.isRequired,
-    // onGrid: PropTypes.func.isRequired,
-    onShortPlay: PropTypes.func.isRequired,
+    onAction: PropTypes.func.isRequired,
 
-    playStatus: PropTypes.bool.isRequired,
-    loopStatus: PropTypes.bool.isRequired,
-    takePictureStatus: PropTypes.bool.isRequired,
-    diffStatus: PropTypes.bool.isRequired,
-    FPSStatus: PropTypes.string.isRequired,
-    onionStatus: PropTypes.number.isRequired,
-    // gridStatus: PropTypes.bool.isRequired,
-    shortPlayStatus: PropTypes.bool.isRequired,
+    status: PropTypes.any.isRequired,
 
     frameIndex: PropTypes.any.isRequired,
     frameQuantity: PropTypes.number.isRequired

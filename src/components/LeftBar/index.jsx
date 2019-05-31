@@ -9,18 +9,18 @@ import styles from './styles.module.css';
 
 class LeftBar extends Component {
     render() {
-        const { onBack } = this.props;
+        const { onAction } = this.props;
 
         return (
             <div className={styles.container}>
-                <Button title={ANIMATOR_BUTTON_BACK} onClick={() => { onBack(); }} size="mini" icon={<IconBack />} />
+                <Button title={ANIMATOR_BUTTON_BACK} onClick={() => { onAction('HOME'); }} size="mini" icon={<IconBack />} />
             </div>
         );
     }
 }
 
 LeftBar.propTypes = {
-    onBack: PropTypes.func.isRequired
+    onAction: PropTypes.func.isRequired
 };
 
 export default LeftBar;

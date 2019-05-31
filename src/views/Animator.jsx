@@ -8,6 +8,7 @@ import ControlBar from '../components/ControlBar';
 import LeftBar from '../components/LeftBar';
 import RightBar from '../components/RightBar';
 import styles from './animator.module.css';
+import KeyboardHandler from '../components/KeyboardHandler';
 
 // Todo: support deleted and duplicated frames on preview
 
@@ -125,9 +126,69 @@ class Animator extends Component {
         });
     }
 
-    render() {
+    _onFPSchange(value) {
+        const { scene } = this.state;
+        const {
+            StoreProject
+        } = this.props;
+        StoreProject.changeFPS(scene, value);
+    }
+
+    _eventsHandler(action, param = false) {
         const {
             StoreAnimator, StoreExport, StoreProject, StoreApp
+        } = this.props;
+
+        if (action === 'PLAY') {
+            this.setState({ currentFrame: 0 });
+            if (StoreAnimator.data.parameters.play)
+                this._stop();
+            else
+                this._play();
+        } else if (action === 'TAKE_PICTURE')
+            this._takePicture();
+        else if (action === 'LOOP')
+            StoreAnimator.setParameter('loop', !StoreAnimator.data.parameters.loop);
+        else if (action === 'SHORT_PLAY')
+            StoreAnimator.setParameter('shortPlay', !StoreAnimator.data.parameters.shortPlay);
+        else if (action === 'DELETE') {
+            // Not supported yet
+        } else if (action === 'HOME')
+            StoreApp.setAppView('home');
+        else if (action === 'FRAME_LEFT') {
+            // Not supported yet
+        } else if (action === 'FRAME_RIGHT') {
+            // Not supported yet
+        } else if (action === 'FRAME_LIVE')
+            this._selectFrame(false);
+        else if (action === 'ONION_LESS') {
+            const currOnion = parseFloat(StoreAnimator.data.parameters.onion) - 0.1;
+            StoreAnimator.setParameter('onion', `${(currOnion < 0) ? 0 : currOnion}`);
+        } else if (action === 'ONION_MORE') {
+            const currOnion = parseFloat(StoreAnimator.data.parameters.onion) + 0.1;
+            StoreAnimator.setParameter('onion', `${(currOnion > 1) ? 1 : currOnion}`);
+        } else if (action === 'ONION_CHANGE')
+            StoreAnimator.setParameter('onion', param);
+        else if (action === 'GRID')
+            StoreAnimator.setParameter('grid', !StoreAnimator.data.parameters.grid);
+        else if (action === 'DIFFERENCE')
+            StoreAnimator.setParameter('diff', !StoreAnimator.data.parameters.diff);
+        else if (action === 'CHANGE_FPS') {
+            StoreAnimator.setParameter('FPS', param);
+            this._onFPSchange(param);
+        } else if (action === 'SETTINGS')
+            window.alert('TODO SOON');
+        else if (action === 'MORE')
+            window.alert('TODO SOON');
+        else if (action === 'EXPORT')
+            StoreExport.exportVideo(StoreProject.data.data._path, 0);
+        else
+            console.log('UNSUPPORTED EVENT', action);
+    }
+
+    render() {
+        const {
+            StoreAnimator
         } = this.props;
         const { currentFrame } = this.state;
         const picturesArray = this._getPictures();
@@ -154,63 +215,17 @@ class Animator extends Component {
                         blendMode={StoreAnimator.data.parameters.diff}
                     />
                 </div>
-                <LeftBar
-                    onBack={() => {
-                        StoreApp.setAppView('home');
-                    }}
-                />
-                <RightBar
-                    onExport={() => {
-                        StoreExport.exportVideo(StoreProject.data.data._path, 0);
-                    }}
-                    onSettings={() => {
-                        // Todo
-                    }}
-                />
+                <LeftBar onAction={action => (this._eventsHandler(action))} />
+
+                <RightBar onAction={action => (this._eventsHandler(action))} />
+
                 <ControlBar
-                    onPlay={() => {
-                        this.setState({ currentFrame: 0 });
-                        if (StoreAnimator.data.parameters.play)
-                            this._stop();
-                        else
-                            this._play();
-                    }}
-                    onLoop={(e) => {
-                        StoreAnimator.setParameter('loop', e);
-                    }}
-                    onTakePicture={() => {
-                        this._takePicture();
-                    }}
-                    onShortPlay={(e) => {
-                        StoreAnimator.setParameter('shortPlay', e);
-                    }}
-                    onDiff={(e) => {
-                        StoreAnimator.setParameter('diff', e);
-                    }}
-                    onExport={(e) => {
-                        StoreAnimator.setParameter('export', e);
-                    }}
-                    onFPS={(e) => {
-                        StoreAnimator.setParameter('FPS', e);
-                    }}
-                    onOnion={(e) => {
-                        StoreAnimator.setParameter('onion', e);
-                    }}
-                    onGrid={(e) => {
-                        StoreAnimator.setParameter('grid', e);
-                    }}
-                    playStatus={StoreAnimator.data.parameters.play}
-                    loopStatus={StoreAnimator.data.parameters.loop}
-                    takePictureStatus={StoreAnimator.data.parameters.takePicture}
-                    shortPlayStatus={StoreAnimator.data.parameters.shortPlay}
-                    diffStatus={StoreAnimator.data.parameters.diff}
-                    exportStatus={StoreAnimator.data.parameters.export}
-                    FPSStatus={StoreAnimator.data.parameters.FPS}
-                    onionStatus={StoreAnimator.data.parameters.onion}
-                    gridStatus={StoreAnimator.data.parameters.grid}
+                    onAction={(action, param) => (this._eventsHandler(action, param))}
+                    status={StoreAnimator.data.parameters}
                     frameQuantity={picturesQuantity}
                     frameIndex={(currentFrame === false) ? false : realFrameIndex}
                 />
+
                 <Timeline
                     pictures={this._getPictures()}
                     onSelect={(selectedFrame) => {
@@ -219,6 +234,8 @@ class Animator extends Component {
                     onMove={(e) => { this._onMove(e); }}
                     select={currentFrame}
                 />
+
+                <KeyboardHandler onAction={action => (this._eventsHandler(action))} />
             </div>
         );
     }
