@@ -83,9 +83,6 @@ class ControlBar extends Component {
                         onChange={(e) => {
                             onAction('FPS_CHANGE', e.target.value);
                         }}
-                        onKeyDown={(e) => {
-                            onAction('FPS_CHANGE', e.target.value);
-                        }}
                     />
                     {ANIMATOR_FPS}
                 </span>

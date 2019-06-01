@@ -1,4 +1,7 @@
 import { observable } from 'mobx';
+import {
+    DEFAULT_FPS
+} from '../config';
 
 const defaultData = {
     parameters: {
@@ -7,7 +10,7 @@ const defaultData = {
         takePicture: false,
         shortPlay: false,
         diff: false,
-        FPS: '12',
+        FPS: `${DEFAULT_FPS}`,
         onion: 1,
         grid: false
     }

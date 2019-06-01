@@ -3,6 +3,8 @@ import { join } from 'path';
 import { execFile } from 'child_process';
 import { remote } from 'electron';
 
+import { DEFAULT_FPS } from '../config';
+
 // eslint-disable-next-line
 const ffmpegPath = ((ffmpeg.path) ? join(remote.app.getAppPath().replace('app.asar', 'app.asar.unpacked'), 'node_modules/ffmpeg-static/', ffmpeg.path) : false);
 
@@ -11,7 +13,7 @@ const profiles = {
         codec: 'libx264',
         extension: 'mp4',
         pix_fmt: 'yuv420p',
-        preset: 'ultrafast'
+        preset: 'veryslow'
     },
     av1: {
         codec: 'libaom-av1',
@@ -22,7 +24,7 @@ const profiles = {
         codec: 'libx265',
         extension: 'mp4',
         pix_fmt: 'yuv420p',
-        preset: 'ultrafast'
+        preset: 'veryslow'
     },
     prores: {
         codec: 'prores_ks',
@@ -76,7 +78,7 @@ export const generate = (
     const args = ['-y'];
 
     // Input framerate
-    args.push('-r', fps);
+    args.push('-r', (parseInt(fps, 10) > 0 && parseInt(fps, 10) <= 120) ? parseInt(fps, 10) : DEFAULT_FPS);
 
     // Add all images in the path
     args.push('-i', 'img-%06d.jpg');
@@ -99,13 +101,13 @@ export const generate = (
         args.push('-movflags', '+faststart');
 
     // Output framerate
-    args.push('-r', fps);
+    args.push('-r', '60');
 
     // Pixel mode
     args.push('-pix_fmt', profile.pix_fmt);
 
     // Output file
-    args.push(`${outputFile}.${profile.extension}`);
+    args.push(`${outputFile}`);
 
     console.log(`ffmpeg.exe ${args.map(e => (`"${e}"`)).join(' ')}`);
 

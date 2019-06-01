@@ -23,7 +23,7 @@ export const PROJECT_DEFAULT_NAME = 'Untitled';
 export const DEFAULT_PATH = join(homedir(), DIRECTORY_NAME);
 
 // Default FPS
-export const DEFAULT_FPS = 15;
+export const DEFAULT_FPS = 12;
 
 // EA Version
 export const EA_VERSION = '1.0.0-indev';

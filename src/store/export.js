@@ -1,5 +1,5 @@
 import { observable } from 'mobx';
-import { exportProjectScene } from '../core/export';
+import { exportProjectScene, exportPrompt } from '../core/export';
 
 const defaultData = {
 };
@@ -9,6 +9,9 @@ export default class ObservableExportStore {
 
     // eslint-disable-next-line
     exportVideo(projectPath, scene) {
-        exportProjectScene(projectPath, scene);
+        exportPrompt().then((path) => {
+            if (path)
+                exportProjectScene(projectPath, scene, path);
+        });
     }
 }

@@ -2,6 +2,7 @@ import { observable } from 'mobx';
 import {
     getProjectData, createProject, projectSelector, projectSave, createImageFile
 } from '../core/projects';
+import { DEFAULT_FPS } from '../config';
 
 const defaultData = {
     path: false,
@@ -88,7 +89,7 @@ export default class ObservableProjectStore {
             this.data.data.project.scenes[scene] = {
                 pictures: [],
                 title: `Shot #${scene + 1}`,
-                framerate: 91
+                framerate: `${DEFAULT_FPS}`
             };
         }
 
@@ -118,7 +119,8 @@ export default class ObservableProjectStore {
         if (!this.data.data.project.scenes[scene]) {
             this.data.data.project.scenes[scene] = {
                 pictures: [],
-                title: `Shot #${scene + 1}`
+                title: `Shot #${scene + 1}`,
+                framerate: `${DEFAULT_FPS}`
             };
         }
 
