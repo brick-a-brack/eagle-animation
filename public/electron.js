@@ -33,6 +33,7 @@ function createWindow() {
     if (isDev)
         mainWindow.loadURL('http://localhost:3000/');
     else {
+        mainWindow.setMenuBarVisibility(false);
         mainWindow.loadURL(
             process.env.ELECTRON_START_URL
             || url.format({

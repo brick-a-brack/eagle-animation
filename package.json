@@ -59,12 +59,30 @@
   "main": "public/electron.js",
   "build": {
     "appId": "com.eagle-animation.app",
+    "directories": {
+      "buildResources": "./public"
+    },
     "files": [
       "build/**/*",
       "node_modules/**/*"
     ],
-    "directories": {
-      "buildResources": "assets"
+    "win": {
+      "files": [
+        "!node_modules/ffmpeg-static/bin/darwin/*",
+        "!node_modules/ffmpeg-static/bin/linux/*"
+      ]
+    },
+    "linux": {
+      "files": [
+        "!node_modules/ffmpeg-static/bin/darwin/*",
+        "!node_modules/ffmpeg-static/bin/win32/*"
+      ]
+    },
+    "mac": {
+      "files": [
+        "!node_modules/ffmpeg-static/bin/win32/*",
+        "!node_modules/ffmpeg-static/bin/linux/*"
+      ]
     }
   }
 }
