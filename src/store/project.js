@@ -71,6 +71,12 @@ export default class ObservableProjectStore {
         projectSave(this.data.data._path, this.data.data.project, true);
     }
 
+
+    deletePicture(scene = 0, idx) {
+        this.data.data.project.scenes[scene].pictures[idx].deleted = true;
+        this.save();
+    }
+
     savePicture(scene = 0, buffData) {
         this.data = {
             ...this.data,

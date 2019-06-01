@@ -108,6 +108,39 @@ class Animator extends Component {
             this.setState({ currentFrame: frame.idx });
     }
 
+    _nextFrame() {
+        const { currentFrame } = this.state;
+        if (currentFrame === false)
+            return;
+        const frames = this._getPictures();
+        if (frames.filter(e => (!e.deleted)).length === 0)
+            return;
+        let currFrame = currentFrame;
+        while (currFrame < frames.length && (frames[currFrame].deleted || currFrame === currentFrame))
+            currFrame++;
+        this.setState({ currentFrame: (currFrame === frames.length) ? false : currFrame });
+    }
+
+    _previousFrame() {
+        const { currentFrame } = this.state;
+        const frames = this._getPictures();
+        if (frames.filter(e => (!e.deleted)).length === 0)
+            return;
+        let currFrame = (currentFrame === false) ? frames.length - 1 : currentFrame;
+        while (currFrame >= 0 && ((frames[currFrame] && frames[currFrame].deleted) || currFrame === currentFrame))
+            currFrame--;
+        const firstFrame = Math.min(...frames.map((p, idx) => ((!p.deleted) ? idx : false)).filter(e => (e !== false)));
+        this.setState({ currentFrame: (currFrame === -1) ? firstFrame : currFrame });
+    }
+
+    _deleteFrame() {
+        const { currentFrame, scene } = this.state;
+        const { StoreProject  } = this.props;
+        if (currentFrame === false)
+            return;
+        StoreProject.deletePicture(scene, currentFrame);
+    }
+
     _takePicture() {
         const { scene } = this.state;
         const {
@@ -144,13 +177,14 @@ class Animator extends Component {
         else if (action === 'SHORT_PLAY')
             StoreAnimator.setParameter('shortPlay', !StoreAnimator.data.parameters.shortPlay);
         else if (action === 'DELETE') {
-            // Not supported yet
+            this._deleteFrame();
+            this._nextFrame();
         } else if (action === 'HOME')
             StoreApp.setAppView('home');
         else if (action === 'FRAME_LEFT') {
-            // Not supported yet
+            this._previousFrame();
         } else if (action === 'FRAME_RIGHT') {
-            // Not supported yet
+            this._nextFrame();
         } else if (action === 'FRAME_LIVE')
             this._selectFrame(false);
         else if (action === 'ONION_LESS') {

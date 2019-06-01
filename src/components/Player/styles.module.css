@@ -6,6 +6,7 @@
     padding-bottom: 56.25%;
     overflow: hidden;
     background: rgb(0, 0, 0);
+    flex:1;
 }
 
 .layout {

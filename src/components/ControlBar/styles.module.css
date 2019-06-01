@@ -17,6 +17,8 @@
   text-transform: uppercase;
   color: #DDD;
   user-select:none;
+  min-width:100px;
+  vertical-align: middle;
 }
 
 .live{

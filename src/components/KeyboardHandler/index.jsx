@@ -13,7 +13,8 @@ const keyboardMap = {
     FRAME_RIGHT: ['right', '2'],
     FRAME_LIVE: ['3'],
     ONION_MORE: ['+'],
-    ONION_LESS: ['-']
+    ONION_LESS: ['-'],
+    MUTE: ['m', '/']
 };
 
 class KeyboardHandler extends Component {
@@ -24,6 +25,7 @@ class KeyboardHandler extends Component {
             <div>
                 {Object.keys(keyboardMap).map(action => (
                     <KeyboardEventHandler
+                        key={`KEY-${action}`}
                         handleKeys={keyboardMap[action]}
                         onKeyEvent={() => { onAction(action); }}
                     />
