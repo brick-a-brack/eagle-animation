@@ -69,7 +69,7 @@ export default class ObservableProjectStore {
     }
 
     save() {
-        projectSave(this.data.data._path, this.data.data.project, true);
+        return projectSave(this.data.data._path, this.data.data.project, true);
     }
 
     deletePicture(scene = 0, idx) {
@@ -78,33 +78,37 @@ export default class ObservableProjectStore {
     }
 
     savePicture(scene = 0, buffData) {
-        this.data = {
-            ...this.data,
-            isLoading: true,
-            errors: false
-        };
-
-        // Create scene if needed
-        if (!this.data.data.project.scenes[scene]) {
-            this.data.data.project.scenes[scene] = {
-                pictures: [],
-                title: `Shot #${scene + 1}`,
-                framerate: `${DEFAULT_FPS}`
+        return new Promise((resolve, reject) => {
+            this.data = {
+                ...this.data,
+                isLoading: true,
+                errors: false
             };
-        }
 
-        // Save the image on disk
-        return createImageFile(this.data.data._path, scene, 'jpg', buffData).then((file) => {
-            // Update scene in project
-            this.data.data.project.scenes[scene].pictures.push({
-                id: file.id,
-                filename: file.filename,
-                deleted: false,
-                length: 1
-            });
+            // Create scene if needed
+            if (!this.data.data.project.scenes[scene]) {
+                this.data.data.project.scenes[scene] = {
+                    pictures: [],
+                    title: `Shot #${scene + 1}`,
+                    framerate: `${DEFAULT_FPS}`
+                };
+            }
 
-            // Save project on disk
-            this.save();
+            // Save the image on disk
+            return createImageFile(this.data.data._path, scene, 'jpg', buffData).then((file) => {
+                // Update scene in project
+                this.data.data.project.scenes[scene].pictures.push({
+                    id: file.id,
+                    filename: file.filename,
+                    deleted: false,
+                    length: 1
+                });
+
+                // Save project on disk
+                this.save().then(() => {
+                    resolve(true);
+                }).catch((err) => { reject(err); });
+            }).catch((err) => { reject(err); });
         });
     }
 

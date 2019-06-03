@@ -157,14 +157,18 @@ class Animator extends Component {
         const {
             StoreAnimator, StoreDevice, StoreProject
         } = this.props;
+
+        // Already taking picture
+        if (StoreAnimator.data.parameters.takePicture)
+            return;
+
+        // Taking picture...
         StoreAnimator.setParameter('takePicture', true);
 
         // Take picture
-        StoreDevice.takePicture().then((data) => {
-            // Save picture
-            StoreProject.savePicture(scene, data);
+        StoreDevice.takePicture().then(data => StoreProject.savePicture(scene, data).then(() => {
             StoreAnimator.setParameter('takePicture', false);
-        }).catch(() => {
+        })).catch(() => {
             StoreAnimator.setParameter('takePicture', false);
         });
     }
