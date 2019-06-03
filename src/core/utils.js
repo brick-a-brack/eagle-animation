@@ -23,13 +23,6 @@ export const directorySelector = () => new Promise((resolve) => {
 // Timestamp
 export const time = () => (Math.floor((new Date().getTime()) / 1000));
 
-// Datetime patch
-export const YYYYMMDDHHMM = () => {
-    const d = new Date();
-    const pad2 = n => ((n < 10 ? '0' : '') + n);
-    return `${d.getFullYear()}${pad2(d.getMonth() + 1)}${pad2(d.getDate())}${pad2(d.getHours())}${pad2(d.getMinutes())}`;
-};
-
 // Open link
 export const openLink = (link) => {
     Electron.remote.shell.openExternal(link);

@@ -11,7 +11,7 @@ import {
     DEFAULT_FPS,
     PROJECT_DEFAULT_NAME
 } from '../config';
-import { time, createDirectory, YYYYMMDDHHMM } from './utils';
+import { time, createDirectory } from './utils';
 
 // Generate empty project
 export const generateProjectObject = name => ({
@@ -99,11 +99,17 @@ export const renameProject = (path, name) => new Promise((resolve, reject) => {
 // Project create
 export const createProject = (path, name) => new Promise((resolve, reject) => {
     const realName = name || PROJECT_DEFAULT_NAME;
-    const directoryname = `${StripChar.RSExceptUnsAlpNum(realName)}-${YYYYMMDDHHMM()}`;
-    const projectPath = join(path, directoryname);
-    if (existsSync(projectPath))
-        return reject(new Error('DIR_ALREADY_CREATED'));
-    createDirectory(projectPath).then(() => projectSave(projectPath, generateProjectObject(name || '')).then((data) => {
+    const originalName = `${StripChar.RSExceptUnsAlpNum(realName)}`;
+    let finalPath = '';
+    for (let i = 0; i < 10000; i++) {
+        const directoryName = `${originalName}${(i) ? `-${i}` : ''}`;
+        const projectPath = join(path, directoryName);
+        if (!existsSync(projectPath)) {
+            finalPath = projectPath;
+            break;
+        }
+    }
+    createDirectory(finalPath).then(() => projectSave(finalPath, generateProjectObject(name || '')).then((data) => {
         resolve(data);
     })).catch((err) => {
         reject(err);
@@ -119,7 +125,7 @@ export const choosePictureId = (projectPath, scene) => new Promise((resolve) => 
                 pictures: []
             };
         }
-        let newId = Math.max(...data.project.scenes[scene].pictures.map(e => (e.id)));
+        let newId = Math.max(0, ...data.project.scenes[scene].pictures.map(e => (e.id)));
         let filePath = false;
         while (filePath === false || existsSync(filePath)) {
             newId++;
