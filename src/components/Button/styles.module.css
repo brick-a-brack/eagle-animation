@@ -1,0 +1,63 @@
+.button {
+    margin-left:5px;
+    margin-right:5px;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: inline-block;
+    padding: 10px;
+    background-color: #486ee5;
+    cursor: pointer;
+    line-height: 80px;
+    text-align: center;
+    opacity:0.8;
+    user-select:none;
+}
+.button:hover {
+    opacity:1;
+}
+
+.button > svg {
+    width: 60px;
+    height: 60px;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.button_mini {
+    margin:5px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: inline-block;
+    padding: 5px;
+    background-color: #7f8186;
+    cursor: pointer;
+    line-height: 40px;
+    text-align: center;
+    opacity:0.5;
+    user-select:none;
+}
+
+.button_mini:hover {
+    opacity:0.6;
+}
+.button_mini.selected {
+    opacity:1;
+}
+
+.button_mini > svg{
+    width: 24px;
+    height: 24px;
+    background-size: contain;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.button_mini > svg path {
+    fill: #dddddd;
+}
+
+.button > svg path {
+    fill: #dddddd;
+}
