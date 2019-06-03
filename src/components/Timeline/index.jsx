@@ -8,25 +8,25 @@ import styles from './styles.module.css';
 const SortableItem = SortableElement(({
     img, selected, onSelect, index
 }) => (
-        <span
-            role="button"
-            tabIndex={0}
-            id={`timeline-frame-${index}`}
-            style={{ minWidth: `${(img.length) * 80}px`, display: (img.deleted ? 'none' : '') }}
-            className={`${styles.containerImg} ${((selected) ? styles.selected : '')}`}
-            onClick={() => {
-                onSelect(img);
-            }}
-            onKeyPress={() => {
-                onSelect(img);
-            }}
-        >
-            <span className={styles.img}>
-                <img alt="" className={styles.imgcontent} src={img.path} />
-            </span>
-            <span className={styles.title}>{`#${img.realIndex + 1}${((img.length > 1) ? ` (${img.length})` : '')}`}</span>
+    <span
+        role="button"
+        tabIndex={0}
+        id={`timeline-frame-${index}`}
+        style={{ minWidth: `${(img.length) * 80}px`, display: (img.deleted ? 'none' : '') }}
+        className={`${styles.containerImg} ${((selected) ? styles.selected : '')}`}
+        onClick={() => {
+            onSelect(img);
+        }}
+        onKeyPress={() => {
+            onSelect(img);
+        }}
+    >
+        <span className={styles.img}>
+            <img alt="" className={styles.imgcontent} src={img.path} />
         </span>
-    ));
+        <span className={styles.title}>{`#${img.realIndex + 1}${((img.length > 1) ? ` (${img.length})` : '')}`}</span>
+    </span>
+));
 
 const SortableList = SortableContainer(({ items, selected, onSelect }) => {
     const imgs = [];
@@ -62,7 +62,7 @@ class Timeline extends Component {
     componentDidUpdate(prevProps) {
         const { select } = this.props;
         if (prevProps.select !== select) {
-            const key = (select === false) ? `#timeline-frame-live` : `#timeline-frame-${this.props.select}`
+            const key = (select === false) ? '#timeline-frame-live' : `#timeline-frame-${select}`;
             if (document.querySelector(key)) {
                 animateScrollTo(document.querySelector(key), {
                     element: document.querySelector('aside'),
