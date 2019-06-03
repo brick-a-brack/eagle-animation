@@ -60,8 +60,8 @@ class Timeline extends Component {
     }
 
     componentDidUpdate(prevProps) {
-        const { select } = this.props;
-        if (prevProps.select !== select) {
+        const { select, pictures } = this.props;
+        if (prevProps.select !== select || JSON.stringify(prevProps.pictures) !== JSON.stringify(pictures)) {
             const key = (select === false) ? '#timeline-frame-live' : `#timeline-frame-${select}`;
             if (document.querySelector(key)) {
                 animateScrollTo(document.querySelector(key), {
