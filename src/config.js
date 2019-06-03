@@ -26,7 +26,7 @@ export const DEFAULT_PATH = join(homedir(), DIRECTORY_NAME);
 export const DEFAULT_FPS = 12;
 
 // EA Version
-export const EA_VERSION = '1.0.0-indev';
+export const EA_VERSION = '1.0.0-prerelease';
 
 // Github link
 export const CONTRIBUTE_LINK = 'https://github.com/Maxou44/EagleAnimation';
