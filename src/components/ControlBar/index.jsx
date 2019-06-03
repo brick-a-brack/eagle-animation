@@ -29,7 +29,8 @@ class ControlBar extends Component {
             status,
             frameIndex,
             frameQuantity,
-            onAction
+            onAction,
+            onFocus
         } = this.props;
 
         return (
@@ -83,6 +84,8 @@ class ControlBar extends Component {
                         onChange={(e) => {
                             onAction('FPS_CHANGE', e.target.value);
                         }}
+                        onBlur={() => { onFocus(false) }}
+                        onFocus={() => { onFocus(true) }}
                     />
                     {ANIMATOR_FPS}
                 </span>
@@ -104,6 +107,7 @@ class ControlBar extends Component {
 
 ControlBar.propTypes = {
     onAction: PropTypes.func.isRequired,
+    onFocus: PropTypes.func.isRequired,
 
     status: PropTypes.any.isRequired,
 

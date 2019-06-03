@@ -19,7 +19,8 @@ class Animator extends Component {
 
         this.state = {
             currentFrame: false,
-            scene: 0
+            scene: 0,
+            focus: false
         };
 
         this.timer = false;
@@ -147,6 +148,7 @@ class Animator extends Component {
         const { StoreProject } = this.props;
         if (currentFrame === false)
             return;
+        this._nextFrame();
         StoreProject.deletePicture(scene, currentFrame);
     }
 
@@ -185,10 +187,9 @@ class Animator extends Component {
             StoreAnimator.setParameter('loop', !StoreAnimator.data.parameters.loop);
         else if (action === 'SHORT_PLAY')
             StoreAnimator.setParameter('shortPlay', !StoreAnimator.data.parameters.shortPlay);
-        else if (action === 'DELETE') {
+        else if (action === 'DELETE')
             this._deleteFrame();
-            this._nextFrame();
-        } else if (action === 'HOME')
+        else if (action === 'HOME')
             StoreApp.setAppView('home');
         else if (action === 'FRAME_LEFT')
             this._previousFrame();
@@ -196,6 +197,8 @@ class Animator extends Component {
             this._nextFrame();
         else if (action === 'FRAME_LIVE')
             this._selectFrame(false);
+        else if (action === 'FRAME_FIRST')
+            this._firstFrame();
         else if (action === 'ONION_LESS') {
             const currOnion = parseFloat(StoreAnimator.data.parameters.onion) - 0.1;
             StoreAnimator.setParameter('onion', `${(currOnion < 0) ? 0 : currOnion}`);
@@ -221,11 +224,15 @@ class Animator extends Component {
             console.log('UNSUPPORTED EVENT', action);
     }
 
+    _setFocus(focus) {
+        this.setState({ focus });
+    }
+
     render() {
         const {
             StoreAnimator
         } = this.props;
-        const { currentFrame } = this.state;
+        const { currentFrame, focus } = this.state;
         const picturesArray = this._getPictures();
         const pictures = picturesArray.map(e => e.path);
         const realFrameIndex = (picturesArray.reduce((acc, e, idx) => (acc + ((!e.deleted && idx <= currentFrame) ? 1 : 0)), 0));
@@ -256,6 +263,7 @@ class Animator extends Component {
 
                 <ControlBar
                     onAction={(action, param) => (this._eventsHandler(action, param))}
+                    onFocus={(v) => { this._setFocus(v) }}
                     status={StoreAnimator.data.parameters}
                     frameQuantity={picturesQuantity}
                     frameIndex={(currentFrame === false) ? false : realFrameIndex}
@@ -270,7 +278,7 @@ class Animator extends Component {
                     select={currentFrame}
                 />
 
-                <KeyboardHandler onAction={action => (this._eventsHandler(action))} />
+                <KeyboardHandler onAction={action => (this._eventsHandler(action))} disabled={focus} />
             </div>
         );
     }

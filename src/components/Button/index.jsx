@@ -14,7 +14,7 @@ class Button extends Component {
                 tabIndex={0}
                 onClick={() => onClick()
                 }
-                onKeyPress={() => onClick()}
+                onKeyPress={() => {}}
                 className={`${(size === 'mini') ? styles.button_mini : styles.button} ${(selected) ? styles.selected : ''}`}
             >
                 {icon}

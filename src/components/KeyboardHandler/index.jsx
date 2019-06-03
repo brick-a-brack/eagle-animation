@@ -11,7 +11,8 @@ const keyboardMap = {
     HOME: ['esc'],
     FRAME_LEFT: ['left', '1'],
     FRAME_RIGHT: ['right', '2'],
-    FRAME_LIVE: ['3'],
+    FRAME_LIVE: ['up', '3'],
+    FRAME_FIRST: ['down'],
     ONION_MORE: ['+'],
     ONION_LESS: ['-'],
     MUTE: ['m', '/']
@@ -19,7 +20,7 @@ const keyboardMap = {
 
 class KeyboardHandler extends Component {
     render() {
-        const { onAction } = this.props;
+        const { onAction, disabled } = this.props;
 
         return (
             <div>
@@ -28,6 +29,8 @@ class KeyboardHandler extends Component {
                         key={`KEY-${action}`}
                         handleKeys={keyboardMap[action]}
                         onKeyEvent={() => { onAction(action); }}
+                        handleFocusableElements
+                        isDisabled={disabled}
                     />
                 ))}
             </div>
@@ -36,7 +39,12 @@ class KeyboardHandler extends Component {
 }
 
 KeyboardHandler.propTypes = {
-    onAction: PropTypes.func.isRequired
+    onAction: PropTypes.func.isRequired,
+    disabled: PropTypes.bool
 };
+
+KeyboardHandler.defaultProps = {
+    disabled: false
+}
 
 export default KeyboardHandler;
