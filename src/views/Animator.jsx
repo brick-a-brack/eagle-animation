@@ -263,7 +263,7 @@ class Animator extends Component {
 
                 <ControlBar
                     onAction={(action, param) => (this._eventsHandler(action, param))}
-                    onFocus={(v) => { this._setFocus(v) }}
+                    onFocus={(v) => { this._setFocus(v); }}
                     status={StoreAnimator.data.parameters}
                     frameQuantity={picturesQuantity}
                     frameIndex={(currentFrame === false) ? false : realFrameIndex}

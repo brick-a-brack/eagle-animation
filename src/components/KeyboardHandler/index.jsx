@@ -45,6 +45,6 @@ KeyboardHandler.propTypes = {
 
 KeyboardHandler.defaultProps = {
     disabled: false
-}
+};
 
 export default KeyboardHandler;

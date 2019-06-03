@@ -84,8 +84,8 @@ class ControlBar extends Component {
                         onChange={(e) => {
                             onAction('FPS_CHANGE', e.target.value);
                         }}
-                        onBlur={() => { onFocus(false) }}
-                        onFocus={() => { onFocus(true) }}
+                        onBlur={() => { onFocus(false); }}
+                        onFocus={() => { onFocus(true); }}
                     />
                     {ANIMATOR_FPS}
                 </span>
