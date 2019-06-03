@@ -6,6 +6,7 @@
   "author": "Maxime Baconnais / Brick à Brack",
   "dependencies": {
     "@sentry/browser": "^5.4.0",
+    "animated-scroll-to": "^1.2.2",
     "array-move": "^2.1.0",
     "ffmpeg-static": "^2.4.0",
     "mkdirp": "^0.5.1",

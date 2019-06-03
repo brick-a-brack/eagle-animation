@@ -1,30 +1,32 @@
 import React, { Component } from 'react';
 import { SortableContainer, SortableElement } from 'react-sortable-hoc';
 import PropTypes from 'prop-types';
+import animateScrollTo from 'animated-scroll-to';
 import { ANIMATOR_LIVE } from '../../languages';
 import styles from './styles.module.css';
 
 const SortableItem = SortableElement(({
-    img, selected, onSelect
+    img, selected, onSelect, index
 }) => (
-    <span
-        role="button"
-        tabIndex={0}
-        style={{ minWidth: `${(img.length) * 80}px`, display: (img.deleted ? 'none' : '') }}
-        className={`${styles.containerImg} ${((selected) ? styles.selected : '')}`}
-        onClick={() => {
-            onSelect(img);
-        }}
-        onKeyPress={() => {
-            onSelect(img);
-        }}
-    >
-        <span className={styles.img}>
-            <img alt="" className={styles.imgcontent} src={img.path} />
+        <span
+            role="button"
+            tabIndex={0}
+            id={`timeline-frame-${index}`}
+            style={{ minWidth: `${(img.length) * 80}px`, display: (img.deleted ? 'none' : '') }}
+            className={`${styles.containerImg} ${((selected) ? styles.selected : '')}`}
+            onClick={() => {
+                onSelect(img);
+            }}
+            onKeyPress={() => {
+                onSelect(img);
+            }}
+        >
+            <span className={styles.img}>
+                <img alt="" className={styles.imgcontent} src={img.path} />
+            </span>
+            <span className={styles.title}>{`#${img.realIndex + 1}${((img.length > 1) ? ` (${img.length})` : '')}`}</span>
         </span>
-        <span className={styles.title}>{`#${img.realIndex + 1}${((img.length > 1) ? ` (${img.length})` : '')}`}</span>
-    </span>
-));
+    ));
 
 const SortableList = SortableContainer(({ items, selected, onSelect }) => {
     const imgs = [];
@@ -46,6 +48,7 @@ const SortableList = SortableContainer(({ items, selected, onSelect }) => {
 class Timeline extends Component {
     constructor(props) {
         super(props);
+        this.ref = React.createRef();
         this.actionSelectFrame = (frame = false) => (props.onSelect(frame));
     }
 
@@ -56,10 +59,27 @@ class Timeline extends Component {
         );
     }
 
+    componentDidUpdate(prevProps) {
+        const { select } = this.props;
+        if (prevProps.select !== select) {
+            const key = (select === false) ? `#timeline-frame-live` : `#timeline-frame-${this.props.select}`
+            if (document.querySelector(key)) {
+                animateScrollTo(document.querySelector(key), {
+                    element: document.querySelector('aside'),
+                    horizontal: true,
+                    speed: 250,
+                    minDuration: 200,
+                    maxDuration: 300,
+                    cancelOnUserAction: false
+                });
+            }
+        }
+    }
+
     render() {
         const { pictures, select, onMove } = this.props;
         return (
-            <aside className={styles.container}>
+            <aside className={styles.container} ref={this.ref}>
                 <SortableList
                     axis="x"
                     lockAxis="x"
@@ -77,6 +97,7 @@ class Timeline extends Component {
                 />
                 <span className={`${styles.containerImg} ${styles.camera} ${((select === false) ? styles.selected : '')}`}>
                     <span
+                        id="timeline-frame-live"
                         className={styles.img}
                         role="button"
                         tabIndex={0}
