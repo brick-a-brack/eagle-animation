@@ -17,7 +17,7 @@ class Player extends Component {
             width: 0,
             height: 0,
             ready: false
-        }
+        };
 
         this.resize = () => {
             const parentSize = this.dom.container.current.parentNode.getBoundingClientRect();
@@ -33,8 +33,8 @@ class Player extends Component {
                 heightElem = parentSize.height;
                 widthElem = this.getRatio() * parentSize.height;
             }
-            this.setState({ width: widthElem, height: heightElem, ready: true })
-        }
+            this.setState({ width: widthElem, height: heightElem, ready: true });
+        };
     }
 
     componentDidMount() {
@@ -53,10 +53,6 @@ class Player extends Component {
         this.resize();
     }
 
-    componentWillUnmount() {
-        window.removeEventListener("resize", this.resize);
-    }
-
     componentDidUpdate(prevProps) {
         const { mode, picture } = this.props;
         if (
@@ -65,6 +61,10 @@ class Player extends Component {
                 || prevProps.picture !== picture)
         )
             this.drawFrame(picture);
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener('resize', this.resize);
     }
 
     getRatio() { // eslint-disable-line class-methods-use-this
