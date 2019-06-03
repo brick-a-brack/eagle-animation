@@ -7,10 +7,34 @@ class Player extends Component {
         super(props);
 
         this.dom = {
+            container: React.createRef(),
             video: React.createRef(),
             picture: React.createRef(),
             grid: React.createRef()
         };
+
+        this.state = {
+            width: 0,
+            height: 0,
+            ready: false
+        }
+
+        this.resize = () => {
+            const parentSize = this.dom.container.current.parentNode.getBoundingClientRect();
+            const parentRatio = parentSize.width / parentSize.height;
+
+            let widthElem = 0;
+            let heightElem = 0;
+
+            if (this.getRatio() >= parentRatio) {
+                widthElem = parentSize.width;
+                heightElem = 1 / this.getRatio() * parentSize.width;
+            } else {
+                heightElem = parentSize.height;
+                widthElem = this.getRatio() * parentSize.height;
+            }
+            this.setState({ width: widthElem, height: heightElem, ready: true })
+        }
     }
 
     componentDidMount() {
@@ -25,6 +49,12 @@ class Player extends Component {
         this.dom.grid.current.style.width = this.getSize().width;
         this.dom.grid.current.style.height = this.getSize().height;
         this.drawGrid();
+        window.addEventListener('resize', this.resize);
+        this.resize();
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener("resize", this.resize);
     }
 
     componentDidUpdate(prevProps) {
@@ -38,13 +68,13 @@ class Player extends Component {
     }
 
     getRatio() { // eslint-disable-line class-methods-use-this
-        return '16:9';
+        return 16 / 9;
     }
 
     getSize() { // eslint-disable-line class-methods-use-this
         return {
-            width: 1920,
-            height: 1080
+            width: 1280,
+            height: 720
         };
     }
 
@@ -92,8 +122,11 @@ class Player extends Component {
         const {
             mode, showGrid, opacity, blendMode
         } = this.props;
+        const {
+            width, height, ready
+        } = this.state;
         return (
-            <div className={styles.container}>
+            <div className={styles.container} ref={this.dom.container} style={{ width: `${width}px`, height: `${height}px`, opacity: (ready) ? 1 : 0 }}>
                 <video
                     ref={this.dom.video}
                     className={styles.layout}
