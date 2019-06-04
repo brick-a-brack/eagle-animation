@@ -92,6 +92,12 @@ class Player extends Component {
         const ctx = this.dom.picture.current.getContext('2d', { alpha: false });
         const img = new Image();
         img.addEventListener(
+            'error',
+            () => {
+                ctx.fillStyle = '#000000';
+                ctx.fillRect(0, 0, this.getSize().width, this.getSize().height);
+            });
+        img.addEventListener(
             'load',
             () => {
                 ctx.fillStyle = '#000000';
