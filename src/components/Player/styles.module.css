@@ -3,6 +3,7 @@
     margin: auto;
     overflow: hidden;
     background: rgb(0, 0, 0);
+    border: solid #486ee5 4px;
 }
 
 .layout {

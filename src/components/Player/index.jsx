@@ -27,11 +27,11 @@ class Player extends Component {
             let heightElem = 0;
 
             if (this.getRatio() >= parentRatio) {
-                widthElem = parentSize.width;
-                heightElem = 1 / this.getRatio() * parentSize.width;
+                widthElem = parentSize.width - 8;
+                heightElem = 1 / this.getRatio() * (parentSize.width - 8);
             } else {
-                heightElem = parentSize.height;
-                widthElem = this.getRatio() * parentSize.height;
+                heightElem = parentSize.height - 8;
+                widthElem = this.getRatio() * (parentSize.height - 8);
             }
             this.setState({ width: widthElem, height: heightElem, ready: true });
         };
@@ -96,7 +96,8 @@ class Player extends Component {
             () => {
                 ctx.fillStyle = '#000000';
                 ctx.fillRect(0, 0, this.getSize().width, this.getSize().height);
-            });
+            }
+        );
         img.addEventListener(
             'load',
             () => {
