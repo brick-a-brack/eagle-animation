@@ -25,7 +25,8 @@
   },
   "scripts": {
     "start": "concurrently \"cross-env BROWSER=none craco start\" \"wait-on http://localhost:3000 && cross-env ENV=development electron ./\"",
-    "build": "cross-env BROWSER=none craco build && cross-env ENV=production build -c.extraMetadata.main=build/electron.js",
+    "build": "cross-env BROWSER=none craco build && cross-env ENV=production electron-builder -mwl -c.extraMetadata.main=build/electron.js",
+    "release": "cross-env BROWSER=none craco build && cross-env ENV=production electron-builder -mwl -c.extraMetadata.main=build/electron.js",
     "postinstall": "install-app-deps",
     "lint": "eslint ./ --ext .js,.vue,.jsx --ignore-path .gitignore",
     "lint-fix": "eslint ./ --ext .js,.vue,.jsx --fix --ignore-path .gitignore"
@@ -95,6 +96,20 @@
       "files": [
         "!node_modules/ffmpeg-static/bin/darwin/*",
         "!node_modules/ffmpeg-static/bin/win32/*"
+      ]
+    },
+    "dmg": {
+      "contents": [
+        {
+          "x": 110,
+          "y": 150
+        },
+        {
+          "x": 240,
+          "y": 150,
+          "type": "link",
+          "path": "/Applications"
+        }
       ]
     },
     "mac": {
