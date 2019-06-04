@@ -19,7 +19,7 @@ cache:
     - $HOME/.cache/electron-builder
 
 script:
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
+  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then
       docker run --rm \
         -v ${PWD}:/project \
         -v ~/.cache/electron:/root/.cache/electron \
