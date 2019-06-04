@@ -30,3 +30,13 @@ before_cache:
 branches:
   except:
     - "/^v\\d+\\.\\d+\\.\\d+$/"
+
+deploy:
+  provider: pages
+  skip_cleanup: true
+  repo: brick-a-brack/brick-a-brack.github.io
+  github_token: $GITHUB_TOKEN
+  keep_history: true
+  target_branch: master
+  on:
+    branch: master
