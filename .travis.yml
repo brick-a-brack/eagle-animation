@@ -37,7 +37,7 @@ deploy:
   repo: brick-a-brack/brick-a-brack.github.io
   github_token: $GITHUB_TOKEN
   keep_history: true
-  target_branch: master
+  target_branch: gh-pages
   local_dir: dist
   on:
     branch: master
