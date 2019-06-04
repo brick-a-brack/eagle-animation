@@ -26,7 +26,7 @@
   "scripts": {
     "start": "concurrently \"cross-env BROWSER=none craco start\" \"wait-on http://localhost:3000 && cross-env ENV=development electron ./\"",
     "build": "cross-env BROWSER=none craco build && cross-env ENV=production electron-builder -c.extraMetadata.main=build/electron.js",
-    "release": "cross-env BROWSER=none craco build && cross-env ENV=production electron-builder -c.extraMetadata.main=build/electron.js",
+    "release": "cross-env BROWSER=none craco build && cross-env ENV=production electron-builder -mwl -c.extraMetadata.main=build/electron.js",
     "postinstall": "install-app-deps",
     "lint": "eslint ./ --ext .js,.vue,.jsx --ignore-path .gitignore",
     "lint-fix": "eslint ./ --ext .js,.vue,.jsx --fix --ignore-path .gitignore"
