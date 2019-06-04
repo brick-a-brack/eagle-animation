@@ -30,3 +30,16 @@ before_cache:
 branches:
   except:
     - "/^v\\d+\\.\\d+\\.\\d+$/"
+
+deploy:
+  provider: releases
+  api_key: $GITHUB_TOKEN
+  file_glob: true
+  file:
+    - "dist/*.AppImage"
+    - "dist/*.zip"
+    - "dist/*.dmg"
+    - "dist/*.dmg.blockmap"
+  skip_cleanup: true
+  on:
+    tags: true
