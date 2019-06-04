@@ -16,6 +16,7 @@ matrix:
         - ELECTRON_BUILDER_CACHE=$HOME/.cache/electron-builder
 
     - os: windows
+      filter_secrets: false
       language: node_js
       node_js: "node"
 
