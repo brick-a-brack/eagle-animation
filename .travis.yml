@@ -9,7 +9,13 @@ matrix:
         - ELECTRON_BUILDER_CACHE=$HOME/.cache/electron-builder
 
     - os: linux
-      services: docker
+      language: node_js
+      node_js: "10"
+      env:
+        - ELECTRON_CACHE=$HOME/.cache/electron
+        - ELECTRON_BUILDER_CACHE=$HOME/.cache/electron-builder
+
+    - os: windows
       language: node_js
       node_js: "10"
       env:
@@ -39,7 +45,7 @@ deploy:
     - "dist/*.AppImage"
     - "dist/*.zip"
     - "dist/*.dmg"
-    - "dist/*.dmg.blockmap"
+    - "dist/*.exe"
   skip_cleanup: true
   on:
     tags: true
