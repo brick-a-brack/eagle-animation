@@ -17,7 +17,8 @@ const keyboardMap = {
     ONION_LESS: ['-'],
     MUTE: ['m', '/'],
     DUPLICATE: ['pageup'],
-    DEDUPLICATE: ['pagedown']
+    DEDUPLICATE: ['pagedown'],
+    GRID: ['g']
 };
 
 class KeyboardHandler extends Component {
