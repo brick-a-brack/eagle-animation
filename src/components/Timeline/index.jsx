@@ -8,25 +8,25 @@ import styles from './styles.module.css';
 const SortableItem = SortableElement(({
     img, selected, onSelect, index
 }) => (
-    <span
-        role="button"
-        tabIndex={0}
-        id={`timeline-frame-${index}`}
-        style={{ minWidth: `${(img.length) * 80}px`, display: (img.deleted ? 'none' : '') }}
-        className={`${styles.containerImg} ${((selected) ? styles.selected : '')}`}
-        onClick={() => {
-            onSelect(img);
-        }}
-        onKeyPress={() => {
-            onSelect(img);
-        }}
-    >
-        <span className={styles.img}>
-            <img alt="" className={styles.imgcontent} src={img.path} />
+        <span
+            role="button"
+            tabIndex={0}
+            id={`timeline-frame-${index}`}
+            style={{ minWidth: `${(img.length) * 80}px`, display: (img.deleted ? 'none' : '') }}
+            className={`${styles.containerImg} ${((selected) ? styles.selected : '')}`}
+            onClick={() => {
+                onSelect(img);
+            }}
+            onKeyPress={() => {
+                onSelect(img);
+            }}
+        >
+            <span className={styles.img}>
+                <img alt="" className={styles.imgcontent} src={img.path} />
+            </span>
+            <span className={styles.title}>{`#${img.realIndex + 1}${((img.length > 1) ? ` (${img.length})` : '')}`}</span>
         </span>
-        <span className={styles.title}>{`#${img.realIndex + 1}${((img.length > 1) ? ` (${img.length})` : '')}`}</span>
-    </span>
-));
+    ));
 
 const SortableList = SortableContainer(({ items, selected, onSelect }) => {
     const imgs = [];
@@ -53,24 +53,25 @@ class Timeline extends Component {
     }
 
     shouldComponentUpdate(nextProps) {
-        const { pictures, select } = this.props;
+        const { pictures, select, playing } = this.props;
         return (
-            JSON.stringify(nextProps.pictures) !== JSON.stringify(pictures) || nextProps.select !== select
+            JSON.stringify(nextProps.pictures) !== JSON.stringify(pictures) || nextProps.select !== select || nextProps.playing !== playing
         );
     }
 
     componentDidUpdate(prevProps) {
-        const { select, pictures } = this.props;
+        const { select, pictures, playing } = this.props;
         if (prevProps.select !== select || JSON.stringify(prevProps.pictures) !== JSON.stringify(pictures)) {
             const key = (select === false) ? '#timeline-frame-live' : `#timeline-frame-${select}`;
             if (document.querySelector(key)) {
                 animateScrollTo(document.querySelector(key), {
                     element: document.querySelector('aside'),
                     horizontal: true,
-                    speed: 250,
-                    minDuration: 200,
-                    maxDuration: 300,
-                    cancelOnUserAction: false
+                    speed: (playing) ? 0 : 1000,
+                    minDuration: 0,
+                    maxDuration: (playing) ? 0 : 1500,
+                    cancelOnUserAction: false,
+                    offset: (-window.innerWidth + document.querySelector(key).getBoundingClientRect().width) / 2
                 });
             }
         }
@@ -119,7 +120,8 @@ Timeline.propTypes = {
     pictures: PropTypes.array.isRequired,
     onSelect: PropTypes.func.isRequired,
     onMove: PropTypes.func.isRequired,
-    select: PropTypes.any.isRequired
+    select: PropTypes.any.isRequired,
+    playing: PropTypes.bool.isRequired
 };
 
 export default Timeline;

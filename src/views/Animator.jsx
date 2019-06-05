@@ -313,6 +313,7 @@ class Animator extends Component {
                     }}
                     onMove={(e) => { this._onMove(e); }}
                     select={currentFrame}
+                    playing={StoreAnimator.data.parameters.play}
                 />
 
                 <KeyboardHandler onAction={action => (this._eventsHandler(action))} disabled={focus} />
