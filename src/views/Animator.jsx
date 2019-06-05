@@ -72,8 +72,12 @@ class Animator extends Component {
         const exec = () => {
             const { currentFrame, currentFrameLength } = this.state;
             const pictures = this._getPictures();
-            if (currentFrame === false)
-                this._firstFrame();
+            if (currentFrame === false) {
+                if (StoreAnimator.data.parameters.shortPlay)
+                    this._firstShortPlayFrame();
+                else
+                    this._firstFrame();
+            }
             else if (currentFrameLength === pictures[currentFrame].length) {
                 const frameIdx = this._nextFrame();
                 this.setState({ currentFrameLength: 1 });
@@ -146,6 +150,19 @@ class Animator extends Component {
         this.setState({ currentFrame: firstFrame });
     }
 
+    _firstShortPlayFrame(value = 20) {
+        if (value <= 0)
+            return;
+        const frames = this._getPictures();
+        if (frames.filter(e => (!e.deleted)).length === 0)
+            return;
+        const ids = frames.map((p, idx) => ((!p.deleted) ? idx : false)).filter(e => (e !== false));
+        if (ids.length >= value)
+            this.setState({ currentFrame: ids[ids.length - 20] });
+        else
+            return this._firstFrame();
+    }
+
     _deleteFrame() {
         const { currentFrame, scene, volume } = this.state;
         const { StoreProject, StoreApp } = this.props;
@@ -207,11 +224,15 @@ class Animator extends Component {
         } = this.props;
 
         if (action === 'PLAY') {
-            this.setState({ currentFrame: 0 });
             if (StoreAnimator.data.parameters.play)
                 this._stop();
-            else
+            else {
+                if (StoreAnimator.data.parameters.shortPlay)
+                    this._firstShortPlayFrame();
+                else
+                    this._firstFrame();
                 this._play();
+            }
         } else if (action === 'TAKE_PICTURE')
             this._takePicture();
         else if (action === 'LOOP')

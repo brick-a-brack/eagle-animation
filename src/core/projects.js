@@ -12,6 +12,7 @@ import {
     PROJECT_DEFAULT_NAME
 } from '../config';
 import { time, createDirectory } from './utils';
+import { gaTrack } from './utils';
 
 // Generate empty project
 export const generateProjectObject = name => ({
@@ -60,6 +61,7 @@ export const getProjectsList = path => new Promise(async (resolve, reject) => {
 
 // Project selector
 export const projectSelector = () => new Promise((resolve) => {
+    gaTrack('PROJECT_OPEN');
     Electron.remote.dialog.showOpenDialog({
         properties: ['openFile'],
         filters: [{
@@ -75,6 +77,7 @@ export const projectSelector = () => new Promise((resolve) => {
 
 // Project save
 export const projectSave = (path, data, updateTime = true) => new Promise((resolve, reject) => {
+    gaTrack('PROJECT_SAVE');
     const newData = { ...data, updated: time() };
     const file = format({ dir: path, base: PROJECT_FILE });
     writeFile(file, JSON.stringify({
@@ -89,6 +92,7 @@ export const projectSave = (path, data, updateTime = true) => new Promise((resol
 
 // Rename a project
 export const renameProject = (path, name) => new Promise((resolve, reject) => {
+    gaTrack('PROJECT_RENAME');
     getProjectData(path).then(data => projectSave(path, { ...data.project, title: name }, false).then((dataProject) => {
         resolve(dataProject);
     })).catch((err) => {
@@ -98,6 +102,7 @@ export const renameProject = (path, name) => new Promise((resolve, reject) => {
 
 // Project create
 export const createProject = (path, name) => new Promise((resolve, reject) => {
+    gaTrack('PROJECT_CREATE');
     const realName = name || PROJECT_DEFAULT_NAME;
     const originalName = `${StripChar.RSExceptUnsAlpNum(realName)}`;
     let finalPath = '';
@@ -137,6 +142,7 @@ export const choosePictureId = (projectPath, scene) => new Promise((resolve) => 
 
 // Create image file
 export const createImageFile = (projectPath, scene, ext, data) => new Promise((resolve, reject) => {
+    gaTrack('TAKE_PICTURE');
     const directoryPath = join(projectPath, `/${scene}/`);
     createDirectory(directoryPath).then(() => choosePictureId(projectPath, scene).then((id) => {
         const filePath = join(projectPath, `/${scene}/`, `${id}.${ext}`);

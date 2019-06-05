@@ -33,3 +33,6 @@ export const CONTRIBUTE_LINK = 'https://github.com/Maxou44/EagleAnimation';
 
 // Sentry DSN
 export const SENTRY_DSN = 'https://750d3c23387f46b8922dee52580eb607@sentry.io/1458572';
+
+// Google Analytics
+export const GOOGLE_ANALYTICS = 'UA-129453289-2';

@@ -4,6 +4,7 @@ import uuidv4 from 'uuid/v4';
 import { getProjectData } from './projects';
 import { createDirectory, copy } from './utils';
 import { generate } from './ffmpeg';
+import { gaTrack } from './utils';
 
 export const normalizePictures = (projectPath, scene, outputPath) => new Promise((resolve, reject) => {
     getProjectData(projectPath).then((project) => {
@@ -18,6 +19,7 @@ export const normalizePictures = (projectPath, scene, outputPath) => new Promise
 });
 
 export const exportProjectScene = (projectPath, scene, filepath) => new Promise((resolve, reject) => {
+    gaTrack('EXPORT');
     getProjectData(projectPath).then((project) => {
         const directoryPath = join(projectPath, `/_tmp-${uuidv4()}/`);
         normalizePictures(projectPath, scene, directoryPath).then(() => {

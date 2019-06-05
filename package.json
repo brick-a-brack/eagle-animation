@@ -21,6 +21,7 @@
     "react-sortable-hoc": "^1.9.1",
     "react-tooltip": "^3.10.0",
     "stripchar": "^1.2.1",
+    "universal-analytics": "^0.4.20",
     "uuid": "^3.3.2"
   },
   "scripts": {

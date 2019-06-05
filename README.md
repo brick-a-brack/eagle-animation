@@ -17,8 +17,8 @@ __EagleAnimation__ is an awesome, free and open-source animation software.
 
 ## Telemetry
 
-To improve the quality of __Eagle Animation__, runtime errors are automatically reported to developpers by using [Sentry SDK](https://sentry.io/).
-You can disable error reporting, just set `SENTRY_DSN` to `""` in `config.js` and rebuild the app.
+To improve the quality of __Eagle Animation__, runtime errors are automatically reported to developpers by using [Sentry SDK](https://sentry.io/) and user behaviors are analysed by using **Google Analytics** events.
+You can disable error reporting and tracking, just set `SENTRY_DSN` and `GOOGLE_ANALYTICS` to `""` in `config.js` and rebuild the app.
 
 ## Contribute
 
