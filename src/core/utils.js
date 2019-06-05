@@ -36,3 +36,12 @@ export const copy = (from, to) => new Promise((resolve, reject) => {
         return resolve(to);
     });
 });
+
+// Play a sound
+export const playSound = (file, volume = 1) => {
+    if (volume === 0)
+        return;
+    const audio = new Audio(file);
+    audio.volume = volume;
+    audio.play();
+};

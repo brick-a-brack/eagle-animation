@@ -19,7 +19,8 @@ class Animator extends Component {
             currentFrame: false,
             currentFrameLength: 1,
             scene: 0,
-            focus: false
+            focus: false,
+            volume: 1
         };
 
         this.timer = false;
@@ -73,16 +74,13 @@ class Animator extends Component {
             const pictures = this._getPictures();
             if (currentFrame === false)
                 this._firstFrame();
-            else {
-                if (currentFrameLength === pictures[currentFrame].length) {
-                    const frameIdx = this._nextFrame();
-                    this.setState({ currentFrameLength: 1 })
-                    if (frameIdx === false)
-                        return StoreAnimator.data.parameters.loop;
-                }
-                else
-                    this.setState({ currentFrameLength: currentFrameLength + 1 })
-            }
+            else if (currentFrameLength === pictures[currentFrame].length) {
+                const frameIdx = this._nextFrame();
+                this.setState({ currentFrameLength: 1 });
+                if (frameIdx === false)
+                    return StoreAnimator.data.parameters.loop;
+            } else
+                this.setState({ currentFrameLength: currentFrameLength + 1 });
             return true;
         };
 
@@ -149,10 +147,11 @@ class Animator extends Component {
     }
 
     _deleteFrame() {
-        const { currentFrame, scene } = this.state;
-        const { StoreProject } = this.props;
+        const { currentFrame, scene, volume } = this.state;
+        const { StoreProject, StoreApp } = this.props;
         if (currentFrame === false)
             return;
+        StoreApp.playSound('/sounds/delete.mp3', volume);
         this._nextFrame();
         StoreProject.deletePicture(scene, currentFrame);
     }
@@ -174,14 +173,17 @@ class Animator extends Component {
     }
 
     _takePicture() {
-        const { scene } = this.state;
+        const { scene, volume } = this.state;
         const {
-            StoreAnimator, StoreDevice, StoreProject
+            StoreAnimator, StoreDevice, StoreProject, StoreApp
         } = this.props;
 
         // Already taking picture
         if (StoreAnimator.data.parameters.takePicture)
             return;
+
+        // Sound
+        StoreApp.playSound('/sounds/shutter.mp3', volume);
 
         // Taking picture...
         StoreAnimator.setParameter('takePicture', true);
@@ -194,8 +196,12 @@ class Animator extends Component {
         });
     }
 
+    _setVolume(volume) {
+        this.setState({ volume });
+    }
+
     _eventsHandler(action, param = false) {
-        const { scene } = this.state;
+        const { scene, volume } = this.state;
         const {
             StoreAnimator, StoreExport, StoreProject, StoreApp
         } = this.props;
@@ -249,6 +255,8 @@ class Animator extends Component {
             this._duplicateFrame();
         else if (action === 'DEDUPLICATE')
             this._deduplicateFrame();
+        else if (action === 'MUTE')
+            this._setVolume((volume === 1) ? 0 : 1);
         else
             console.log('UNSUPPORTED EVENT', action);
     }

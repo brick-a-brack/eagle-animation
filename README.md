@@ -23,3 +23,7 @@ You can disable error reporting, just set `SENTRY_DSN` to `""` in `config.js` an
 ## Contribute
 
 Feel free to make Pull-Requests and report issues 😉
+
+## Sounds effects
+
+Sound effects obtained from https://www.zapsplat.com
