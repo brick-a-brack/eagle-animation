@@ -17,7 +17,11 @@ import {
     ANIMATOR_BUTTON_LOOP,
     ANIMATOR_BUTTON_SHORT_PLAY,
     ANIMATOR_BUTTON_ONION,
-    ANIMATOR_BUTTON_MORE,
+    ANIMATOR_BUTTON_GRID_ON,
+    ANIMATOR_BUTTON_GRID_OFF,
+    ANIMATOR_BUTTON_REMOVE,
+    ANIMATOR_BUTTON_DUPLICATE,
+    ANIMATOR_BUTTON_DEDUPLICATE,
     ANIMATOR_FPS
 } from '../../languages';
 import 'rc-slider/assets/index.css';
@@ -35,8 +39,12 @@ class ControlBar extends Component {
 
         return (
             <div className={styles.container}>
-
-                <Button title={ANIMATOR_BUTTON_MORE} onClick={() => { onAction('MORE'); }} size="mini" icon={<IconDots />} />
+                <Button size="mini" icon={<IconDots />}>
+                    <div onClick={() => { onAction('GRID'); }} onKeyPress={() => { }} role="button" tabIndex={0}>{(status.grid) ? ANIMATOR_BUTTON_GRID_OFF : ANIMATOR_BUTTON_GRID_ON}</div>
+                    {frameIndex !== false && <div onClick={() => { onAction('DELETE'); }} onKeyPress={() => { }} role="button" tabIndex={0}>{ANIMATOR_BUTTON_REMOVE}</div>}
+                    {frameIndex !== false && <div onClick={() => { onAction('DUPLICATE'); }} onKeyPress={() => { }} role="button" tabIndex={0}>{ANIMATOR_BUTTON_DUPLICATE}</div>}
+                    {frameIndex !== false && <div onClick={() => { onAction('DEDUPLICATE'); }} onKeyPress={() => { }} role="button" tabIndex={0}>{ANIMATOR_BUTTON_DEDUPLICATE}</div>}
+                </Button>
                 <Button title={ANIMATOR_BUTTON_DIFFERENCE} selected={status.diff} onClick={() => { onAction('DIFFERENCE'); }} size="mini" icon={<IconCompare />} />
 
                 <div

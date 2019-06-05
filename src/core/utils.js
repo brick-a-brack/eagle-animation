@@ -1,8 +1,8 @@
 import mkdirp from 'mkdirp';
 import Electron from 'electron';
-import ua from 'universal-analytics'
+import ua from 'universal-analytics';
 import { copyFile } from 'fs';
-import { GOOGLE_ANALYTICS } from '../config'
+import { GOOGLE_ANALYTICS } from '../config';
 
 // Recursively create directory
 export const createDirectory = path => new Promise((resolve, reject) => {
@@ -55,10 +55,10 @@ export const gaInit = () => {
         _GA.pageview('/').send();
     }
     return _GA;
-}
+};
 
 export const gaTrack = (event = false) => {
     gaInit();
     if (_GA && event)
-        _GA.event("Events", event).send();
-}
+        _GA.event('Events', event).send();
+};

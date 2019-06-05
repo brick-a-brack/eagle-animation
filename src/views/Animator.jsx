@@ -77,8 +77,7 @@ class Animator extends Component {
                     this._firstShortPlayFrame();
                 else
                     this._firstFrame();
-            }
-            else if (currentFrameLength === pictures[currentFrame].length) {
+            } else if (currentFrameLength === pictures[currentFrame].length) {
                 const frameIdx = this._nextFrame();
                 this.setState({ currentFrameLength: 1 });
                 if (frameIdx === false)

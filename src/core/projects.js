@@ -11,8 +11,7 @@ import {
     DEFAULT_FPS,
     PROJECT_DEFAULT_NAME
 } from '../config';
-import { time, createDirectory } from './utils';
-import { gaTrack } from './utils';
+import { time, createDirectory, gaTrack } from './utils';
 
 // Generate empty project
 export const generateProjectObject = name => ({

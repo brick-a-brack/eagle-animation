@@ -22,5 +22,10 @@ export const ANIMATOR_BUTTON_BACK = 'Back';
 export const ANIMATOR_BUTTON_EXPORT = 'Export';
 export const ANIMATOR_BUTTON_SETTINGS = 'Settings';
 export const ANIMATOR_FPS = 'FPS';
+export const ANIMATOR_BUTTON_GRID_ON = 'Enable grid';
+export const ANIMATOR_BUTTON_GRID_OFF = 'Disable grid';
+export const ANIMATOR_BUTTON_REMOVE = 'Remove frame';
+export const ANIMATOR_BUTTON_DUPLICATE = 'Duplicate frame';
+export const ANIMATOR_BUTTON_DEDUPLICATE = 'Deduplicate frame';
 
 export const SOON = 'Soon...';

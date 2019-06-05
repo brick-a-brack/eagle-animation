@@ -2,9 +2,8 @@ import { join } from 'path';
 import Electron from 'electron';
 import uuidv4 from 'uuid/v4';
 import { getProjectData } from './projects';
-import { createDirectory, copy } from './utils';
+import { createDirectory, copy, gaTrack } from './utils';
 import { generate } from './ffmpeg';
-import { gaTrack } from './utils';
 
 export const normalizePictures = (projectPath, scene, outputPath) => new Promise((resolve, reject) => {
     getProjectData(projectPath).then((project) => {

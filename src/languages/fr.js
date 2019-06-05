@@ -22,5 +22,10 @@ export const ANIMATOR_BUTTON_BACK = 'Retour';
 export const ANIMATOR_BUTTON_EXPORT = 'Exporter';
 export const ANIMATOR_BUTTON_SETTINGS = 'Options';
 export const ANIMATOR_FPS = 'IPS';
+export const ANIMATOR_BUTTON_GRID_ON = 'Activer la grille';
+export const ANIMATOR_BUTTON_GRID_OFF = 'Désactiver la grille';
+export const ANIMATOR_BUTTON_REMOVE = 'Supprimer l\'image';
+export const ANIMATOR_BUTTON_DUPLICATE = 'Dupliquer l\'image';
+export const ANIMATOR_BUTTON_DEDUPLICATE = 'Dedupliquer l\'image';
 
 export const SOON = 'Prochainement...';
