@@ -15,7 +15,9 @@ const keyboardMap = {
     FRAME_FIRST: ['down'],
     ONION_MORE: ['+'],
     ONION_LESS: ['-'],
-    MUTE: ['m', '/']
+    MUTE: ['m', '/'],
+    DUPLICATE: ['pageup'],
+    DEDUPLICATE: ['pagedown']
 };
 
 class KeyboardHandler extends Component {

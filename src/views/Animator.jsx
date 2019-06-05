@@ -152,6 +152,22 @@ class Animator extends Component {
         StoreProject.deletePicture(scene, currentFrame);
     }
 
+    _duplicateFrame() {
+        const { currentFrame, scene } = this.state;
+        const { StoreProject } = this.props;
+        if (currentFrame === false)
+            return;
+        StoreProject.applyDuplicateOffset(scene, currentFrame, 1);
+    }
+
+    _deduplicateFrame() {
+        const { currentFrame, scene } = this.state;
+        const { StoreProject } = this.props;
+        if (currentFrame === false)
+            return;
+        StoreProject.applyDuplicateOffset(scene, currentFrame, -1);
+    }
+
     _takePicture() {
         const { scene } = this.state;
         const {
@@ -224,6 +240,10 @@ class Animator extends Component {
             window.alert('TODO SOON');
         else if (action === 'EXPORT')
             StoreExport.exportVideo(StoreProject.data.data._path, 0);
+        else if (action === 'DUPLICATE')
+            this._duplicateFrame();
+        else if (action === 'DEDUPLICATE')
+            this._deduplicateFrame();
         else
             console.log('UNSUPPORTED EVENT', action);
     }
