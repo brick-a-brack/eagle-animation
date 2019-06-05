@@ -43,5 +43,3 @@ deploy:
     - "dist/*.dmg"
     - "dist/*.exe"
   skip_cleanup: true
-  on:
-    tags: true
