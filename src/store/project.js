@@ -77,6 +77,13 @@ export default class ObservableProjectStore {
         this.save();
     }
 
+    applyDuplicateOffset(scene = 0, idx, offset) {
+        this.data.data.project.scenes[scene].pictures[idx].length += offset;
+        if (this.data.data.project.scenes[scene].pictures[idx].length <= 1)
+            this.data.data.project.scenes[scene].pictures[idx].length = 1;
+        this.save();
+    }
+
     savePicture(scene = 0, buffData) {
         return new Promise((resolve, reject) => {
             this.data = {
