@@ -10,8 +10,6 @@ import RightBar from '../components/RightBar';
 import styles from './animator.module.css';
 import KeyboardHandler from '../components/KeyboardHandler';
 
-// Todo: support deleted and duplicated frames on preview
-
 @observer
 class Animator extends Component {
     constructor(props) {
@@ -19,6 +17,7 @@ class Animator extends Component {
 
         this.state = {
             currentFrame: false,
+            currentFrameLength: 1,
             scene: 0,
             focus: false
         };
@@ -70,13 +69,19 @@ class Animator extends Component {
     _play() {
         const { StoreAnimator } = this.props;
         const exec = () => {
-            const { currentFrame } = this.state;
+            const { currentFrame, currentFrameLength } = this.state;
+            const pictures = this._getPictures();
             if (currentFrame === false)
                 this._firstFrame();
             else {
-                const frameIdx = this._nextFrame();
-                if (frameIdx === false)
-                    return StoreAnimator.data.parameters.loop;
+                if (currentFrameLength === pictures[currentFrame].length) {
+                    const frameIdx = this._nextFrame();
+                    this.setState({ currentFrameLength: 1 })
+                    if (frameIdx === false)
+                        return StoreAnimator.data.parameters.loop;
+                }
+                else
+                    this.setState({ currentFrameLength: currentFrameLength + 1 })
             }
             return true;
         };
