@@ -29,7 +29,7 @@ export const DEFAULT_FPS = 12;
 export const EA_VERSION = '1.1.0';
 
 // Github link
-export const CONTRIBUTE_LINK = 'https://github.com/Maxou44/EagleAnimation';
+export const CONTRIBUTE_LINK = 'https://github.com/brick-a-brack/eagle-animation';
 
 // Sentry DSN
 export const SENTRY_DSN = 'https://750d3c23387f46b8922dee52580eb607@sentry.io/1458572';
