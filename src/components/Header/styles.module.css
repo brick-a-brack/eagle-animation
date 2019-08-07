@@ -7,34 +7,16 @@
 
 .logo {
   width: 100%;
+  vertical-align: middle;
+  height: 100%;
+  text-align: center;
 }
 
 .logo svg {
-  margin-left: 50%;
-  transform: translateX(-50%);
-  left: 0;
-}
-
-.logo svg g {
-  fill: #486ee5;
-}
-
-.title {
-  text-align: center;
-  position: relative;
-  line-height: 50px;
-  font-size: 50px;
-  font-weight: 600;
-  font-family: 'Open Sans', sans-serif;
-  color: #486ee5;
-  letter-spacing: 3px;
-  margin-top: 0;
-  user-select: none;
-  text-transform: uppercase;
-  white-space: nowrap;
-  width: 100%;
-  text-overflow: ellipsis;
-  overflow: hidden;
+  width: 75%;
+  display: inline-block;
+  height: 100%;
+  max-width: 520px;
 }
 
 .version {
