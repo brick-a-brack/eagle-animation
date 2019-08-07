@@ -3,7 +3,7 @@
   "description": "EagleAnimation is an awesome, modern, free and open-source animation software.",
   "version": "1.1.0",
   "private": false,
-  "author": "Maxime Baconnais / Brick à Brack",
+  "author": "Brick à Brack",
   "dependencies": {
     "@sentry/browser": "5.5.0",
     "animated-scroll-to": "1.2.2",
