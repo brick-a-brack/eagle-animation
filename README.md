@@ -24,6 +24,10 @@ You can disable error reporting and tracking, just set `SENTRY_DSN` and `GOOGLE_
 
 Feel free to make Pull-Requests and report issues 😉
 
+## Logo
+
+The logo was created by Nishant Shukla
+
 ## Sounds effects
 
 Sound effects obtained from https://www.zapsplat.com
