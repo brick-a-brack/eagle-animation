@@ -8,6 +8,7 @@
     "@sentry/browser": "^5.6.2",
     "animated-scroll-to": "1.2.2",
     "array-move": "2.1.0",
+    "compare-versions": "^3.5.1",
     "ffmpeg-static": "2.5.0",
     "mkdirp": "0.5.1",
     "mobx": "5.13.0",

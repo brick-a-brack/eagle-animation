@@ -283,9 +283,8 @@ class Animator extends Component {
             }).catch((err) => {
                 console.error(err);
                 StoreApp.setAppView('home');
-            })
-        }
-        else
+            });
+        } else
             console.log('UNSUPPORTED EVENT', action);
     }
 

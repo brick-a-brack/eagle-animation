@@ -20,6 +20,13 @@ __EagleAnimation__ is an awesome, free and open-source animation software.
 To improve the quality of __Eagle Animation__, runtime errors are automatically reported to developpers by using [Sentry SDK](https://sentry.io/) and user behaviors are analysed by using **Google Analytics** events.
 You can disable error reporting and tracking, just set `SENTRY_DSN` and `GOOGLE_ANALYTICS` to `""` in `config.js` and rebuild the app.
 
+## Bump version
+
+- Update `EA_VERSION` in `config.js`
+- Update `version` in `package.json`
+- Run `npm i`
+- Merge into master
+
 ## Contribute
 
 Feel free to make Pull-Requests and report issues 😉

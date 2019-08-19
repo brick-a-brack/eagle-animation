@@ -21,8 +21,8 @@
 
 .version {
   position: absolute;
-  line-height: 10px;
-  font-size: 10px;
+  line-height: 14px;
+  font-size: 12px;
   font-weight: 600;
   font-family: 'Open Sans', sans-serif;
   letter-spacing: 3px;
@@ -31,10 +31,19 @@
   right: 6px;
   top: 6px;
   cursor: pointer;
+  text-align:right;
 }
 
 .version span {
   color: #fefefe;
+}
+
+.version span span{
+  display: block;
+}
+
+.update span {
+  color:#ff4d4d;
 }
 
 .line {
