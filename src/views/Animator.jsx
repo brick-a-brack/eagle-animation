@@ -167,7 +167,7 @@ class Animator extends Component {
         const { StoreProject, StoreApp } = this.props;
         if (currentFrame === false)
             return;
-        StoreApp.playSound('/sounds/delete.mp3', volume);
+        StoreApp.playSound('/sounds/delete.ogg', volume);
         this._nextFrame();
         StoreProject.deletePicture(scene, currentFrame);
     }
@@ -199,7 +199,7 @@ class Animator extends Component {
             return;
 
         // Sound
-        StoreApp.playSound('/sounds/shutter.mp3', volume);
+        StoreApp.playSound('/sounds/shutter.ogg', volume);
 
         // Taking picture...
         StoreAnimator.setParameter('takePicture', true);
