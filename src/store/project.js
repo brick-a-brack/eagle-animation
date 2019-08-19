@@ -142,6 +142,14 @@ export default class ObservableProjectStore {
         this.save();
     }
 
+    delete() {
+        // Update data
+        this.data.data.project.deleted = true;
+
+        // Save project on disk
+        return this.save();
+    }
+
     // eslint-disable-next-line
     prompt() {
         return projectSelector();

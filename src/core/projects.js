@@ -19,6 +19,7 @@ export const generateProjectObject = name => ({
     version: EA_VERSION,
     creation: time(),
     updated: time(),
+    deleted: false,
     scenes: [{
         title: 'SHOT #1',
         framerate: DEFAULT_FPS,
@@ -49,7 +50,7 @@ export const getProjectsList = path => new Promise(async (resolve, reject) => {
         for (let i = 0; i < dirs.length; i++)
             projects.push(getProjectData(join(path, dirs[i])));
         Promise.all(projects).then((data) => {
-            resolve(data);
+            resolve(data.filter(p => p.project.deleted !== true));
         }).catch(e => reject(e));
     } catch (err) {
         if (err.code === 'ENOENT')

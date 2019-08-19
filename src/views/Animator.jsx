@@ -277,6 +277,14 @@ class Animator extends Component {
             this._deduplicateFrame();
         else if (action === 'MUTE')
             this._setVolume((volume === 1) ? 0 : 1);
+        else if (action === 'DELETE_PROJECT') {
+            StoreProject.delete().then(() => {
+                StoreApp.setAppView('home');
+            }).catch((err) => {
+                console.error(err);
+                StoreApp.setAppView('home');
+            })
+        }
         else
             console.log('UNSUPPORTED EVENT', action);
     }

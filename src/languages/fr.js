@@ -26,6 +26,7 @@ export const ANIMATOR_BUTTON_GRID_ON = 'Activer la grille';
 export const ANIMATOR_BUTTON_GRID_OFF = 'Désactiver la grille';
 export const ANIMATOR_BUTTON_REMOVE = 'Supprimer l\'image';
 export const ANIMATOR_BUTTON_DUPLICATE = 'Dupliquer l\'image';
-export const ANIMATOR_BUTTON_DEDUPLICATE = 'Dedupliquer l\'image';
+export const ANIMATOR_BUTTON_DEDUPLICATE = 'Dédupliquer l\'image';
+export const ANIMATOR_BUTTON_DELETE_PROJECT = 'DSupprimer le projet';
 
 export const SOON = 'Prochainement...';
