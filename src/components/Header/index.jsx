@@ -7,7 +7,9 @@ import { UPDATE_DOWNLOAD } from '../../languages';
 
 class Header extends Component {
     render() {
-        const { link, version, canBeUpdated, latestVersion } = this.props;
+        const {
+            link, version, canBeUpdated, latestVersion
+        } = this.props;
         return (
             <div className={styles.container}>
                 <div className={styles.logo}>
@@ -23,9 +25,14 @@ class Header extends Component {
                             }}
                             onKeyPress={() => {
                                 openLink(link);
-                            }}>
+                            }}
+                        >
                             {UPDATE_DOWNLOAD}
-                            <span>{version}{' → '}{latestVersion}</span>
+                            <span>
+                                {version}
+                                {' → '}
+                                {latestVersion}
+                            </span>
                         </span>
                     )}
                     {!canBeUpdated && (
@@ -53,7 +60,7 @@ Header.propTypes = {
     version: PropTypes.string.isRequired,
     link: PropTypes.string.isRequired,
     canBeUpdated: PropTypes.bool.isRequired,
-    latestVersion: PropTypes.string.isRequired,
+    latestVersion: PropTypes.string.isRequired
 };
 
 export default Header;

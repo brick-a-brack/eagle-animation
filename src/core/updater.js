@@ -1,4 +1,4 @@
-import { CONTRIBUTE_REPOSITORY } from "../config";
+import { CONTRIBUTE_REPOSITORY } from '../config';
 
 export const getLatestPublishedRelease = () => new Promise((resolve, reject) => {
     fetch(`https://raw.githubusercontent.com/${CONTRIBUTE_REPOSITORY}/master/package.json`).then(res => res.json()).then((data) => {
@@ -7,5 +7,5 @@ export const getLatestPublishedRelease = () => new Promise((resolve, reject) => 
         return reject(new Error('NO_VERSION'));
     }).catch((err) => {
         reject(err);
-    })
+    });
 });

@@ -26,7 +26,7 @@ export const DEFAULT_PATH = join(homedir(), DIRECTORY_NAME);
 export const DEFAULT_FPS = 12;
 
 // EA Version
-export const EA_VERSION = '1.1.0';
+export const EA_VERSION = '1.2.0';
 
 // Github link
 export const CONTRIBUTE_REPOSITORY = 'brick-a-brack/eagle-animation';

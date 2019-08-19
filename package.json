@@ -1,7 +1,7 @@
 {
   "name": "eagle-animation",
-  "description": "EagleAnimation is an awesome, modern, free and open-source animation software.",
-  "version": "1.1.0",
+  "description": "EagleAnimation is an awesome, modern, free and open-source animation software",
+  "version": "1.2.0",
   "private": false,
   "author": "Brick à Brack",
   "dependencies": {
