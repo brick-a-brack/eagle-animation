@@ -54,7 +54,7 @@
 
 .title {
   color: #fff;
-  background-color:#486ee5;
+  background-color:rgba(72, 110, 229, 0.5);
   font-size: 13px;
   line-height:25px;
   height:25px;
@@ -67,6 +67,7 @@
   position: absolute;
   opacity:0;
   user-select: none;
+  backdrop-filter: blur(10px);
 }
 
 .containerImg:hover .title {
@@ -74,7 +75,7 @@
 }
 
 .selected .title {
-  background-color:#e54848;
+  background-color:rgba(229, 72, 72, 0.5);
   opacity:1;
 }
 

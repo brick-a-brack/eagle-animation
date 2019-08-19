@@ -64,13 +64,14 @@
   margin-top: -164px;
   height: 164px;
   width: 100%;
-  background: rgba(0, 0, 0, 0.9);
+  background: rgba(0, 0, 0, 0.6);
   overflow: hidden;
   cursor: pointer;
   position: relative;
   opacity: 0;
   line-height: 164px;
   transition: opacity 0.4s ease-in-out;
+  backdrop-filter: blur(10px);
 }
 
 .bannerhover svg {

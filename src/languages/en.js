@@ -27,5 +27,8 @@ export const ANIMATOR_BUTTON_GRID_OFF = 'Disable grid';
 export const ANIMATOR_BUTTON_REMOVE = 'Remove frame';
 export const ANIMATOR_BUTTON_DUPLICATE = 'Duplicate frame';
 export const ANIMATOR_BUTTON_DEDUPLICATE = 'Deduplicate frame';
+export const ANIMATOR_BUTTON_DELETE_PROJECT = 'Delete project';
+
+export const UPDATE_DOWNLOAD = 'Update available';
 
 export const SOON = 'Soon...';

@@ -1,22 +1,23 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import PropTypes from 'prop-types';
-import { CONTRIBUTE_LINK, EA_VERSION, DEFAULT_PATH } from '../config';
+import { CONTRIBUTE_REPOSITORY, EA_VERSION, DEFAULT_PATH } from '../config';
 import Header from '../components/Header';
 import ProjectsList from '../components/ProjectsList';
 
 @observer
 class Home extends Component {
     componentDidMount() {
-        const { StoreProjects } = this.props;
+        const { StoreProjects, StoreApp } = this.props;
         StoreProjects.loadProjectsList(DEFAULT_PATH);
+        StoreApp.checkUpdates();
     }
 
     render() {
         const { StoreApp, StoreProject, StoreProjects } = this.props;
         return (
             <div>
-                <Header version={EA_VERSION} link={CONTRIBUTE_LINK} />
+                <Header version={EA_VERSION} link={`https://github.com/${CONTRIBUTE_REPOSITORY}/releases`} canBeUpdated={StoreApp.data.update.available} latestVersion={StoreApp.data.update.version} />
                 <ProjectsList
                     projects={StoreProjects.data.data}
                     onLoad={(path) => {

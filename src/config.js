@@ -26,10 +26,10 @@ export const DEFAULT_PATH = join(homedir(), DIRECTORY_NAME);
 export const DEFAULT_FPS = 12;
 
 // EA Version
-export const EA_VERSION = '1.1.0';
+export const EA_VERSION = '1.2.0';
 
 // Github link
-export const CONTRIBUTE_LINK = 'https://github.com/brick-a-brack/eagle-animation';
+export const CONTRIBUTE_REPOSITORY = 'brick-a-brack/eagle-animation';
 
 // Sentry DSN
 export const SENTRY_DSN = 'https://750d3c23387f46b8922dee52580eb607@sentry.io/1458572';
