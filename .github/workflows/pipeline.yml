@@ -39,7 +39,7 @@ jobs:
           echo "COMMIT_HASH=`git rev-parse HEAD`" >> .env
 
       - name: Build web bundle
-        run: npx parcel build
+        run: npm run build
         env:
           CI: true
 
