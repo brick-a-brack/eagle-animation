@@ -19,7 +19,7 @@ jobs:
       - name: Clone source code
         uses: actions/checkout@v2
         with:
-          ref: refs/heads/master
+          ref: refs/heads/dev
           fetch-depth: 1
 
       - name: Use Node.js
@@ -30,6 +30,7 @@ jobs:
       # Replace by npm ci when it will be fixed
       - name: Install dependencies
         run: |
+          rm package-lock.json
           npm i --force
 
       - name: Create .env file
