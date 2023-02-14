@@ -33,10 +33,10 @@ jobs:
           rm package-lock.json
           npm i --force
 
-      - name: Create .env file
-        run: |
-          echo "SENTRY_DSN=${{ secrets.RUN_SENTRY_DSN }}" >> .env
-          echo "COMMIT_HASH=`git rev-parse HEAD`" >> .env
+      # - name: Create .env file
+      #   run: |
+      #     echo "SENTRY_DSN=${{ secrets.RUN_SENTRY_DSN }}" >> .env
+      #     echo "COMMIT_HASH=`git rev-parse HEAD`" >> .env
 
       - name: Build web bundle
         run: npm run build
@@ -50,3 +50,4 @@ jobs:
           release: ${{ startsWith(github.ref, 'refs/tags/v') }}
           skip_build: true
           skip_install: true
+          publish: always
