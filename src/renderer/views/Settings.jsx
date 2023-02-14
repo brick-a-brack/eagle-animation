@@ -9,7 +9,6 @@ import Switch from '../components/Switch';
 import NumberInput from '../components/NumberInput';
 import { useForm } from 'react-hook-form';
 import Heading from '../components/Heading';
-import Input from '../components/Input';
 import CustomSlider from '../components/CustomSlider';
 import FormLayout from '../components/FormLayout';
 import { DEFAULT_SETTINGS } from '../core/Settings';
@@ -21,7 +20,6 @@ import { setLanguage } from '../i18n';
 
 const SettingsView = ({ t }) => {
     const [searchParams] = useSearchParams();
-    const [latestVersion, setLatestVersion] = useState(null);
     const [settings, setSettings] = useState(null);
     const [devices, setDevices] = useState([]);
     const navigate = useNavigate();
@@ -35,10 +33,8 @@ const SettingsView = ({ t }) => {
         watch,
         setValue,
         register,
-        handleSubmit,
         getValues,
         control,
-        formState: { errors, isDirty, isValid },
     } = form;
 
     const applySettings = async (values) => {
@@ -145,7 +141,6 @@ const SettingsView = ({ t }) => {
                 {watch('GRID_MODES')?.includes('GRID') && <FormGroup label={t('Grid columns')} description={t('Number of columns of the grid layer')}>
                     <NumberInput register={register('GRID_COLUMNS')} min={1} max={12} />
                 </FormGroup>}
-
 
                 {/*<Heading h={1}>{t('Stop motion workshops')}</Heading>
                 <FormGroup label={t('API key to send videos')} description={t('Brick à Brack allows partners to easily export/send videos, contact us for more informations')}>

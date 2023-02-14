@@ -199,7 +199,7 @@ const Animator = ({ t }) => {
             return;
         }
 
-        Camera().init(dom, { forceMaxQuality: !!settings.FORCE_QUALITY }).catch(err => {
+        Camera().init(dom, { forceMaxQuality: !!settings.FORCE_QUALITY }).catch(() => {
             setIsCameraReady(false);
         }).then(() => {
             setIsCameraReady(true);

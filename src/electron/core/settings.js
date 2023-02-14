@@ -16,7 +16,7 @@ const defaultSettings = {
     EVENT_KEY: '',
 }
 
-export const getSettings = path => new Promise((resolve, reject) => {
+export const getSettings = path => new Promise((resolve) => {
     const file = format({ dir: path, base: 'settings.json' });
     readFile(file, (err, data) => {
         if (err)
@@ -31,7 +31,7 @@ export const getSettings = path => new Promise((resolve, reject) => {
 });
 
 // Project save
-export const saveSettings = (path, data) => new Promise((resolve, reject) => {
+export const saveSettings = (path, data) => new Promise((resolve) => {
     const file = format({ dir: path, base: 'settings.json' });
     writeFile(file, JSON.stringify({
         ...data,

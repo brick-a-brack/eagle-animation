@@ -10,18 +10,20 @@ class Webcam {
     }
 
     initPreview() {
-        return new Promise(async (resolve) => {
+        return new Promise(async (resolve) => { // eslint-disable-line no-async-promise-executor
             // Get preview stream
             this.stream = await navigator.mediaDevices.getUserMedia({
                 video: {
                     deviceId: this.deviceId ? { exact: this.deviceId } : undefined,
-                    width: 9999, height: 9999, // Force to get the best quality available
+                    width: 99999, height: 99999, // Force to get the best quality available
                     frameRate: this.settings?.forceMaxQuality ? undefined : 15,
                 },
                 audio: false
             }).catch((err) => console.error('failed', err));
 
             console.log('CAMERA INIT', this.video, this.stream)
+
+            // window.DEVICE = this.stream;
 
             // Launch preview
             if (this.video) {
@@ -64,7 +66,7 @@ class Webcam {
         return this.height;
     }
 
-    mergePictures = (picturesCanvas = []) => {
+    mergePictures(picturesCanvas = []) {
         const width = this.getPictureWidth();
         const height = this.getPictureHeight();
         const imageData = picturesCanvas.map(canvas => canvas.getContext('2d', { alpha: false }).getImageData(0, 0, width, height).data)
@@ -120,7 +122,7 @@ class Webcam {
         context.drawImage(bitmap, 0, 0, bitmap.width, bitmap.height);
 
         return canvas;
-    };
+    }
 
     async takePicture(nbFramesToTake = 1) {
         const canvasList = [];

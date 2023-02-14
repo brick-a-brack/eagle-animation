@@ -1,4 +1,5 @@
-import React, { useRef } from 'react';
+import React from 'react';
+
 import * as styleCss from './style.module.css';
 
 const setValueAndEmitEvent = (dom, value) => {
@@ -11,7 +12,7 @@ const setValueAndEmitEvent = (dom, value) => {
 	dom.dispatchEvent(ev2);
 }
 
-const NumberInput = ({ register = {}, className = '', tag = '', style = {}, min = -Infinity, max = Infinity, onValueChange = null, onBlur = null, ...rest }) => {
+const NumberInput = ({ register = {}, className = '', tag = '', style = {}, min = -Infinity, max = Infinity, onValueChange = null, ...rest }) => {
     const handleButtonClick = (applyValue = 0) => (evt) => {
         const dom = evt?.target?.parentNode?.querySelector('input');
 

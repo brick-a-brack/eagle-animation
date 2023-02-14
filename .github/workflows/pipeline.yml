@@ -1,0 +1,44 @@
+name: Eagle Animation - Build & package
+
+on:
+  push:
+    branches:
+      - 'dev'
+
+jobs:
+  release:
+    name: Build & package
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [macos-latest, ubuntu-latest, windows-latest]
+
+
+    steps:
+      - name: Clone source code
+        uses: actions/checkout@v2
+        with:
+          ref: refs/heads/master
+          fetch-depth: 1
+
+      - name: Use Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 16
+
+      # Replace by npm ci when it will be fixed
+      - name: Install dependencies
+        run: |
+          npm i --force
+
+      - name: Create .env file
+        run: |
+          echo "SENTRY_DSN=${{ secrets.RUN_SENTRY_DSN }}" >> .env
+          echo "COMMIT_HASH=`git rev-parse HEAD`" >> .env
+
+      - name: Package app
+        uses: samuelmeuli/action-electron-builder@v1
+        with:
+          github_token: ${{ secrets.github_token }}
+          release: ${{ startsWith(github.ref, 'refs/tags/v') }}

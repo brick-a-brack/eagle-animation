@@ -1,19 +1,19 @@
 .container {
-  width: 100%;
-  text-align: center;
-  margin-top: 10px;
-  margin-bottom: 10px;
-  position: fixed;
+  align-items: center;
   bottom: 100px;
   display: flex;
-  justify-content: center;
-  align-items: center;
   gap: var(--space-big);
+  justify-content: center;
+  margin-bottom: 10px;
+  margin-top: 10px;
+  position: fixed;
+  text-align: center;
+  width: 100%;
 }
 
 .subcontainer {
-  display: flex;
   align-items: center;
+  display: flex;
   width: 460px;
 }
 
@@ -26,25 +26,25 @@
 }
 
 .progress {
-  text-transform: uppercase;
+  align-items: center;
   color: #ddd;
-  user-select: none;
-  min-width: 115px;
-  vertical-align: middle;
+  display: flex;
   flex-flow: row;
-  margin-right: 16px;
   font-family: "Open Sans", sans-serif;
   font-size: 20px;
-  line-height: 20px;
-  display: flex;
   justify-content: center;
-  align-items: center;
+  line-height: 20px;
+  margin-right: 16px;
+  min-width: 115px;
+  text-transform: uppercase;
+  user-select: none;
+  vertical-align: middle;
 }
 
 .separator {
+  display:block;
   margin-left: var(--space-small);
   margin-right: var(--space-small);
-  display:block;
 }
 
 .live {
@@ -52,8 +52,8 @@
 }
 
 .slider {
-  min-width: 75px;
   display: inline-block;
   margin-left: 22px;
   margin-right: 22px;
+  min-width: 75px;
 }

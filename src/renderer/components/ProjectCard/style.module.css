@@ -1,48 +1,47 @@
   .box {
       background-color: #484c52;
+      border-radius: 8px;
+      box-shadow: 0 2px 2px 0 rgb(0 0 0 / 14%),
+          0 3px 1px -2px rgb(0 0 0 / 12%), 0 1px 5px 0 rgb(0 0 0 / 20%);
       color: #fff;
-      width: 300px;
-      height: 220px;
       display: inline-block;
-      box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14),
-          0 3px 1px -2px rgba(0, 0, 0, 0.12), 0 1px 5px 0 rgba(0, 0, 0, 0.2);
+      height: 220px;
       margin: 20px;
       overflow: hidden;
-      border-radius: 8px;
+      width: 300px;
   }
 
   .banner {
-      width: 100%;
+      background: rgb(24 24 24);
+      cursor: pointer;
       height: 164px;
       overflow: hidden;
       position: relative;
-      background: rgb(24, 24, 24);
-      cursor: pointer;
+      width: 100%;
   }
 
   .bannerhover {
-      margin-top: -164px;
-      height: 164px;
-      width: 100%;
-      background: rgba(0, 0, 0, 0.6);
-      overflow: hidden;
-      cursor: pointer;
-      position: relative;
-      opacity: 0;
-      line-height: 164px;
-      transition: opacity 0.4s ease-in-out;
       backdrop-filter: blur(10px);
+      background: rgb(0 0 0 / 60%);
+      cursor: pointer;
+      height: 164px;
+      line-height: 164px;
+      margin-top: -164px;
+      opacity: 0;
+      overflow: hidden;
+      position: relative;
+      transition: opacity 0.4s ease-in-out;
+      width: 100%;
   }
 
   .bannerhover svg {
-      width: 20%;
-      height: 20%;
-      vertical-align: middle;
       display: inline-block;
-      height: 50px;
       fill: #aaabad;
+      height: 50px;
       transform: scale(0.7);
       transition: transform 0.4s ease-in-out;
+      vertical-align: middle;
+      width: 20%;
   }
 
   .bannerhover:hover svg {
@@ -54,13 +53,13 @@
   }
 
   .banner img {
-      width: 100%;
+      cursor: pointer;
       left: 50%;
-      top: 50%;
       position: absolute;
+      top: 50%;
       transform: translate(-50%, -50%);
       user-select: none;
-      cursor: pointer;
+      width: 100%;
   }
 
   .title {
@@ -69,15 +68,15 @@
   }
 
   .title input {
+      background: transparent;
       border: none;
-      width: calc(100% - 1em);
+      color: #aaabad;
+      font-family: 'Open Sans', sans-serif;
+      font-size: 24px;
+      font-weight: 300;
+      line-height: 32px;
       margin: 0;
       outline: none;
       padding: 0.5em;
-      line-height: 32px;
-      font-size: 24px;
-      font-weight: 300;
-      font-family: 'Open Sans', sans-serif;
-      color: #aaabad;
-      background: transparent;
+      width: calc(100% - 1em);
   }

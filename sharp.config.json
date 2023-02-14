@@ -1,0 +1,22 @@
+{
+  "jpeg": {
+    "quality": 75,
+    "progressive": true,
+    "optimiseScans": true,
+    "chromaSubsampling": "4:4:4"
+  },
+  "webp": {
+    "quality": 60,
+    "effort": 6
+  },
+  "png": {
+    "progressive": true,
+    "compressionLevel": 9,
+    "quality": 80,
+    "palette": true
+  },
+  "avif": {
+    "quality": 35,
+    "effort": 9
+  }
+}

@@ -1,5 +1,5 @@
 import * as Sentry from '@sentry/browser';
-import React, { Component } from 'react';
+import { Component } from 'react';
 import PropTypes from 'prop-types';
 import { SENTRY_DSN, VERSION } from '../../config';
 import * as style from './style.module.css';

@@ -22,10 +22,14 @@
     "start": "node build.mjs --watch",
     "build": "node build.mjs",
     "electron": "electron dist/electron/index.js",
+    "package": "electron-builder",
     "package:windows": "electron-builder -w",
     "package:linux": "electron-builder -l",
     "package:mac": "electron-builder -m",
-    "extract-strings": "i18next-scanner"
+    "extract-strings": "i18next-scanner",
+    "lint": "eslint ./src/ --ext .js,.jsx --ignore-path .gitignore --fix --max-warnings 0 --no-ignore",
+    "stylelint": "stylelint src/**/*.css --ignore-path .gitignore --fix",
+    "prepare": "husky install"
   },
   "devDependencies": {
     "@parcel/config-default": "^2.8.3",
@@ -37,9 +41,16 @@
     "parcel": "^2.8.3",
     "parcel-reporter-static-files-copy": "^1.5.0",
     "process": "^0.11.10",
-    "uuid": "^9.0.0"
+    "sharp": "^0.31.3",
+    "stylelint": "^15.1.0",
+    "stylelint-config-standard": "^30.0.1",
+    "stylelint-order": "^6.0.2",
+    "eslint": "8.30.0",
+    "eslint-plugin-react": "7.31.11",
+    "husky": "^8.0.3"
   },
   "dependencies": {
+    "uuid": "^9.0.0",
     "animated-scroll-to": "^2.3.0",
     "compare-versions": "^6.0.0-rc.1",
     "ffmpeg-static": "^5.1.0",

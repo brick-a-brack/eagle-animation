@@ -1,17 +1,17 @@
 .input {
   background: var(--color-theme-medium);
-  color: #fff;
-  border-radius: 8px;
-  display: inline-block;
-  overflow: hidden;
-  width: 250px;
-  height: 26px;
-  margin: 0;
   border: 0;
-  padding:0 var(--space-small);
-  font-size: var(--font-size-6);
-  line-height: var(--line-size-6);
+  border-radius: 8px;
   box-sizing: border-box;
+  color: #fff;
+  display: inline-block;
+  font-size: var(--font-size-6);
+  height: 26px;
+  line-height: var(--line-size-6);
+  margin: 0;
+  overflow: hidden;
+  padding:0 var(--space-small);
+  width: 250px;
 }
 
 .input:hover,

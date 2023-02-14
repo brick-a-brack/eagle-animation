@@ -1,0 +1,21 @@
+{
+  "parserOptions": {
+    "sourceType": "module",
+    "ecmaVersion": 2020
+  },
+  "extends": ["eslint:recommended", "plugin:react/recommended", "plugin:react/jsx-runtime"],
+  "rules": {
+    "react/prop-types": "off"
+  },
+  "env": {
+    "browser": true,
+    "amd": true,
+    "node": true,
+    "es2020": true
+  },
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
+  }
+}

@@ -1,8 +1,8 @@
-import React from 'react';
-import * as style from './style.module.css';
-import Logo from 'jsx:./assets/logo.svg';
 import { withTranslation } from 'react-i18next';
 import { compareVersions } from 'compare-versions';
+
+import * as style from './style.module.css';
+import Logo from 'jsx:./assets/logo.svg';
 import Action from '../Action';
 
 const Header = ({

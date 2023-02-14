@@ -8,7 +8,7 @@ import { isEqual } from 'lodash';
 import * as style from './style.module.css';
 
 const SortableItem = SortableElement(({
-    img, selected, onSelect, index
+    img, selected, onSelect
 }) => (
     <span
         role="button"

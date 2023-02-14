@@ -46,7 +46,7 @@ const computeProject = (data) => {
 }
 
 const actions = {
-    GET_LAST_VERSION: async (event, message) => {
+    GET_LAST_VERSION: async () => {
         const res = await fetch(`https://raw.githubusercontent.com/${CONTRIBUTE_REPOSITORY}/master/package.json`).then(res => res.json())
         return { version: res?.version || null };
     },
@@ -100,20 +100,41 @@ const actions = {
     SAVE_SETTINGS: async (evt, { settings }) => {
         return saveSettings(PROJECTS_PATH, settings);
     },
-    EXPORT: async (evt, { project_id, track_id, format = 'h264', }) => {
+    EXPORT: async (evt, { project_id,
+        track_id,
+        mode = 'video',
+        format = 'h264',
+        resolution = 'original',
+        duplicateFramesCopy = true,
+        duplicateFramesAuto = false,
+        duplicateFramesAutoNumber = 2,
+        customOutputFramerate = false,
+        customOutputFramerateNumber = 10,
 
-        if (format === 'frames') {
+    }) => {
+        if (mode === 'frames') {
             const path = await selectFolder();
             if (path) {
-                normalizePictures(join(PROJECTS_PATH, project_id), track_id, path);
+                await normalizePictures(join(PROJECTS_PATH, project_id), track_id, path, {
+                    duplicateFramesCopy,
+                    duplicateFramesAuto,
+                    duplicateFramesAutoNumber,
+                });
             }
-        } else {
-
-            const path = await selectFile('video', 'mp4');
-            console.log('OUTPUT => ', path);
-            exportProjectScene(join(PROJECTS_PATH, project_id), track_id, path)
+            return true;
         }
 
+        const path = await selectFile('video', 'mp4');
+        await exportProjectScene(join(PROJECTS_PATH, project_id), track_id, path, format, {
+            duplicateFramesCopy,
+            duplicateFramesAuto,
+            duplicateFramesAutoNumber,
+            customOutputFramerate,
+            customOutputFramerateNumber ,
+            resolution
+        })
+
+        return true;
     }
 }
 

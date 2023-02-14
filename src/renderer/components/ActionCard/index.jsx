@@ -1,6 +1,4 @@
-import { withTranslation } from "react-i18next";
-
-import  Action  from "../Action";
+import Action from "../Action";
 import IconFrames from 'jsx:./assets/frames.svg';
 import IconSend from 'jsx:./assets/send.svg';
 import IconVideo from 'jsx:./assets/video.svg';
@@ -12,21 +10,13 @@ const icons = {
     VIDEO: IconVideo,
 };
 
-const titles = t => ({
-    FRAMES: t('Export your animation frames'),
-    SEND: t('Upload and generate a code to receive the animation'),
-    VIDEO: t('Export the animation as video'),
-});
+const ActionCard = ({ icon, action, disabled = false, selected = false, title = '', sizeAuto = false, secondary = false }) => {
+    const Icon = icons[icon] || null;
 
-const ActionCard = ({ type, t, action }) => {
-
-    const Icon = icons[type] || null;
-    const title = titles(t)?.[type] || null;
-
-    return <Action action={action} className={style.block}>
-        <div className={style.icon}>{Icon && <Icon />}</div>
-        <div className={style.title}>{title}</div>
+    return <Action action={action} className={`${style.block} ${disabled ? style.disabled : ''}  ${selected ? style.selected : ''} ${secondary ? style.secondary : ''}  ${sizeAuto ? style.sizeAuto : ''}`}>
+        {Icon && <div className={style.icon}><Icon /></div>}
+        <div className={style.title}>{title || ''}</div>
     </Action>
 }
 
-export default withTranslation()(ActionCard);
+export default ActionCard;

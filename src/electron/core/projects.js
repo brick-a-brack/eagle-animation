@@ -6,14 +6,11 @@ import { join,  format } from 'path';
 
 import {
     PROJECT_FILE,
-    PROJECT_FILE_EXTENSION,
     VERSION,
     DEFAULT_FPS,
-    DIRECTORY_NAME,
 } from '../../config';
 import { time, createDirectory } from './utils';
 import { randomUUID } from 'crypto';
-import mkdirp from 'mkdirp';
 
 // Generate empty project
 export const generateProjectObject = name => ({
@@ -45,7 +42,7 @@ export const getProjectData = path => new Promise((resolve, reject) => {
 });
 
 // List all projects in a directory
-export const getProjectsList = path => new Promise(async (resolve, reject) => {
+export const getProjectsList = path => new Promise(async (resolve, reject) => { // eslint-disable-line no-async-promise-executor
     try {
         const dirs = readdirSync(path).filter(f => statSync(join(path, f)).isDirectory());
         const projects = [];

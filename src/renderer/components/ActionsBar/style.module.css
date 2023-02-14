@@ -1,19 +1,19 @@
 .container {
-  width: 60px;
-  text-align: center;
+  bottom: 100px;
+  display: none;
   margin: 5px;
   position: fixed;
-  bottom: 100px;
+  text-align: center;
   top: 0;
-  display: none;
+  width: 60px;
 }
 
 .left {
-  left: 0;
   display: block;
+  left: 0;
 }
 
 .right {
-  right: 0;
   display: block;
+  right: 0;
 }
