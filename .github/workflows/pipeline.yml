@@ -39,7 +39,7 @@ jobs:
           echo "COMMIT_HASH=`git rev-parse HEAD`" >> .env
 
       - name: Build web bundle
-        run: npx parcel build --public-url ${{ secrets.RUN_PUBLIC_URL }}
+        run: npx parcel build
         env:
           CI: true
 
