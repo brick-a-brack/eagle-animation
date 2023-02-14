@@ -1,0 +1,99 @@
+.container {
+  max-height: 97px;
+  /* Height img + scollbar */
+  background-color: #484b51;
+  width: 100%;
+  bottom: 0;
+  position: absolute;
+  overflow-x: scroll;
+  overflow-y: hidden;
+  width: 100%;
+  white-space: nowrap;
+  padding-left: 2px;
+  padding-right: 2px;
+  box-sizing: border-box;
+}
+
+.containerImg {
+  height: 80px;
+  min-width: 80px;
+  background: #000;
+  display: inline-block;
+  margin-left: 2px;
+  margin-right: 2px;
+  cursor: pointer;
+  overflow: hidden;
+  position: relative;
+  user-select: none;
+}
+
+.img {
+  height: 80px;
+  min-width: 80px;
+  background: #000;
+  display: inline-block;
+  cursor: pointer;
+  overflow: hidden;
+  position: relative;
+  user-select: none;
+  position: absolute;
+}
+
+.imgcontent {
+  position: absolute;
+  transform: translateX(-50%);
+  margin-left: 50%;
+  min-height: 80px;
+  min-width: 80px;
+  height: 100%;
+  user-select: none;
+}
+
+.camera .img {
+  background-color: var(--color-primary);
+}
+
+.title {
+  color: #fff;
+  background-color: var(--color-primary);
+  font-size: 13px;
+  line-height: 25px;
+  height: 25px;
+  width: 100%;
+  text-align: center;
+  vertical-align: middle;
+  font-weight: 600;
+  letter-spacing: 1px;
+  position: absolute;
+  opacity: 0;
+  user-select: none;
+}
+
+.containerImg:hover .title {
+  opacity: 1;
+}
+
+.selected .title {
+  background-color: var(--color-alert);
+  opacity: 1;
+}
+
+.container::-webkit-scrollbar,
+.container::-webkit-scrollbar {
+  width: 15px;
+}
+
+.container::-webkit-scrollbar-thumb,
+.container::-webkit-scrollbar-thumb {
+  min-height: 50px;
+  background-color: var(--color-primary);
+  border: 3px solid transparent;
+  border-radius: 8px;
+  background-clip: padding-box;
+  cursor: pointer;
+}
+
+.container::-webkit-scrollbar-track,
+.container::-webkit-scrollbar-track {
+  background-color: rgba(0, 0, 0, 0);
+}

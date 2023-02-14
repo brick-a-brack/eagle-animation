@@ -1,0 +1,21 @@
+.select {
+    background: var(--color-theme-medium);
+    color: #fff;
+    border-radius: 8px;
+    display: inline-block;
+    overflow: hidden;
+    max-width: 250px;
+    width: 100%;
+    height: 26px;
+    margin: 0;
+    border: 0;
+    padding:0 var(--space-small);
+    font-size: var(--font-size-6);
+    line-height: var(--line-size-6);
+    box-sizing: border-box;
+}
+
+.select:hover,
+.select:focus {
+    background-color: var(--color-theme-light);
+}
