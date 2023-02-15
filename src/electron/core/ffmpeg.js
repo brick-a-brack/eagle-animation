@@ -34,6 +34,10 @@ const profiles = {
     },
 };
 
+export const getProfile = (format) => {
+   return  profiles[format] || null;
+}
+
 export const generate = (
     width = 1920,
     height = 1080,

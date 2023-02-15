@@ -10,6 +10,7 @@ import FormGroup from "../components/FormGroup";
 import Select from "../components/Select";
 import Switch from "../components/Switch";
 import NumberInput from "../components/NumberInput";
+import LoadingOverlay from "../components/LoadingOverlay";
 
 const Export = ({ t }) => {
     const { id, track } = useParams();
@@ -29,7 +30,13 @@ const Export = ({ t }) => {
             duplicateFramesAuto: false,
             duplicateFramesAutoNumber: 2,
             customOutputFramerate: false,
-            customOutputFramerateNumber: 10,
+            customOutputFramerateNumber: 60,
+            translations: {
+                EXPORT_FRAMES: t('Export animation frames'),
+                EXPORT_VIDEO: t('Export as video'),
+                DEFAULT_FILE_NAME: t('video'),
+                EXT_NAME: t('Video file'),
+            }
         },
     });
 
@@ -123,6 +130,7 @@ const Export = ({ t }) => {
                 </div>
             </FormLayout>
         </form>}
+        {isExporting && <LoadingOverlay message={t('Export will take a while, please be patient')} onCancel={() => setIsExporting(false)}/>}
     </>;
 }
 

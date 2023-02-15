@@ -78,5 +78,8 @@
   "Duplicate first and last frames": "Duplicate first and last frames",
   "Automatically duplicate the first and last frames": "Automatically duplicate the first and last frames",
   "Duplicate frames": "Duplicate frames",
-  "Copies several times the duplicated frames": "Copies several times the duplicated frames"
+  "Copies several times the duplicated frames": "Copies several times the duplicated frames",
+  "video": "video",
+  "Export will take a while, please be patient": "Export will take a while, please be patient",
+  "Video file": "Video file"
 }

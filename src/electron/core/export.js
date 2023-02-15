@@ -1,10 +1,10 @@
 import { join } from 'path';
 import { v4 as uuidv4 } from 'uuid';
+import { rimraf } from 'rimraf'
 
 import { getProjectData } from './projects';
 import { createDirectory, copy } from './utils';
 import { generate } from './ffmpeg';
-
 
 
 export const normalizePictures = async (projectPath, scene, outputPath, opts = {}) => {
@@ -31,5 +31,6 @@ export const exportProjectScene = async (projectPath, scene, filePath, format, o
     const directoryPath = join(projectPath, `/_tmp-${uuidv4()}/`);
     await normalizePictures(projectPath, scene, directoryPath, opts);
     await generate(1920, 1080, directoryPath, format, filePath, project.project.scenes[scene].framerate, opts);
+    await rimraf(directoryPath);
 };
 

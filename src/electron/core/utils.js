@@ -21,20 +21,18 @@ export const copy = (from, to) => new Promise((resolve, reject) => {
 });
 
 // Select an output folder
-export const selectFolder = async () => {
-    const data = await dialog.showOpenDialog({ properties: ['openDirectory'], title:'TODO - Export frames' });
-    return  (data.canceled || !data?.filePaths?.[0]) ? null : data?.filePaths?.[0];
+export const selectFolder = async (title) => {
+    const data = await dialog.showOpenDialog({ properties: ['openDirectory'], title });
+    return (data.canceled || !data?.filePaths?.[0]) ? null : data?.filePaths?.[0];
 }
 
 // Select an output file
-export const selectFile = async (name, ext) => {
+export const selectFile = async (name, ext, title, extTitle) => {
     const data = await dialog.showSaveDialog({
         properties: ['showOverwriteConfirmation'],
-        filters: [{
-            name: name || 'Unknown',
-            extensions: [ext]
-        }],
-         title:'TODO - Export video'
+        defaultPath: `${name}`,
+        filters: [{ name: extTitle, extensions: [ext] }],
+        title
     });
     return (data.canceled || !data?.filePath) ? null : data?.filePath;
 }

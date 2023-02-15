@@ -7,6 +7,7 @@ import { shell } from 'electron';
 import { getSettings, saveSettings } from './core/settings';
 import { selectFile, selectFolder } from './core/utils';
 import { exportProjectScene, normalizePictures } from './core/export';
+import { getProfile } from './core/ffmpeg';
 
 const PROJECTS_PATH = join(homedir(), DIRECTORY_NAME);
 
@@ -110,10 +111,16 @@ const actions = {
         duplicateFramesAutoNumber = 2,
         customOutputFramerate = false,
         customOutputFramerateNumber = 10,
+        translations = {
+            EXPORT_FRAMES: '',
+            EXPORT_VIDEO: '',
+            DEFAULT_FILE_NAME: '',
+            EXT_NAME: '',
+        }
 
     }) => {
         if (mode === 'frames') {
-            const path = await selectFolder();
+            const path = await selectFolder(translations.EXPORT_FRAMES);
             if (path) {
                 await normalizePictures(join(PROJECTS_PATH, project_id), track_id, path, {
                     duplicateFramesCopy,
@@ -124,13 +131,16 @@ const actions = {
             return true;
         }
 
-        const path = await selectFile('video', 'mp4');
+        const profile = getProfile(format);
+
+        console.log(profile, format)
+        const path = await selectFile(translations.DEFAULT_FILE_NAME, profile.extension, translations.EXPORT_VIDEO, translations.EXT_NAME);
         await exportProjectScene(join(PROJECTS_PATH, project_id), track_id, path, format, {
             duplicateFramesCopy,
             duplicateFramesAuto,
             duplicateFramesAutoNumber,
             customOutputFramerate,
-            customOutputFramerateNumber ,
+            customOutputFramerateNumber,
             resolution
         })
 

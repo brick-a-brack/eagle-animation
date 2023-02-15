@@ -37,6 +37,9 @@
     "buffer": "^5.5.0",
     "electron": "^22.1.0",
     "electron-builder": "^23.6.0",
+    "eslint": "8.30.0",
+    "eslint-plugin-react": "7.31.11",
+    "husky": "^8.0.3",
     "i18next-scanner": "^4.1.1",
     "parcel": "^2.8.3",
     "parcel-reporter-static-files-copy": "^1.5.0",
@@ -44,13 +47,9 @@
     "sharp": "^0.31.3",
     "stylelint": "^15.1.0",
     "stylelint-config-standard": "^30.0.1",
-    "stylelint-order": "^6.0.2",
-    "eslint": "8.30.0",
-    "eslint-plugin-react": "7.31.11",
-    "husky": "^8.0.3"
+    "stylelint-order": "^6.0.2"
   },
   "dependencies": {
-    "uuid": "^9.0.0",
     "animated-scroll-to": "^2.3.0",
     "compare-versions": "^6.0.0-rc.1",
     "ffmpeg-static": "^5.1.0",
@@ -70,6 +69,8 @@
     "react-router-dom": "^6.8.0",
     "react-select": "^5.7.0",
     "react-sortable-hoc": "^2.0.0",
-    "react-tooltip": "^5.7.2"
+    "react-tooltip": "^5.7.2",
+    "rimraf": "^4.1.2",
+    "uuid": "^9.0.0"
   }
 }

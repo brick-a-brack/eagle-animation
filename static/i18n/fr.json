@@ -78,5 +78,8 @@
   "Duplicate first and last frames": "Dupliquer la première et la dernière image",
   "Automatically duplicate the first and last frames": "Dupliquer automatiquement la première et la dernière image",
   "Duplicate frames": "Dupliquer les images",
-  "Copies several times the duplicated frames": "Copie plusieurs fois les images dupliquées"
+  "Copies several times the duplicated frames": "Copie plusieurs fois les images dupliquées",
+  "video": "vidéo",
+  "Export will take a while, please be patient": "L'export va prendre un moment, soyez patient",
+  "Video file": "__NOT_TRANSLATED__"
 }
