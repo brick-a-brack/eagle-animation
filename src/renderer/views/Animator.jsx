@@ -73,7 +73,9 @@ const Animator = ({ t }) => {
 
     useEffect(() => {
         (async () => {
-            setProject(await window.EA('GET_PROJECT', { project_id: id }));
+            const updatedProject = await window.EA('GET_PROJECT', { project_id: id });
+            setProject(updatedProject);
+            setFps(updatedProject.project.scenes[track].framerate);
             const userSettings = await window.EA('GET_SETTINGS')
             setSettings({
                 ...settings,
@@ -132,7 +134,7 @@ const Animator = ({ t }) => {
             flushSync(() => { setIsTakingPicture(true); });
 
             for (let i = 0; i < (parseInt(settings.CAPTURE_FRAMES, 10) || 1); i++) {
-                if (!isMuted) {
+                if (!isMuted && settings.SOUNDS) {
                     shutterSoundRef?.current?.play();
                 }
                 const buffer = await Camera().takePicture((settings.AVERAGING_ENABLED ? parseInt(settings.AVERAGING_VALUE, 10) : 1) || 1);
@@ -147,7 +149,7 @@ const Animator = ({ t }) => {
             if (currentFrameId === false) {
                 return;
             }
-            if (!isMuted) {
+            if (!isMuted && settings.SOUNDS) {
                 deleteSoundRef?.current?.play();
             }
             const newId = getPreviousFrameId(pictures, currentFrameId) !== currentFrameId ? getPreviousFrameId(pictures, currentFrameId) : getNextFrameId(pictures, currentFrameId); playerRef.current.showFrame(newId);
@@ -174,7 +176,10 @@ const Animator = ({ t }) => {
         ONION_CHANGE: (value) => { setOnionValue(value); },
         GRID: () => { setGridStatus(!gridStatus); },
         DIFFERENCE: () => { setDifferenceStatus(!differenceStatus); },
-        FPS_CHANGE: (v) => { setFps(v); },
+        FPS_CHANGE: async (v) => {
+            setFps(v);
+            setProject(await window.EA('UPDATE_FPS_VALUE', { project_id: id, track_id: track, fps: v }));
+        },
         SETTINGS: () => { navigate(`/settings?back=/animator/${id}/${track}`) },
         MORE: () => { },
         EXPORT: () => { navigate(`/export/${id}/${track}?back=/animator/${id}/${track}`); },

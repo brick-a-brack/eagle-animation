@@ -4,6 +4,7 @@ import { compareVersions } from 'compare-versions';
 import * as style from './style.module.css';
 import Logo from 'jsx:./assets/logo.svg';
 import Action from '../Action';
+import { BUILD } from '../../config';
 
 const Header = ({
     action = null, version, latestVersion, t
@@ -24,7 +25,7 @@ const Header = ({
                 )}
                 {!canBeUpdated && (
                     <>
-                        <span>{version}</span>
+                        <span>{version}-{BUILD}</span>
                     </>
                 )}
             </Action>

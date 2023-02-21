@@ -18,6 +18,7 @@ const HomeView = ({ t }) => {
         (async () => {
             setLatestVersion((await window.EA('GET_LAST_VERSION'))?.version || null)
             setProjects(await window.EA('GET_PROJECTS'));
+            window.EA('SYNC');
 
             // Init camera
             const userSettings = await window.EA('GET_SETTINGS')

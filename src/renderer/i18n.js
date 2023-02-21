@@ -2,7 +2,7 @@ import i18n from "i18next";
 import detector from "i18next-browser-languagedetector";
 import backend from "i18next-http-backend";
 import { initReactI18next } from "react-i18next"
-import { BUILD, PUBLIC_URL, ALLOWED_LANGUAGES, LS_LANGUAGE, DEFAULT_LANGUAGE } from "./config";
+import { BUILD, ALLOWED_LANGUAGES, LS_LANGUAGE, DEFAULT_LANGUAGE } from "./config";
 
 i18n
   .use(backend)
@@ -20,7 +20,7 @@ i18n
       escapeValue: false,
     },
     backend: {
-      loadPath: `${PUBLIC_URL}i18n/{{lng}}.json?${BUILD}`,
+      loadPath: `i18n/{{lng}}.json?${BUILD}`,
     },
     react: {
       useSuspense: false,

@@ -16,6 +16,7 @@ import GridIcon from '../components/GridIcon';
 
 import DevicesInstance from "../core/Devices";
 import { setLanguage } from '../i18n';
+import Input from '../components/Input';
 
 
 const SettingsView = ({ t }) => {
@@ -112,6 +113,9 @@ const SettingsView = ({ t }) => {
                 <FormGroup label={t('Short play')} description={t('Number of frames to play when short play is enabled')}>
                     <NumberInput register={register('SHORT_PLAY')} min={1} />
                 </FormGroup>
+                <FormGroup label={t('Sound effects')} description={t('Play sound effects when you take or remove a frame')}>
+                    <div><Switch register={register('SOUNDS')} /></div>
+                </FormGroup>
                 {/*<FormGroup label={t('Ratio opacity')} description={t('The opacity of aspect ratio layer')}>
                     <CustomSlider
                         step={0.01}
@@ -141,11 +145,10 @@ const SettingsView = ({ t }) => {
                 {watch('GRID_MODES')?.includes('GRID') && <FormGroup label={t('Grid columns')} description={t('Number of columns of the grid layer')}>
                     <NumberInput register={register('GRID_COLUMNS')} min={1} max={12} />
                 </FormGroup>}
-
-                {/*<Heading h={1}>{t('Stop motion workshops')}</Heading>
+                <Heading h={1}>{t('Stop motion workshops')}</Heading>
                 <FormGroup label={t('API key to send videos')} description={t('Brick à Brack allows partners to easily export/send videos, contact us for more informations')}>
                     <Input control={control} register={register('EVENT_KEY')} />
-                </FormGroup>*/}
+                </FormGroup>
             </FormLayout>
         </form>}
     </>

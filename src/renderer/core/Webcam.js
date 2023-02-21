@@ -114,13 +114,19 @@ class Webcam {
         }
 
         const imageCapture = new ImageCapture(this.stream.getVideoTracks()[0]);
-        const bitmap = await imageCapture.takePhoto({}).then(blob => createImageBitmap(blob))
+        const bitmap = (await imageCapture.takePhoto({}).then(blob => createImageBitmap(blob)).catch(() => null)) || (await imageCapture.grabFrame({}).catch(() => null))
+
+        if (!bitmap) {
+            return;
+        }
+
         const canvas = document.createElement('canvas');
         canvas.width = bitmap.width;
         canvas.height = bitmap.height;
         const context = canvas.getContext('2d', { alpha: false });
         context.drawImage(bitmap, 0, 0, bitmap.width, bitmap.height);
-
+        //const context = canvas.getContext("bitmaprenderer");
+        //context?.transferFromImageBitmap(bitmap);
         return canvas;
     }
 

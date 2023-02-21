@@ -81,5 +81,11 @@
   "Copies several times the duplicated frames": "Copie plusieurs fois les images dupliquées",
   "video": "vidéo",
   "Export will take a while, please be patient": "L'export va prendre un moment, soyez patient",
-  "Video file": "__NOT_TRANSLATED__"
+  "Video file": "Fichier vidéo",
+  "Animation framerate": "IPS de l'animation",
+  "The framerate used for your animation": "Le nombre d'images par seconde pour votre animation",
+  "Sound effects": "Effets sonores",
+  "Play sound effects when you take or remove a frame": "Jouer un son lors de la prise ou la supression d'image",
+  "You will be able to get your animation using this code:": "Vous pourrez récupérer votre animation en utilisant le code suivant :",
+  "The export is finished, you can close this page": "L'export est terminé, vous pouvez fermer cette page"
 }

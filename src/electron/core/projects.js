@@ -68,6 +68,17 @@ export const renameProject = (path, name) => new Promise((resolve, reject) => {
     });
 });
 
+// Update scene FPS value
+export const updateSceneFPSvalue = async (path, track, fps) => {
+    let data = await getProjectData(path);
+    const trackId = parseInt(track, 10);
+    if (data.project.scenes[trackId]) {
+        data.project.scenes[trackId].framerate = fps
+    }
+    await projectSave(path, data.project, true);
+    return data;
+};
+
 // Delete a project
 export const deleteProject = (path) => new Promise((resolve, reject) => {
     getProjectData(path).then(data => projectSave(path, { ...data.project, deleted: true }, false).then((dataProject) => {

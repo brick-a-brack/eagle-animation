@@ -1,13 +1,16 @@
 import { join } from 'path-browserify';
-import { CONTRIBUTE_REPOSITORY, DIRECTORY_NAME } from '../config';
-import { applyProjectFrameLengthOffset, createProject, deleteProject, deleteProjectFrame, getProjectData, getProjectsList, moveFrame, renameProject, takePicture } from './core/projects';
+import mkdirp from 'mkdirp';
 import { homedir } from 'os';
 import fetch from 'node-fetch';
 import { shell } from 'electron';
+
+import { CONTRIBUTE_REPOSITORY, DIRECTORY_NAME } from '../config';
+import { applyProjectFrameLengthOffset, createProject, deleteProject, deleteProjectFrame, getProjectData, getProjectsList, moveFrame, renameProject, takePicture, updateSceneFPSvalue } from './core/projects';
 import { getSettings, saveSettings } from './core/settings';
 import { selectFile, selectFolder } from './core/utils';
-import { exportProjectScene, normalizePictures } from './core/export';
+import { exportProjectScene, getSyncList, normalizePictures, saveSyncList } from './core/export';
 import { getProfile } from './core/ffmpeg';
+import { uploadFile } from './core/api';
 
 const PROJECTS_PATH = join(homedir(), DIRECTORY_NAME);
 
@@ -48,8 +51,11 @@ const computeProject = (data) => {
 
 const actions = {
     GET_LAST_VERSION: async () => {
-        const res = await fetch(`https://raw.githubusercontent.com/${CONTRIBUTE_REPOSITORY}/master/package.json`).then(res => res.json())
-        return { version: res?.version || null };
+        if (CONTRIBUTE_REPOSITORY) {
+            const res = await fetch(`https://raw.githubusercontent.com/${CONTRIBUTE_REPOSITORY}/master/package.json`).then(res => res.json())
+            return { version: res?.version || null };
+        }
+        return { version: null };
     },
     GET_PROJECTS: async () => {
         const projects = await getProjectsList(PROJECTS_PATH);
@@ -87,6 +93,10 @@ const actions = {
         const data = await renameProject(join(PROJECTS_PATH, project_id), title);
         return computeProject(data);
     },
+    UPDATE_FPS_VALUE: async (evt, { project_id, track_id, fps }) => {
+        const data = await updateSceneFPSvalue(join(PROJECTS_PATH, project_id), track_id, fps);
+        return computeProject(data);
+    },
     OPEN_LINK: async (evt, { link }) => {
         shell.openExternal(link);
         return null;
@@ -101,31 +111,53 @@ const actions = {
     SAVE_SETTINGS: async (evt, { settings }) => {
         return saveSettings(PROJECTS_PATH, settings);
     },
-    EXPORT: async (evt, { project_id,
+    SYNC: async () => {
+        let syncList = await getSyncList(PROJECTS_PATH);
+
+        console.log(`Starting events videos sync`, syncList);
+
+        for (let i = 0; i < syncList.length; i++) {
+            const syncElement = syncList[i];
+            try {
+                if (!syncElement.isUploaded) {
+                    await uploadFile(syncElement.apiKey, syncElement.publicCode, syncElement.fileExtension, join(PROJECTS_PATH, '/.sync/', syncElement.fileName));
+                    syncList[i].isUploaded = true;
+                    await saveSyncList(PROJECTS_PATH, syncList);
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        console.log(`End of sync`, syncList);
+    },
+    EXPORT: async (evt, {
+        project_id,
         track_id,
         mode = 'video',
         format = 'h264',
         resolution = 'original',
-        duplicateFramesCopy = true,
-        duplicateFramesAuto = false,
-        duplicateFramesAutoNumber = 2,
-        customOutputFramerate = false,
-        customOutputFramerateNumber = 10,
+        duplicate_frames_copy = true,
+        duplicate_frames_auto = false,
+        duplicate_frames_auto_number = 2,
+        custom_output_framerate = false,
+        custom_output_framerate_number = 10,
+        public_code = 'default',
+        event_key = '',
         translations = {
             EXPORT_FRAMES: '',
             EXPORT_VIDEO: '',
             DEFAULT_FILE_NAME: '',
             EXT_NAME: '',
         }
-
     }) => {
         if (mode === 'frames') {
             const path = await selectFolder(translations.EXPORT_FRAMES);
             if (path) {
                 await normalizePictures(join(PROJECTS_PATH, project_id), track_id, path, {
-                    duplicateFramesCopy,
-                    duplicateFramesAuto,
-                    duplicateFramesAutoNumber,
+                    duplicateFramesCopy: duplicate_frames_copy,
+                    duplicateFramesAuto: duplicate_frames_auto,
+                    duplicateFramesAutoNumber: duplicate_frames_auto_number,
                 });
             }
             return true;
@@ -133,16 +165,35 @@ const actions = {
 
         const profile = getProfile(format);
 
-        console.log(profile, format)
-        const path = await selectFile(translations.DEFAULT_FILE_NAME, profile.extension, translations.EXPORT_VIDEO, translations.EXT_NAME);
+        // Create sync folder if needed
+        if (mode === 'send') {
+            await mkdirp(join(PROJECTS_PATH, '/.sync/'));
+        }
+
+        const path = mode === 'send' ? join(PROJECTS_PATH, '/.sync/', `${public_code}.${profile.extension}`) : await selectFile(translations.DEFAULT_FILE_NAME, profile.extension, translations.EXPORT_VIDEO, translations.EXT_NAME);
         await exportProjectScene(join(PROJECTS_PATH, project_id), track_id, path, format, {
-            duplicateFramesCopy,
-            duplicateFramesAuto,
-            duplicateFramesAutoNumber,
-            customOutputFramerate,
-            customOutputFramerateNumber,
+            duplicateFramesCopy: duplicate_frames_copy,
+            duplicateFramesAuto: duplicate_frames_auto,
+            duplicateFramesAutoNumber: duplicate_frames_auto_number,
+            customOutputFramerate: custom_output_framerate,
+            customOutputFramerateNumber: custom_output_framerate_number,
             resolution
-        })
+        });
+
+        if (mode === 'send') {
+            const syncList = await getSyncList(PROJECTS_PATH);
+            await saveSyncList(PROJECTS_PATH, [
+                ...syncList, {
+                    apiKey: event_key,
+                    publicCode: public_code,
+                    fileName: `${public_code}.${profile.extension}`,
+                    fileExtension: profile.extension,
+                    isUploaded: false
+                }
+            ]);
+
+            actions.SYNC();
+        }
 
         return true;
     }

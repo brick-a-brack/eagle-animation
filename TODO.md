@@ -1,9 +1,6 @@
 # Todo
-- Support framerate change (save in project data)
-- Limit output framerate to project framerate
 - Light theme
 - Aspect ratio support + opacity setting
-- Mute/unmute settings value
 - Multi scene/take support
 - Allow drawing for easing help
 - Masking

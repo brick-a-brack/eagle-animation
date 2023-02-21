@@ -1,5 +1,5 @@
 .background {
-    background: rgb(0 0 0 / 90%);
+    background: rgb(0 0 0 / 95%);
     height: 100vh;
     left: 0;
     overflow: hidden;
@@ -9,7 +9,8 @@
     z-index: 99999999;
 }
 
-.info {
+.info,
+.code {
     bottom: 5%;
     color: #fff;
     font-size: var(--font-size-4);
@@ -18,6 +19,28 @@
     text-align: center;
     user-select: none;
     width: 90%;
+}
+
+.info {
+    bottom: 5%;
+}
+
+.code {
+    top: 5%;
+}
+
+.codeValue {
+    font-size: var(--font-size-0);
+    margin-top: var(--space-big);
+}
+
+.done {
+    fill: var(--color-primary);
+    height: 90px;
+    left: calc(50% - 45px);
+    position: absolute;
+    top: calc(50% - 45px);
+    width: 90px;
 }
 
 .loader {

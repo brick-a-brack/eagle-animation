@@ -42,6 +42,3 @@ export const saveSettings = (path, data) => new Promise((resolve) => {
         return resolve({ ...defaultSettings, ...(data || {}) });
     });
 });
-
-// External settings
-// \Common Files\LogiShrd\SharedBin\LogiDPPApp.exe

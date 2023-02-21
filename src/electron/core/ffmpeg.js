@@ -61,7 +61,7 @@ export const generate = (
     const args = ['-y'];
 
     // Input framerate
-    args.push('-r', (parseInt(fps, 10) > 0 && parseInt(fps, 10) <= 120) ? parseInt(fps, 10) : 12);
+    args.push('-r', (parseInt(fps, 10) > 0 && parseInt(fps, 10) <= 240) ? parseInt(fps, 10) : 12);
 
     // Add all images in the path
     args.push('-i', 'frame-%06d.jpg');

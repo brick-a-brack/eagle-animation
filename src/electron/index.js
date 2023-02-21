@@ -35,7 +35,7 @@ function createWindow() {
     if (isDev) {
         mainWindow.loadURL('http://localhost:8282/');
     } else {
-        //mainWindow.setMenuBarVisibility(false);
+        mainWindow.setMenuBarVisibility(false);
         mainWindow.loadURL(
             process.env.ELECTRON_START_URL
             || url.format({
