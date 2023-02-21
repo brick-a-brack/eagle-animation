@@ -34,11 +34,21 @@ jobs:
           npm i --force
 
       - name: Create .env file
-        run: |
-          echo "PARTNER_API_URL=${{ secrets.RUN_PARTNER_API_URL }}" > .env
-          echo "SENTRY_DSN=${{ secrets.RUN_SENTRY_DSN }}" >> .env
-          echo "COMMIT_HASH=`git rev-parse HEAD`" >> .env
-          echo "CONTRIBUTE_REPOSITORY=${{ secrets.RUN_CONTRIBUTE_REPOSITORY }}" >> .env
+        uses: SpicyPizza/create-envfile@v1.3
+        with:
+          envkey_PARTNER_API_URL: ${{ secrets.RUN_PARTNER_API_URL }}
+          envkey_SENTRY_DSN: ${{ secrets.RUN_SENTRY_DSN }}
+          envkey_CONTRIBUTE_REPOSITORY: ${{ secrets.RUN_CONTRIBUTE_REPOSITORY }}
+          envkey_COMMIT_HASH: ${{ github.sha }}
+          file_name: .env
+          fail_on_empty: false
+
+      #- name: Create .env file
+      #  run: |
+      #    echo "PARTNER_API_URL=${{ secrets.RUN_PARTNER_API_URL }}" > .env
+      #    echo "SENTRY_DSN=${{ secrets.RUN_SENTRY_DSN }}" >> .env
+      #    echo "COMMIT_HASH=`git rev-parse HEAD`" >> .env
+      #    echo "CONTRIBUTE_REPOSITORY=${{ secrets.RUN_CONTRIBUTE_REPOSITORY }}" >> .env
 
       - name: Build web bundle
         run: npm run build
