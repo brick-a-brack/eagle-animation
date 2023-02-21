@@ -34,14 +34,12 @@ jobs:
           npm i --force
 
       - name: Create .env file
-        uses: SpicyPizza/create-envfile@v1.3
+        uses: ozaytsev86/create-env-file@v1
         with:
-          envkey_PARTNER_API_URL: ${{ secrets.RUN_PARTNER_API_URL }}
-          envkey_SENTRY_DSN: ${{ secrets.RUN_SENTRY_DSN }}
-          envkey_CONTRIBUTE_REPOSITORY: ${{ secrets.RUN_CONTRIBUTE_REPOSITORY }}
-          envkey_COMMIT_HASH: ${{ github.sha }}
-          file_name: .env
-          fail_on_empty: false
+          ENV_PARTNER_API_URL: ${{ secrets.RUN_PARTNER_API_URL }}
+          ENV_SENTRY_DSN: ${{ secrets.RUN_SENTRY_DSN }}
+          ENV_CONTRIBUTE_REPOSITORY: ${{ secrets.RUN_CONTRIBUTE_REPOSITORY }}
+          ENV_COMMIT_HASH: ${{ github.sha }}
 
       #- name: Create .env file
       #  run: |
