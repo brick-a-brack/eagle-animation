@@ -12,7 +12,7 @@ jobs:
 
     strategy:
       matrix:
-        os: [ ubuntu-latest, windows-latest] # macos-latest fails at the moment
+        os: [ ubuntu-latest, windows-latest, macos-latest]
 
     steps:
       - name: Clone source code
