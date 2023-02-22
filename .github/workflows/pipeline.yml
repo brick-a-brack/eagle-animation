@@ -41,13 +41,6 @@ jobs:
           ENV_CONTRIBUTE_REPOSITORY: ${{ secrets.RUN_CONTRIBUTE_REPOSITORY }}
           ENV_COMMIT_HASH: ${{ github.sha }}
 
-      #- name: Create .env file
-      #  run: |
-      #    echo "PARTNER_API_URL=${{ secrets.RUN_PARTNER_API_URL }}" > .env
-      #    echo "SENTRY_DSN=${{ secrets.RUN_SENTRY_DSN }}" >> .env
-      #    echo "COMMIT_HASH=`git rev-parse HEAD`" >> .env
-      #    echo "CONTRIBUTE_REPOSITORY=${{ secrets.RUN_CONTRIBUTE_REPOSITORY }}" >> .env
-
       - name: Build web bundle
         run: npm run build
         env:
