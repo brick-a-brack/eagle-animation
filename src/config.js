@@ -18,10 +18,10 @@ export const PROJECT_FILE = `${PROJECT_FILE_NAME}.${PROJECT_FILE_EXTENSION}`;
 export const DEFAULT_FPS = 12;
 
 // Github link
-export const CONTRIBUTE_REPOSITORY = process.env.CONTRIBUTE_REPOSITORY;
+export const CONTRIBUTE_REPOSITORY = 'brick-a-brack/eagle-animation';
 
 // Sentry DSN
-export const SENTRY_DSN = process.env.SENTRY_DSN;
+export const SENTRY_DSN = 'https://750d3c23387f46b8922dee52580eb607@sentry.io/1458572';
 
 // Languages
 export const LANGUAGES = [{
@@ -43,4 +43,4 @@ export const ALLOWED_LANGUAGES = ['en', 'fr', /*'de'*/];
 export const DEFAULT_LANGUAGE = 'en';
 
 // Partner API url
-export const PARTNER_API = process.env.PARTNER_API_URL;
+export const PARTNER_API = 'https://api.brickfilms.com/';

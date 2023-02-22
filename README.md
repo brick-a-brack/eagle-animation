@@ -34,7 +34,7 @@ Feel free to make pull-requests, help us to translate the software or report iss
 ### Production build and release process
 
 - Run `npm i --force` to install dependencies.
-- Create a `.env` file based on the `.env.sample`.
+- Update `config.js` file.
 - Update `version` value in `package.json` if needed.
 - Run `npm run build` to build the web bundle and main script in the `dist/electron` directory.
 - Run `npm run package:windows`, `npm run package:linux` and `npm run package:mac` to build release files.
