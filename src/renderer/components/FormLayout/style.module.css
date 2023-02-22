@@ -1,0 +1,12 @@
+.form {
+    margin: auto;
+    max-width: 1100px;
+    padding: var(--space-big) 1% var(--space-big) 1%;
+    width: 98%;
+}
+
+.title {
+    margin-bottom: var(--space-big);
+    text-align: center;
+    text-transform: uppercase;
+}

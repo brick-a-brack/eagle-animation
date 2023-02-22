@@ -1,0 +1,59 @@
+.container {
+    background: #2f3136;
+    height: 100vh;
+    width: 100%;
+}
+
+.container > div {
+    left:50%;
+    margin:auto;
+    max-width:800px;
+    position:absolute;
+    text-align:center;
+    top: 50vh;
+    transform: translate(-50%, -50%);
+    width:98%;
+}
+
+.error {
+    color: #486ee5;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 50px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    line-height: 50px;
+    margin-top: 0;
+    position: relative;
+    text-align: center;
+    user-select: none;
+}
+
+h1.error {
+    text-overflow: ellipsis;
+    text-transform: uppercase;
+    white-space: nowrap;
+    width: 100%;
+}
+
+h2.error {
+    font-size: 20px;
+    line-height: 20px;
+    text-transform: none;   
+    white-space: normal;
+}
+
+.actions {
+    color : #fff;
+    display: block;
+    font-family: 'Open Sans', sans-serif;
+    margin-top: 50px;
+    user-select:none;
+}
+
+.button {
+    color : #fff;
+    cursor:pointer;
+    font-family: 'Open Sans', sans-serif;
+    text-decoration:underline;
+    user-select:none;
+}

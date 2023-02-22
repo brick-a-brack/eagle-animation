@@ -1,0 +1,16 @@
+.action {
+  cursor: pointer;
+  outline: none;
+  text-decoration: none;
+}
+
+.action,
+.action:visited,
+.action:hover,
+.action:active {
+  text-decoration: none;
+}
+
+.noaction {
+  cursor: default;
+}

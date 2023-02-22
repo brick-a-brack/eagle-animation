@@ -1,0 +1,82 @@
+  .box {
+      background-color: #484c52;
+      border-radius: 8px;
+      box-shadow: 0 2px 2px 0 rgb(0 0 0 / 14%),
+          0 3px 1px -2px rgb(0 0 0 / 12%), 0 1px 5px 0 rgb(0 0 0 / 20%);
+      color: #fff;
+      display: inline-block;
+      height: 220px;
+      margin: 20px;
+      overflow: hidden;
+      width: 300px;
+  }
+
+  .banner {
+      background: rgb(24 24 24);
+      cursor: pointer;
+      height: 164px;
+      overflow: hidden;
+      position: relative;
+      width: 100%;
+  }
+
+  .bannerhover {
+      backdrop-filter: blur(10px);
+      background: rgb(0 0 0 / 60%);
+      cursor: pointer;
+      height: 164px;
+      line-height: 164px;
+      margin-top: -164px;
+      opacity: 0;
+      overflow: hidden;
+      position: relative;
+      transition: opacity 0.4s ease-in-out;
+      width: 100%;
+  }
+
+  .bannerhover svg {
+      display: inline-block;
+      fill: #aaabad;
+      height: 50px;
+      transform: scale(0.7);
+      transition: transform 0.4s ease-in-out;
+      vertical-align: middle;
+      width: 20%;
+  }
+
+  .bannerhover:hover svg {
+      transform: scale(1);
+  }
+
+  .bannerhover:hover {
+      opacity: 1;
+  }
+
+  .banner img {
+      cursor: pointer;
+      left: 50%;
+      position: absolute;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      user-select: none;
+      width: 100%;
+  }
+
+  .title {
+      overflow: hidden;
+      width: 100%;
+  }
+
+  .title input {
+      background: transparent;
+      border: none;
+      color: #aaabad;
+      font-family: 'Open Sans', sans-serif;
+      font-size: 24px;
+      font-weight: 300;
+      line-height: 32px;
+      margin: 0;
+      outline: none;
+      padding: 0.5em;
+      width: calc(100% - 1em);
+  }

@@ -1,0 +1,64 @@
+.container {
+  align-items: center;
+  display: flex;
+  height: 200px;
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+}
+
+.logo {
+  height: 80%;
+  text-align: center;
+  vertical-align: middle;
+  width: 100%;
+}
+
+.logo svg {
+  display: inline-block;
+  fill: #fff;
+  height: 100%;
+  max-width: 520px;
+  width: 75%;
+}
+
+.version {
+  cursor: pointer;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  left: 6px;
+  letter-spacing: 3px;
+  line-height: 14px;
+  margin-top: 0;
+  position: absolute;
+  top: 6px;
+  user-select: none;
+}
+
+.update span {
+  color: #ff4d4d;
+}
+
+.version span {
+  color: #fefefe;
+  display: block;
+}
+
+.version span span {
+  display: block;
+}
+
+.line {
+  background: #486ee5;
+  bottom: 0;
+  height: 3px;
+  position: absolute;
+  width: 100%;
+}
+
+@media screen and (max-height: 600px) {
+  .container {
+    display: none;
+  }
+}

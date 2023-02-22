@@ -1,0 +1,46 @@
+name: Eagle Animation - Build & package
+
+on:
+  push:
+    branches:
+      - 'dev'
+
+jobs:
+  release:
+    name: Build & package
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ ubuntu-latest, windows-latest, macos-latest]
+
+    steps:
+      - name: Clone source code
+        uses: actions/checkout@v2
+        with:
+          ref: refs/heads/dev
+          fetch-depth: 1
+
+      - name: Use Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 16
+
+      # Replace by npm ci when it will be fixed
+      - name: Install dependencies
+        run: |
+          rm package-lock.json
+          npm i --force
+
+      - name: Build web bundle
+        run: npm run build
+        env:
+          CI: true
+
+      - name: Package app
+        uses: cryogenicplanet/action-electron-builder@v2
+        with:
+          github_token: ${{ secrets.github_token }}
+          release: true
+          skip_build: true
+          skip_install: true

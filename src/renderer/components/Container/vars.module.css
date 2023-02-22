@@ -1,0 +1,34 @@
+body {
+  --border-radius-small: 6px;
+  --border-radius-medium: 12px;
+  --border-radius-big: 18px;
+  --space-tiny: 2px;
+  --space-small: 6px;
+  --space-medium: 12px;
+  --space-big: 18px;
+  --font-size-0: 2rem;
+  --font-size-1: 1.4rem;
+  --font-size-2: 1.3rem;
+  --font-size-3: 1.15rem;
+  --font-size-4: 1.1rem;
+  --font-size-5: 1.025rem;
+  --font-size-6: 1rem;
+  --font-size-7: 0.9rem;
+  --font-size-8: 0.8rem;
+  --line-size-0: calc(var(--font-size-0) * 1.5);
+  --line-size-1: calc(var(--font-size-1) * 1.5);
+  --line-size-2: calc(var(--font-size-2) * 1.5);
+  --line-size-3: calc(var(--font-size-3) * 1.5);
+  --line-size-4: calc(var(--font-size-4) * 1.5);
+  --line-size-5: calc(var(--font-size-5) * 1.5);
+  --line-size-6: calc(var(--font-size-6) * 1.5);
+  --line-size-7: calc(var(--font-size-7) * 1.5);
+  --line-size-8: calc(var(--font-size-8) * 1.5);
+  --font: "Open Sans";
+  --input-height: 30px;
+  --color-primary: #486ee5;
+  --color-alert: #e54848;
+  --color-theme-light: #7f8186;
+  --color-theme-medium: #5f6166;
+  --color-theme-dark: #2f3136;
+}

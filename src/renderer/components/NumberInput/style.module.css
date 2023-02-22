@@ -1,0 +1,68 @@
+.container {
+    align-items: center;
+    background: var(--color-theme-medium);
+    border-radius: 8px;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.noTag {
+    width:100px;
+}
+
+.input {
+    appearance: textfield;
+    background: transparent;
+    border: none;
+    box-sizing: border-box;
+    color: #fff;
+    font-size: var(--font-size-6);
+    line-height: var(--line-size-6);
+    text-align: center;
+    width: 40px;
+}
+
+.input::-webkit-outer-spin-button,
+.input::-webkit-inner-spin-button {
+    appearance: none;
+    margin: 0;
+}
+
+.button {
+    background: transparent;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    display: inline-block;
+    font-size: var(--font-size-6);
+    font-weight: bold;
+    line-height: var(--line-size-6);
+    text-align: center;
+    user-select: none;
+    width: 30px;
+}
+
+.field {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+}
+
+.tag {
+    align-items: center;
+    display: flex;
+    height: 26px;
+    padding-left: var(--space-small);
+    padding-right: var(--space-small);
+    user-select: none;
+}
+
+.button:hover,
+.input:hover,
+.input:focus,
+.input:hover~.tag,
+.input:focus~.tag {
+    background-color: var(--color-theme-light);
+}

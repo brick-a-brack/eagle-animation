@@ -1,0 +1,20 @@
+.input {
+  background: var(--color-theme-medium);
+  border: 0;
+  border-radius: 8px;
+  box-sizing: border-box;
+  color: #fff;
+  display: inline-block;
+  font-size: var(--font-size-6);
+  height: 26px;
+  line-height: var(--line-size-6);
+  margin: 0;
+  overflow: hidden;
+  padding:0 var(--space-small);
+  width: 250px;
+}
+
+.input:hover,
+.input:focus {
+  background-color: var(--color-theme-light);
+}
