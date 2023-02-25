@@ -3,7 +3,7 @@ name: Eagle Animation - Build & package
 on:
   push:
     branches:
-      - 'dev'
+      - 'master'
 
 jobs:
   release:
@@ -18,7 +18,7 @@ jobs:
       - name: Clone source code
         uses: actions/checkout@v2
         with:
-          ref: refs/heads/dev
+          ref: refs/heads/master
           fetch-depth: 1
 
       - name: Use Node.js

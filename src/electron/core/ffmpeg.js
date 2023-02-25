@@ -9,7 +9,7 @@ const profiles = {
         codec: 'libx264',
         extension: 'mp4',
         pix_fmt: 'yuv420p',
-        preset: 'veryslow'
+        preset: 'ultrafast'
     },
     hevc: {
         codec: 'libx265',
