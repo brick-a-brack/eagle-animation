@@ -85,7 +85,6 @@ const Export = ({ t }) => {
         if (data.mode === 'send') {
             setPublicCode(newCode);
         }
-        console.log('dbg', newCode)
 
         await window.EA('EXPORT', {
             mode: data.mode,

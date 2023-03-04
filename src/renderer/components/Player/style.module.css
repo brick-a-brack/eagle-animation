@@ -53,6 +53,49 @@
     width: 90%;
 }
 
+.settings {
+    background: rgb(0 0 0 / 80%);
+    box-sizing: border-box;
+    height: 100%;
+    max-width: 350px;
+    overflow-y: scroll;
+    padding: var(--space-medium) var(--space-big);
+    position: absolute;
+    right: 0;
+    transform: translateX(101%);
+    transition: transform .5s ease-in-out;
+    width: 100%;
+}
+
+.settingsTitle {
+    text-align: center;
+}
+
+.settingsReset {
+    margin: auto;
+}
+
+.settings.open {
+    transform: translateX(0%);
+}
+
+.settings::-webkit-scrollbar {
+    width: 15px;
+}
+
+.settings::-webkit-scrollbar-thumb {
+    background-clip: padding-box;
+    background-color: var(--color-primary);
+    border: 3px solid transparent;
+    border-radius: 8px;
+    cursor: pointer;
+    min-height: 50px;
+}
+
+.settings::-webkit-scrollbar-track {
+    background-color: rgb(0 0 0 / 0%);
+}
+
 @keyframes rotate {
     0% {
         border-radius: 10%;

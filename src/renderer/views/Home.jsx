@@ -16,7 +16,6 @@ const HomeView = ({ t }) => {
 
     useEffect(() => {
         (async () => {
-            setLatestVersion((await window.EA('GET_LAST_VERSION'))?.version || null)
             setProjects(await window.EA('GET_PROJECTS'));
             window.EA('SYNC');
 
@@ -26,6 +25,9 @@ const HomeView = ({ t }) => {
                 DevicesInstance.setMainCamera(userSettings.CAMERA_ID);
             }
             DevicesInstance.init();
+
+            // Fetch updates
+            setLatestVersion((await window.EA('GET_LAST_VERSION').catch(() => null))?.version || null);
         })();
     }, []);
 

@@ -114,7 +114,7 @@ const actions = {
     SYNC: async () => {
         let syncList = await getSyncList(PROJECTS_PATH);
 
-        console.log(`Starting events videos sync`, syncList);
+        console.log('[SYNC]', 'Starting event videos sync', syncList);
 
         for (let i = 0; i < syncList.length; i++) {
             const syncElement = syncList[i];
@@ -129,7 +129,7 @@ const actions = {
             }
         }
 
-        console.log(`End of sync`, syncList);
+        console.log('[SYNC]', 'End of sync', syncList);
     },
     EXPORT: async (evt, {
         project_id,

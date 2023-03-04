@@ -3,6 +3,11 @@ import PropTypes from 'prop-types';
 import { isEqual } from 'lodash';
 
 import * as style from './style.module.css';
+import Slider from '../CustomSlider';
+import FormGroup from '../FormGroup';
+import Heading from '../Heading';
+import Switch from '../Switch';
+import ActionCard from '../ActionCard';
 
 const drawArea = (ctx, x, y, width, height) => {
     ctx.fillRect(x, y, width, 1);
@@ -144,6 +149,10 @@ class Player extends Component {
                 this.showFrame(false);
             }
         }
+
+        if (!isEqual(prevProps.capabilities, this.props.capabilities)) {
+            this.showFrame(false);
+        }
     }
 
     componentWillUnmount() {
@@ -236,11 +245,58 @@ class Player extends Component {
 
     render() {
         const {
-            showGrid, onionValue, blendMode, isCameraReady, t
+            showGrid, onionValue, blendMode, isCameraReady, t, capabilities, showCameraSettings
         } = this.props;
         const {
             width, height, ready, frameIndex
         } = this.state;
+
+        const capsTranslations = {
+            'brightness': t('Brightness'),
+            'colorTemperature': t('White balance'),
+            'contrast': t('Contrast'),
+            'focusDistance': t('Focus'),
+            'focusMode': t('Automatic focus'),
+            'exposureCompensation': t('Exposure compensation'),
+            'exposureMode': t('Automatic exposure'),
+            'exposureTime': t('Exposure time'),
+            'pan': t('Horizontal position'),
+            'saturation': t('Saturation'),
+            'sharpness': t('Sharpness'),
+            'tilt': t('Vertical position'),
+            'whiteBalanceMode': t('Automatic white balance'),
+            'zoom': t('Zoom'),
+        }
+
+        const caps = capabilities.map(e => {
+            // Not supported
+            if (!e) {
+                return null;
+            }
+
+            // Remove focus slider if focus is set as automatic
+            if (e.id === 'focusDistance' && capabilities.find(c => c.id === 'focusMode').value === 'continuous') {
+                return null;
+            }
+
+            // Remove exposition settings if exposition is set as automatic
+            if ((e.id === 'exposureTime' || e.id === 'exposureCompensation') && capabilities.find(c => c.id === 'exposureMode').value === 'continuous') {
+                return null;
+            }
+
+            // Remove colorTemperature if white balance is set as automatic
+            if (e.id === 'colorTemperature' && capabilities.find(c => c.id === 'whiteBalanceMode').value === 'continuous') {
+                return null;
+            }
+
+            // Hide tilt and pan if zoom is set to minimal value
+            if ((e.id === 'tilt' || e.id === 'pan') && capabilities.find(c => c.id === 'zoom').value === capabilities.find(c => c.id === 'zoom').min) {
+                return null;
+            }
+
+            return e;
+        }).filter(e => e);
+
         return (
             <div className={`${style.playerContainer} ${frameIndex === false ? style.live : ''}`}>
                 <div className={style.container} ref={this.dom.container} style={{ width: `${width}px`, height: `${height}px`, opacity: (ready) ? 1 : 0 }}>
@@ -264,8 +320,35 @@ class Player extends Component {
                     />
                     {!isCameraReady && frameIndex === false && <span className={style.loader} />}
                     {!isCameraReady && frameIndex === false && <div className={style.info}>{t('If your camera does not load, try changing it in the settings')}</div>}
+
+                    <div className={`${style.settings} ${showCameraSettings ? style.open : ''}`}>
+                        <Heading h={2} className={style.settingsTitle}>{t('Camera settings')}</Heading>
+
+                        {caps.map(cap => {
+                            if (cap.type === 'RANGE') {
+                                return <FormGroup key={cap.id} label={capsTranslations[cap.id]} description={t('[{{min}}, {{max}}] • {{value}}', { min: Math.round(cap.min), max: Math.round(cap.max), value: Math.round(cap.value) })}>
+                                    <Slider min={cap.min} max={cap.max} value={cap.value} step={cap.step} onChange={(value) => { this.props.onCapabilityChange(cap.id, value) }} />
+                                </FormGroup>
+                            }
+                            if (cap.type === 'SWITCH') {
+                                return <FormGroup key={cap.id} label={capsTranslations[cap.id]}>
+                                    <Switch checked={cap.value === 'continuous'} onChange={() => {
+                                        if (cap.value === 'continuous') {
+                                            this.props.onCapabilityChange(cap.id, 'manual');
+                                        } else {
+                                            this.props.onCapabilityChange(cap.id, 'continuous');
+                                        }
+                                    }} />
+                                </FormGroup>
+                            }
+                            return null;
+                        })}
+
+                        <ActionCard className={style.settingsReset} title={t('Reset settings')} action={() => this.props.onCapabilitiesReset()} sizeAuto secondary />
+                    </div>
+
                 </div>
-            </div>
+            </div >
         );
     }
 }

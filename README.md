@@ -13,7 +13,7 @@ __EagleAnimation__ is an awesome, free and open-source stop motion animation sof
 - 😎 **The highest quality** - Use all the power of your camera and animate with the best quality possible!
 - 💡 **Animator tools** - Thanks to onion skin, grid tools and difference mode, animating has never been so easy.
 - 💾 **Easy export** - Export your animation to a video file or export frames to use them in video editing software.
-- ⚙️ **Adjust camera settings** - Control and adjust your camera settings (Soon).
+- ⚙️ **Adjust camera settings** - Control and adjust your camera settings.
 - 🪄 **Frame averaging** - Capture several frames and merge them to reduce picture noise automatically.
 - 🥖 **Oui-Oui-Baguette** - The software is available in several languages to allow everyone to use it.
 
