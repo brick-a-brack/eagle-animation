@@ -2,6 +2,7 @@ import Slider from "rc-slider";
 import 'rc-slider/assets/index.css';
 
 const CustomSlider = ({ step, min, max, value, onChange = () => { }, ...rest }) => (<Slider
+    keyboard={false}
     {...rest}
     step={step}
     min={min}

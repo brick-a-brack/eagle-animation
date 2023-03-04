@@ -58,6 +58,7 @@ const Animator = ({ t }) => {
 
     const [isPlaying, setIsPlaying] = useState(false);
     const [settings, setSettings] = useState(null);
+    const [showCameraSettings, setShowCameraSettings] = useState(false);
     const [isCameraReady, setIsCameraReady] = useState(false);
     const [isTakingPicture, setIsTakingPicture] = useState(false);
     const [isMuted, setIsMuted] = useState(false);
@@ -68,6 +69,8 @@ const Animator = ({ t }) => {
     const [onionValue, setOnionValue] = useState(1);
     const [gridStatus, setGridStatus] = useState(false);
     const [currentFrameId, setCurrentFrameId] = useState(false);
+    const [disableKeyboardShortcuts, setDisableKeyboardShortcuts] = useState(false);
+    const [cameraCapabilities, setCameraCapabilities] = useState([]);
 
     const [project, setProject] = useState(null);
 
@@ -117,6 +120,8 @@ const Animator = ({ t }) => {
         const beforeFrame = pictures?.[e.newIndex - (e.newIndex > e.oldIndex ? -1 : 0)]?.id;
 
         setProject(await window.EA('MOVE_FRAME', { project_id: id, track_id: track, frame_id: frameId, before_frame_id: beforeFrame === null ? false : beforeFrame }));
+
+        playerRef.current.showFrame(frameId);
     }
 
     const actionsEvents = {
@@ -145,6 +150,7 @@ const Animator = ({ t }) => {
         },
         LOOP: () => { setLoopStatus(!loopStatus); },
         SHORT_PLAY: () => { setShortPlayStatus(!shortPlayStatus); },
+        CAMERA_SETTINGS: () => { setShowCameraSettings(!showCameraSettings); },
         DELETE_FRAME: async () => {
             if (currentFrameId === false) {
                 return;
@@ -197,6 +203,12 @@ const Animator = ({ t }) => {
             await window.EA('DELETE_PROJECT', { project_id: id });
             navigate(`/`);
         },
+        FPS_FOCUS: () => {
+            setDisableKeyboardShortcuts(true);
+        },
+        FPS_BLUR: () => {
+            setDisableKeyboardShortcuts(false);
+        },
     }
 
     const handlePlayerInit = (dom) => {
@@ -206,9 +218,20 @@ const Animator = ({ t }) => {
 
         Camera().init(dom, { forceMaxQuality: !!settings.FORCE_QUALITY }).catch(() => {
             setIsCameraReady(false);
+            setCameraCapabilities(Camera().getCapabilities());
         }).then(() => {
             setIsCameraReady(true);
+            setCameraCapabilities(Camera().getCapabilities());
         });
+    }
+
+    const handleCapabilityChange = (id, value) => {
+        Camera().applyCapability(id, value);
+        setCameraCapabilities(Camera().getCapabilities().map(e => e.id !== id ? e : { ...e, value }));
+    }
+
+    const handleCapabilityReset = () => {
+        setCameraCapabilities(Camera().resetCapabilities());
     }
 
     return <>
@@ -218,7 +241,10 @@ const Animator = ({ t }) => {
             isCameraReady={isCameraReady}
             onInit={handlePlayerInit}
             onFrameChange={setCurrentFrameId}
+            onCapabilityChange={handleCapabilityChange}
+            onCapabilitiesReset={handleCapabilityReset}
             onPlayingStatusChange={setIsPlaying}
+            showCameraSettings={showCameraSettings}
             pictures={pictures}
             onionValue={onionValue}
             showGrid={gridStatus}
@@ -226,6 +252,7 @@ const Animator = ({ t }) => {
             shortPlayStatus={shortPlayStatus}
             loopStatus={loopStatus}
             shortPlayFrames={parseInt(settings.SHORT_PLAY) || 1}
+            capabilities={cameraCapabilities}
             fps={fps}
             gridModes={settings.GRID_MODES}
             gridOpacity={parseFloat(settings.GRID_OPACITY)}
@@ -236,6 +263,8 @@ const Animator = ({ t }) => {
         <ActionsBar actions={['SETTINGS', 'EXPORT', 'DELETE_PROJECT']} position="RIGHT" onAction={handleAction} />
         <ControlBar
             onAction={handleAction}
+            showCameraSettings={showCameraSettings}
+            cameraSettingsAvailable={cameraCapabilities.length > 0}
             gridModes={settings.GRID_MODES}
             gridStatus={gridStatus}
             differenceStatus={differenceStatus}
@@ -257,7 +286,7 @@ const Animator = ({ t }) => {
             select={currentFrameId}
             playing={isPlaying}
         />
-        <KeyboardHandler onAction={handleAction} />
+        <KeyboardHandler onAction={handleAction} disabled={disableKeyboardShortcuts} />
         <audio src={soundDelete} ref={deleteSoundRef} />
         <audio src={soundShutter} ref={shutterSoundRef} />
     </>;

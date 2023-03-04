@@ -1,7 +1,8 @@
 import { withTranslation } from 'react-i18next';
 
 import Button from '../Button';
-import Camera from 'jsx:./assets/camera.svg';
+import IconCamera from 'jsx:./assets/camera.svg';
+import IconCameraSettings from 'jsx:./assets/camera-settings.svg';
 import IconPlay from 'jsx:./assets/play.svg';
 import IconStop from 'jsx:./assets/stop.svg';
 import IconShortPlay from 'jsx:./assets/short-play.svg';
@@ -29,6 +30,8 @@ const ControlBar = ({
     framePosition = false,
     frameQuantity = 0,
     canDeduplicate = false,
+    showCameraSettings = false,
+    cameraSettingsAvailable = true,
     gridModes = [],
     onAction = null,
     t,
@@ -42,9 +45,9 @@ const ControlBar = ({
     return <div className={style.container}>
         <div className={`${style.subcontainer} ${style.left}`}>
 
-            {!isPlaying && framePosition !== false && <Button title={t('Remove frame')} onClick={handleAction('DELETE_FRAME')} size="mini" icon={<IconRemove />} />}
             {!isPlaying && framePosition !== false && canDeduplicate && <Button title={t('Deduplicate frame')} onClick={handleAction('DEDUPLICATE')} size="mini" icon={<IconDeduplicate />} />}
             {!isPlaying && framePosition !== false && <Button title={t('Duplicate frame')} onClick={handleAction('DUPLICATE')} size="mini" icon={<IconDuplicate />} />}
+            {!isPlaying && framePosition !== false && <Button title={t('Remove frame')} onClick={handleAction('DELETE_FRAME')} size="mini" icon={<IconRemove />} />}
 
             <Button style={{ marginLeft: 'var(--space-big)' }} title={t('Difference')} selected={differenceStatus} onClick={handleAction('DIFFERENCE')} size="mini" icon={<IconCompare />} />
             {(gridModes.includes('GRID') || gridModes.includes('CENTER') || gridModes.includes('MARGINS')) && <Button title={gridStatus ? t('Disable grid') : t('Enable grid')} selected={gridStatus} onClick={handleAction('GRID')} size="mini" icon={<IconGrid />} />}
@@ -58,8 +61,10 @@ const ControlBar = ({
                     onChange={value => handleAction('ONION_CHANGE', value)()}
                 />
             </div>
+
+            {cameraSettingsAvailable && <Button style={{ marginLeft: 'var(--space-big)' }} title={t('Camera settings')} selected={showCameraSettings} onClick={handleAction('CAMERA_SETTINGS')} size="mini" icon={<IconCameraSettings />} />}
         </div>
-        <Button disabled={isTakingPicture || !isCameraReady} onClick={handleAction('TAKE_PICTURE')} size="normal" icon={<Camera />} />
+        <Button disabled={isTakingPicture || !isCameraReady} onClick={handleAction('TAKE_PICTURE')} size="normal" icon={<IconCamera />} />
         <div className={`${style.subcontainer} ${style.right}`}>
             <div className={style.progress}>
                 {framePosition === false && <span className={style.live}>{t('Live')}</span>}
@@ -71,7 +76,7 @@ const ControlBar = ({
             <Button title={!isPlaying ? t('Play') : t('Stop')} selected={isPlaying} onClick={handleAction('PLAY')} size="mini" icon={isPlaying ? <IconStop /> : <IconPlay />} />
             <Button title={t('Loop')} onClick={handleAction('LOOP')} selected={loopStatus} size="mini" icon={<IconLoop />} />
             <Button title={t('Short play')} onClick={handleAction('SHORT_PLAY')} selected={shortPlayStatus} size="mini" icon={<IconShortPlay />} />
-            <NumberInput style={{ marginLeft: 'var(--space-big)' }} min={1} max={60} tag={t('FPS')} defaultValue={fps} onValueChange={v => handleAction('FPS_CHANGE', v)()} />
+            <NumberInput onBlur={() => handleAction('FPS_BLUR')()} onFocus={() => handleAction('FPS_FOCUS')()} style={{ marginLeft: 'var(--space-big)' }} min={1} max={60} tag={t('FPS')} defaultValue={fps} onValueChange={v => handleAction('FPS_CHANGE', v)()} />
             <CustomTooltip anchorId="onion" />
         </div>
     </div>

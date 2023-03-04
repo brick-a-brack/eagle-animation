@@ -4,8 +4,6 @@ import gridIcon from './assets/grid.png';
 import marginsIcon from './assets/margins.png';
 import centerIcon from './assets/center.png';
 
-console.log(GridIcon)
-
 const GridIcon = ({ title = '', selected = false, value = '', register = {} }) => (
     <label className={`${style.field} ${selected ? style.selected : ''}`} title={title}>
         <input {...register} type="checkbox" className={style.input} value={value} />

@@ -1,3 +1,39 @@
+const allowedCapabilities = [
+    'focusMode',
+    'focusDistance',
+    'brightness',
+    'contrast',
+    /*teinte*/
+    'saturation',
+    'sharpness',
+    /* gamma correction */
+    'whiteBalanceMode',
+    'colorTemperature',
+    'exposureMode',
+    'exposureCompensation',
+    'exposureTime',
+    'zoom',
+    'tilt',
+    'pan'
+];
+
+const defaultCapabilities = {
+    'brightness': 128,
+    'contrast': 128,
+    'colorTemperature': 2200,
+    'exposureCompensation': 0,
+    'exposureMode': 'continuous',
+    'exposureTime': 625,
+    'focusDistance': 0,
+    'focusMode': 'continuous',
+    'pan': 0,
+    'resizeMode': 'none',
+    'saturation': 128,
+    'sharpness': 128,
+    'tilt': 0,
+    'whiteBalanceMode': 'continuous',
+    'zoom': 100,
+};
 
 class Webcam {
     constructor(deviceId = null) {
@@ -7,6 +43,41 @@ class Webcam {
         this.video = false;
         this.width = false;
         this.height = false;
+
+        this.capabilitiesState = {};
+        this.previousCapabilitiesState = {};
+        this.capabilities = null;
+
+        setInterval(async () => {
+            if (!this.stream) {
+                return;
+            }
+
+            const mediaStreamTrack = this.stream.getVideoTracks()[0];
+            const settings = mediaStreamTrack.getSettings();
+
+            for (const cap of allowedCapabilities) {
+                if (settings[cap] !== this.capabilitiesState[cap] && this.previousCapabilitiesState[cap] !== this.capabilitiesState[cap]) {
+                    const mediaStreamTrack = this.stream.getVideoTracks()[0];
+                    const toApply = [{
+                        [cap]: this.capabilitiesState[cap],
+                        ...(cap === 'focusMode' ? { focusDistance: settings.focusDistance } : {}),
+                        ...(cap === 'exposureMode' ? {
+                            exposureCompensation: settings.exposureCompensation,
+                            exposureTime: settings.exposureTime,
+                        } : {}),
+                        ...(cap === 'whiteBalanceMode' ? { colorTemperature: settings.colorTemperature } : {}),
+                        ...(cap === 'zoom' ? { pan: settings.pan, tilt: settings.tilt } : {}),
+                    }];
+                    console.log('[CAMERA]', 'Apply setting', cap, this.capabilitiesState[cap]);
+                    mediaStreamTrack.applyConstraints({
+                        advanced: toApply
+                    }).catch(console.error);
+                }
+            }
+
+            this.previousCapabilitiesState = { ...this.capabilitiesState };
+        }, 100);
     }
 
     initPreview() {
@@ -21,9 +92,12 @@ class Webcam {
                 audio: false
             }).catch((err) => console.error('failed', err));
 
-            console.log('CAMERA INIT', this.video, this.stream)
+            console.log('[CAMERA]', 'Init', this.video, this.stream)
 
-            // window.DEVICE = this.stream;
+            window.DEVICE = this.stream;
+
+            this.capabilities = this.stream?.getVideoTracks()?.[0] ? this.stream.getVideoTracks()[0].getCapabilities() : [];
+            this.capabilitiesState = {...defaultCapabilities};
 
             // Launch preview
             if (this.video) {
@@ -35,9 +109,44 @@ class Webcam {
                     resolve();
                 });
 
-                console.log('CAMERA OK')
+                console.log('[CAMERA]', 'Ready')
             }
         });
+    }
+
+    resetCapabilities() {
+        this.capabilitiesState = {...defaultCapabilities};
+        return allowedCapabilities.filter(e => this.capabilities[e]).map(e => ({
+            id: e,
+            type: ['exposureMode', 'focusMode', 'resizeMode', 'whiteBalanceMode'].includes(e) ? 'SWITCH' : 'RANGE',
+            ...this.capabilities[e],
+            value: defaultCapabilities[e],
+        }))
+    }
+
+    applyCapability(key, value) {
+        if (!this.stream || !this.capabilities) {
+            return null;
+        }
+
+        this.capabilitiesState[key] = value;
+    }
+
+    getCapabilities() {
+        if (!this.stream || !this.capabilities) {
+            return [];
+        }
+
+        const mediaStreamTrack = this.stream.getVideoTracks()[0]
+        const settings = mediaStreamTrack.getSettings();
+        //const supported = navigator.mediaDevices.getSupportedConstraints();
+
+        return allowedCapabilities.filter(e => this.capabilities[e]).map(e => ({
+            id: e,
+            type: ['exposureMode', 'focusMode', 'resizeMode', 'whiteBalanceMode'].includes(e) ? 'SWITCH' : 'RANGE',
+            ...this.capabilities[e],
+            value: settings[e],
+        }))
     }
 
     init(video = false, settings = {}) {
@@ -109,7 +218,7 @@ class Webcam {
 
     async takePictureToCanvas() {
         if (!this.stream) {
-            console.error('Camera is not correctly initialized!')
+            console.error('[Camera]', 'Not correctly initialized!')
             return;
         }
 
