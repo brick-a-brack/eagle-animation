@@ -36,7 +36,7 @@
     "@parcel/transformer-svg-react": "^2.8.3",
     "buffer": "^5.5.0",
     "electron": "^23.1.0",
-    "electron-builder": "^23.6.0",
+    "electron-builder": "^24.2.1",
     "eslint": "8.34.0",
     "eslint-plugin-react": "7.32.2",
     "husky": "^8.0.3",
