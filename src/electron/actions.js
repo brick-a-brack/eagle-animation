@@ -1,5 +1,5 @@
 import { join } from 'path-browserify';
-import mkdirp from 'mkdirp';
+import { mkdirp } from 'mkdirp';
 import { homedir } from 'os';
 import fetch from 'node-fetch';
 import { shell } from 'electron';

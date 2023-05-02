@@ -1,7 +1,7 @@
 import { Parcel } from '@parcel/core';
-import { exec, spawn } from 'child_process';
+import { spawn } from 'child_process';
 import { copyFile } from 'fs/promises';
-import mkdirp from 'mkdirp';
+import { mkdirp } from 'mkdirp';
 import { fileURLToPath } from 'url';
 
 const isWatching = process.argv.includes('--watch')
@@ -64,7 +64,7 @@ const watchTask = async (bun, callback = () => { }) => {
 
         if (event.type === 'buildSuccess') {
             let bundles = event.bundleGraph.getBundles();
-            console.log(`✨ WBuilt ${bundles.length} bundles in ${event.buildTime}ms!`);
+            console.log(`✨ Built ${bundles.length} bundles in ${event.buildTime}ms!`);
             callback(bundles)
         } else if (event.type === 'buildFailure') {
             console.log(event.diagnostics || event);
