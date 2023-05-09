@@ -16,7 +16,7 @@ module.exports = {
     trans: {
       extensions: [],
     },
-    lngs: ['en', 'fr'],
+    lngs: ['en', 'fr', 'de'],
     defaultValue: (lng, ns, key) => (lng === 'en' ? key : '__NOT_TRANSLATED__'),
     resource: {
       loadPath: 'static/i18n/{{lng}}.json',

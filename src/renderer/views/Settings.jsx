@@ -77,6 +77,10 @@ const SettingsView = ({ t }) => {
             value: 'fr',
             label: t('Français'),
         },
+        {
+            value: 'de',
+            label: t('Deutsh') + ' ' + t('(Automated)'),
+        },
     ];
 
     const handleBack = async () => {
