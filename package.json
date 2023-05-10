@@ -53,6 +53,7 @@
   "dependencies": {
     "animated-scroll-to": "^2.3.0",
     "compare-versions": "^6.0.0-rc.1",
+    "env-paths": "^2.2.1",
     "ffmpeg-static": "^5.1.0",
     "i18next-browser-languagedetector": "^7.0.1",
     "i18next-http-backend": "^2.2.0",
