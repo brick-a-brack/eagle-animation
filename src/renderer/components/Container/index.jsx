@@ -9,7 +9,7 @@ import * as style from './style.module.css';
 const Container = ({ children, t }) => {
 
     useEffect(() => {
-        document.title = t('Eagle Animation by Brick à Brack');
+        document.title = t('Eagle Animation by Brick à Brack') + ' (Brickfilms.com)';
     })
 
     return (<TooltipProvider>

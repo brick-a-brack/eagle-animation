@@ -1,8 +1,9 @@
 import { join } from 'path-browserify';
-import mkdirp from 'mkdirp';
+import { mkdirp } from 'mkdirp';
 import { homedir } from 'os';
 import fetch from 'node-fetch';
 import { shell } from 'electron';
+import envPaths from 'env-paths';
 
 import { CONTRIBUTE_REPOSITORY, DIRECTORY_NAME } from '../config';
 import { applyProjectFrameLengthOffset, createProject, deleteProject, deleteProjectFrame, getProjectData, getProjectsList, moveFrame, renameProject, takePicture, updateSceneFPSvalue } from './core/projects';
@@ -11,8 +12,12 @@ import { selectFile, selectFolder } from './core/utils';
 import { exportProjectScene, getSyncList, normalizePictures, saveSyncList } from './core/export';
 import { getProfile } from './core/ffmpeg';
 import { uploadFile } from './core/api';
+import { existsSync } from 'fs';
 
-const PROJECTS_PATH = join(homedir(), DIRECTORY_NAME);
+const OLD_PROJECTS_PATH = join(homedir(), DIRECTORY_NAME);
+const PROJECTS_PATH = existsSync(OLD_PROJECTS_PATH) ? OLD_PROJECTS_PATH : envPaths(DIRECTORY_NAME, { suffix: '' }).data;
+
+console.log(PROJECTS_PATH)
 
 const getDefaultPreview = (data) => {
     for (let i = 0; i < (data?.project?.scenes?.length || 0); i++) {

@@ -107,5 +107,6 @@
   "{{label}} ({{value}})": "{{label}} ({{value}})",
   "[{{min}}, {{max}}]": "[{{min}}, {{max}}]",
   "[{{min}}, {{max}}] • {{value}}": "[{{min}}, {{max}}] • {{value}}",
-  "Reset settings": "Reset settings"
+  "Reset settings": "Reset settings",
+  "(Automated)": "(Automated)"
 }

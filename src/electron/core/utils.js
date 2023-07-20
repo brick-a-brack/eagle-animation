@@ -1,4 +1,4 @@
-import mkdirp from "mkdirp";
+import { mkdirp } from 'mkdirp';
 import { copyFile } from 'fs';
 import { dialog } from "electron";
 
