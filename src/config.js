@@ -34,8 +34,8 @@ export const LANGUAGES = [{
     tLabel: t => t('Français'),
 }, {
     value: 'de',
-    label: 'Deutsh',
-    tLabel: t => t('Deutsh'),
+    label: 'Deutsch',
+    tLabel: t => t('Deutsch'),
 }];
 
 // Allowed languages
