@@ -79,7 +79,7 @@ const SettingsView = ({ t }) => {
         },
         {
             value: 'de',
-            label: t('Deutsh') + ' ' + t('(Automated)'),
+            label: t('Deutsch'),
         },
     ];
 
