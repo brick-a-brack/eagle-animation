@@ -18,7 +18,6 @@ jobs:
       - name: Clone source code
         uses: actions/checkout@v2
         with:
-          ref: refs/heads/master
           fetch-depth: 1
 
       - name: Use Node.js
