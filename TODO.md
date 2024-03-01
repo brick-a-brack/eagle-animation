@@ -9,7 +9,6 @@
 - Add a light theme
 - Add the ability to mirror the camera image (X + Y)
 - Aspect ratio support and allow opacity configuration on settings page
-- Ability to mark frame as "masked" to test an animation without some frames, can be usefull before a deletion
 - Multi scene/take support
 - Allow drawing for easing help
 - Allow to export/import a project
@@ -17,3 +16,12 @@
 - Support cameras
 - Webapp version
 - Mobile version (Based on capacitor)
+
+
+---
+
+- Nom du projet dans la barre en haut
+- Parametre de projet
+- opti thumbnail
+- Ability to mark frame as "masked" to test an animation without some frames, can be usefull before a deletion
+-le m ne synchro pas le mute dans les settings

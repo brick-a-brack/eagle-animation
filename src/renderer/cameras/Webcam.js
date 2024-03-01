@@ -118,7 +118,7 @@ class Webcam {
         });
     }
 
-    resetCapabilities() {
+    async resetCapabilities() {
         this.capabilitiesState = { ...defaultCapabilities };
         return allowedCapabilities.filter(e => this.capabilities[e]).map(e => ({
             id: e,
@@ -128,15 +128,17 @@ class Webcam {
         }))
     }
 
-    applyCapability(key, value) {
+    async applyCapability(key, value) {
         if (!this.stream || !this.capabilities) {
             return null;
         }
 
         this.capabilitiesState[key] = value;
+
+        return null;
     }
 
-    getCapabilities() {
+    async getCapabilities() {
         if (!this.stream || !this.capabilities) {
             return [];
         }

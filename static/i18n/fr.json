@@ -108,5 +108,6 @@
   "[{{min}}, {{max}}]": "[{{min}}, {{max}}]",
   "[{{min}}, {{max}}] • {{value}}": "[{{min}}, {{max}}] • {{value}}",
   "Reset settings": "Réinitialiser",
-  "(Automated)": "(Automatique)"
+  "(Automated)": "(Automatique)",
+  "Grid": "Grille"
 }

@@ -1,5 +1,10 @@
 import {
-    Camera as InternalCamera, CameraBrowser as InternalCameraBrowser, CameraProperty, ImageQuality, Option, watchCameras
+    Camera as InternalCamera,
+    CameraBrowser as InternalCameraBrowser,
+    CameraProperty,
+    ImageQuality,
+    Option,
+    watchCameras,
 } from '@dimensional/napi-canon-cameras';
 
 // Allow event listing
@@ -42,16 +47,19 @@ class CanonCamera {
 
         // Catch events
         this.canonCamera.setEventHandler((eventName, event) => {
-           if (event.file && [InternalCamera.EventName.FileCreate, InternalCamera.EventName.DownloadRequest].includes(eventName)) {
-               this.lastFrame = `${event.file.downloadToString()}`;
-           }
-       });
+            if (event.file && [InternalCamera.EventName.FileCreate, InternalCamera.EventName.DownloadRequest].includes(eventName)) {
+                this.lastFrame = `${event.file.downloadToString()}`;
+            }
+        });
+
+        // Camera capabilities
+        this.capabilities = [];
     }
 
     async connect(liveModeCallback = null) {
         // Save live mode callback
         this.liveModeCallback = liveModeCallback;
-        
+
         // Create persistent connection
         this.canonCamera.connect(true);
 
@@ -78,33 +86,23 @@ class CanonCamera {
                         if (image) {
                             this.liveModeCallback(image.getDataURL());
                         }
-                    } catch (e) { }
+                    } catch (e) { } // eslint-disable-line no-empty
                 }
             }, 100);
         }
 
-        //---------------------------TEST
-
-        /* const settings = [];
-         for (const propertyID of Object.values(CameraProperty.ID)) {
-             const p = this.canonCamera.getProperty(propertyID);
-             if (!p.available) {
-                 continue;
-             }
-             try {
-                 const value = p.value;
-                 settings.push(p);
-             } catch (e) {
-                 console.error(
-                     p, e
-                 );
-             }
-         }
-         console.log(JSON.parse(JSON.stringify(settings)));
- 
- */
-        //-------------------------
-
+        // Fetch capabilities
+        this.capabilities = [];
+        for (const propertyID of Object.values(CameraProperty.ID)) {
+            const p = this.canonCamera.getProperty(propertyID);
+            if (!p.available) {
+                continue;
+            }
+            try {
+                //const value = p.value;
+                this.capabilities.push(p);
+            } catch (e) { } // eslint-disable-line no-empty
+        }
     }
 
     async disconnect() {
@@ -139,6 +137,54 @@ class CanonCamera {
                 reject(err);
             }
         });
+    }
+
+    applyCapability(key, value) {
+        // Focus mode
+        if (key === 'focusMode' && this.capabilities.some(c => c.label === 'AFMode')) {
+            this.canonCamera.setProperties({
+                [CameraProperty.ID.AFMode]: value === 'continuous' ? Option.AFMode.AIFocus : Option.AFMode.ManualFocus,
+            });
+        }
+
+        // TODO
+
+        return null;
+    }
+
+    resetCapabilities() {
+        // TODO
+    }
+
+    getCapabilities() {
+        const AFMode = this.capabilities.find(c => c.label === 'AFMode');
+
+        const allowedCapabilities = [
+            // Focus mode
+            ...(AFMode ? [
+                { id: 'focusMode', type: 'SWITCH', value: AFMode.value.label === 'AFMode.ManualFocus' ? 'manual' : 'continuous' },
+            ] : []),
+
+            /*
+                'focusMode',
+                'focusDistance',
+                'brightness',
+                'contrast',
+             
+                'saturation',
+                'sharpness',
+          
+                'whiteBalanceMode',
+                'colorTemperature',
+                'exposureMode',
+                'exposureCompensation',
+                'exposureTime',
+                'zoom',
+                'tilt',
+                'pan'*/
+        ];
+
+        return allowedCapabilities;
     }
 }
 

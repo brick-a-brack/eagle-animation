@@ -221,20 +221,20 @@ const Animator = ({ t }) => {
 
         Camera().connect({videoDOM, imageDOM}, { forceMaxQuality: !!settings.FORCE_QUALITY }).catch(() => {
             setIsCameraReady(false);
-            setCameraCapabilities(Camera().getCapabilities());
+            Camera().getCapabilities().then(setCameraCapabilities);
         }).then(() => {
             setIsCameraReady(true);
-            setCameraCapabilities(Camera().getCapabilities());
+            Camera().getCapabilities().then(setCameraCapabilities);
         });
     }
 
-    const handleCapabilityChange = (id, value) => {
-        Camera().applyCapability(id, value);
-        setCameraCapabilities(Camera().getCapabilities().map(e => e.id !== id ? e : { ...e, value }));
+    const handleCapabilityChange = async (id, value) => {
+        await Camera().applyCapability(id, value);
+        setCameraCapabilities((await Camera().getCapabilities()).map(e => e.id !== id ? e : { ...e, value }));
     }
 
-    const handleCapabilityReset = () => {
-        setCameraCapabilities(Camera().resetCapabilities());
+    const handleCapabilityReset = async () => {
+        Camera().resetCapabilities().then(setCameraCapabilities);
     }
 
     return <>

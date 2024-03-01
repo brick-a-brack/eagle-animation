@@ -22,7 +22,7 @@ class NativeProxy {
         return this?.context?.id || null;
     }
 
-    #drawLivePreview(dom, src) {
+    _drawLivePreview(dom, src) {
         if (!dom || !src) {
             return;
         }
@@ -56,21 +56,22 @@ class NativeProxy {
 
             // TODO: ADD EA Interface for that
             window.IPC.stream('LIVE_VIEW_DATA', (evt, args) => {
-                this.#drawLivePreview(this.video, args.data);
+                this._drawLivePreview(this.video, args.data);
             });
         });
     }
 
-    resetCapabilities() {
-
+    async resetCapabilities() {
+        return window.EA('RESET_CAPABILITIES_NATIVE_CAMERA', { camera_id: this.context.id });
     }
 
-    applyCapability(key, value) { // eslint-disable-line no-unused-vars
-
+    async applyCapability(key, value = null) {
+        window.EA('APPLY_CAPABILITY_NATIVE_CAMERA', { camera_id: this.context.id, key, value });
+        return null;
     }
 
-    getCapabilities() {
-        return [];
+    async getCapabilities() {
+        return window.EA('GET_CAPABILITIES_NATIVE_CAMERA', { camera_id: this.context.id });
     }
 
     async connect({ imageDOM } = { imageDOM: false }, settings = {}) {

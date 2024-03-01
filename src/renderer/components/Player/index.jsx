@@ -252,6 +252,9 @@ class Player extends Component {
             width, height, ready, frameIndex
         } = this.state;
 
+
+        console.log('CAP', capabilities)
+
         const capsTranslations = {
             'brightness': t('Brightness'),
             'colorTemperature': t('White balance'),
@@ -267,7 +270,7 @@ class Player extends Component {
             'tilt': t('Vertical position'),
             'whiteBalanceMode': t('Automatic white balance'),
             'zoom': t('Zoom'),
-        }
+        };
 
         const caps = capabilities.map(e => {
             // Not supported
@@ -296,7 +299,7 @@ class Player extends Component {
             }
 
             return e;
-        }).filter(e => e);
+        }).filter(Boolean);
 
         return (
             <div className={`${style.playerContainer} ${frameIndex === false ? style.live : ''}`}>
@@ -306,10 +309,9 @@ class Player extends Component {
                         className={style.layout}
                         style={{ opacity: frameIndex === false ? 1 : 0 }}
                     />
-                    <canvas ref={this.dom.videoFrame}
-                        className={style.layout}
-                        style={{ opacity: frameIndex === false ? 1 : 0 }}
-                    />
+                    <div style={{ opacity: frameIndex === false ? 1 : 0 }} className={style.layout}>
+                        <canvas ref={this.dom.videoFrame} className={style.layoutVideoFrame} />
+                    </div>
                     <canvas
                         ref={this.dom.picture}
                         className={style.layout}

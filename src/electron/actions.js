@@ -121,6 +121,29 @@ const actions = {
         }
         return null;
     },
+    GET_CAPABILITIES_NATIVE_CAMERA: async (evt, { camera_id }) => {
+        const camera = await getCamera(camera_id);
+        if (camera) {
+            return camera.getCapabilities();
+        }
+        return [];
+    },
+    APPLY_CAPABILITY_NATIVE_CAMERA: async (evt, { camera_id, key, value }) => {
+        const camera = await getCamera(camera_id);
+        if (camera) {
+            camera.applyCapability(key, value);
+            return null;
+        }
+        return null;
+    },
+    RESET_CAPABILITIES_NATIVE_CAMERA: async (evt, { camera_id }) => {
+        const camera = await getCamera(camera_id);
+        if (camera) {
+            camera.resetCapabilities();
+            return camera.getCapabilities();
+        }
+        return [];
+    },
     CONNECT_NATIVE_CAMERA: async (evt, { camera_id }, sendToRenderer) => {
         const camera = await getCamera(camera_id);
         if (camera) {

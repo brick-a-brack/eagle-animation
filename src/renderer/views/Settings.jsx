@@ -129,6 +129,12 @@ const SettingsView = ({ t }) => {
                         onChange={value => { setValue('RATIO_OPACITY', value); }}
                     />
                 </FormGroup>*/}
+                <Heading h={1}>{t('Grid')}</Heading>
+                <FormGroup label={t('Grid modes')} description={t('Grid modes to use for the grid display')}>
+                    <GridIcon value="GRID" title={t('Classic grid')} register={register('GRID_MODES')} selected={watch('GRID_MODES').includes('GRID')} />
+                    <GridIcon value="CENTER" title={t('Center')} register={register('GRID_MODES')} selected={watch('GRID_MODES').includes('CENTER')} />
+                    <GridIcon value="MARGINS" title={t('Margins')} register={register('GRID_MODES')} selected={watch('GRID_MODES').includes('MARGINS')} />
+                </FormGroup>
                 <FormGroup label={t('Grid opacity')} description={t('The opacity of the grid layer')}>
                     <CustomSlider
                         step={0.01}
@@ -137,11 +143,6 @@ const SettingsView = ({ t }) => {
                         value={watch('GRID_OPACITY')}
                         onChange={value => { setValue('GRID_OPACITY', value); }}
                     />
-                </FormGroup>
-                <FormGroup label={t('Grid modes')} description={t('Grid modes to use for the grid display')}>
-                    <GridIcon value="GRID" title={t('Classic grid')} register={register('GRID_MODES')} selected={watch('GRID_MODES').includes('GRID')} />
-                    <GridIcon value="CENTER" title={t('Center')} register={register('GRID_MODES')} selected={watch('GRID_MODES').includes('CENTER')} />
-                    <GridIcon value="MARGINS" title={t('Margins')} register={register('GRID_MODES')} selected={watch('GRID_MODES').includes('MARGINS')} />
                 </FormGroup>
                 {watch('GRID_MODES')?.includes('GRID') && <FormGroup label={t('Grid lines')} description={t('Number of lines of the grid layer')}>
                     <NumberInput register={register('GRID_LINES')} min={1} max={12} />

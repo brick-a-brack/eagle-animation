@@ -10,23 +10,23 @@
     line-height: 80px;
     margin-left: 5px;
     margin-right: 5px;
-    opacity: 0.8;
     padding: 10px;
     position: relative;
     text-align: center;
-    transition: all .5s ease-in-out;
+    transition: all .3s ease-in-out;
     user-select: none;
     width: 80px;
 }
 
 .button:hover {
-    opacity: 1;
+    background-color: hsl(225 75% 62% / 1);
 }
 
 .buttonMini {
     align-content: center;
     align-items: center;
-    background-color: #7f8186;
+    /*background-color: #7f8186;*/
+    background-color: var(--color-theme-medium);
     border-radius: 50%;
     cursor: pointer;
     display: flex;
@@ -34,21 +34,37 @@
     justify-content: center;
     line-height: 40px;
     margin: 5px;
-    opacity: 0.5;
     padding: 5px;
     position: relative;
     text-align: center;
     user-select: none;
     width: 40px;
+    transition: all .3s ease-in-out;
 }
 
 .buttonMini:hover {
-    opacity: 0.6;
+    background-color: var(--color-theme-light);
 }
 
 .buttonMini.selected {
-    opacity: 1;
+    background-color: var(--color-primary);
 }
+
+.buttonMini.selectedWarning {
+    background-color: var(--color-alert);
+}
+
+
+.buttonMini.selected:hover {
+    background-color: hsl(225 75% 62% / 1);
+}
+
+.buttonMini.selectedWarning:hover {
+    background-color: hsl(0 75% 62% / 1);
+}
+
+
+
 
 .button>svg,
 .buttonMini>svg {
