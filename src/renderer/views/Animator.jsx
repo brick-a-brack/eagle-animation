@@ -11,6 +11,7 @@ import Timeline from "../components/Timeline";
 import soundDelete from 'url:~/static/sounds/delete.mp3';
 import soundShutter from 'url:~/static/sounds/shutter.mp3';
 import DevicesInstance from "../core/Devices";
+import { takePicture } from "../cameras";
 
 const Camera = () => DevicesInstance.getMainCamera();
 
@@ -142,8 +143,10 @@ const Animator = ({ t }) => {
                 if (!isMuted && settings.SOUNDS) {
                     shutterSoundRef?.current?.play();
                 }
-                const buffer = await Camera().takePicture((settings.AVERAGING_ENABLED ? parseInt(settings.AVERAGING_VALUE, 10) : 1) || 1);
-                setProject(await window.EA('TAKE_PICTURE', { project_id: id, track_id: track, buffer, before_frame_id: currentFrameId }));
+       
+                    const nbFramesToTake = (settings.AVERAGING_ENABLED ? parseInt(settings.AVERAGING_VALUE, 10) : 1) || 1;
+                    const buffer = await takePicture(Camera(), nbFramesToTake);
+                    setProject(await window.EA('TAKE_PICTURE', { project_id: id, track_id: track, buffer, before_frame_id: currentFrameId }));
             }
 
             flushSync(() => { setIsTakingPicture(false); });
@@ -216,7 +219,7 @@ const Animator = ({ t }) => {
             return;
         }
 
-        Camera().init(dom, { forceMaxQuality: !!settings.FORCE_QUALITY }).catch(() => {
+        Camera().connect(dom, { forceMaxQuality: !!settings.FORCE_QUALITY }).catch(() => {
             setIsCameraReady(false);
             setCameraCapabilities(Camera().getCapabilities());
         }).then(() => {

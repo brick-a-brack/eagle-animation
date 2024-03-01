@@ -62,7 +62,7 @@ app.on('window-all-closed', () => {
 app.whenReady().then(() => {
     Object.keys(actions).forEach((name) => {
         ipcMain.handle(name, (evt, args) => {
-            console.log('[IPC]', name, args || {});
+            console.log('📣 IPC', name, args || {});
             return actions[name](evt, args);
         })
     })

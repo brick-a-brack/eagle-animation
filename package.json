@@ -35,8 +35,8 @@
     "@parcel/config-default": "^2.8.3",
     "@parcel/transformer-svg-react": "^2.8.3",
     "buffer": "^5.5.0",
-    "electron": "^25.5.0",
-    "electron-builder": "^24.4.0",
+    "electron": "^29.1.0",
+    "electron-builder": "^24.12.0",
     "eslint": "8.45.0",
     "eslint-plugin-react": "7.33.0",
     "husky": "^8.0.3",
@@ -46,11 +46,12 @@
     "parcel-reporter-static-files-copy": "^1.5.0",
     "process": "^0.11.10",
     "sharp": "^0.31.3",
+    "stylelint": "^15.10.2",
     "stylelint-config-standard": "^34.0.0",
-    "stylelint-order": "^6.0.3",
-    "stylelint": "^15.10.2"
+    "stylelint-order": "^6.0.3"
   },
   "dependencies": {
+    "@dimensional/napi-canon-cameras": "file:../../node_packages/@dimensional/napi-canon-cameras.tgz",
     "animated-scroll-to": "^2.3.0",
     "compare-versions": "^6.0.0",
     "env-paths": "^2.2.1",

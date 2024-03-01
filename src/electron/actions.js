@@ -13,11 +13,12 @@ import { exportProjectScene, getSyncList, normalizePictures, saveSyncList } from
 import { getProfile } from './core/ffmpeg';
 import { uploadFile } from './core/api';
 import { existsSync } from 'fs';
+import { getCamera, getCameras } from './cameras';
 
 const OLD_PROJECTS_PATH = join(homedir(), DIRECTORY_NAME);
 const PROJECTS_PATH = existsSync(OLD_PROJECTS_PATH) ? OLD_PROJECTS_PATH : envPaths(DIRECTORY_NAME, { suffix: '' }).data;
 
-console.log(PROJECTS_PATH)
+console.log(`💾 Eagle Animation files will be saved in the following folder: ${PROJECTS_PATH}`);
 
 const getDefaultPreview = (data) => {
     for (let i = 0; i < (data?.project?.scenes?.length || 0); i++) {
@@ -110,6 +111,28 @@ const actions = {
         const data = await takePicture(join(PROJECTS_PATH, project_id), track_id, 'jpg', before_frame_id, buffer);
         return computeProject(data);
     },
+    LIST_NATIVE_CAMERAS: () => {
+        return getCameras();
+    },
+    TAKE_PICTURE_NATIVE_CAMERA: async (evt, { camera_id }) => {
+        const camera = await getCamera(camera_id);
+        if (camera) {
+            return camera.takePicture();
+        }
+        return null;
+    },
+    CONNECT_NATIVE_CAMERA: async (evt, { camera_id }) => {
+        const camera = await getCamera(camera_id);
+        if (camera) {
+            camera.connect();
+        }
+    },
+    DISCONNECT_NATIVE_CAMERA: async (evt, { camera_id }) => {
+        const camera = await getCamera(camera_id);
+        if (camera) {
+            camera.disconnect();
+        }
+    },
     GET_SETTINGS: async () => {
         return getSettings(PROJECTS_PATH);
     },
@@ -118,23 +141,20 @@ const actions = {
     },
     SYNC: async () => {
         let syncList = await getSyncList(PROJECTS_PATH);
-
-        console.log('[SYNC]', 'Starting event videos sync', syncList);
-
         for (let i = 0; i < syncList.length; i++) {
             const syncElement = syncList[i];
             try {
                 if (!syncElement.isUploaded) {
+                    console.log(`☁️ Sync start ${syncElement.publicCode} (${syncElement.apiKey})`);
                     await uploadFile(syncElement.apiKey, syncElement.publicCode, syncElement.fileExtension, join(PROJECTS_PATH, '/.sync/', syncElement.fileName));
                     syncList[i].isUploaded = true;
                     await saveSyncList(PROJECTS_PATH, syncList);
+                    console.log(`✅ Sync finished ${syncElement.publicCode} (${syncElement.apiKey})`);
                 }
             } catch (err) {
-                console.error(err);
+                console.log(`❌ Sync failed ${syncElement.publicCode} (${syncElement.apiKey})`, err);
             }
         }
-
-        console.log('[SYNC]', 'End of sync', syncList);
     },
     EXPORT: async (evt, {
         project_id,

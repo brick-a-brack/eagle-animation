@@ -61,7 +61,7 @@ const SettingsView = ({ t }) => {
 
     useEffect(() => {
         (async () => {
-            await DevicesInstance.stop();
+            await DevicesInstance.disconnect();
             setDevices(await DevicesInstance.list());
             const values = await window.EA('GET_SETTINGS');
             applySettings(values)
