@@ -214,12 +214,12 @@ const Animator = ({ t }) => {
         },
     }
 
-    const handlePlayerInit = (dom) => {
+    const handlePlayerInit = (videoDOM = null, imageDOM = null) => {
         if (!Camera()) {
             return;
         }
 
-        Camera().connect(dom, { forceMaxQuality: !!settings.FORCE_QUALITY }).catch(() => {
+        Camera().connect({videoDOM, imageDOM}, { forceMaxQuality: !!settings.FORCE_QUALITY }).catch(() => {
             setIsCameraReady(false);
             setCameraCapabilities(Camera().getCapabilities());
         }).then(() => {

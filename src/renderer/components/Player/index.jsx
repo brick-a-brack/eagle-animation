@@ -23,6 +23,7 @@ class Player extends Component {
         this.dom = {
             container: React.createRef(),
             video: React.createRef(),
+            videoFrame: React.createRef(),
             picture: React.createRef(),
             grid: React.createRef()
         };
@@ -125,7 +126,7 @@ class Player extends Component {
 
     componentDidMount() {
         const { onInit } = this.props;
-        onInit(this.dom.video.current);
+        onInit(this.dom.video.current, this.dom.videoFrame.current);
         this.dom.picture.current.width = this.getSize().width;
         this.dom.picture.current.height = this.getSize().height;
         this.dom.picture.current.style.width = this.getSize().width;
@@ -302,6 +303,10 @@ class Player extends Component {
                 <div className={style.container} ref={this.dom.container} style={{ width: `${width}px`, height: `${height}px`, opacity: (ready) ? 1 : 0 }}>
                     <video
                         ref={this.dom.video}
+                        className={style.layout}
+                        style={{ opacity: frameIndex === false ? 1 : 0 }}
+                    />
+                    <canvas ref={this.dom.videoFrame}
                         className={style.layout}
                         style={{ opacity: frameIndex === false ? 1 : 0 }}
                     />

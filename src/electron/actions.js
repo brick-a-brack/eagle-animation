@@ -121,10 +121,10 @@ const actions = {
         }
         return null;
     },
-    CONNECT_NATIVE_CAMERA: async (evt, { camera_id }) => {
+    CONNECT_NATIVE_CAMERA: async (evt, { camera_id }, sendToRenderer) => {
         const camera = await getCamera(camera_id);
         if (camera) {
-            camera.connect();
+            camera.connect((data) => { sendToRenderer('LIVE_VIEW_DATA', { camera_id, data }) });
         }
     },
     DISCONNECT_NATIVE_CAMERA: async (evt, { camera_id }) => {

@@ -3,7 +3,7 @@ class NativeProxy {
         this.context = context;
         this.deviceId = deviceId,
 
-        console.log(deviceId, context)
+            console.log(deviceId, context)
 
         /*this.stream = false;
         this.deviceId = deviceId;
@@ -22,9 +22,42 @@ class NativeProxy {
         return this?.context?.id || null;
     }
 
+    #drawLivePreview(dom, src) {
+        if (!dom || !src) {
+            return;
+        }
+
+        const ctx = dom.getContext('2d');
+        const img = new Image();
+        img.addEventListener('error', () => {
+            ctx.clearRect(0, 0, dom.width, dom.height);
+        });
+        img.addEventListener('load', function () {
+            dom.width = this.naturalWidth;
+            dom.height = this.naturalHeight;
+            ctx.drawImage(
+                img,
+                0,
+                0,
+                img.naturalWidth,
+                img.naturalHeight,
+                0,
+                0,
+                img.naturalWidth,
+                img.naturalHeight,
+            );
+        }, false);
+        img.src = src;
+    }
+
     initPreview() {
         return new Promise(async (resolve) => { // eslint-disable-line no-async-promise-executor
             resolve(true);
+
+            // TODO: ADD EA Interface for that
+            window.IPC.stream('LIVE_VIEW_DATA', (evt, args) => {
+                this.#drawLivePreview(this.video, args.data);
+            });
         });
     }
 
@@ -40,8 +73,8 @@ class NativeProxy {
         return [];
     }
 
-    async connect(video = false, settings = {}) {
-        this.video = video;
+    async connect({ imageDOM } = { imageDOM: false }, settings = {}) {
+        this.video = imageDOM;
         this.settings = settings;
         await window.EA('CONNECT_NATIVE_CAMERA', { camera_id: this.context.id });
         return this.initPreview();

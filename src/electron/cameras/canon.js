@@ -35,10 +35,20 @@ class CanonCamera {
 
         // Last captured frame
         this.lastFrame = null;
+
+        // Live mode
+        //this.liveModeEnabled = false;
+        //this.liveModeClock = null;
     }
 
-    async connect() {
+    async connect(liveModeCallback = null) {
+        // Save live mode callback
+        this.liveModeCallback = liveModeCallback;
+
+        // Create persistent connection
         this.canonCamera.connect(true);
+
+        // Set properties
         this.canonCamera.setProperties(
             {
                 [CameraProperty.ID.SaveTo]: Option.SaveTo.Host,
@@ -47,14 +57,64 @@ class CanonCamera {
                 [CameraProperty.ID.WhiteBalance]: Option.WhiteBalance.Fluorescent
             }
         );
+
+        // Catch events
         this.canonCamera.setEventHandler((eventName, event) => {
             if (event.file && [Camera.EventName.FileCreate, Camera.EventName.DownloadRequest].includes(eventName)) {
                 this.lastFrame = `${event.file.downloadToString()}`;
             }
         });
+
+        // Init live mode 
+        /*if (this.canonCamera.getProperty(CameraProperty.ID.Evf_Mode).available) {
+            const setLiveMode = () => {
+                if (this.liveModeEnabled) {
+                    this.canonCamera.startLiveView();
+                } else {
+                    this.canonCamera.stopLiveView();
+                }
+            }
+            setLiveMode();
+            this.liveModeClock = setInterval(setLiveMode, 5000);
+        }*/
+
+        // Fetch live mode picture
+        if (this.canonCamera.getProperty(CameraProperty.ID.Evf_Mode).available) {
+            this.canonCamera.startLiveView();
+            setInterval(() => {
+                try {
+                    this.canonCamera.startLiveView();
+                    const image = this.canonCamera.getLiveViewImage();
+                    if (image) {
+                        this.liveModeCallback(image.getDataURL());
+                    }
+                } catch (e) { }
+            }, 100);
+        }
+
+//---------------------------TEST
+
+
+
+
+
+
+
+
+//-------------------------
+
+
+
+
+
+
     }
 
     async disconnect() {
+        if (this.canonCamera.getProperty(CameraProperty.ID.Evf_Mode).available) {
+            this.canonCamera.stopLiveView();
+        }
+
         this.canonCamera.disconnect();
     }
 
@@ -69,12 +129,28 @@ class CanonCamera {
             }, 100)
 
             try {
+                if (this.canonCamera.getProperty(CameraProperty.ID.Evf_Mode).available) {
+                    this.canonCamera.stopLiveView();
+                }
+            } catch (e1) {
+
+            }
+
+            try {
                 this.canonCamera.takePicture();
 
             } catch (err) {
                 clearInterval(clock);
                 this.lastFrame = null;
                 reject(err);
+            }
+
+            try {
+                if (this.canonCamera.getProperty(CameraProperty.ID.Evf_Mode).available) {
+                    this.canonCamera.startLiveView();
+                }
+            } catch (e1) {
+
             }
         });
     }

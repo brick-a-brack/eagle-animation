@@ -79,7 +79,7 @@ class Webcam {
             this.previousCapabilitiesState = { ...this.capabilitiesState };
         }, 100);
     }
-    
+
     get id() {
         return this?.context?.id || null;
     }
@@ -101,7 +101,7 @@ class Webcam {
             window.DEVICE = this.stream;
 
             this.capabilities = this.stream?.getVideoTracks()?.[0] ? this.stream.getVideoTracks()[0].getCapabilities() : [];
-            this.capabilitiesState = {...defaultCapabilities};
+            this.capabilitiesState = { ...defaultCapabilities };
 
             // Launch preview
             if (this.video) {
@@ -119,7 +119,7 @@ class Webcam {
     }
 
     resetCapabilities() {
-        this.capabilitiesState = {...defaultCapabilities};
+        this.capabilitiesState = { ...defaultCapabilities };
         return allowedCapabilities.filter(e => this.capabilities[e]).map(e => ({
             id: e,
             type: ['exposureMode', 'focusMode', 'resizeMode', 'whiteBalanceMode'].includes(e) ? 'SWITCH' : 'RANGE',
@@ -153,8 +153,8 @@ class Webcam {
         }))
     }
 
-    connect(video = false, settings = {}) {
-        this.video = video;
+    connect({ videoDOM } = {videoDOM : false}, settings = {}) {
+        this.video = videoDOM;
         this.settings = settings;
         return this.initPreview();
     }

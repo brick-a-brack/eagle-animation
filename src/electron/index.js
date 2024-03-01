@@ -59,11 +59,13 @@ app.on('window-all-closed', () => {
     }
 });
 
+const sendToRenderer = (channel, value) => mainWindow.webContents.send(channel, value);
+
 app.whenReady().then(() => {
     Object.keys(actions).forEach((name) => {
         ipcMain.handle(name, (evt, args) => {
             console.log('📣 IPC', name, args || {});
-            return actions[name](evt, args);
+            return actions[name](evt, args, sendToRenderer);
         })
     })
 
