@@ -138,6 +138,9 @@ export const takePicture = async (camera, nbFramesToTake = 1) => {
     }
 
     const finalCanvas = (bufferList.length > 1) ? await mergePictures(bufferList) : bufferList?.[0];
-    const data = finalCanvas.toDataURL('image/jpeg');
-    return Buffer.from(data.replace(/^data:image\/\w+;base64,/, ''), 'base64');
+    if (finalCanvas instanceof HTMLCanvasElement) {
+        const data = finalCanvas.toDataURL('image/jpeg');
+        return Buffer.from(data.replace(/^data:image\/\w+;base64,/, ''), 'base64');
+    }
+    return finalCanvas;
 }

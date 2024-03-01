@@ -37,14 +37,21 @@ class CanonCamera {
         this.lastFrame = null;
 
         // Live mode
-        //this.liveModeEnabled = false;
-        //this.liveModeClock = null;
+        this.liveModeEnabled = false;
+        this.liveModeClock = null;
+
+        // Catch events
+        this.canonCamera.setEventHandler((eventName, event) => {
+           if (event.file && [InternalCamera.EventName.FileCreate, InternalCamera.EventName.DownloadRequest].includes(eventName)) {
+               this.lastFrame = `${event.file.downloadToString()}`;
+           }
+       });
     }
 
     async connect(liveModeCallback = null) {
         // Save live mode callback
         this.liveModeCallback = liveModeCallback;
-
+        
         // Create persistent connection
         this.canonCamera.connect(true);
 
@@ -54,87 +61,73 @@ class CanonCamera {
                 [CameraProperty.ID.SaveTo]: Option.SaveTo.Host,
                 //[CameraProperty.ID.SaveTo]: Option.SaveTo.Camera,
                 [CameraProperty.ID.ImageQuality]: ImageQuality.ID.LargeJPEGFine,
-                [CameraProperty.ID.WhiteBalance]: Option.WhiteBalance.Fluorescent
+                [CameraProperty.ID.WhiteBalance]: Option.WhiteBalance.Fluorescent,
+                [CameraProperty.ID.AFMode]: Option.AFMode.ManualFocus,
             }
         );
 
-        // Catch events
-        this.canonCamera.setEventHandler((eventName, event) => {
-            if (event.file && [Camera.EventName.FileCreate, Camera.EventName.DownloadRequest].includes(eventName)) {
-                this.lastFrame = `${event.file.downloadToString()}`;
-            }
-        });
-
-        // Init live mode 
-        /*if (this.canonCamera.getProperty(CameraProperty.ID.Evf_Mode).available) {
-            const setLiveMode = () => {
-                if (this.liveModeEnabled) {
-                    this.canonCamera.startLiveView();
-                } else {
-                    this.canonCamera.stopLiveView();
-                }
-            }
-            setLiveMode();
-            this.liveModeClock = setInterval(setLiveMode, 5000);
-        }*/
-
         // Fetch live mode picture
+        this.liveModeEnabled = true;
+        clearInterval(this.liveModeClock);
         if (this.canonCamera.getProperty(CameraProperty.ID.Evf_Mode).available) {
             this.canonCamera.startLiveView();
-            setInterval(() => {
-                try {
-                    this.canonCamera.startLiveView();
-                    const image = this.canonCamera.getLiveViewImage();
-                    if (image) {
-                        this.liveModeCallback(image.getDataURL());
-                    }
-                } catch (e) { }
+            this.liveModeClock = setInterval(() => {
+                if (this.liveModeEnabled) {
+                    try {
+                        const image = this.canonCamera.getLiveViewImage();
+                        if (image) {
+                            this.liveModeCallback(image.getDataURL());
+                        }
+                    } catch (e) { }
+                }
             }, 100);
         }
 
-//---------------------------TEST
+        //---------------------------TEST
 
-
-
-
-
-
-
-
-//-------------------------
-
-
-
-
-
+        /* const settings = [];
+         for (const propertyID of Object.values(CameraProperty.ID)) {
+             const p = this.canonCamera.getProperty(propertyID);
+             if (!p.available) {
+                 continue;
+             }
+             try {
+                 const value = p.value;
+                 settings.push(p);
+             } catch (e) {
+                 console.error(
+                     p, e
+                 );
+             }
+         }
+         console.log(JSON.parse(JSON.stringify(settings)));
+ 
+ */
+        //-------------------------
 
     }
 
     async disconnect() {
+        clearInterval(this.liveModeClock);
         if (this.canonCamera.getProperty(CameraProperty.ID.Evf_Mode).available) {
             this.canonCamera.stopLiveView();
+            this.liveModeEnabled = false;
         }
 
         this.canonCamera.disconnect();
     }
 
     takePicture() {
+        this.liveModeEnabled = false;
         return new Promise((resolve, reject) => {
             const clock = setInterval(() => {
                 if (this.lastFrame !== null) {
                     clearInterval(clock);
                     resolve(Buffer.from(this.lastFrame, 'base64'));
                     this.lastFrame = null;
+                    this.liveModeEnabled = true;
                 }
-            }, 100)
-
-            try {
-                if (this.canonCamera.getProperty(CameraProperty.ID.Evf_Mode).available) {
-                    this.canonCamera.stopLiveView();
-                }
-            } catch (e1) {
-
-            }
+            }, 100);
 
             try {
                 this.canonCamera.takePicture();
@@ -142,15 +135,8 @@ class CanonCamera {
             } catch (err) {
                 clearInterval(clock);
                 this.lastFrame = null;
+                this.liveModeEnabled = true;
                 reject(err);
-            }
-
-            try {
-                if (this.canonCamera.getProperty(CameraProperty.ID.Evf_Mode).available) {
-                    this.canonCamera.startLiveView();
-                }
-            } catch (e1) {
-
             }
         });
     }
