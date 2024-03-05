@@ -10,10 +10,15 @@ import Player from "../components/Player";
 import Timeline from "../components/Timeline";
 import soundDelete from 'url:~/static/sounds/delete.mp3';
 import soundShutter from 'url:~/static/sounds/shutter.mp3';
+import errorShutter from 'url:~/static/sounds/error.mp3';
 import DevicesInstance from "../core/Devices";
 import { takePicture } from "../cameras";
 
 const Camera = () => DevicesInstance.getMainCamera();
+
+const timersApply = {};
+
+let batteryInterval = null;
 
 // Get previous frame id
 const getPreviousFrameId = (list, frameId) => {
@@ -54,9 +59,11 @@ const Animator = ({ t }) => {
     const { id, track } = useParams();
     const navigate = useNavigate();
     const playerRef = useRef(null);
+    const errorSoundRef = useRef(null);
     const shutterSoundRef = useRef(null);
     const deleteSoundRef = useRef(null);
 
+    const [batteryStatus, setBatteryStatus] = useState(null);
     const [isPlaying, setIsPlaying] = useState(false);
     const [settings, setSettings] = useState(null);
     const [showCameraSettings, setShowCameraSettings] = useState(false);
@@ -88,6 +95,15 @@ const Animator = ({ t }) => {
 
             await DevicesInstance.setMainCamera(userSettings.CAMERA_ID)
         })();
+    }, []);
+
+    
+    useEffect(() => {
+        Camera()?.batteryStatus().then(setBatteryStatus);
+        clearInterval(batteryInterval);
+        batteryInterval = setInterval(() => {
+            Camera()?.batteryStatus().then(setBatteryStatus);
+        }, 1000);
     }, []);
 
     if (!project || !settings) {
@@ -125,6 +141,34 @@ const Animator = ({ t }) => {
         playerRef.current.showFrame(frameId);
     }
 
+    const takePictures = (nbPicturesToTake = null) => async () => {
+        if (isTakingPicture || !isCameraReady || !Camera()) {
+            return;
+        }
+        flushSync(() => { setIsTakingPicture(true); });
+
+        for (let i = 0; i < (parseInt(nbPicturesToTake !== null ? nbPicturesToTake : settings.CAPTURE_FRAMES, 10) || 1); i++) {
+
+            const nbFramesToTake = (settings.AVERAGING_ENABLED ? parseInt(settings.AVERAGING_VALUE, 10) : 1) || 1;
+            try {
+                const buffer = await takePicture(Camera(), nbFramesToTake);
+
+                if (!isMuted && settings.SOUNDS) {
+                    shutterSoundRef?.current?.play();
+                }
+
+                setProject(await window.EA('TAKE_PICTURE', { project_id: id, track_id: track, buffer, before_frame_id: currentFrameId }));
+            } catch (err) {
+                if (!isMuted && settings.SOUNDS) {
+                    errorSoundRef?.current?.play();
+                }
+                console.error('Failed to take a picture', err);
+            }
+        }
+
+        flushSync(() => { setIsTakingPicture(false); });
+    }
+
     const actionsEvents = {
         PLAY: () => {
             if (isPlaying) {
@@ -133,24 +177,17 @@ const Animator = ({ t }) => {
                 playerRef.current.play();
             }
         },
-        TAKE_PICTURE: async () => {
-            if (isTakingPicture || !isCameraReady || !Camera()) {
-                return;
-            }
-            flushSync(() => { setIsTakingPicture(true); });
-
-            for (let i = 0; i < (parseInt(settings.CAPTURE_FRAMES, 10) || 1); i++) {
-                if (!isMuted && settings.SOUNDS) {
-                    shutterSoundRef?.current?.play();
-                }
-       
-                    const nbFramesToTake = (settings.AVERAGING_ENABLED ? parseInt(settings.AVERAGING_VALUE, 10) : 1) || 1;
-                    const buffer = await takePicture(Camera(), nbFramesToTake);
-                    setProject(await window.EA('TAKE_PICTURE', { project_id: id, track_id: track, buffer, before_frame_id: currentFrameId }));
-            }
-
-            flushSync(() => { setIsTakingPicture(false); });
-        },
+        TAKE_PICTURE: takePictures(),
+        TAKE_PICTURES_1: takePictures(1),
+        TAKE_PICTURES_2: takePictures(2),
+        TAKE_PICTURES_3: takePictures(3),
+        TAKE_PICTURES_4: takePictures(4),
+        TAKE_PICTURES_5: takePictures(5),
+        TAKE_PICTURES_6: takePictures(6),
+        TAKE_PICTURES_7: takePictures(7),
+        TAKE_PICTURES_8: takePictures(8),
+        TAKE_PICTURES_9: takePictures(9),
+        TAKE_PICTURES_10: takePictures(10),
         LOOP: () => { setLoopStatus(!loopStatus); },
         SHORT_PLAY: () => { setShortPlayStatus(!shortPlayStatus); },
         CAMERA_SETTINGS: () => { setShowCameraSettings(!showCameraSettings); },
@@ -219,7 +256,7 @@ const Animator = ({ t }) => {
             return;
         }
 
-        Camera().connect({videoDOM, imageDOM}, { forceMaxQuality: !!settings.FORCE_QUALITY }).catch(() => {
+        Camera().connect({ videoDOM, imageDOM }, { forceMaxQuality: !!settings.FORCE_QUALITY }).catch(() => {
             setIsCameraReady(false);
             Camera().getCapabilities().then(setCameraCapabilities);
         }).then(() => {
@@ -229,12 +266,29 @@ const Animator = ({ t }) => {
     }
 
     const handleCapabilityChange = async (id, value) => {
-        await Camera().applyCapability(id, value);
-        setCameraCapabilities((await Camera().getCapabilities()).map(e => e.id !== id ? e : { ...e, value }));
+        clearTimeout(timersApply[id]);
+        timersApply[id] = setTimeout(async () => {
+            await (Camera().applyCapability(id, value));
+            timersApply[id] = null;
+            Camera().getCapabilities().then((realState) => {
+                setCameraCapabilities(oldState => {
+                    return realState.map((e) => {
+                        return oldState.find(item => item.id === e.id) || e;
+                    });
+                })
+            });
+        }, 10);
+
+        Camera().getCapabilities().then(() => {
+            setCameraCapabilities(oldState => oldState.map(e => e.id === id ? ({ ...e, id, value }) : e))
+        });
     }
 
     const handleCapabilityReset = async () => {
-        Camera().resetCapabilities().then(setCameraCapabilities);
+        setTimeout(async () => {
+            await Camera().resetCapabilities();
+            Camera().getCapabilities().then(setCameraCapabilities);
+        }, 0);
     }
 
     return <>
@@ -257,6 +311,7 @@ const Animator = ({ t }) => {
             shortPlayFrames={parseInt(settings.SHORT_PLAY) || 1}
             capabilities={cameraCapabilities}
             fps={fps}
+            batteryStatus={batteryStatus}
             gridModes={settings.GRID_MODES}
             gridOpacity={parseFloat(settings.GRID_OPACITY)}
             gridColumns={parseInt(settings.GRID_COLUMNS, 10)}
@@ -292,6 +347,7 @@ const Animator = ({ t }) => {
         <KeyboardHandler onAction={handleAction} disabled={disableKeyboardShortcuts} />
         <audio src={soundDelete} ref={deleteSoundRef} />
         <audio src={soundShutter} ref={shutterSoundRef} />
+        <audio src={errorShutter} ref={errorSoundRef} />
     </>;
 }
 

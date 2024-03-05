@@ -1,21 +1,9 @@
 class NativeProxy {
     constructor(deviceId = null, context = {}) {
         this.context = context;
-        this.deviceId = deviceId,
-
-            console.log(deviceId, context)
-
-        /*this.stream = false;
         this.deviceId = deviceId;
-
-        this.video = false;
-        this.width = false;
-        this.height = false;
-
-        this.capabilitiesState = {};
-        this.previousCapabilitiesState = {};
-        this.capabilities = null;*/
-
+        this.video = null;
+        this.settings = null;
     }
 
     get id() {
@@ -61,6 +49,10 @@ class NativeProxy {
         });
     }
 
+    async canResetCapabilities() {
+        return false;
+    }
+
     async resetCapabilities() {
         return window.EA('RESET_CAPABILITIES_NATIVE_CAMERA', { camera_id: this.context.id });
     }
@@ -81,17 +73,8 @@ class NativeProxy {
         return this.initPreview();
     }
 
-    isInitialized() {
-        return true;
-        //return this.width !== false;
-    }
-
-    getPreviewWidth() {
-        return this.width;
-    }
-
-    getPreviewHeight() {
-        return this.height;
+    async batteryStatus() {
+        return window.EA('GET_BATTERY_STATUS_NATIVE_CAMERA', { camera_id: this.context.id });
     }
 
     async takePicture() {

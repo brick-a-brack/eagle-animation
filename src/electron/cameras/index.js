@@ -1,8 +1,12 @@
-import { Camera as CanonCamera, CameraBrowser as CanonCameraBrowser } from './canon';
+import { platform } from 'os';
 
-const Cameras = [
-    { browser: CanonCameraBrowser, item: CanonCamera },
-];
+const Cameras = [];
+
+if (platform() === "win32") {
+    import('./canon').then(canon => {
+        Cameras.push({ browser: canon.CameraBrowser, item: canon.Camera });
+    });
+}
 
 let cachedCameras = {};
 
@@ -21,6 +25,10 @@ export const getCameras = async () => {
     }
 
     return availableCameras;
+}
+
+export const flushCamera = async (id) => {
+    cachedCameras[id] = null;
 }
 
 export const getCamera = async (id) => {
@@ -42,6 +50,6 @@ export const getCamera = async (id) => {
             }
         }
     }
-    
+
     return null;
 }

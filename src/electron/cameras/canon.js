@@ -11,7 +11,6 @@ import {
 watchCameras();
 
 const cameraBrowser = new InternalCameraBrowser();
-
 const MODULE_ID = 'EDSDK';
 
 class CanonCameraBrowser {
@@ -67,7 +66,6 @@ class CanonCamera {
         this.canonCamera.setProperties(
             {
                 [CameraProperty.ID.SaveTo]: Option.SaveTo.Host,
-                //[CameraProperty.ID.SaveTo]: Option.SaveTo.Camera,
                 [CameraProperty.ID.ImageQuality]: ImageQuality.ID.LargeJPEGFine,
                 [CameraProperty.ID.WhiteBalance]: Option.WhiteBalance.Fluorescent,
                 [CameraProperty.ID.AFMode]: Option.AFMode.ManualFocus,
@@ -92,17 +90,26 @@ class CanonCamera {
         }
 
         // Fetch capabilities
-        this.capabilities = [];
+        this.fetchCapabilities();
+    }
+
+    async fetchCapabilities() {
+        const tmpCapabilities = [];
         for (const propertyID of Object.values(CameraProperty.ID)) {
             const p = this.canonCamera.getProperty(propertyID);
             if (!p.available) {
                 continue;
             }
             try {
-                //const value = p.value;
-                this.capabilities.push(p);
+                tmpCapabilities.push({ label: p.label, identifier: p.identifier, value: p.value, allowedValues: p.allowedValues });
             } catch (e) { } // eslint-disable-line no-empty
         }
+        this.capabilities = tmpCapabilities;
+    }
+
+    async batteryStatus() {
+        const Battery = this.capabilities.find(c => c.label === 'BatteryLevel') || null;
+        return Battery ? Number(Battery?.value) : null;
     }
 
     async disconnect() {
@@ -115,7 +122,7 @@ class CanonCamera {
         this.canonCamera.disconnect();
     }
 
-    takePicture() {
+    async takePicture() {
         this.liveModeEnabled = false;
         return new Promise((resolve, reject) => {
             const clock = setInterval(() => {
@@ -139,49 +146,94 @@ class CanonCamera {
         });
     }
 
-    applyCapability(key, value) {
-        // Focus mode
-        if (key === 'focusMode' && this.capabilities.some(c => c.label === 'AFMode')) {
-            this.canonCamera.setProperties({
-                [CameraProperty.ID.AFMode]: value === 'continuous' ? Option.AFMode.AIFocus : Option.AFMode.ManualFocus,
-            });
+    async applyCapability(key, value) {
+        if (key === 'APERTURE') {
+            this.canonCamera.setProperties({ [CameraProperty.ID.Av]: Number(value) });
         }
 
-        // TODO
+        if (key === 'WHITE_BALANCE') {
+            this.canonCamera.setProperties({ [CameraProperty.ID.WhiteBalance]: Number(value) });
+        }
+
+        if (key === 'SHUTTER_SPEED') {
+            this.canonCamera.setProperties({ [CameraProperty.ID.Tv]: Number(value) });
+        }
+
+        if (key === 'ISO') {
+            this.canonCamera.setProperties({ [CameraProperty.ID.ISOSpeed]: Number(value) });
+        }
 
         return null;
     }
 
     resetCapabilities() {
-        // TODO
+        return null;
     }
 
     getCapabilities() {
-        const AFMode = this.capabilities.find(c => c.label === 'AFMode');
+        const ShutterSpeed = this.capabilities.find(c => c.label === 'Tv') || null; // DF 1st line
+        const Aperture = this.capabilities.find(c => c.label === 'Av') || null; // DF 2nd line
+        const ISO = this.capabilities.find(c => c.label === 'ISOSpeed') || null; // DF 3rd line
+        const WhiteBalance = this.capabilities.find(c => c.label === 'WhiteBalance') || null;
 
         const allowedCapabilities = [
-            // Focus mode
-            ...(AFMode ? [
-                { id: 'focusMode', type: 'SWITCH', value: AFMode.value.label === 'AFMode.ManualFocus' ? 'manual' : 'continuous' },
-            ] : []),
+            ...(Aperture ? [{
+                id: 'APERTURE',
+                type: 'SELECT',
+                values: Aperture.allowedValues
+                    .sort((a, b) => a.aperture - b.aperture)
+                    .map(e => ({
+                        label: e.label,
+                        value: e.value,
+                        aperture: e.aperture,
+                    })),
+                value: Aperture.value.value,
+                canReset: false,
+            }] : []),
 
-            /*
-                'focusMode',
-                'focusDistance',
-                'brightness',
-                'contrast',
-             
-                'saturation',
-                'sharpness',
-          
-                'whiteBalanceMode',
-                'colorTemperature',
-                'exposureMode',
-                'exposureCompensation',
-                'exposureTime',
-                'zoom',
-                'tilt',
-                'pan'*/
+            ...(WhiteBalance ? [{
+                id: 'WHITE_BALANCE',
+                type: 'SELECT',
+                values: WhiteBalance.allowedValues
+                    // .filter(e => e.label.startsWith('WhiteBalance.'))
+                    .sort((a, b) => a.label.localeCompare(b.label))
+                    .map(e => ({
+                        label: e.label.replace('WhiteBalance.', ''),
+                        value: e.value,
+                    })),
+                value: WhiteBalance.value.label.startsWith('WhiteBalance.') ? WhiteBalance.value.value : null,
+                canReset: false,
+            }] : []),
+
+            ...(ShutterSpeed ? [{
+                id: 'SHUTTER_SPEED',
+                type: 'SELECT',
+                values: ShutterSpeed.allowedValues
+                    .filter(e => Boolean(e.seconds))
+                    .sort((a, b) => a.seconds - b.seconds)
+                    .map(e => ({
+                        label: e.label,
+                        value: e.value,
+                        speed: e.seconds,
+                    })),
+                value: !ShutterSpeed.value.seconds ? ShutterSpeed.value.value : null,
+                canReset: false,
+            }] : []),
+
+            ...(ISO ? [{
+                id: 'ISO',
+                type: 'SELECT',
+                values: ISO.allowedValues
+                    .filter(e => e.value > 0)
+                    .sort((a, b) => a.value - b.value)
+                    .map(e => ({
+                        label: e.label,
+                        value: e.value,
+                        sensitivity: e.sensitivity,
+                    })),
+                value: ISO.value.value > 0 ? ISO.value.value : null,
+                canReset: false,
+            }] : []),
         ];
 
         return allowedCapabilities;

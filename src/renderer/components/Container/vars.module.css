@@ -28,6 +28,7 @@ body {
   --input-height: 30px;
   --color-primary: #486ee5;
   --color-alert: #e54848;
+  --color-warning: #e59248;
   --color-theme-light: hsl(223 4% 45% / 1);
   --color-theme-medium: #5f6166;
   --color-theme-dark: #2f3136;

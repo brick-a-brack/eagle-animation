@@ -13,7 +13,7 @@ import { exportProjectScene, getSyncList, normalizePictures, saveSyncList } from
 import { getProfile } from './core/ffmpeg';
 import { uploadFile } from './core/api';
 import { existsSync } from 'fs';
-import { getCamera, getCameras } from './cameras';
+import { flushCamera, getCamera, getCameras } from './cameras';
 
 const OLD_PROJECTS_PATH = join(homedir(), DIRECTORY_NAME);
 const PROJECTS_PATH = existsSync(OLD_PROJECTS_PATH) ? OLD_PROJECTS_PATH : envPaths(DIRECTORY_NAME, { suffix: '' }).data;
@@ -150,9 +150,17 @@ const actions = {
             camera.connect((data) => { sendToRenderer('LIVE_VIEW_DATA', { camera_id, data }) });
         }
     },
+    GET_BATTERY_STATUS_NATIVE_CAMERA: async (evt, { camera_id }) => {
+        const camera = await getCamera(camera_id);
+        if (camera) {
+            return camera.batteryStatus();
+        }
+        return null;
+    },
     DISCONNECT_NATIVE_CAMERA: async (evt, { camera_id }) => {
         const camera = await getCamera(camera_id);
         if (camera) {
+            flushCamera(camera_id);
             camera.disconnect();
         }
     },

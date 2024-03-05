@@ -1,83 +1,10 @@
-const allowedCapabilities = [
-    'focusMode',
-    'focusDistance',
-    'brightness',
-    'contrast',
-    /*teinte*/
-    'saturation',
-    'sharpness',
-    /* gamma correction */
-    'whiteBalanceMode',
-    'colorTemperature',
-    'exposureMode',
-    'exposureCompensation',
-    'exposureTime',
-    'zoom',
-    'tilt',
-    'pan'
-];
-
-const defaultCapabilities = {
-    'brightness': 128,
-    'contrast': 128,
-    'colorTemperature': 2200,
-    'exposureCompensation': 0,
-    'exposureMode': 'continuous',
-    'exposureTime': 625,
-    'focusDistance': 0,
-    'focusMode': 'continuous',
-    'pan': 0,
-    'resizeMode': 'none',
-    'saturation': 128,
-    'sharpness': 128,
-    'tilt': 0,
-    'whiteBalanceMode': 'continuous',
-    'zoom': 100,
-};
-
 class Webcam {
     constructor(deviceId = null) {
         this.stream = false;
         this.deviceId = deviceId;
-
         this.video = false;
         this.width = false;
         this.height = false;
-
-        this.capabilitiesState = {};
-        this.previousCapabilitiesState = {};
-        this.capabilities = null;
-
-        setInterval(async () => {
-            if (!this.stream) {
-                return;
-            }
-
-            const mediaStreamTrack = this.stream.getVideoTracks()[0];
-            const settings = mediaStreamTrack.getSettings();
-
-            for (const cap of allowedCapabilities) {
-                if (settings[cap] !== this.capabilitiesState[cap] && this.previousCapabilitiesState[cap] !== this.capabilitiesState[cap]) {
-                    const mediaStreamTrack = this.stream.getVideoTracks()[0];
-                    const toApply = [{
-                        [cap]: this.capabilitiesState[cap],
-                        ...(cap === 'focusMode' ? { focusDistance: settings.focusDistance } : {}),
-                        ...(cap === 'exposureMode' ? {
-                            exposureCompensation: settings.exposureCompensation,
-                            exposureTime: settings.exposureTime,
-                        } : {}),
-                        ...(cap === 'whiteBalanceMode' ? { colorTemperature: settings.colorTemperature } : {}),
-                        ...(cap === 'zoom' ? { pan: settings.pan, tilt: settings.tilt } : {}),
-                    }];
-                    console.log('[CAMERA]', 'Apply setting', cap, this.capabilitiesState[cap]);
-                    mediaStreamTrack.applyConstraints({
-                        advanced: toApply
-                    }).catch(console.error);
-                }
-            }
-
-            this.previousCapabilitiesState = { ...this.capabilitiesState };
-        }, 100);
     }
 
     get id() {
@@ -96,12 +23,8 @@ class Webcam {
                 audio: false
             }).catch((err) => console.error('failed', err));
 
-            console.log('[CAMERA]', 'Init', this.video, this.stream)
-
-            window.DEVICE = this.stream;
-
-            this.capabilities = this.stream?.getVideoTracks()?.[0] ? this.stream.getVideoTracks()[0].getCapabilities() : [];
-            this.capabilitiesState = { ...defaultCapabilities };
+            console.log('[CAMERA]', 'Init', this.video, this.stream);
+            window.__DEBUG_DEVICE = this.stream;
 
             // Launch preview
             if (this.video) {
@@ -118,59 +41,205 @@ class Webcam {
         });
     }
 
+    async canResetCapabilities() {
+        const capabilities = await this.getCapabilities();
+        return capabilities.length > 0;
+    }
+
     async resetCapabilities() {
-        this.capabilitiesState = { ...defaultCapabilities };
-        return allowedCapabilities.filter(e => this.capabilities[e]).map(e => ({
-            id: e,
-            type: ['exposureMode', 'focusMode', 'resizeMode', 'whiteBalanceMode'].includes(e) ? 'SWITCH' : 'RANGE',
-            ...this.capabilities[e],
-            value: defaultCapabilities[e],
-        }))
+        const mediaStreamTrack = this.stream.getVideoTracks()[0];
+        await mediaStreamTrack.applyConstraints({
+            advanced: [{
+                brightness: 128,
+                contrast: 128,
+                colorTemperature: 2200,
+                exposureCompensation: 0,
+                exposureMode: 'continuous',
+                exposureTime: 625,
+                focusDistance: 0,
+                focusMode: 'continuous',
+                pan: 0,
+                saturation: 128,
+                sharpness: 128,
+                tilt: 0,
+                whiteBalanceMode: 'continuous',
+                zoom: 100,
+            }]
+        }).catch(console.error);
+        return null;
     }
 
     async applyCapability(key, value) {
-        if (!this.stream || !this.capabilities) {
-            return null;
-        }
+        const settings = this?.stream?.getVideoTracks()?.[0]?.getSettings() || {};
+        const mediaStreamTrack = this.stream.getVideoTracks()[0];
 
-        this.capabilitiesState[key] = value;
+        const keyNames = {
+            FOCUS_MODE: 'focusMode',
+            FOCUS_DISTANCE: 'focusDistance',
+            BRIGHTNESS: 'brightness',
+            CONTRAST: 'contrast',
+            SATURATION: 'saturation',
+            SHARPNESS: 'sharpness',
+            WHITE_BALANCE_MODE: 'whiteBalanceMode',
+            COLOR_TEMPERATURE: 'colorTemperature',
+            EXPOSURE_MODE: 'exposureMode',
+            EXPOSURE_COMPENSATION: 'exposureCompensation',
+            EXPOSURE_TIME: 'exposureTime',
+            ZOOM: 'zoom',
+            ZOOM_POSITION_Y: 'tilt',
+            ZOOM_POSITION_X: 'pan',
+        };
+
+        const cap = keyNames[key] || null;
+
+        const toApply = [{
+            [cap]: value,
+            ...(cap === 'focusMode' ? { focusDistance: settings.focusDistance } : {}),
+            ...(cap === 'exposureMode' ? {
+                exposureCompensation: settings.exposureCompensation,
+                exposureTime: settings.exposureTime,
+            } : {}),
+            ...(cap === 'whiteBalanceMode' ? { colorTemperature: settings.colorTemperature } : {}),
+            ...(cap === 'zoom' ? { pan: settings.pan, tilt: settings.tilt } : {}),
+        }];
+
+        //console.log('[CAMERA]', 'Apply setting', cap, value);
+        await mediaStreamTrack.applyConstraints({
+            advanced: toApply
+        }).catch(console.error);
 
         return null;
     }
 
     async getCapabilities() {
-        if (!this.stream || !this.capabilities) {
-            return [];
-        }
+        const settings = this?.stream?.getVideoTracks()?.[0]?.getSettings() || {};
+        const capabilities = this?.stream?.getVideoTracks()?.[0] ? this.stream.getVideoTracks()[0].getCapabilities() : [];
 
-        const mediaStreamTrack = this.stream.getVideoTracks()[0]
-        const settings = mediaStreamTrack.getSettings();
-        //const supported = navigator.mediaDevices.getSupportedConstraints();
+        const allowedCapabilities = [
+            ...(capabilities.focusMode ? [{
+                id: 'FOCUS_MODE',
+                type: 'SELECT',
+                values: capabilities.focusMode.map(e => ({ label: e, value: e })),
+                value: settings.focusMode,
+                canReset: true,
+            }] : []),
 
-        return allowedCapabilities.filter(e => this.capabilities[e]).map(e => ({
-            id: e,
-            type: ['exposureMode', 'focusMode', 'resizeMode', 'whiteBalanceMode'].includes(e) ? 'SWITCH' : 'RANGE',
-            ...this.capabilities[e],
-            value: settings[e],
-        }))
+            ...(capabilities.focusDistance && settings.focusMode === 'manual' ? [{
+                id: 'FOCUS_DISTANCE',
+                type: 'RANGE',
+                ...capabilities.focusDistance,
+                value: settings.focusDistance,
+                canReset: true,
+            }] : []),
+
+            ...(capabilities.brightness ? [{
+                id: 'BRIGHTNESS',
+                type: 'RANGE',
+                ...capabilities.brightness,
+                value: settings.brightness,
+                canReset: true,
+            }] : []),
+
+            ...(capabilities.contrast ? [{
+                id: 'CONTRAST',
+                type: 'RANGE',
+                ...capabilities.contrast,
+                value: settings.contrast,
+                canReset: true,
+            }] : []),
+
+            ...(capabilities.saturation ? [{
+                id: 'SATURATION',
+                type: 'RANGE',
+                ...capabilities.saturation,
+                value: settings.saturation,
+                canReset: true,
+            }] : []),
+
+            ...(capabilities.sharpness ? [{
+                id: 'SHARPNESS',
+                type: 'RANGE',
+                ...capabilities.sharpness,
+                value: settings.sharpness,
+                canReset: true,
+            }] : []),
+
+            ...(capabilities.whiteBalanceMode ? [{
+                id: 'WHITE_BALANCE_MODE',
+                type: 'SELECT',
+                values: capabilities.whiteBalanceMode.map(e => ({ label: e, value: e })),
+                value: settings.whiteBalanceMode,
+                canReset: true,
+            }] : []),
+
+            ...(capabilities.colorTemperature && settings.whiteBalanceMode === 'manual' ? [{
+                id: 'COLOR_TEMPERATURE',
+                type: 'RANGE',
+                ...capabilities.colorTemperature,
+                value: settings.colorTemperature,
+                canReset: true,
+            }] : []),
+
+            ...(capabilities.exposureMode ? [{
+                id: 'EXPOSURE_MODE',
+                type: 'SELECT',
+                values: capabilities.exposureMode.map(e => ({ label: e, value: e })),
+                value: settings.exposureMode,
+                canReset: true,
+            }] : []),
+
+            ...(capabilities.exposureCompensation && settings.exposureMode === 'manual' ? [{
+                id: 'EXPOSURE_COMPENSATION',
+                type: 'RANGE',
+                ...capabilities.exposureCompensation,
+                value: settings.exposureCompensation,
+                canReset: true,
+            }] : []),
+
+            ...(capabilities.exposureTime && settings.exposureMode === 'manual' ? [{
+                id: 'EXPOSURE_TIME',
+                type: 'RANGE',
+                ...capabilities.exposureTime,
+                value: settings.exposureTime,
+                canReset: true,
+            }] : []),
+
+            ...(capabilities.zoom ? [{
+                id: 'ZOOM',
+                type: 'RANGE',
+                ...capabilities.zoom,
+                value: settings.zoom,
+                canReset: true,
+            }] : []),
+
+            ...(capabilities.zoom && capabilities.tilt && settings.zoom > capabilities?.zoom?.min ? [{
+                id: 'ZOOM_POSITION_Y',
+                type: 'RANGE',
+                ...capabilities.tilt,
+                value: settings.tilt,
+                canReset: true,
+            }] : []),
+
+            ...(capabilities.zoom && capabilities.pan && settings.zoom > capabilities?.zoom?.min ? [{
+                id: 'ZOOM_POSITION_X',
+                type: 'RANGE',
+                ...capabilities.pan,
+                value: settings.pan,
+                canReset: true,
+            }] : []),
+        ];
+
+        return allowedCapabilities;
     }
 
-    connect({ videoDOM } = {videoDOM : false}, settings = {}) {
+    connect({ videoDOM } = { videoDOM: false }, settings = {}) {
         this.video = videoDOM;
         this.settings = settings;
         return this.initPreview();
     }
 
-    isInitialized() {
-        return this.width !== false;
-    }
-
-    getPreviewWidth() {
-        return this.width;
-    }
-
-    getPreviewHeight() {
-        return this.height;
+    async batteryStatus() {
+        return null;
     }
 
     async takePicture() {
