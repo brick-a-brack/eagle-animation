@@ -329,11 +329,11 @@ class Player extends Component {
                             }
                             if (cap.type === 'SWITCH') {
                                 return <FormGroup key={cap.id} label={capsTranslations[cap.id] || cap.id}>
-                                    <Switch checked={cap.value === 'continuous'} onChange={() => {
-                                        if (cap.value === 'continuous') {
-                                            this.props.onCapabilityChange(cap.id, 'manual');
+                                    <Switch checked={cap.value === true} onChange={() => {
+                                        if (cap.value === true) {
+                                            this.props.onCapabilityChange(cap.id, false);
                                         } else {
-                                            this.props.onCapabilityChange(cap.id, 'continuous');
+                                            this.props.onCapabilityChange(cap.id, true);
                                         }
                                     }} />
                                 </FormGroup>

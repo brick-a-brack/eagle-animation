@@ -123,6 +123,7 @@ class CanonCamera {
     }
 
     async takePicture() {
+        this.canonCamera.connect(true);
         this.liveModeEnabled = false;
         return new Promise((resolve, reject) => {
             const clock = setInterval(() => {

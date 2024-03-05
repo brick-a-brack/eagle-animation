@@ -109,5 +109,21 @@
   "[{{min}}, {{max}}] • {{value}}": "[{{min}}, {{max}}] • {{value}}",
   "Reset settings": "Réinitialiser",
   "(Automated)": "(Automatique)",
-  "Grid": "Grille"
+  "Grid": "Grille",
+  "{{value}}%": "{{value}}%",
+  "Automatic": "Automatique",
+  "Manual": "Manuel",
+  "Cloudy": "Nuageux",
+  "Daylight": "Lumière du jour",
+  "Flash": "Flash",
+  "Fluorescent": "Fluorescent",
+  "Shade": "Ombragé",
+  "Tungsten": "Tungstène",
+  "Aperture": "Ouverture",
+  "Shutter speed": "Vitesse d'obturation",
+  "ISO": "ISO",
+  "Español": "Espagnol",
+  "Italiano": "Italien",
+  "Polski": "Polonais",
+  "Português": "Portugais"
 }

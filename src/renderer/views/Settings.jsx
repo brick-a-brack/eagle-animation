@@ -17,6 +17,7 @@ import GridIcon from '../components/GridIcon';
 import DevicesInstance from "../core/Devices";
 import { setLanguage } from '../i18n';
 import Input from '../components/Input';
+import { LANGUAGES } from '../config';
 
 
 const SettingsView = ({ t }) => {
@@ -68,26 +69,15 @@ const SettingsView = ({ t }) => {
         })();
     }, []);
 
-    const LANGUAGES = [
-        {
-            value: 'en',
-            label: t('English'),
-        },
-        {
-            value: 'fr',
-            label: t('Français'),
-        },
-        {
-            value: 'de',
-            label: t('Deutsch'),
-        },
-    ];
+    const LNGS_OPTIONS = LANGUAGES.map(e => ({
+        ...e,
+        label: ['es', 'it', 'pl', 'pt'].includes(e.value) ? <>{e.label} {t('(Automated)')}</> : e.label
+    }))
 
     const handleBack = async () => {
         await applySettings(getValues());
         await window.EA('SAVE_SETTINGS', { settings: getValues() });
-
-        navigate(searchParams.get('back') || '/')
+        navigate(searchParams.get('back') || '/');
     }
 
     return <>
@@ -112,7 +102,7 @@ const SettingsView = ({ t }) => {
 
                 <Heading h={1}>{t('Interface')}</Heading>
                 <FormGroup label={t('Language')} description={t('The application language to use')}>
-                    <Select options={LANGUAGES} control={control} register={register('LANGUAGE')} />
+                    <Select options={LNGS_OPTIONS} control={control} register={register('LANGUAGE')} />
                 </FormGroup>
                 <FormGroup label={t('Short play')} description={t('Number of frames to play when short play is enabled')}>
                     <NumberInput register={register('SHORT_PLAY')} min={1} />

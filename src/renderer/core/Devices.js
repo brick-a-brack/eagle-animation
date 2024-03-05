@@ -3,7 +3,6 @@ import { getCamera, getCameras } from '../cameras';
 class Devices {
     constructor() {
         this.currentId = null;
-        this.currentCamera = null;
     }
 
     async list() {
@@ -18,16 +17,14 @@ class Devices {
         }
     }
 
-    async setMainCamera(id) {
+    async setMainCamera(id) {   
         if (this.currentId === id) {
             return;
         }
 
+        getCamera(this.currentId)?.disconnect();
+
         this.currentId = id;
-        if (this.currentCamera) {
-            this.currentCamera.disconnect();
-        }
-        this.currentCamera = null;
     }
 
     async disconnect() {
@@ -35,23 +32,14 @@ class Devices {
             return;
         }
 
-        if (this.currentCamera) {
-            this.currentCamera.disconnect();
-        }
-
-        this.currentCamera = null;
+        getCamera(this.currentId)?.disconnect();
     }
 
     getMainCamera() {
-        if (this.currentCamera) {
-            return this.currentCamera;
-        }
-
         if (this.currentId) {
             return getCamera(this.currentId);
         }
-
-        return this.currentCamera || null;
+        return null;
     }
 }
 

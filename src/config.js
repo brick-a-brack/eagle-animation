@@ -36,10 +36,31 @@ export const LANGUAGES = [{
     value: 'de',
     label: 'Deutsch',
     tLabel: t => t('Deutsch'),
-}];
+},
+{
+    value: 'es',
+    label: 'Español',
+    tLabel: t => t('Español'),
+},
+{
+    value: 'it',
+    label: 'Italiano',
+    tLabel: t => t('Italiano'),
+},
+{
+    value: 'pl',
+    label: 'Polski',
+    tLabel: t => t('Polski'),
+},
+{
+    value: 'pt',
+    label: 'Português',
+    tLabel: t => t('Português'),
+},
+];
 
 // Allowed languages
-export const ALLOWED_LANGUAGES = ['en', 'fr', 'de'];
+export const ALLOWED_LANGUAGES = ['en', 'fr', 'de', 'es', 'it', 'pt', 'pl'];
 export const DEFAULT_LANGUAGE = 'en';
 
 // Partner API url
