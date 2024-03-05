@@ -51,7 +51,6 @@
     "stylelint-order": "^6.0.4"
   },
   "dependencies": {
-    "@dimensional/napi-canon-cameras": "file:../../node_packages/@dimensional/napi-canon-cameras.tgz",
     "animated-scroll-to": "^2.3.0",
     "compare-versions": "^6.1.0",
     "env-paths": "^2.2.1",
@@ -75,5 +74,8 @@
     "react-tooltip": "^5.26.3",
     "rimraf": "^5.0.5",
     "uuid": "^9.0.1"
+  },
+  "optionalDependencies": {
+    "@dimensional/napi-canon-cameras": "file:../../node_packages/@dimensional/napi-canon-cameras.tgz"
   }
 }

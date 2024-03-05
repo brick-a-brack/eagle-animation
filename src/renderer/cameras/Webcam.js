@@ -91,9 +91,10 @@ class Webcam {
         };
 
         const cap = keyNames[key] || null;
+        const parsedValue = ['FOCUS_MODE', 'WHITE_BALANCE_MODE', 'EXPOSURE_MODE'].includes(key) ? (value ? 'continuous': 'manual') : value;
 
         const toApply = [{
-            [cap]: value,
+            [cap]: parsedValue,
             ...(cap === 'focusMode' ? { focusDistance: settings.focusDistance } : {}),
             ...(cap === 'exposureMode' ? {
                 exposureCompensation: settings.exposureCompensation,
@@ -118,9 +119,9 @@ class Webcam {
         const allowedCapabilities = [
             ...(capabilities.focusMode ? [{
                 id: 'FOCUS_MODE',
-                type: 'SELECT',
+                type: 'SWITCH',
                 values: capabilities.focusMode.map(e => ({ label: e, value: e })),
-                value: settings.focusMode,
+                value: settings.focusMode === 'continuous',
                 canReset: true,
             }] : []),
 
@@ -166,9 +167,8 @@ class Webcam {
 
             ...(capabilities.whiteBalanceMode ? [{
                 id: 'WHITE_BALANCE_MODE',
-                type: 'SELECT',
-                values: capabilities.whiteBalanceMode.map(e => ({ label: e, value: e })),
-                value: settings.whiteBalanceMode,
+                type: 'SWITCH',
+                value: settings.whiteBalanceMode === 'continuous',
                 canReset: true,
             }] : []),
 
@@ -182,9 +182,8 @@ class Webcam {
 
             ...(capabilities.exposureMode ? [{
                 id: 'EXPOSURE_MODE',
-                type: 'SELECT',
-                values: capabilities.exposureMode.map(e => ({ label: e, value: e })),
-                value: settings.exposureMode,
+                type: 'SWITCH',
+                value: settings.exposureMode === 'continuous',
                 canReset: true,
             }] : []),
 

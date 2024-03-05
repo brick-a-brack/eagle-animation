@@ -71,7 +71,7 @@ const SettingsView = ({ t }) => {
 
     const LNGS_OPTIONS = LANGUAGES.map(e => ({
         ...e,
-        label: ['es', 'it', 'pl', 'pt'].includes(e.value) ? <>{e.label} {t('(Automated)')}</> : e.label
+        label: ['es', 'it', 'pl', 'pt', 'eo'].includes(e.value) ? <>{e.label} {t('(Automated)')}</> : e.label
     }))
 
     const handleBack = async () => {

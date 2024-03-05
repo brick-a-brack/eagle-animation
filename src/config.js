@@ -24,39 +24,45 @@ export const CONTRIBUTE_REPOSITORY = 'brick-a-brack/eagle-animation';
 export const SENTRY_DSN = 'https://750d3c23387f46b8922dee52580eb607@sentry.io/1458572';
 
 // Languages
-export const LANGUAGES = [{
-    value: 'en',
-    label: 'English',
-    tLabel: t => t('English'),
-}, {
-    value: 'fr',
-    label: 'Français',
-    tLabel: t => t('Français'),
-}, {
-    value: 'de',
-    label: 'Deutsch',
-    tLabel: t => t('Deutsch'),
-},
-{
-    value: 'es',
-    label: 'Español',
-    tLabel: t => t('Español'),
-},
-{
-    value: 'it',
-    label: 'Italiano',
-    tLabel: t => t('Italiano'),
-},
-{
-    value: 'pl',
-    label: 'Polski',
-    tLabel: t => t('Polski'),
-},
-{
-    value: 'pt',
-    label: 'Português',
-    tLabel: t => t('Português'),
-},
+export const LANGUAGES = [
+    {
+        value: 'en',
+        label: 'English',
+        tLabel: t => t('English'),
+    }, {
+        value: 'fr',
+        label: 'Français',
+        tLabel: t => t('Français'),
+    }, {
+        value: 'de',
+        label: 'Deutsch',
+        tLabel: t => t('Deutsch'),
+    },
+    {
+        value: 'es',
+        label: 'Español',
+        tLabel: t => t('Español'),
+    },
+    {
+        value: 'it',
+        label: 'Italiano',
+        tLabel: t => t('Italiano'),
+    },
+    {
+        value: 'pl',
+        label: 'Polski',
+        tLabel: t => t('Polski'),
+    },
+    {
+        value: 'pt',
+        label: 'Português',
+        tLabel: t => t('Português'),
+    },
+    {
+        value: 'eo',
+        label: 'Esperanto',
+        tLabel: t => t('Esperanto'),
+    },
 ];
 
 // Allowed languages
