@@ -23,7 +23,7 @@ win:
 #   - '!node_modules/ffmpeg-static/bin/linux/*'
 
 mac:
-  artifactName: ${name}-${version}-mac.${ext}
+  artifactName: ${name}-${version}-${arch}-mac.${ext}
   category: public.app-category.photography
   icon: dist/electron/renderer/icon.icns
   hardenedRuntime: false
