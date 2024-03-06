@@ -1,5 +1,6 @@
 appId: com.eagle-animation.app
 productName: Eagle Animation
+compression: maximum
 
 directories:
   output: binaries
@@ -13,13 +14,14 @@ extraMetadata:
   main: dist/electron/index.js
 
 win:
-  artifactName: ${name}-${version}-win.${ext}
+  artifactName: Eagle-Animation-${version}-win.${ext}
   icon: dist/electron/renderer/favicon.ico
   target:
     - portable
     - zip
 
 mac:
+  artifactName: Eagle-Animation-${version}-mac.${ext}
   category: public.app-category.photography
   icon: dist/electron/renderer/icon.icns
   extendInfo:
@@ -29,7 +31,7 @@ mac:
     com.apple.security.device.camera: true
 
 linux:
-  artifactName: ${name}-${version}-linux.${ext}
+  artifactName: Eagle-Animation-${version}-linux.${ext}
   category: Photography
   synopsis: EagleAnimation is an awesome, free and open-source animation software.
   description: EagleAnimation is an awesome, free and open-source animation software.
