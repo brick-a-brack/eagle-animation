@@ -40,14 +40,20 @@ jobs:
       - name: Packaging Windows
         if: matrix.os == 'windows-latest'
         run: npm run package:windows
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Packaging MacOS
         if: matrix.os == 'macos-latest'
         run: npm run package:mac
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Packaging Linux
         if: matrix.os == 'ubuntu-latest'
         run: npm run package:linux
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       # - name: Upload release files
       #   uses: softprops/action-gh-release@v1
