@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - 'master'
+      - 'dev'
 
 jobs:
   release:
@@ -12,7 +13,7 @@ jobs:
 
     strategy:
       matrix:
-        os: [ ubuntu-latest, windows-latest, macos-latest]
+        os: [ ubuntu-latest, windows-latest, macos-latest ]
 
     steps:
       - name: Clone source code
@@ -36,10 +37,32 @@ jobs:
         env:
           CI: true
 
-      - name: Package app
-        uses: cryogenicplanet/action-electron-builder@v2
+      - name: Packaging Windows
+        if: matrix.os == 'windows-latest'
+        run: npm run package:windows
+
+      - name: Packaging MacOS
+        if: matrix.os == 'macos-latest'
+        run: npm run package:mac
+
+      - name: Packaging Linux
+        if: matrix.os == 'ubuntu-latest'
+        run: npm run package:linux
+
+      - name: Packaging Linux
+        if: matrix.os == 'ubuntu-latest'
+        run: npm run package:linux
+      
+      - name: Upload release files
+        uses: softprops/action-gh-release@v1
+        if: github.ref == 'refs/heads/master'
         with:
-          github_token: ${{ secrets.github_token }}
-          release: true
-          skip_build: true
-          skip_install: true
+          files: binaries/@brick-a-brack/*
+
+      #- name: Package app
+      #  uses: cryogenicplanet/action-electron-builder@v2
+      #  with:
+      #    github_token: ${{ secrets.github_token }}
+      #    release: true
+      #    skip_build: true
+      #    skip_install: true
