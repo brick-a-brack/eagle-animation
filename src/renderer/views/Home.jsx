@@ -16,6 +16,13 @@ const HomeView = ({ t }) => {
 
     useEffect(() => {
         (async () => {
+            await DevicesInstance.disconnect();
+            await DevicesInstance.list();
+        })();
+    }, []);
+
+    useEffect(() => {
+        (async () => {
             setProjects(await window.EA('GET_PROJECTS'));
             window.EA('SYNC');
 
@@ -24,7 +31,7 @@ const HomeView = ({ t }) => {
             if (userSettings.CAMERA_ID && !DevicesInstance.getMainCamera()) {
                 DevicesInstance.setMainCamera(userSettings.CAMERA_ID);
             }
-            DevicesInstance.init();
+            DevicesInstance.connect();
 
             // Fetch updates
             setLatestVersion((await window.EA('GET_LAST_VERSION').catch(() => null))?.version || null);

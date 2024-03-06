@@ -108,5 +108,22 @@
   "[{{min}}, {{max}}]": "[{{min}}, {{max}}]",
   "[{{min}}, {{max}}] • {{value}}": "[{{min}}, {{max}}] • {{value}}",
   "Reset settings": "Reset settings",
-  "(Automated)": "(Automated)"
+  "(Automated)": "(Automated)",
+  "Grid": "Grid",
+  "{{value}}%": "{{value}}%",
+  "Automatic": "Automatic",
+  "Manual": "Manual",
+  "Cloudy": "Cloudy",
+  "Daylight": "Daylight",
+  "Flash": "Flash",
+  "Fluorescent": "Fluorescent",
+  "Shade": "Shade",
+  "Tungsten": "Tungsten",
+  "Aperture": "Aperture",
+  "Shutter speed": "Shutter speed",
+  "ISO": "ISO",
+  "Español": "Español",
+  "Italiano": "Italiano",
+  "Polski": "Polski",
+  "Português": "Português"
 }
