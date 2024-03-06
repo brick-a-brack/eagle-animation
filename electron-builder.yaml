@@ -18,35 +18,15 @@ win:
   target:
     - portable
     - zip
-#  files:
-#   - '!node_modules/ffmpeg-static/bin/darwin/*'
-#   - '!node_modules/ffmpeg-static/bin/linux/*'
 
 mac:
-#  artifactName: ${name}-${version}.${arch}.${ext}
   category: public.app-category.photography
   icon: dist/electron/renderer/icon.icns
-#  hardenedRuntime: false
   extendInfo:
     NSMicrophoneUsageDescription: Please give us access to your microphone
     NSCameraUsageDescription: Please give us access to your camera
     com.apple.security.device.audio-input: true
     com.apple.security.device.camera: true
-#  target:
-#    - dmg
-#  files:
-#    - '!node_modules/ffmpeg-static/bin/win32/*'
-#    - '!node_modules/ffmpeg-static/bin/linux/*'
-
-#dmg:
-#  contents:
-#    - type: link
-#      path: /Applications
-#      x: 410
-#      y: 150
-#    - type: file
-#      x: 130
-#      y: 150
 
 linux:
   artifactName: ${name}-${version}-linux.${ext}
@@ -57,31 +37,3 @@ linux:
   target:
     - deb
     - tar.gz
-#  files:
-#    - '!node_modules/ffmpeg-static/bin/darwin/*'
-#    - '!node_modules/ffmpeg-static/bin/win32/*'
-
-
-#linux:
-#  target: AppImage
-
-#dmg:
-#  contents:
-#    - x: 110
-#      'y': 150
-#    - x: 240
-#      'y': 150
-#      type: link
-#      path: /Applications
-#
-#
-#
-#mac:
-#  target: default
-#  category: public.app-category.graphics-design
-
-#
-#
-#  
-
-#
