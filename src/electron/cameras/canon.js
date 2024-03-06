@@ -5,7 +5,7 @@ import {
     ImageQuality,
     Option,
     watchCameras,
-} from '@dimensional/napi-canon-cameras';
+} from '@brick-a-brack/napi-canon-cameras';
 
 // Allow event listing
 watchCameras();

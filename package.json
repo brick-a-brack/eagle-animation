@@ -76,6 +76,6 @@
     "uuid": "^9.0.1"
   },
   "optionalDependencies": {
-    "@dimensional/napi-canon-cameras": "file:../../node_packages/@dimensional/napi-canon-cameras.tgz"
+    "@brick-a-brack/napi-canon-cameras": "^0.1.4"
   }
 }
