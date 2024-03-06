@@ -17,6 +17,7 @@ import GridIcon from '../components/GridIcon';
 import DevicesInstance from "../core/Devices";
 import { setLanguage } from '../i18n';
 import Input from '../components/Input';
+import { LANGUAGES } from '../config';
 
 
 const SettingsView = ({ t }) => {
@@ -61,33 +62,22 @@ const SettingsView = ({ t }) => {
 
     useEffect(() => {
         (async () => {
-            await DevicesInstance.stop();
+            await DevicesInstance.disconnect();
             setDevices(await DevicesInstance.list());
             const values = await window.EA('GET_SETTINGS');
             applySettings(values)
         })();
     }, []);
 
-    const LANGUAGES = [
-        {
-            value: 'en',
-            label: t('English'),
-        },
-        {
-            value: 'fr',
-            label: t('Français'),
-        },
-        {
-            value: 'de',
-            label: t('Deutsch'),
-        },
-    ];
+    const LNGS_OPTIONS = LANGUAGES.map(e => ({
+        ...e,
+        label: ['es', 'it', 'pl', 'pt', 'eo'].includes(e.value) ? <>{e.label} {t('(Automated)')}</> : e.label
+    }))
 
     const handleBack = async () => {
         await applySettings(getValues());
         await window.EA('SAVE_SETTINGS', { settings: getValues() });
-
-        navigate(searchParams.get('back') || '/')
+        navigate(searchParams.get('back') || '/');
     }
 
     return <>
@@ -112,7 +102,7 @@ const SettingsView = ({ t }) => {
 
                 <Heading h={1}>{t('Interface')}</Heading>
                 <FormGroup label={t('Language')} description={t('The application language to use')}>
-                    <Select options={LANGUAGES} control={control} register={register('LANGUAGE')} />
+                    <Select options={LNGS_OPTIONS} control={control} register={register('LANGUAGE')} />
                 </FormGroup>
                 <FormGroup label={t('Short play')} description={t('Number of frames to play when short play is enabled')}>
                     <NumberInput register={register('SHORT_PLAY')} min={1} />
@@ -129,6 +119,12 @@ const SettingsView = ({ t }) => {
                         onChange={value => { setValue('RATIO_OPACITY', value); }}
                     />
                 </FormGroup>*/}
+                <Heading h={1}>{t('Grid')}</Heading>
+                <FormGroup label={t('Grid modes')} description={t('Grid modes to use for the grid display')}>
+                    <GridIcon value="GRID" title={t('Classic grid')} register={register('GRID_MODES')} selected={watch('GRID_MODES').includes('GRID')} />
+                    <GridIcon value="CENTER" title={t('Center')} register={register('GRID_MODES')} selected={watch('GRID_MODES').includes('CENTER')} />
+                    <GridIcon value="MARGINS" title={t('Margins')} register={register('GRID_MODES')} selected={watch('GRID_MODES').includes('MARGINS')} />
+                </FormGroup>
                 <FormGroup label={t('Grid opacity')} description={t('The opacity of the grid layer')}>
                     <CustomSlider
                         step={0.01}
@@ -137,11 +133,6 @@ const SettingsView = ({ t }) => {
                         value={watch('GRID_OPACITY')}
                         onChange={value => { setValue('GRID_OPACITY', value); }}
                     />
-                </FormGroup>
-                <FormGroup label={t('Grid modes')} description={t('Grid modes to use for the grid display')}>
-                    <GridIcon value="GRID" title={t('Classic grid')} register={register('GRID_MODES')} selected={watch('GRID_MODES').includes('GRID')} />
-                    <GridIcon value="CENTER" title={t('Center')} register={register('GRID_MODES')} selected={watch('GRID_MODES').includes('CENTER')} />
-                    <GridIcon value="MARGINS" title={t('Margins')} register={register('GRID_MODES')} selected={watch('GRID_MODES').includes('MARGINS')} />
                 </FormGroup>
                 {watch('GRID_MODES')?.includes('GRID') && <FormGroup label={t('Grid lines')} description={t('Number of lines of the grid layer')}>
                     <NumberInput register={register('GRID_LINES')} min={1} max={12} />

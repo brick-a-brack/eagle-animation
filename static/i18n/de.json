@@ -109,5 +109,22 @@
   "Automatic white balance": "Automatischer Weißabgleich",
   "Change the exported video framerate (This is not your animation framerate)": "Exportierte Video-Bildfrequenz ändern (Dies ist nicht Ihre Animations-Bildfrequenz)",
   "(Automated)": "(Automatisch)",
-  "Stop motion workshops": "Stop-Motion-Workshops"
+  "Stop motion workshops": "Stop-Motion-Workshops",
+  "{{value}}%": "{{value}}%",
+  "Español": "Spanisch",
+  "Italiano": "Italienisch",
+  "Polski": "Polnisch",
+  "Português": "Portugiesisch",
+  "Automatic": "Automatisch",
+  "Manual": "Manuell",
+  "Cloudy": "Bewölkt",
+  "Daylight": "Tageslicht",
+  "Flash": "Blitz",
+  "Fluorescent": "Fluoreszierend",
+  "Shade": "Schatten",
+  "Tungsten": "Wolfram",
+  "Aperture": "Blende",
+  "Shutter speed": "Verschlusszeit",
+  "ISO": "ISO",
+  "Grid": "Raster"
 }

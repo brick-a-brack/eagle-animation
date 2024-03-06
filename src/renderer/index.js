@@ -8,10 +8,10 @@ import actions from './web-actions';
 console.log('Build', BUILD);
 
 window.EA = (action, data) => {
-  console.log('[IPC]', action, data);
 
   // IPC (Electron backend)
   if (typeof window.IPC !== 'undefined') {
+    console.log('📣 IPC', action, data);
     return window.IPC.call(action, data);
   }
 
