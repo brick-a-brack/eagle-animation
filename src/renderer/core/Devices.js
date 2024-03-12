@@ -1,60 +1,45 @@
-import Webcam from './Webcam';
+import { getCamera, getCameras } from '../cameras';
 
 class Devices {
     constructor() {
         this.currentId = null;
-        this.currentCamera = null;
     }
 
     async list() {
-        const streams = await navigator.mediaDevices.enumerateDevices()
-        return streams.filter(stream => stream.kind === 'videoinput').map((stream, i) => ({
-            id: `webcamera-${stream.deviceId}`,
-            label: `[${i}] ${stream.label}`,
-        }));
+        const cameras = await getCameras();
+        return cameras.map((e,i) => ({...e, label: `[${i}] ${e.label || ''}`}));
     }
 
-    async init() {
+    async connect() {
         const list = await this.list();
         if (!this.currentId || !list.some(camera => camera.id === this.currentId)) {
             this.currentId = list?.[0]?.id || null
         }
     }
 
-    async setMainCamera(id) {
+    async setMainCamera(id) {   
         if (this.currentId === id) {
             return;
         }
 
+        getCamera(this.currentId)?.disconnect();
+
         this.currentId = id;
-        if (this.currentCamera) {
-            this.currentCamera.stop();
-        }
-        this.currentCamera = null;
     }
 
-    async stop() {
+    async disconnect() {
         if (!this.currentId) {
             return;
         }
 
-        if (this.currentCamera) {
-            this.currentCamera.stop();
-        }
-
-        this.currentCamera = null;
+        getCamera(this.currentId)?.disconnect();
     }
 
     getMainCamera() {
-        if (this.currentCamera) {
-            return this.currentCamera;
+        if (this.currentId) {
+            return getCamera(this.currentId);
         }
-
-        if (this.currentId && this.currentId.startsWith('webcamera-')) {
-            this.currentCamera = new Webcam(this.currentId.replace('webcamera-', ''));
-        }
-
-        return this.currentCamera || null;
+        return null;
     }
 }
 

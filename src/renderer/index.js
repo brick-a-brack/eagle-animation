@@ -7,7 +7,7 @@ import { BUILD } from './config';
 console.log('Build', BUILD);
 
 window.EA = (action, data) => {
-  console.log('[IPC]', action, data);
+  console.log('📣 IPC', action, data);
   return window.IPC.call(action, data);
 }
 

@@ -73,7 +73,7 @@ const ControlBar = ({
                 <span>{frameQuantity}</span>
             </div>
 
-            <Button title={!isPlaying ? t('Play') : t('Stop')} selected={isPlaying} onClick={handleAction('PLAY')} size="mini" icon={isPlaying ? <IconStop /> : <IconPlay />} />
+            <Button selectedColor="warning" title={!isPlaying ? t('Play') : t('Stop')} selected={isPlaying} onClick={handleAction('PLAY')} size="mini" icon={isPlaying ? <IconStop /> : <IconPlay />} />
             <Button title={t('Loop')} onClick={handleAction('LOOP')} selected={loopStatus} size="mini" icon={<IconLoop />} />
             <Button title={t('Short play')} onClick={handleAction('SHORT_PLAY')} selected={shortPlayStatus} size="mini" icon={<IconShortPlay />} />
             <NumberInput onBlur={() => handleAction('FPS_BLUR')()} onFocus={() => handleAction('FPS_FOCUS')()} style={{ marginLeft: 'var(--space-big)' }} min={1} max={60} tag={t('FPS')} defaultValue={fps} onValueChange={v => handleAction('FPS_CHANGE', v)()} />

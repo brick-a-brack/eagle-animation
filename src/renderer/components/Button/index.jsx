@@ -5,7 +5,7 @@ import { useMemo } from 'react';
 import CustomTooltip from '../Tooltip';
 import * as style from './style.module.css';
 
-const Button = ({ icon, onClick, title = '', size = 'mini', disabled = false, selected = false, tooltipPosition = 'TOP', ...rest }) => {
+const Button = ({ icon, onClick, title = '', size = 'mini', disabled = false, selected = false, selectedColor = 'normal', tooltipPosition = 'TOP', ...rest }) => {
     const uid = useMemo(() => uniqueId(), []);
     return (
         <div {...{ ...rest, children: null }} className={style.mainContainer} >
@@ -15,7 +15,7 @@ const Button = ({ icon, onClick, title = '', size = 'mini', disabled = false, se
                 role="button"
                 tabIndex={0}
                 onClick={() => onClick && onClick()}
-                className={`${(size === 'mini') ? style.buttonMini : style.button} ${(selected) ? style.selected : ''}  ${(disabled) ? style.disabled : ''}`}
+                className={`${(size === 'mini') ? style.buttonMini : style.button} ${(selected && selectedColor === 'normal') ? style.selected : ''} ${(selected && selectedColor === 'warning') ? style.selectedWarning : ''}  ${(disabled) ? style.disabled : ''}`}
             >
                 {icon}
             </div>
