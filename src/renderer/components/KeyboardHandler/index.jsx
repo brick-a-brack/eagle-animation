@@ -2,7 +2,17 @@ import KeyboardEventHandler from 'react-keyboard-event-handler';
 
 const keyboardMap = {
     PLAY: ['0', 'space'],
-    TAKE_PICTURE: ['enter', 'ctrl+1'],
+    TAKE_PICTURE: ['enter'],
+    TAKE_PICTURES_1: ['ctrl+1'],
+    TAKE_PICTURES_2: ['ctrl+2'],
+    TAKE_PICTURES_3: ['ctrl+3'],
+    TAKE_PICTURES_4: ['ctrl+4'],
+    TAKE_PICTURES_5: ['ctrl+5'],
+    TAKE_PICTURES_6: ['ctrl+6'],
+    TAKE_PICTURES_7: ['ctrl+7'],
+    TAKE_PICTURES_8: ['ctrl+8'],
+    TAKE_PICTURES_9: ['ctrl+9'],
+    TAKE_PICTURES_10: ['ctrl+0'],
     LOOP: ['8'],
     SHORT_PLAY: ['6'],
     DELETE_FRAME: ['backspace', 'del'],

@@ -1,0 +1,42 @@
+.indicator {
+    font-size: var(--font-size-8);
+    padding: var(--space-small);
+    line-height: var(--font-size-7);
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    font-weight: 600;
+    pointer-events: none;
+}
+
+.indicator svg {
+    height: var(--font-size-6);
+    margin-right: var(--space-small);
+}
+
+.indicator.high {
+    color: #ddd;
+}
+
+.indicator.high svg {
+    fill: #ddd;
+}
+
+.indicator.medium {
+    color: var(--color-warning);
+}
+
+.indicator.medium svg {
+    fill: var(--color-warning);
+}
+
+.indicator.low {
+    color: var(--color-alert);
+}
+
+.indicator.low svg {
+    fill: var(--color-alert);
+}
