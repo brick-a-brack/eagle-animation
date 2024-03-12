@@ -30,7 +30,7 @@ export const exportProjectScene = async (projectPath, scene, filePath, format, o
     const project = await getProjectData(projectPath);
     const directoryPath = join(projectPath, `/.tmp-${uuidv4()}/`);
     await normalizePictures(projectPath, scene, directoryPath, opts);
-    await generate(1920, 1080, directoryPath, format, filePath, project.project.scenes[scene].framerate, opts);
+    await generate(1920, 1080, directoryPath, format, filePath, opts?.framerate || project.project.scenes[scene].framerate, opts);
     await rimraf(directoryPath);
 };
 

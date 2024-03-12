@@ -149,6 +149,7 @@ const actions = {
         custom_output_framerate_number = 10,
         public_code = 'default',
         event_key = '',
+        framerate = 10,
         translations = {
             EXPORT_FRAMES: '',
             EXPORT_VIDEO: '',
@@ -182,7 +183,8 @@ const actions = {
             duplicateFramesAutoNumber: duplicate_frames_auto_number,
             customOutputFramerate: custom_output_framerate,
             customOutputFramerateNumber: custom_output_framerate_number,
-            resolution
+            resolution,
+            framerate: Number(framerate),
         });
 
         if (mode === 'send') {
