@@ -1,11 +1,11 @@
-.switch {
+.swtch {
   display: inline-block;
   height: 26px;
   position: relative;
   width: 45px;
 }
 
-.switch input { display: none; }
+.swtch input { display: none; }
 
 .slider {
   background-color: var(--color-theme-light);

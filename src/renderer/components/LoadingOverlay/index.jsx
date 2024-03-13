@@ -1,6 +1,6 @@
 import * as style from './style.module.css';
-import IconQuit from 'jsx:./assets/quit.svg';
-import IconDone from 'jsx:./assets/done.svg';
+import IconQuit from './assets/quit.svg?jsx';
+import IconDone from './assets/done.svg?jsx';
 import { withTranslation } from 'react-i18next';
 import { useEffect } from 'react';
 

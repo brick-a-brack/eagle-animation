@@ -1,12 +1,12 @@
 import * as style from './style.module.css';
 
 
-import IconBattery0 from 'jsx:./assets/battery-0.svg';
-import IconBattery25 from 'jsx:./assets/battery-25.svg';
-import IconBattery50 from 'jsx:./assets/battery-50.svg';
-import IconBattery75 from 'jsx:./assets/battery-75.svg';
-import IconBattery100 from 'jsx:./assets/battery-100.svg';
-import IconBatteryAC from 'jsx:./assets/battery-ac.svg';
+import IconBattery0 from './assets/battery-0.svg?jsx';
+import IconBattery25 from './assets/battery-25.svg?jsx';
+import IconBattery50 from './assets/battery-50.svg?jsx';
+import IconBattery75 from './assets/battery-75.svg?jsx';
+import IconBattery100 from './assets/battery-100.svg?jsx';
+import IconBatteryAC from './assets/battery-ac.svg?jsx';
 import { withTranslation } from 'react-i18next';
 
 const getInfos = (value) => {

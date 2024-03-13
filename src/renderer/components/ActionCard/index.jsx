@@ -1,7 +1,7 @@
 import Action from "../Action";
-import IconFrames from 'jsx:./assets/frames.svg';
-import IconSend from 'jsx:./assets/send.svg';
-import IconVideo from 'jsx:./assets/video.svg';
+import IconFrames from './assets/frames.svg?jsx';
+import IconSend from './assets/send.svg?jsx';
+import IconVideo from './assets/video.svg?jsx';
 import * as style from './style.module.css';
 
 const icons = {

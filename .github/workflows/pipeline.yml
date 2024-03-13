@@ -32,39 +32,25 @@ jobs:
           rm package-lock.json
           npm i --force
 
-      - name: Build web bundle
-        run: npm run build
-        env:
-          CI: true
+      - name: Create .env file
+        run: |
+          echo "VITE_PUBLIC_URL=${{ secrets.RUN_PUBLIC_URL }}" >> .env
+          echo "VITE_COMMIT_HASH=`git rev-parse HEAD`" >> .env
 
       - name: Packaging Windows
         if: matrix.os == 'windows-latest'
-        run: npm run package:windows
+        run: npm run build:win
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Packaging MacOS
         if: matrix.os == 'macos-latest'
-        run: npm run package:mac
+        run: npm run build:mac
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Packaging Linux
         if: matrix.os == 'ubuntu-latest'
-        run: npm run package:linux
+        run: npm run build:linux
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      # - name: Upload release files
-      #   uses: softprops/action-gh-release@v1
-      #   if: github.ref == 'refs/heads/master'
-      #   with:
-      #     files: binaries/@brick-a-brack/*
-
-      #- name: Package app
-      #  uses: cryogenicplanet/action-electron-builder@v2
-      #  with:
-      #    github_token: ${{ secrets.github_token }}
-      #    release: true
-      #    skip_build: true
-      #    skip_install: true

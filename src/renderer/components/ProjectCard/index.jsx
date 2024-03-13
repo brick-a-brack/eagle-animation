@@ -1,8 +1,8 @@
 import { useRef } from "react";
 
-import IconEdit from 'jsx:./assets/edit.svg';
-import IconAdd from 'jsx:./assets/add.svg';
-import IconOpen from 'jsx:./assets/open.svg';
+import IconEdit from './assets/edit.svg?jsx';
+import IconAdd from './assets/add.svg?jsx';
+import IconOpen from './assets/open.svg?jsx';
 
 import * as style from './style.module.css';
 

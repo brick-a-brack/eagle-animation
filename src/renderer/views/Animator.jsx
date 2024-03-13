@@ -8,9 +8,9 @@ import ControlBar from "../components/ControlBar";
 import KeyboardHandler from "../components/KeyboardHandler";
 import Player from "../components/Player";
 import Timeline from "../components/Timeline";
-import soundDelete from 'url:~/static/sounds/delete.mp3';
-import soundShutter from 'url:~/static/sounds/shutter.mp3';
-import errorShutter from 'url:~/static/sounds/error.mp3';
+import soundDelete from '~/resources/sounds/delete.mp3';
+import soundShutter from '~/resources/sounds/shutter.mp3';
+import errorShutter from '~/resources/sounds/error.mp3';
 import DevicesInstance from "../core/Devices";
 import { takePicture } from "../cameras";
 
