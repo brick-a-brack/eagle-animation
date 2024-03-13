@@ -34,20 +34,17 @@ Feel free to make pull-requests, help us to translate the software or report iss
 
 ### Production build and release process
 
-- Run `npm i --force` to install dependencies.
-- Update `config.js` file.
+- Run `npm i --force` to install dependencies (`--force` is required because we use an old dependency).
+- Update `src/config.js` file if needed.
 - Update `version` value in `package.json` if needed.
-- Run `npm run build` to build the web bundle and main script in the `dist/electron` directory.
-- Run `npm run package:windows`, `npm run package:linux` and `npm run package:mac` to build release files.
-- Create a draft release on Github.
+- Run `npm run build:win`, `npm run build:linux` and `npm run build:mac` to build release files.
+- Create a draft release on Github tag it with the version `vX.X.X`.
 - Merge into master.
 
 ### Development mode
 
 - Run `npm i --force` to install dependencies.
 - Run `npm start` to launch the application in dev mode.
-
-_Note: Because app backend and web bundle are splitted, any change in the backend part will relaunch the whole app. At the moment, it does not kill the previous openned window._
 
 ### Telemetry
 

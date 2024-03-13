@@ -2,7 +2,7 @@ import { withTranslation } from 'react-i18next';
 import { compareVersions } from 'compare-versions';
 
 import * as style from './style.module.css';
-import Logo from 'jsx:./assets/logo.svg';
+import Logo from './assets/logo.svg?jsx';
 import Action from '../Action';
 
 const Header = ({

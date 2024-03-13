@@ -1,10 +1,10 @@
 import { withTranslation } from 'react-i18next';
 
 import Button from '../Button';
-import IconBack from 'jsx:./assets/back.svg';
-import IconDelete from 'jsx:./assets/delete.svg';
-import IconExport from 'jsx:./assets/export.svg';
-import IconSettings from 'jsx:./assets/settings.svg';
+import IconBack from './assets/back.svg?jsx';
+import IconDelete from './assets/delete.svg?jsx';
+import IconExport from './assets/export.svg?jsx';
+import IconSettings from './assets/settings.svg?jsx';
 import * as style from './style.module.css';
 
 const ActionsBar = ({ onAction = null, actions = [], position = "LEFT", t }) => {
