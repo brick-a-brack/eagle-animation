@@ -21,10 +21,11 @@ import {
 import { getSettings, saveSettings } from './core/settings';
 import { selectFile, selectFolder } from './core/utils';
 import { exportProjectScene, getSyncList, normalizePictures, saveSyncList } from './core/export';
-import { getProfile } from './core/ffmpeg';
+
 import { uploadFile } from './core/api';
 import { existsSync } from 'fs';
 import { flushCamera, getCamera, getCameras } from './cameras';
+import { getEncodingProfile } from '../common/ffmpeg';
 
 const OLD_PROJECTS_PATH = join(homedir(), DIRECTORY_NAME);
 const PROJECTS_PATH = existsSync(OLD_PROJECTS_PATH) ? OLD_PROJECTS_PATH : envPaths(DIRECTORY_NAME, { suffix: '' }).data;
@@ -203,7 +204,17 @@ const actions = {
     }
   },
   APP_CAPABILITIES: async () => {
-    const capabilities = ['EXPORT_VIDEO', 'EXPORT_FRAMES', 'BACKGROUND_SYNC', 'LOW_FRAMERATE_QUALITY_IMPROVEMENT'];
+    const capabilities = [
+      'EXPORT_VIDEO',
+      'EXPORT_FRAMES',
+      'BACKGROUND_SYNC',
+      'LOW_FRAMERATE_QUALITY_IMPROVEMENT',
+      'EXPORT_VIDEO_H264',
+      'EXPORT_VIDEO_HEVC',
+      'EXPORT_VIDEO_PRORES',
+      'EXPORT_VIDEO_VP8',
+      'EXPORT_VIDEO_VP9',
+    ];
     return capabilities;
   },
   EXPORT: async (
@@ -242,7 +253,7 @@ const actions = {
       return true;
     }
 
-    const profile = getProfile(format);
+    const profile = getEncodingProfile(format);
 
     // Create sync folder if needed
     if (mode === 'send') {

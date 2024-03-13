@@ -68,11 +68,12 @@ To improve the quality of **Eagle Animation**, runtime errors are automatically 
 
 Some features are device-dependent or platform-limited. Here's a summary table.
 
-| Feature                    | Windows | MacOS | Linux | Web (Chrome) | Web (Firefox) | Web (Safari) |
-| -------------------------- | ------- | ----- | ----- | ------------ | ------------- | ------------ |
-| Video export               | ✅      | ✅    | ✅    | ❌           | ❌            | ❌           |
-| Frames export              | ✅      | ✅    | ✅    | ❌           | ❌            | ❌           |
-| High-quality photo capture | ✅      | ✅    | ✅    | ✅           | ❌            | ❓           |
-| Workshop features          | ✅      | ✅    | ✅    | ❌           | ❌            | ❌           |
-| Control webcam settings    | ✅      | ❓    | ❌    | ✅           | ❌            | ❓           |
-| Use Canon cameras          | ✅      | ❌    | ❌    | ❌           | ❌            | ❌           |
+| Feature                                           | Windows | MacOS | Linux | Web (Chrome / Edge) | Web (Firefox) | Web (Safari) |
+| ------------------------------------------------- | ------- | ----- | ----- | ------------------- | ------------- | ------------ |
+| Use webcam to take photos                         | ✅      | ✅    | ✅    | ✅                  | ✅            | ✅           |
+| Export captured frames                            | ✅      | ✅    | ✅    | ✅                  | ✅            | ✅           |
+| Video export                                      | ✅      | ✅    | ✅    | ✅                  | ✅            | ✅           |
+| Improve quality by reducing the preview framerate | ✅      | ✅    | ✅    | ✅                  | ❌            | ❓           |
+| Control webcam settings                           | ✅      | ✅    | ✅    | ✅                  | ❌            | ❓           |
+| Workshop features                                 | ✅      | ✅    | ✅    | ❌                  | ❌            | ❌           |
+| Use Canon camera to take photos                   | ✅      | ❌    | ❌    | ❌                  | ❌            | ❌           |

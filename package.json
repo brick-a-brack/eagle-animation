@@ -39,6 +39,7 @@
     "@braintree/browser-detection": "^2.0.0",
     "@electron-toolkit/preload": "^3.0.0",
     "@electron-toolkit/utils": "^3.0.0",
+    "@ffmpeg/core": "^0.12.6",
     "@ffmpeg/ffmpeg": "^0.12.10",
     "@ffmpeg/util": "^0.12.1",
     "animated-scroll-to": "^2.3.0",

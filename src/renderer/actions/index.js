@@ -16,6 +16,9 @@ import {
   updateSceneFPSValue,
 } from './projects';
 import * as browserDetection from '@braintree/browser-detection';
+import { getFFmpeg } from './ffmpeg';
+import { getEncodingProfile, getFFmpegArgs } from '../../common/ffmpeg';
+import { fetchFile } from '@ffmpeg/util';
 
 const getDefaultPreview = async (data) => {
   for (let i = 0; i < (data?.project?.scenes?.length || 0); i++) {
@@ -155,11 +158,7 @@ const actions = {
     return null;
   },
   APP_CAPABILITIES: async () => {
-    const capabilities = [
-      //'EXPORT_VIDEO',
-      'EXPORT_FRAMES',
-      //'BACKGROUND_SYNC'
-    ];
+    const capabilities = ['EXPORT_VIDEO', 'EXPORT_VIDEO_H264', 'EXPORT_VIDEO_VP8', 'EXPORT_VIDEO_PRORES', 'EXPORT_FRAMES'];
 
     // Firefox don't support photo mode
     if (!browserDetection.isFirefox()) {
@@ -174,82 +173,66 @@ const actions = {
       project_id,
       track_id,
       mode = 'video',
-      //format = 'h264',
-      //resolution = 'original',
+      format = 'h264',
+      resolution = 'original',
       duplicate_frames_copy = true,
       duplicate_frames_auto = false,
       duplicate_frames_auto_number = 2,
-      //custom_output_framerate = false,
-      //custom_output_framerate_number = 10,
-      //public_code = 'default',
-      //event_key = '',
-      /*translations = {
-        EXPORT_FRAMES: '',
-        EXPORT_VIDEO: '',
-        DEFAULT_FILE_NAME: '',
-        EXT_NAME: '',
-      },*/
+      custom_output_framerate = false,
+      custom_output_framerate_number = 10,
     }
   ) => {
-    if (mode === 'frames') {
-      const frames = await normalizePictures(project_id, track_id, {
-        duplicateFramesCopy: duplicate_frames_copy,
-        duplicateFramesAuto: duplicate_frames_auto,
-        duplicateFramesAutoNumber: duplicate_frames_auto_number,
-      });
+    const trackId = Number(track_id);
 
+    const project = await getProject(project_id);
+    const frames = await normalizePictures(project_id, trackId, {
+      duplicateFramesCopy: duplicate_frames_copy,
+      duplicateFramesAuto: duplicate_frames_auto,
+      duplicateFramesAutoNumber: duplicate_frames_auto_number,
+    });
+
+    if (mode === 'frames') {
       const zip = new JSZip();
       for (let i = 0; i < frames.length; i++) {
         const frame = frames[i];
         const blob = await getFrameBlob(frame.id);
         zip.file(`frame-${i.toString().padStart(6, '0')}.jpg`, blob);
       }
-      /* zip.file('Hello.txt', 'Hello World\n');
-        var img = zip.folder('images');
-        img.file('smile.gif', imgData, { base64: true });*/
-
       zip.generateAsync({ type: 'blob' }).then(function (content) {
         saveAs(content, 'frames.zip');
       });
-
-      return true;
     }
 
-    /*
+    if (mode === 'video') {
+      const ffmpeg = await getFFmpeg(console.log);
+      console.log('FFMPEG READY', ffmpeg);
 
-        const profile = getProfile(format);
+      for (let i = 0; i < frames.length; i++) {
+        const frame = frames[i];
+        const blob = await getFrameBlob(frame.id);
+        await ffmpeg.writeFile(`frame-${i.toString().padStart(6, '0')}.jpg`, await fetchFile(blob));
+      }
 
-        // Create sync folder if needed
-        if (mode === 'send') {
-            await mkdirp(join(PROJECTS_PATH, '/.sync/'));
-        }
+      const profile = getEncodingProfile(format);
+      const output = `video.${profile.extension}`;
 
-        const path = mode === 'send' ? join(PROJECTS_PATH, '/.sync/', `${public_code}.${profile.extension}`) : await selectFile(translations.DEFAULT_FILE_NAME, profile.extension, translations.EXPORT_VIDEO, translations.EXT_NAME);
-        await exportProjectScene(join(PROJECTS_PATH, project_id), track_id, path, format, {
-            duplicateFramesCopy: duplicate_frames_copy,
-            duplicateFramesAuto: duplicate_frames_auto,
-            duplicateFramesAutoNumber: duplicate_frames_auto_number,
-            customOutputFramerate: custom_output_framerate,
-            customOutputFramerateNumber: custom_output_framerate_number,
-            resolution
-        });
+      const args = getFFmpegArgs(1920, 1080, format, output, custom_output_framerate ? custom_output_framerate_number : project.project.scenes[trackId].framerate, {
+        duplicateFramesCopy: duplicate_frames_copy,
+        duplicateFramesAuto: duplicate_frames_auto,
+        duplicateFramesAutoNumber: duplicate_frames_auto_number,
+        customOutputFramerate: custom_output_framerate,
+        customOutputFramerateNumber: custom_output_framerate_number,
+        resolution,
+      });
 
-        if (mode === 'send') {
-            const syncList = await getSyncList(PROJECTS_PATH);
-            await saveSyncList(PROJECTS_PATH, [
-                ...syncList, {
-                    apiKey: event_key,
-                    publicCode: public_code,
-                    fileName: `${public_code}.${profile.extension}`,
-                    fileExtension: profile.extension,
-                    isUploaded: false
-                }
-            ]);
+      console.log('FFMPEG RUN', args);
 
-            actions.SYNC();
-        }
+      await ffmpeg.exec(args);
+      const data = await ffmpeg.readFile(output);
+      saveAs(new Blob([data.buffer], { type: 'application/octet-stream' }), output);
+    }
 
-        return true;*/
+    return true;
   },
 };
 

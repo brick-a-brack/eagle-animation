@@ -136,11 +136,11 @@ const Export = ({ t }) => {
   };
 
   const formats = [
-    { value: 'h264', label: t('H264 (Recommended)') },
-    { value: 'hevc', label: t('HEVC (.mp4)') },
-    { value: 'prores', label: t('ProRes (.mov)') },
-    { value: 'vp8', label: t('VP8 (.webm)') },
-    { value: 'vp9', label: t('VP9 (.webm)') },
+    ...(capabilities.includes('EXPORT_VIDEO_H264') ? [{ value: 'h264', label: t('H264 (Recommended)') }] : []),
+    ...(capabilities.includes('EXPORT_VIDEO_HEVC') ? [{ value: 'hevc', label: t('HEVC (.mp4)') }] : []),
+    ...(capabilities.includes('EXPORT_VIDEO_PRORES') ? [{ value: 'prores', label: t('ProRes (.mov)') }] : []),
+    ...(capabilities.includes('EXPORT_VIDEO_VP8') ? [{ value: 'vp8', label: t('VP8 (.webm)') }] : []),
+    ...(capabilities.includes('EXPORT_VIDEO_VP9') ? [{ value: 'vp9', label: t('VP9 (.webm)') }] : []),
   ];
 
   const resolutions = ['original', 2160, 1440, 1080, 720, 480, 360].map((e) => ({ value: e, label: e === 'original' ? t('Original (Recommended)') : t('{{resolution}}p', { resolution: e }) }));

@@ -20,7 +20,10 @@ export default defineConfig({
             main: resolve(__dirname, 'src/renderer/index.html'),
         },
     },*/
-    outDir:resolve(__dirname,  'out/web/'),
+    outDir: resolve(__dirname, 'out/web/'),
+  },
+  optimizeDeps: {
+    exclude: ["@ffmpeg/ffmpeg", "@ffmpeg/util"],
   },
   resolve: {
     alias: {
@@ -52,7 +55,17 @@ export default defineConfig({
           src: normalizePath(resolve(__dirname, './resources/*')),
           dest: '.',
         },
+        {
+          src: normalizePath(resolve(__dirname, 'node_modules/@ffmpeg/core/dist/esm/*')),
+          dest: '.',
+        },
       ],
     }),
   ],
+  server: {
+    headers: {
+      "Cross-Origin-Opener-Policy": "same-origin",
+      "Cross-Origin-Embedder-Policy": "require-corp",
+    },
+  },
 });
