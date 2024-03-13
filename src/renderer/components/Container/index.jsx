@@ -7,16 +7,15 @@ import './vars.module.css';
 import * as style from './style.module.css';
 
 const Container = ({ children, t }) => {
+  useEffect(() => {
+    document.title = t('Eagle Animation by Brick à Brack') + ' (Brickfilms.com)';
+  });
 
-    useEffect(() => {
-        document.title = t('Eagle Animation by Brick à Brack') + ' (Brickfilms.com)';
-    })
-
-    return (<TooltipProvider>
-    <div className={style.container}>
-        {children}
-    </div>
-</TooltipProvider>);
+  return (
+    <TooltipProvider>
+      <div className={style.container}>{children}</div>
+    </TooltipProvider>
+  );
 };
 
 export default withTranslation()(Container);

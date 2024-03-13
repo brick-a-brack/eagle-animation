@@ -68,10 +68,11 @@ To improve the quality of **Eagle Animation**, runtime errors are automatically 
 
 Some features are device-dependent or platform-limited. Here's a summary table.
 
-| Feature                 | Windows | MacOS | Linux | Web (Chrome) | Web (Firefox) | Web (Safari) |
-| ----------------------- | ------- | ----- | ----- | ------------ | ------------- | ------------ |
-| Video export            | ✅      | ✅    | ✅    | ✅           | ✅            | ✅           |
-| Frames export           | ✅      | ✅    | ✅    | ✅           | ✅            | ✅           |
-| Workshop features       | ✅      | ✅    | ✅    | ❌           | ❌            | ❌           |
-| Control webcam settings | ✅      | ❓    | ❌    | ✅           | ❌            | ❓           |
-| Use Canon cameras       | ✅      | ❌    | ❌    | ❌           | ❌            | ❌           |
+| Feature                    | Windows | MacOS | Linux | Web (Chrome) | Web (Firefox) | Web (Safari) |
+| -------------------------- | ------- | ----- | ----- | ------------ | ------------- | ------------ |
+| Video export               | ✅      | ✅    | ✅    | ❌           | ❌            | ❌           |
+| Frames export              | ✅      | ✅    | ✅    | ❌           | ❌            | ❌           |
+| High-quality photo capture | ✅      | ✅    | ✅    | ✅           | ❌            | ❓           |
+| Workshop features          | ✅      | ✅    | ✅    | ❌           | ❌            | ❌           |
+| Control webcam settings    | ✅      | ❓    | ❌    | ✅           | ❌            | ❓           |
+| Use Canon cameras          | ✅      | ❌    | ❌    | ❌           | ❌            | ❌           |

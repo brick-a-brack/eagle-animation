@@ -1,8 +1,8 @@
-import i18n from "i18next";
-import detector from "i18next-browser-languagedetector";
-import backend from "i18next-http-backend";
-import { initReactI18next } from "react-i18next"
-import { BUILD, ALLOWED_LANGUAGES, LS_LANGUAGE, DEFAULT_LANGUAGE } from "./config";
+import i18n from 'i18next';
+import detector from 'i18next-browser-languagedetector';
+import backend from 'i18next-http-backend';
+import { initReactI18next } from 'react-i18next';
+import { BUILD, ALLOWED_LANGUAGES, LS_LANGUAGE, DEFAULT_LANGUAGE } from './config';
 
 i18n
   .use(backend)
@@ -26,11 +26,11 @@ i18n
       useSuspense: false,
     },
     detection: {
-      order: ["localStorage", "navigator"],
+      order: ['localStorage', 'navigator'],
       lookupLocalStorage: LS_LANGUAGE,
       lookupFromPathIndex: 0,
       lookupFromSubdomainIndex: 0,
-      caches: ["localStorage"],
+      caches: ['localStorage'],
       checkWhitelist: true,
       checkForSimilarInWhitelist: false,
     },
@@ -38,7 +38,6 @@ i18n
   });
 
 export default i18n;
-
 
 const parseLanguageValue = (value = '') => {
   return ALLOWED_LANGUAGES.includes(value) ? value : DEFAULT_LANGUAGE;

@@ -9,11 +9,16 @@ on:
 jobs:
   release:
     name: Build & package
-    runs-on: ${{ matrix.os }}
+    runs-on: ${{ matrix.versions.os }}
 
     strategy:
       matrix:
-        os: [ ubuntu-latest, windows-latest, macos-latest ]
+        versions: [
+          {os: "ubuntu-latest", name: "Web", type: "web" },
+          {os: "ubuntu-latest", name: "Linux", type: "app" },
+          {os: "windows-latest", name: "Windows", type: "app" },
+          {os: "macos-latest", name: "MacOS", type: "app" }
+        ]
 
     steps:
       - name: Clone source code
@@ -32,25 +37,29 @@ jobs:
           rm package-lock.json
           npm i --force
 
-      - name: Create .env file
-        run: |
-          echo "VITE_PUBLIC_URL=${{ secrets.RUN_PUBLIC_URL }}" >> .env
-          echo "VITE_COMMIT_HASH=`git rev-parse HEAD`" >> .env
-
       - name: Packaging Windows
-        if: matrix.os == 'windows-latest'
+        if: ${{ (matrix.versions.os == 'windows-latest') && (matrix.versions.type == 'app') }}
         run: npm run build:win
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Packaging MacOS
-        if: matrix.os == 'macos-latest'
+        if: ${{ (matrix.versions.os == 'macos-latest') && (matrix.versions.type == 'app') }}
         run: npm run build:mac
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Packaging Linux
-        if: matrix.os == 'ubuntu-latest'
+        if: ${{ (matrix.versions.os == 'ubuntu-latest') && (matrix.versions.type == 'app') }}
         run: npm run build:linux
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Packaging Web
+        if: ${{ (matrix.versions.os == 'ubuntu-latest') && (matrix.versions.type == 'web') }}
+        run: |
+          echo "VITE_PUBLIC_URL=${{ secrets.RUN_PUBLIC_URL }}" >> .env
+          echo "VITE_COMMIT_HASH=`git rev-parse HEAD`" >> .env
+          npm run build:web
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
