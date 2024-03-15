@@ -15,10 +15,10 @@ import {
   updateProjectTitle,
   updateSceneFPSValue,
 } from './projects';
-import * as browserDetection from '@braintree/browser-detection';
 import { getFFmpeg } from './ffmpeg';
 import { getEncodingProfile, getFFmpegArgs } from '../../common/ffmpeg';
 import { fetchFile } from '@ffmpeg/util';
+import { isFirefox } from '@braintree/browser-detection';
 
 const getDefaultPreview = async (data) => {
   for (let i = 0; i < (data?.project?.scenes?.length || 0); i++) {
@@ -161,7 +161,7 @@ const actions = {
     const capabilities = ['EXPORT_VIDEO', 'EXPORT_VIDEO_H264', 'EXPORT_VIDEO_VP8', 'EXPORT_VIDEO_PRORES', 'EXPORT_FRAMES'];
 
     // Firefox don't support photo mode
-    if (!browserDetection.isFirefox()) {
+    if (!isFirefox()) {
       capabilities.push('LOW_FRAMERATE_QUALITY_IMPROVEMENT');
     }
 

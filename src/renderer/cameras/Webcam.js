@@ -1,4 +1,4 @@
-import * as browserDetection from '@braintree/browser-detection';
+import { isFirefox } from "@braintree/browser-detection";
 
 class Webcam {
   constructor(deviceId = null) {
@@ -21,7 +21,8 @@ class Webcam {
         .getUserMedia({
           video: {
             deviceId: this.deviceId ? { exact: this.deviceId } : undefined,
-            ...(browserDetection.isFirefox()
+            
+            ...(isFirefox()
               ? {
                   width: { min: 640, ideal: 1920, max: 99999 },
                   height: { min: 480, ideal: 1080, max: 99999 },
