@@ -65,6 +65,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Install and configure rclone
+        if: ${{ (matrix.versions.os == 'ubuntu-latest') && (matrix.versions.type == 'web') && (github.ref == 'refs/heads/master') }}
         run: |
           echo "${{ secrets.RCLONE_CONFIG }}" > /tmp/rclone.conf
           sudo -v ; curl https://rclone.org/install.sh | sudo bash
