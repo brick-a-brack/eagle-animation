@@ -4,18 +4,18 @@ compression: maximum
 
 directories:
   output: binaries
-  buildResources: dist
+  buildResources: out
 
 files:
   - package.json
-  - dist/**
+  - out/**
 
 extraMetadata:
-  main: dist/electron/index.js
+  main: out/main/index.js
 
 win:
   artifactName: Eagle-Animation-${version}-win.${ext}
-  icon: dist/electron/renderer/favicon.ico
+  icon: out/renderer/favicon.ico
   target:
     - portable
     - zip
@@ -23,7 +23,7 @@ win:
 mac:
   artifactName: Eagle-Animation-${version}-mac.${ext}
   category: public.app-category.photography
-  icon: dist/electron/renderer/icon.icns
+  icon: out/renderer/icon.icns
   extendInfo:
     NSMicrophoneUsageDescription: Please give us access to your microphone
     NSCameraUsageDescription: Please give us access to your camera
@@ -35,7 +35,7 @@ linux:
   category: Photography
   synopsis: EagleAnimation is an awesome, free and open-source animation software.
   description: EagleAnimation is an awesome, free and open-source animation software.
-  icon: dist/electron/renderer/icon.icns
+  icon: out/renderer/icon.icns
   target:
     - deb
     - tar.gz

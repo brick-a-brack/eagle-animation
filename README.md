@@ -32,22 +32,32 @@ The logo was created by Nishant Shukla and sound effects were obtained from [Zap
 
 Feel free to make pull-requests, help us to translate the software or report issues 😉
 
-### Production build and release process
+## Configuration
 
-- Run `npm i --force` to install dependencies.
-- Update `config.js` file.
+Some variables can be configured using a `.env` file, values with a "\*" are required.
+
+| **Name**         | **Description**                                                                                         | **Example**                                |
+| ---------------- | ------------------------------------------------------------------------------------------------------- | ------------------------------------------ |
+| VITE_PUBLIC_URL  | The full url of the assets server, must be ended by a slash "/". If it is not defined, we will use "/". | `https://web-ea.brickfilms.com/`           |
+| VITE_COMMIT_HASH | The hash of the current git commit, if it is not provided, the bundle will be flagged as "local".       | `cda02bf88498ce97d947fb357a6e4f459812122a` |
+
+### Build process
+
+- Run `npm i --force` to install dependencies (`--force` is required because we use an old dependency).
+- Update `src/config.js` file if needed.
+- Run `npm run build:win`, `npm run build:linux`, `npm run build:mac` and `npm run build:web` to build release files.
+
+### Release process
+
 - Update `version` value in `package.json` if needed.
-- Run `npm run build` to build the web bundle and main script in the `dist/electron` directory.
-- Run `npm run package:windows`, `npm run package:linux` and `npm run package:mac` to build release files.
-- Create a draft release on Github.
-- Merge into master.
+- Create a draft release on Github and tag it with the same version number: `vX.X.X`.
+- Merge your branch/dev into master.
 
 ### Development mode
 
 - Run `npm i --force` to install dependencies.
-- Run `npm start` to launch the application in dev mode.
-
-_Note: Because app backend and web bundle are splitted, any change in the backend part will relaunch the whole app. At the moment, it does not kill the previous openned window._
+- Run `npm run start:electron` to launch the application in dev mode.
+- Run `npm run start:web` to launch the web app in dev mode.
 
 ### Telemetry
 
@@ -58,10 +68,12 @@ To improve the quality of **Eagle Animation**, runtime errors are automatically 
 
 Some features are device-dependent or platform-limited. Here's a summary table.
 
-| Feature                 | Windows | MacOS | Linux |
-| ----------------------- | ------- | ----- | ----- |
-| Video export            | ✅      | ✅    | ✅    |
-| Frames export           | ✅      | ✅    | ✅    |
-| Workshop features       | ✅      | ✅    | ✅    |
-| Control webcam settings | ✅      | ⚠️    | ❌    |
-| Use Canon cameras       | ✅      | ❌    | ❌    |
+| Feature                                           | Windows | MacOS | Linux | Web (Chrome / Edge) | Web (Firefox) | Web (Safari) |
+| ------------------------------------------------- | ------- | ----- | ----- | ------------------- | ------------- | ------------ |
+| Use webcam to take photos                         | ✅      | ✅    | ✅    | ✅                  | ✅            | ✅           |
+| Export captured frames                            | ✅      | ✅    | ✅    | ✅                  | ✅            | ✅           |
+| Video export                                      | ✅      | ✅    | ✅    | ✅                  | ✅            | ✅           |
+| Improve quality by reducing the preview framerate | ✅      | ✅    | ✅    | ✅                  | ❌            | ❓           |
+| Control webcam settings                           | ✅      | ✅    | ✅    | ✅                  | ❌            | ❓           |
+| Workshop features                                 | ✅      | ✅    | ✅    | ❌                  | ❌            | ❌           |
+| Use Canon camera to take photos                   | ✅      | ❌    | ❌    | ❌                  | ❌            | ❌           |

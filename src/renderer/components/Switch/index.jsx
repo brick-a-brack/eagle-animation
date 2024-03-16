@@ -3,8 +3,8 @@ import * as style from './style.module.css';
 
 const Switch = ({ register = {}, className = '', required = false, ...props }) => {
   return (
-    <label className={`${style.switch} ${className}`}>
-      <input type="checkbox" required={required} {...register} {...props}/>
+    <label className={`${style.swtch} ${className}`}>
+      <input type="checkbox" required={required} {...register} {...props} />
       <span className={style.slider}></span>
     </label>
   );

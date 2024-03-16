@@ -16,11 +16,11 @@ module.exports = {
     trans: {
       extensions: [],
     },
-    lngs: ['en', 'fr', 'de', 'es', 'it', 'pt', 'pl'],
+    lngs: ['en', 'fr', 'de', 'es', 'it', 'pt', 'pl', 'eo'],
     defaultValue: (lng, ns, key) => (lng === 'en' ? key : '__NOT_TRANSLATED__'),
     resource: {
-      loadPath: 'static/i18n/{{lng}}.json',
-      savePath: 'static/i18n/{{lng}}.json',
+      loadPath: 'resources/i18n/{{lng}}.json',
+      savePath: 'resources/i18n/{{lng}}.json',
       jsonIndent: 2,
       lineEnding: '\n',
     },

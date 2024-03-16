@@ -15,7 +15,7 @@
     min-width: 100%;
 }
 
-.field input {
+.field .input {
     display: none;
 }
 
