@@ -65,16 +65,24 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Install and configure rclone
-        if: ${{ (matrix.versions.os == 'ubuntu-latest') && (matrix.versions.type == 'web') }}
         run: |
           echo "${{ secrets.RCLONE_CONFIG }}" > /tmp/rclone.conf
           sudo -v ; curl https://rclone.org/install.sh | sudo bash
           
-      - name: Upload assets to Cloudflare
-        if: ${{ (matrix.versions.os == 'ubuntu-latest') && (matrix.versions.type == 'web') }}
+      - name: Upload assets to Cloudflare (Release)
+        if: ${{ (matrix.versions.os == 'ubuntu-latest') && (matrix.versions.type == 'web') && (github.ref == 'refs/heads/master') }}
         run: |
           mv out/web/index.html ./
           mv out/web/sw.js ./ || true
           rclone --config /tmp/rclone.conf copy out/web/ r2:/eagle-animation-web/
           rclone --config /tmp/rclone.conf copy index.html r2:/eagle-animation-web/
           rclone --config /tmp/rclone.conf copy sw.js r2:/eagle-animation-web/ || true
+        
+      - name: Upload assets to Cloudflare (Beta)
+        if: ${{ (matrix.versions.os == 'ubuntu-latest') && (matrix.versions.type == 'web') && (github.ref == 'refs/heads/dev') }}
+        run: |
+          mv out/web/index.html ./
+          mv out/web/sw.js ./ || true
+          rclone --config /tmp/rclone.conf copy out/web/ r2:/eagle-animation-web/beta/
+          rclone --config /tmp/rclone.conf copy index.html r2:/eagle-animation-web/beta/
+          rclone --config /tmp/rclone.conf copy sw.js r2:/eagle-animation-web/beta/ || true
