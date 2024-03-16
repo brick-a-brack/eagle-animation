@@ -5,9 +5,9 @@
     border-radius: 50%;
     cursor: pointer;
     display: flex;
-    height: 80px;
+    height: 42px;
     justify-content: center;
-    line-height: 80px;
+    line-height: 42px;
     margin-left: 5px;
     margin-right: 5px;
     padding: 10px;
@@ -15,7 +15,7 @@
     text-align: center;
     transition: all .3s ease-in-out;
     user-select: none;
-    width: 80px;
+    width: 42px;
 }
 
 .button:hover {
@@ -30,15 +30,15 @@
     border-radius: 50%;
     cursor: pointer;
     display: flex;
-    height: 40px;
+    height: 36px;
     justify-content: center;
-    line-height: 40px;
+    line-height: 36px;
     margin: 5px;
     padding: 5px;
     position: relative;
     text-align: center;
     user-select: none;
-    width: 40px;
+    width: 36px;
     transition: all .3s ease-in-out;
 }
 
