@@ -59,12 +59,15 @@ const HomeView = ({ t }) => {
     if (action === 'SETTINGS') {
       navigate('/settings?back=/');
     }
+    if (action === 'SHORTCUTS') {
+      navigate('/shortcuts?back=/');
+    }
   };
 
   return (
     <>
       <Header action={handleLink} version={VERSION} latestVersion={latestVersion} />
-      <ActionsBar actions={['SETTINGS']} position="RIGHT" onAction={handleAction} />
+      <ActionsBar actions={['SETTINGS', 'SHORTCUTS']} position="RIGHT" onAction={handleAction} />
       <ProjectsGrid>
         <ProjectCard placeholder={t('New project')} onClick={handleCreateProject} icon="ADD" />
         {[...projects]

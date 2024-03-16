@@ -1,0 +1,47 @@
+.line,
+.line * {
+    color: #dedede;
+}
+
+.line {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-medium);
+    font-size: var(--font-size-6);
+}
+
+.line > div:last-child {
+    text-align: right;
+    display: flex;
+    gap: var(--space-small);
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.shortcut {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.key {
+    font-weight: 800;
+    font-size: var(--font-size-7);
+    background-color: var(--color-theme-medium);
+    padding: 2px 4px;
+    margin: 0 6px;
+    display: inline-block;
+    border-radius: 4px;
+    min-width:20px;
+    text-align: center;
+}
+
+.table {
+    width: 100%;
+    margin: auto;
+    max-width: 600px;
+    display: flex;
+    gap: var(--space-big);
+    flex-direction: column;
+}

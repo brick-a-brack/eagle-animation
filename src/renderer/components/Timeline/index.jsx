@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { CSS as DNDCSS } from '@dnd-kit/utilities';
 import animateScrollTo from 'animated-scroll-to';
 import { withTranslation } from 'react-i18next';
@@ -86,9 +86,11 @@ const Timeline = ({ onSelect, onMove, select = false, pictures = [], playing = f
     >
       <aside className={style.container} ref={ref}>
         <SortableContext items={pictures} strategy={horizontalListSortingStrategy}>
-          {pictures.filter((e) => !e.deleted).map((img, index) => (
-            <SortableItem key={`timeline-item-${img.id}`} index={index} img={img} selected={select === img.id} onSelect={onSelect} />
-          ))}
+          {pictures
+            .filter((e) => !e.deleted)
+            .map((img, index) => (
+              <SortableItem key={`timeline-item-${img.id}`} index={index} img={img} selected={select === img.id} onSelect={onSelect} />
+            ))}
         </SortableContext>
         <span className={`${style.containerImg} ${style.camera} ${select === false ? style.selected : ''}`}>
           <span

@@ -155,11 +155,11 @@ const Animator = ({ t }) => {
     }
 
     // Optimistic update
-    setProject(project => {
+    setProject((project) => {
       let copiedProject = { ...project };
       copiedProject.project.scenes[track].pictures = arrayMove(copiedProject.project.scenes[track].pictures, e.oldIndex, e.newIndex);
       return copiedProject;
-    })
+    });
 
     // Background API update and resync
     const frameId = pictures[e.oldIndex].id;
@@ -170,36 +170,36 @@ const Animator = ({ t }) => {
 
   const takePictures =
     (nbPicturesToTake = null) =>
-      async () => {
-        if (isTakingPicture || !isCameraReady || !Camera()) {
-          return;
-        }
-        flushSync(() => {
-          setIsTakingPicture(true);
-        });
+    async () => {
+      if (isTakingPicture || !isCameraReady || !Camera()) {
+        return;
+      }
+      flushSync(() => {
+        setIsTakingPicture(true);
+      });
 
-        for (let i = 0; i < (Number(nbPicturesToTake !== null ? nbPicturesToTake : settings.CAPTURE_FRAMES) || 1); i++) {
-          const nbFramesToTake = (settings.AVERAGING_ENABLED ? Number(settings.AVERAGING_VALUE) : 1) || 1;
-          try {
-            const buffer = await takePicture(Camera(), nbFramesToTake);
+      for (let i = 0; i < (Number(nbPicturesToTake !== null ? nbPicturesToTake : settings.CAPTURE_FRAMES) || 1); i++) {
+        const nbFramesToTake = (settings.AVERAGING_ENABLED ? Number(settings.AVERAGING_VALUE) : 1) || 1;
+        try {
+          const buffer = await takePicture(Camera(), nbFramesToTake);
 
-            if (!isMuted && settings.SOUNDS) {
-              playSound(soundShutter);
-            }
-
-            setProject(await window.EA('TAKE_PICTURE', { project_id: id, track_id: track, buffer, before_frame_id: currentFrameId }));
-          } catch (err) {
-            if (!isMuted && settings.SOUNDS) {
-              playSound(soundError);
-            }
-            console.error('Failed to take a picture', err);
+          if (!isMuted && settings.SOUNDS) {
+            playSound(soundShutter);
           }
-        }
 
-        flushSync(() => {
-          setIsTakingPicture(false);
-        });
-      };
+          setProject(await window.EA('TAKE_PICTURE', { project_id: id, track_id: track, buffer, before_frame_id: currentFrameId }));
+        } catch (err) {
+          if (!isMuted && settings.SOUNDS) {
+            playSound(soundError);
+          }
+          console.error('Failed to take a picture', err);
+        }
+      }
+
+      flushSync(() => {
+        setIsTakingPicture(false);
+      });
+    };
 
   const actionsEvents = {
     PLAY: () => {
@@ -280,7 +280,7 @@ const Animator = ({ t }) => {
     SETTINGS: () => {
       navigate(`/settings?back=/animator/${id}/${track}`);
     },
-    MORE: () => { },
+    MORE: () => {},
     EXPORT: () => {
       navigate(`/export/${id}/${track}?back=/animator/${id}/${track}`);
     },

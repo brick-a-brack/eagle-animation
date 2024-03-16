@@ -1,32 +1,41 @@
-# Bugs
-- Exported videos are always exported with a 16:9 aspect ratio
-- The resolution select can upscale the video
-
 # Todo
 
-- Rework the project deletion to add a confirmation, maybe a new "project settings" page ?
+- Group project settings
+   - Delete button
+   - Title
+   - Number of FPS
+   - Ratio
 
-- Add a light theme
+- App settings
+   - Choose the aspect ratio layer opacity
 
-- Add the ability to mirror the camera image (X + Y)
+- Improve UI
+   - Add light theme
+   - Rework user experience (based on Fire's screens)
+   - Rework the mobile version
 
-- Aspect ratio support and allow opacity configuration on settings page
-- Multi scene/take support
-- Allow drawing for easing help
-- Allow to export/import a project
-- Masking
-- Support cameras
-- Webapp version
-- Mobile version (Based on capacitor)
+- Export 
+   - Limit resolution to max frame height
+   - Avoid upscale during export
+   - Support custom ratio
+   - Allow to export Eagle Animation projects as ZIP (JSON + frames)
+   - Allow to import Eagle Animation projects
 
-detecter perte camera + rechargement
+- Build
+   - Build APK using Capacitor (Android)
 
----
-- Aspect ratio
-- raw support sur canon
-- resize images pour opti les perfs
-- Nom du projet dans la barre en haut
-- Parametre de projet
-- opti thumbnail
-- Ability to mark frame as "masked" to test an animation without some frames, can be usefull before a deletion
+- Core
+   - Generate picture preview to improve playback performances
+   - Store frames as PNG for webcams
+   - Add the ability apply mirror effect to the camera image (X + Y + Both)
+   - Ability to mark frame as "masked" to test an animation without some frames, can be useful before a deletion
+   - Support custom ratio
+   - Support several scene by project
+   - Support masking
+   - Add ease-in / ease-out tools
 
+- Camera compatilibity
+   - Phone as remote camera
+   - gPhoto2 support using WebUSB
+   - Support Canon cameras on Mac and Linux
+   - Support Canon RAW capture
