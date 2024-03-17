@@ -7,7 +7,12 @@ const ffmpegPath = ffmpeg ? ffmpeg.replace('app.asar', 'app.asar.unpacked') : fa
 
 export const generate = (width = 1920, height = 1080, directory = false, outputProfil = false, outputFile = false, fps = 24, opts = {}) => {
   return new Promise((resolve, reject) => {
-    const args = getFFmpegArgs(width, height, outputProfil, outputFile, fps, opts).catch(reject);
+    let args = [];
+    try {
+      args = getFFmpegArgs(width, height, outputProfil, outputFile, fps, opts);
+    } catch (err) {
+      return reject(err);
+    }
 
     console.log(`ffmpeg.exe ${args.map((e) => `"${e}"`).join(' ')}`);
 
