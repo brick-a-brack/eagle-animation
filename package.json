@@ -45,6 +45,7 @@
     "@ffmpeg/core": "^0.12.6",
     "@ffmpeg/ffmpeg": "^0.12.10",
     "@ffmpeg/util": "^0.12.1",
+    "@fortawesome/react-fontawesome": "^0.2.0",
     "animated-scroll-to": "^2.3.0",
     "compare-versions": "^6.1.0",
     "dexie": "^3.2.6",
