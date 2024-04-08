@@ -58,7 +58,6 @@ function useSettings() {
       setLanguage(computedNewSettings.LANGUAGE);
     }
 
-    console.log('SET, ', DEFAULT_SETTINGS, definedSettings, newSettings);
     setSettings(computedNewSettings);
     await window.EA('SAVE_SETTINGS', { settings: computedNewSettings });
   });

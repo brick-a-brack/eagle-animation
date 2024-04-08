@@ -17,7 +17,9 @@ window.EA = async (action, data) => {
   if (typeof window.IPC !== 'undefined') {
     console.log('📣 IPC', action, data);
     const cb = await window.IPC.call(action, data);
-    console.log(cb);
+    if (cb) {
+      console.log(cb);
+    }
     return cb;
   }
 

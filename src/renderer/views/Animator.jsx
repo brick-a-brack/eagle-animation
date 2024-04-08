@@ -80,6 +80,7 @@ const Animator = ({ t }) => {
 
   const [isPlaying, setIsPlaying] = useState(false);
   const { settings, actions: settingsActions } = useSettings();
+  const { appCapabilities } = useAppCapabilities();
   const [showCameraSettings, setShowCameraSettings] = useState(false);
   const [isTakingPicture, setIsTakingPicture] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
@@ -91,7 +92,7 @@ const Animator = ({ t }) => {
   const [gridStatus, setGridStatus] = useState(false);
   const [currentFrameId, setCurrentFrameId] = useState(false);
   const [disableKeyboardShortcuts, setDisableKeyboardShortcuts] = useState(false);
-  const { appCapabilities } = useAppCapabilities();
+
   const [project, setProject] = useState(null);
 
   const { devices, currentCameraCapabilities, currentCamera, batteryStatus, actions: cameraActions } = useCamera();
@@ -101,7 +102,6 @@ const Animator = ({ t }) => {
       const updatedProject = await window.EA('GET_PROJECT', { project_id: id });
       setProject(updatedProject);
       setFps(updatedProject.project.scenes[track].framerate);
-      console.log('SET CAM ID', settings?.CAMERA_ID);
       if (settings) {
         await cameraActions.setCamera(settings?.CAMERA_ID);
       }

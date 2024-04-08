@@ -40,14 +40,14 @@ function useCamera(options = {}) {
   });
 
   // Action to set DOM refs
-  const actionSetDomRefs = useCallback(({ videoDOM, imageDOM }) => {
+  const actionSetDomRefs = useCallback(async ({ videoDOM, imageDOM }) => {
     if (!domRefs.current) {
       domRefs.current = {};
     }
     domRefs.current.videoDOM = videoDOM;
     domRefs.current.imageDOM = imageDOM;
     if (currentCamera) {
-      currentCamera.connect({ videoDOM: domRefs.current.videoDOM, imageDOM: domRefs.current.imageDOM }, options);
+      await currentCamera.connect({ videoDOM: domRefs.current.videoDOM, imageDOM: domRefs.current.imageDOM }, options);
       flushCanvas(domRefs.current.imageDOM);
       currentCamera?.batteryStatus().then(setBatteryStatus);
       currentCamera.getCapabilities().then(setCameraCapabilities);
@@ -55,7 +55,7 @@ function useCamera(options = {}) {
   });
 
   // Action set camera
-  const actionSetCamera = useCallback((cameraId) => {
+  const actionSetCamera = useCallback(async (cameraId) => {
     if (cameraId !== currentCameraId) {
       if (currentCamera) {
         currentCamera?.disconnect();
@@ -64,13 +64,16 @@ function useCamera(options = {}) {
       if (cameraId) {
         setCurrentCameraId(cameraId);
         const camera = getCamera(cameraId);
-        camera?.connect({ videoDOM: domRefs?.current?.videoDOM, imageDOM: domRefs?.current?.imageDOM }, options);
+        if (domRefs?.current?.videoDOM && domRefs?.current?.imageDOM) {
+          await camera?.connect({ videoDOM: domRefs?.current?.videoDOM, imageDOM: domRefs?.current?.imageDOM }, options);
+        }
         camera?.batteryStatus().then(setBatteryStatus);
-        camera?.getCapabilities().then(setCameraCapabilities);
         setCurrentCamera(camera);
+        camera?.getCapabilities().then(setCameraCapabilities);
       } else {
         setCurrentCameraId(null);
         setCurrentCamera(null);
+        setCameraCapabilities([]);
       }
     }
   });

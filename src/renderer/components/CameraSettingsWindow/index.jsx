@@ -22,7 +22,6 @@ import faLightbulbOn from '../../icons/faLightbulbOn';
 
 const CameraSettingsWindow = ({ t, cameraCapabilities, onCapabilityChange, onCapabilitiesReset, onSettingsChange = () => {}, appCapabilities = [], devices = [], settings = {} }) => {
   const [selectedTab, setSelectedTab] = useState(null);
-  console.log('OUT SETTINGS', settings.CAMERA_ID);
   const form = useForm({
     mode: 'all',
     defaultValues: {
@@ -32,17 +31,11 @@ const CameraSettingsWindow = ({ t, cameraCapabilities, onCapabilityChange, onCap
   const { watch, register, getValues } = form;
 
   const formValues = watch();
-  console.log('POKE', formValues, devices);
 
   useEffect(() => {
     const values = getValues();
     onSettingsChange(values);
   }, [JSON.stringify(formValues)]);
-
-  /* useEffect(() => {
-    const value = watch('CAMERA_ID');
-    setValue(value);
-  }, [devices]);*/
 
   const selectOptionsTranslations = {
     continuous: t('Automatic'),
@@ -179,7 +172,6 @@ const CameraSettingsWindow = ({ t, cameraCapabilities, onCapabilityChange, onCap
             }
             if (cap.type === 'SELECT_RANGE') {
               const selectedValue = cap.values?.find((v) => v.value === cap.value) || cap.values?.[0] || null;
-              console.log(cap);
               return (
                 <FormGroup
                   key={cap.id}

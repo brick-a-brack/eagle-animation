@@ -12,6 +12,8 @@ import Switch from '../components/Switch';
 import NumberInput from '../components/NumberInput';
 import LoadingOverlay from '../components/LoadingOverlay';
 import { ALLOWED_LETTERS } from '../config';
+import useSettings from '../hooks/useSettings';
+import useAppCapabilities from '../hooks/useAppCapabilities';
 
 const generateCustomUuid = (length) => {
   const array = new Uint32Array(length);
@@ -26,13 +28,13 @@ const generateCustomUuid = (length) => {
 const Export = ({ t }) => {
   const { id, track } = useParams();
   const navigate = useNavigate();
-  const [settings, setSettings] = useState(null);
   const [project, setProject] = useState(null);
   const [isInfosOpened, setIsInfosOpened] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
   const [publicCode, setPublicCode] = useState(null);
-  const [capabilities, setCapabilities] = useState([]);
   const [searchParams] = useSearchParams();
+  const { settings } = useSettings();
+  const { appCapabilities } = useAppCapabilities();
 
   const form = useForm({
     mode: 'all',
@@ -56,29 +58,22 @@ const Export = ({ t }) => {
       const projectData = await window.EA('GET_PROJECT', { project_id: id });
       setProject(projectData);
       setValue('framerate', projectData.project.scenes[Number(track)].framerate);
-      setSettings({
-        ...settings,
-        ...(await window.EA('GET_SETTINGS')),
-      });
     })();
   }, []);
 
   useEffect(() => {
     (async () => {
-      const caps = await window.EA('APP_CAPABILITIES');
-      const bestMode = caps.includes('EXPORT_VIDEO') ? 'video' : caps.includes('EXPORT_FRAMES') ? 'frames' : caps.includes('BACKGROUND_SYNC') ? 'send' : 'none';
+      const bestMode = appCapabilities.includes('EXPORT_VIDEO') ? 'video' : appCapabilities.includes('EXPORT_FRAMES') ? 'frames' : appCapabilities.includes('BACKGROUND_SYNC') ? 'send' : 'none';
       if (
-        (watch('mode') === 'video' && !caps.includes('EXPORT_VIDEO')) ||
-        (watch('mode') === 'frames' && !caps.includes('EXPORT_FRAMES')) ||
-        (watch('mode') === 'send' && !caps.includes('BACKGROUND_SYNC')) ||
+        (watch('mode') === 'video' && !appCapabilities.includes('EXPORT_VIDEO')) ||
+        (watch('mode') === 'frames' && !appCapabilities.includes('EXPORT_FRAMES')) ||
+        (watch('mode') === 'send' && !appCapabilities.includes('BACKGROUND_SYNC')) ||
         watch('mode') === 'none'
       ) {
         setValue('mode', bestMode);
       }
-
-      setCapabilities(caps);
     })();
-  }, []);
+  }, [appCapabilities]);
 
   if (!project || !settings) {
     return null;
@@ -136,11 +131,11 @@ const Export = ({ t }) => {
   };
 
   const formats = [
-    ...(capabilities.includes('EXPORT_VIDEO_H264') ? [{ value: 'h264', label: t('H264 (Recommended)') }] : []),
-    ...(capabilities.includes('EXPORT_VIDEO_HEVC') ? [{ value: 'hevc', label: t('HEVC (.mp4)') }] : []),
-    ...(capabilities.includes('EXPORT_VIDEO_PRORES') ? [{ value: 'prores', label: t('ProRes (.mov)') }] : []),
-    ...(capabilities.includes('EXPORT_VIDEO_VP8') ? [{ value: 'vp8', label: t('VP8 (.webm)') }] : []),
-    ...(capabilities.includes('EXPORT_VIDEO_VP9') ? [{ value: 'vp9', label: t('VP9 (.webm)') }] : []),
+    ...(appCapabilities.includes('EXPORT_VIDEO_H264') ? [{ value: 'h264', label: t('H264 (Recommended)') }] : []),
+    ...(appCapabilities.includes('EXPORT_VIDEO_HEVC') ? [{ value: 'hevc', label: t('HEVC (.mp4)') }] : []),
+    ...(appCapabilities.includes('EXPORT_VIDEO_PRORES') ? [{ value: 'prores', label: t('ProRes (.mov)') }] : []),
+    ...(appCapabilities.includes('EXPORT_VIDEO_VP8') ? [{ value: 'vp8', label: t('VP8 (.webm)') }] : []),
+    ...(appCapabilities.includes('EXPORT_VIDEO_VP9') ? [{ value: 'vp9', label: t('VP9 (.webm)') }] : []),
   ];
 
   const resolutions = ['original', 2160, 1440, 1080, 720, 480, 360].map((e) => ({ value: e, label: e === 'original' ? t('Original (Recommended)') : t('{{resolution}}p', { resolution: e }) }));
@@ -152,9 +147,9 @@ const Export = ({ t }) => {
         <form id="export">
           <FormLayout title={t('Export')}>
             <div style={{ display: 'flex', gap: 'var(--space-medium)', justifyContent: 'center' }}>
-              {capabilities.includes('EXPORT_VIDEO') && <ActionCard icon="VIDEO" title={t('Export as video')} action={handleModeChange('video')} selected={watch('mode') === 'video'} />}
-              {capabilities.includes('EXPORT_FRAMES') && <ActionCard icon="FRAMES" title={t('Export animation frames')} action={handleModeChange('frames')} selected={watch('mode') === 'frames'} />}
-              {capabilities.includes('BACKGROUND_SYNC') && settings.EVENT_KEY && (
+              {appCapabilities.includes('EXPORT_VIDEO') && <ActionCard icon="VIDEO" title={t('Export as video')} action={handleModeChange('video')} selected={watch('mode') === 'video'} />}
+              {appCapabilities.includes('EXPORT_FRAMES') && <ActionCard icon="FRAMES" title={t('Export animation frames')} action={handleModeChange('frames')} selected={watch('mode') === 'frames'} />}
+              {appCapabilities.includes('BACKGROUND_SYNC') && settings.EVENT_KEY && (
                 <ActionCard icon="SEND" title={t('Upload the video')} action={handleModeChange('send')} selected={watch('mode') === 'send'} />
               )}
             </div>
