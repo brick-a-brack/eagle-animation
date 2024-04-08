@@ -11,15 +11,12 @@ import Timeline from '../components/Timeline';
 import soundDelete from '~/resources/sounds/delete.mp3';
 import soundShutter from '~/resources/sounds/shutter.mp3';
 import soundError from '~/resources/sounds/error.mp3';
-import DevicesInstance from '../core/Devices';
-import { takePicture } from '../cameras';
 import { arrayMove } from '@dnd-kit/sortable';
-
-const Camera = () => DevicesInstance.getMainCamera();
-
-const timersApply = {};
-
-let batteryInterval = null;
+import CameraSettingsWindow from '../components/CameraSettingsWindow';
+import Window from '../components/Window';
+import useCamera from '../hooks/useCamera';
+import useSettings from '../hooks/useSettings';
+import useAppCapabilities from '../hooks/useAppCapabilities';
 
 // Play sound
 const playSound = (src, timeout = 2000) => {
@@ -81,11 +78,9 @@ const Animator = ({ t }) => {
   const navigate = useNavigate();
   const playerRef = useRef(null);
 
-  const [batteryStatus, setBatteryStatus] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [settings, setSettings] = useState(null);
+  const { settings, actions: settingsActions } = useSettings();
   const [showCameraSettings, setShowCameraSettings] = useState(false);
-  const [isCameraReady, setIsCameraReady] = useState(false);
   const [isTakingPicture, setIsTakingPicture] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [loopStatus, setLoopStatus] = useState(false);
@@ -96,38 +91,24 @@ const Animator = ({ t }) => {
   const [gridStatus, setGridStatus] = useState(false);
   const [currentFrameId, setCurrentFrameId] = useState(false);
   const [disableKeyboardShortcuts, setDisableKeyboardShortcuts] = useState(false);
-  const [cameraCapabilities, setCameraCapabilities] = useState([]);
-  const [capabilities, setCapabilities] = useState([]);
-
+  const { appCapabilities } = useAppCapabilities();
   const [project, setProject] = useState(null);
+
+  const { devices, currentCameraCapabilities, currentCamera, batteryStatus, actions: cameraActions } = useCamera();
 
   useEffect(() => {
     (async () => {
       const updatedProject = await window.EA('GET_PROJECT', { project_id: id });
       setProject(updatedProject);
       setFps(updatedProject.project.scenes[track].framerate);
-      const userSettings = await window.EA('GET_SETTINGS');
-      setSettings({
-        ...settings,
-        ...userSettings,
-      });
-
-      await DevicesInstance.setMainCamera(userSettings.CAMERA_ID);
-
-      const caps = await window.EA('APP_CAPABILITIES');
-      setCapabilities(caps);
+      console.log('SET CAM ID', settings?.CAMERA_ID);
+      if (settings) {
+        await cameraActions.setCamera(settings?.CAMERA_ID);
+      }
     })();
-  }, []);
+  }, [settings]);
 
-  useEffect(() => {
-    Camera()?.batteryStatus().then(setBatteryStatus);
-    clearInterval(batteryInterval);
-    batteryInterval = setInterval(() => {
-      Camera()?.batteryStatus().then(setBatteryStatus);
-    }, 1000);
-  }, []);
-
-  if (!project || !settings) {
+  if (!project || !settings || !devices) {
     return null;
   }
 
@@ -147,6 +128,10 @@ const Animator = ({ t }) => {
 
   const handleSelectFrame = (selectedFrame) => {
     playerRef.current.showFrame(selectedFrame === false ? false : selectedFrame.id);
+  };
+
+  const handleSettingsChange = async (values) => {
+    settingsActions.setSettings(values);
   };
 
   const handleFrameMove = async (e) => {
@@ -171,7 +156,7 @@ const Animator = ({ t }) => {
   const takePictures =
     (nbPicturesToTake = null) =>
     async () => {
-      if (isTakingPicture || !isCameraReady || !Camera()) {
+      if (isTakingPicture || !currentCamera) {
         return;
       }
       flushSync(() => {
@@ -181,7 +166,7 @@ const Animator = ({ t }) => {
       for (let i = 0; i < (Number(nbPicturesToTake !== null ? nbPicturesToTake : settings.CAPTURE_FRAMES) || 1); i++) {
         const nbFramesToTake = (settings.AVERAGING_ENABLED ? Number(settings.AVERAGING_VALUE) : 1) || 1;
         try {
-          const buffer = await takePicture(Camera(), nbFramesToTake);
+          const buffer = await cameraActions.takePicture(nbFramesToTake);
 
           if (!isMuted && settings.SOUNDS) {
             playSound(soundShutter);
@@ -309,50 +294,15 @@ const Animator = ({ t }) => {
   };
 
   const handlePlayerInit = (videoDOM = null, imageDOM = null) => {
-    if (!Camera()) {
-      return;
-    }
-
-    Camera()
-      .connect({ videoDOM, imageDOM }, { forceMaxQuality: !!settings.FORCE_QUALITY })
-      .catch(() => {
-        setIsCameraReady(false);
-        Camera().getCapabilities().then(setCameraCapabilities);
-      })
-      .then(() => {
-        setIsCameraReady(true);
-        Camera().getCapabilities().then(setCameraCapabilities);
-      });
+    cameraActions.setDomRefs({ videoDOM, imageDOM });
   };
 
   const handleCapabilityChange = async (id, value) => {
-    clearTimeout(timersApply[id]);
-    timersApply[id] = setTimeout(async () => {
-      await Camera().applyCapability(id, value);
-      timersApply[id] = null;
-      Camera()
-        .getCapabilities()
-        .then((realState) => {
-          setCameraCapabilities((oldState) => {
-            return realState.map((e) => {
-              return oldState.find((item) => item.id === e.id) || e;
-            });
-          });
-        });
-    }, 10);
-
-    Camera()
-      .getCapabilities()
-      .then(() => {
-        setCameraCapabilities((oldState) => oldState.map((e) => (e.id === id ? { ...e, id, value } : e)));
-      });
+    cameraActions.setCapability(id, value);
   };
 
-  const handleCapabilityReset = async () => {
-    setTimeout(async () => {
-      await Camera().resetCapabilities();
-      Camera().getCapabilities().then(setCameraCapabilities);
-    }, 0);
+  const handleCapabilitiesReset = async () => {
+    cameraActions.capabilitiesReset();
   };
 
   return (
@@ -360,11 +310,9 @@ const Animator = ({ t }) => {
       <Player
         t={t}
         ref={playerRef}
-        isCameraReady={isCameraReady}
+        isCameraReady={!!currentCamera}
         onInit={handlePlayerInit}
         onFrameChange={setCurrentFrameId}
-        onCapabilityChange={handleCapabilityChange}
-        onCapabilitiesReset={handleCapabilityReset}
         onPlayingStatusChange={setIsPlaying}
         showCameraSettings={showCameraSettings}
         pictures={pictures}
@@ -374,7 +322,7 @@ const Animator = ({ t }) => {
         shortPlayStatus={shortPlayStatus}
         loopStatus={loopStatus}
         shortPlayFrames={Number(settings.SHORT_PLAY) || 1}
-        capabilities={cameraCapabilities}
+        cameraCapabilities={currentCameraCapabilities}
         fps={fps}
         batteryStatus={batteryStatus}
         gridModes={settings.GRID_MODES}
@@ -384,20 +332,23 @@ const Animator = ({ t }) => {
       />
       <ActionsBar actions={['BACK']} position="LEFT" onAction={handleAction} />
       <ActionsBar
-        actions={['SETTINGS', ...(capabilities.includes('EXPORT_VIDEO') || capabilities.includes('EXPORT_FRAMES') || capabilities.includes('BACKGROUND_SYNC') ? ['EXPORT'] : []), 'DELETE_PROJECT']}
+        actions={[
+          'SETTINGS',
+          ...(appCapabilities.includes('EXPORT_VIDEO') || appCapabilities.includes('EXPORT_FRAMES') || appCapabilities.includes('BACKGROUND_SYNC') ? ['EXPORT'] : []),
+          'DELETE_PROJECT',
+        ]}
         position="RIGHT"
         onAction={handleAction}
       />
       <ControlBar
         onAction={handleAction}
         showCameraSettings={showCameraSettings}
-        cameraSettingsAvailable={cameraCapabilities.length > 0}
         gridModes={settings.GRID_MODES}
         gridStatus={gridStatus}
         differenceStatus={differenceStatus}
         onionValue={onionValue}
         isPlaying={isPlaying}
-        isCameraReady={isCameraReady}
+        isCameraReady={!!currentCamera}
         isTakingPicture={isTakingPicture}
         shortPlayStatus={shortPlayStatus}
         loopStatus={loopStatus}
@@ -408,6 +359,17 @@ const Animator = ({ t }) => {
       />
       <Timeline pictures={pictures} onSelect={handleSelectFrame} onMove={handleFrameMove} select={currentFrameId} playing={isPlaying} />
       <KeyboardHandler onAction={handleAction} disabled={disableKeyboardShortcuts} />
+      <Window isOpened={showCameraSettings} onClose={() => setShowCameraSettings(false)}>
+        <CameraSettingsWindow
+          cameraCapabilities={currentCameraCapabilities}
+          onCapabilityChange={handleCapabilityChange}
+          onSettingsChange={handleSettingsChange}
+          onCapabilitiesReset={handleCapabilitiesReset}
+          appCapabilities={appCapabilities}
+          devices={devices}
+          settings={settings}
+        />
+      </Window>
     </>
   );
 };

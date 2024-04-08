@@ -100,7 +100,10 @@ class CanonCamera {
 
   async batteryStatus() {
     const Battery = this.capabilities.find((c) => c.label === 'BatteryLevel') || null;
-    return Battery ? Number(Battery?.value) : null;
+    if (!Battery) {
+      return null;
+    }
+    return Battery?.value < 0 || Battery?.value > 100 ? 'AC' : Number(Battery?.value);
   }
 
   async disconnect() {
@@ -172,7 +175,7 @@ class CanonCamera {
         ? [
             {
               id: 'APERTURE',
-              type: 'SELECT',
+              type: 'SELECT_RANGE',
               values: Aperture.allowedValues
                 .sort((a, b) => a.aperture - b.aperture)
                 .map((e) => ({
@@ -185,7 +188,6 @@ class CanonCamera {
             },
           ]
         : []),
-
       ...(WhiteBalance
         ? [
             {
@@ -208,7 +210,7 @@ class CanonCamera {
         ? [
             {
               id: 'SHUTTER_SPEED',
-              type: 'SELECT',
+              type: 'SELECT_RANGE',
               values: ShutterSpeed.allowedValues
                 .filter((e) => Boolean(e.seconds))
                 .sort((a, b) => a.seconds - b.seconds)
@@ -217,7 +219,7 @@ class CanonCamera {
                   value: e.value,
                   speed: e.seconds,
                 })),
-              value: !ShutterSpeed.value.seconds ? ShutterSpeed.value.value : null,
+              value: ShutterSpeed.value.value || null,
               canReset: false,
             },
           ]
@@ -227,7 +229,7 @@ class CanonCamera {
         ? [
             {
               id: 'ISO',
-              type: 'SELECT',
+              type: 'SELECT_RANGE',
               values: ISO.allowedValues
                 .filter((e) => e.value > 0)
                 .sort((a, b) => a.value - b.value)

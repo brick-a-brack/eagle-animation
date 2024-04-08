@@ -31,21 +31,6 @@ const getDefaultPreview = async (data) => {
   return null;
 };
 
-const DEFAULT_SETTINGS = {
-  CAMERA_ID: 0,
-  CAPTURE_FRAMES: 1,
-  AVERAGING_ENABLED: false,
-  AVERAGING_VALUE: 3,
-  //LANGUAGE: 'en', // default Handled by front side
-  SHORT_PLAY: 20,
-  RATIO_OPACITY: 1,
-  GRID_OPACITY: 1,
-  GRID_MODES: ['GRID'], // GRID | CENTER | MARGINS
-  GRID_LINES: 3,
-  GRID_COLUMNS: 3,
-  EVENT_KEY: '',
-};
-
 // TODO: .preview => img to display
 const computeProject = async (data) => {
   let preview = await getDefaultPreview(data);
@@ -140,17 +125,15 @@ const actions = {
   GET_SETTINGS: async () => {
     try {
       return {
-        ...DEFAULT_SETTINGS,
         ...JSON.parse(localStorage.getItem(LS_SETTINGS)),
       };
     } catch (err) {
-      return DEFAULT_SETTINGS;
+      return {};
     }
   },
   SAVE_SETTINGS: async (evt, { settings }) => {
     localStorage.setItem(LS_SETTINGS, JSON.stringify(settings));
     return {
-      ...DEFAULT_SETTINGS,
       ...settings,
     };
   },

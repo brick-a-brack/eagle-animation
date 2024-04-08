@@ -7,34 +7,28 @@ import ProjectsGrid from '../components/ProjectsGrid';
 import ProjectCard from '../components/ProjectCard';
 import { withTranslation } from 'react-i18next';
 import ActionsBar from '../components/ActionsBar';
-import DevicesInstance from '../core/Devices';
+import useCamera from '../hooks/useCamera';
 
 const HomeView = ({ t }) => {
   const [latestVersion, setLatestVersion] = useState(null);
   const [projects, setProjects] = useState([]);
   const navigate = useNavigate();
+  const { actions: cameraActions } = useCamera();
 
   useEffect(() => {
-    (async () => {
-      await DevicesInstance.disconnect();
-      await DevicesInstance.list();
-    })();
+    cameraActions.setCamera(null);
   }, []);
 
   useEffect(() => {
     (async () => {
+      // Get projects
       setProjects(await window.EA('GET_PROJECTS'));
-      window.EA('SYNC');
-
-      // Init camera
-      const userSettings = await window.EA('GET_SETTINGS');
-      if (userSettings.CAMERA_ID && !DevicesInstance.getMainCamera()) {
-        DevicesInstance.setMainCamera(userSettings.CAMERA_ID);
-      }
-      DevicesInstance.connect();
 
       // Fetch updates
       setLatestVersion((await window.EA('GET_LAST_VERSION').catch(() => null))?.version || null);
+
+      // Trigger background sync
+      window.EA('SYNC');
     })();
   }, []);
 

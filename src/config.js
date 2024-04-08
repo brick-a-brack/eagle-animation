@@ -69,7 +69,7 @@ export const LANGUAGES = [
 ];
 
 // Allowed languages
-export const ALLOWED_LANGUAGES = ['en', 'fr', 'de', 'es', 'it', 'pt', 'pl'];
+export const ALLOWED_LANGUAGES = ['en', 'fr', 'de', 'es', 'it', 'pt', 'pl', 'eo'];
 export const DEFAULT_LANGUAGE = 'en';
 
 // Partner API url

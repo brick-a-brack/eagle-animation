@@ -1,0 +1,4 @@
+.actions {
+    width:calc(100% - 2 * var(--space-huge));
+    margin: 0 var(--space-huge) ;
+}

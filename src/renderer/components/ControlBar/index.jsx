@@ -1,21 +1,21 @@
 import { withTranslation } from 'react-i18next';
 
 import Button from '../Button';
-import IconCamera from './assets/camera.svg?jsx';
-import IconCameraSettings from './assets/camera-settings.svg?jsx';
-import IconPlay from './assets/play.svg?jsx';
-import IconStop from './assets/stop.svg?jsx';
-import IconShortPlay from './assets/short-play.svg?jsx';
-import IconLoop from './assets/loop.svg?jsx';
-import IconCompare from './assets/compare.svg?jsx';
-import IconRemove from './assets/remove.svg?jsx';
-import IconGrid from './assets/grid.svg?jsx';
-import IconDuplicate from './assets/duplicate.svg?jsx';
-import IconDeduplicate from './assets/deduplicate.svg?jsx';
 import CustomTooltip from '../Tooltip';
 import CustomSlider from '../CustomSlider';
 import NumberInput from '../NumberInput';
 import * as style from './style.module.css';
+import faPlay from '../../icons/faPlay';
+import faArrowsRepeat from '../../icons/faArrowsRepeat';
+import faForwardFast from '../../icons/faForwardFast';
+import faCamera from '../../icons/faCamera';
+import faCameraSettings from '../../icons/faCameraSettings';
+import faDiamondHalfStroke from '../../icons/faDiamondHalfStroke';
+import faFrame from '../../icons/faFrame';
+import faStop from '../../icons/faStop';
+import faImageSlash from '../../icons/faImageSlash';
+import faImageCirclePlus from '../../icons/faImageCirclePlus';
+import faImageCircleMinus from '../../icons/faImageCircleMinus';
 
 const ControlBar = ({
   gridStatus = false,
@@ -31,7 +31,6 @@ const ControlBar = ({
   frameQuantity = 0,
   canDeduplicate = false,
   showCameraSettings = false,
-  cameraSettingsAvailable = true,
   gridModes = [],
   onAction = null,
   t,
@@ -45,31 +44,21 @@ const ControlBar = ({
   return (
     <div className={style.container}>
       <div className={`${style.subcontainer} ${style.left}`}>
-        {!isPlaying && framePosition !== false && canDeduplicate && <Button title={t('Deduplicate frame')} onClick={handleAction('DEDUPLICATE')} size="mini" icon={<IconDeduplicate />} />}
-        {!isPlaying && framePosition !== false && <Button title={t('Duplicate frame')} onClick={handleAction('DUPLICATE')} size="mini" icon={<IconDuplicate />} />}
-        {!isPlaying && framePosition !== false && <Button title={t('Remove frame')} onClick={handleAction('DELETE_FRAME')} size="mini" icon={<IconRemove />} />}
+        {!isPlaying && framePosition !== false && canDeduplicate && <Button title={t('Deduplicate frame')} onClick={handleAction('DEDUPLICATE')} size="mini" icon={faImageCircleMinus} />}
+        {!isPlaying && framePosition !== false && <Button title={t('Duplicate frame')} onClick={handleAction('DUPLICATE')} size="mini" icon={faImageCirclePlus} />}
+        {!isPlaying && framePosition !== false && <Button title={t('Remove frame')} onClick={handleAction('DELETE_FRAME')} size="mini" icon={faImageSlash} />}
 
-        <Button style={{ marginLeft: 'var(--space-big)' }} title={t('Difference')} selected={differenceStatus} onClick={handleAction('DIFFERENCE')} size="mini" icon={<IconCompare />} />
+        <Button style={{ marginLeft: 'var(--space-big)' }} title={t('Difference')} selected={differenceStatus} onClick={handleAction('DIFFERENCE')} size="mini" icon={faDiamondHalfStroke} />
         {(gridModes.includes('GRID') || gridModes.includes('CENTER') || gridModes.includes('MARGINS')) && (
-          <Button title={gridStatus ? t('Disable grid') : t('Enable grid')} selected={gridStatus} onClick={handleAction('GRID')} size="mini" icon={<IconGrid />} />
+          <Button title={gridStatus ? t('Disable grid') : t('Enable grid')} selected={gridStatus} onClick={handleAction('GRID')} size="mini" icon={faFrame} />
         )}
 
         <div className={style.slider} id="onion" data-tooltip-content={t('Onion blending')}>
           <CustomSlider step={0.01} min={0} max={1} value={onionValue} onChange={(value) => handleAction('ONION_CHANGE', value)()} />
         </div>
-
-        {cameraSettingsAvailable && (
-          <Button
-            style={{ marginLeft: 'var(--space-big)' }}
-            title={t('Camera settings')}
-            selected={showCameraSettings}
-            onClick={handleAction('CAMERA_SETTINGS')}
-            size="mini"
-            icon={<IconCameraSettings />}
-          />
-        )}
+        <Button style={{ marginLeft: 'var(--space-big)' }} title={t('Camera settings')} selected={showCameraSettings} onClick={handleAction('CAMERA_SETTINGS')} size="mini" icon={faCameraSettings} />
       </div>
-      <Button disabled={isTakingPicture || !isCameraReady} onClick={handleAction('TAKE_PICTURE')} size="normal" icon={<IconCamera />} />
+      <Button disabled={isTakingPicture || !isCameraReady} onClick={handleAction('TAKE_PICTURE')} size="normal" icon={faCamera} />
       <div className={`${style.subcontainer} ${style.right}`}>
         <div className={style.progress}>
           {framePosition === false && <span className={style.live}>{t('Live')}</span>}
@@ -78,9 +67,9 @@ const ControlBar = ({
           <span>{frameQuantity}</span>
         </div>
 
-        <Button selectedColor="warning" title={!isPlaying ? t('Play') : t('Stop')} selected={isPlaying} onClick={handleAction('PLAY')} size="mini" icon={isPlaying ? <IconStop /> : <IconPlay />} />
-        <Button title={t('Loop')} onClick={handleAction('LOOP')} selected={loopStatus} size="mini" icon={<IconLoop />} />
-        <Button title={t('Short play')} onClick={handleAction('SHORT_PLAY')} selected={shortPlayStatus} size="mini" icon={<IconShortPlay />} />
+        <Button selectedColor="warning" title={!isPlaying ? t('Play') : t('Stop')} selected={isPlaying} onClick={handleAction('PLAY')} size="mini" icon={isPlaying ? faStop : faPlay} />
+        <Button title={t('Loop')} onClick={handleAction('LOOP')} selected={loopStatus} size="mini" icon={faArrowsRepeat} />
+        <Button title={t('Short play')} onClick={handleAction('SHORT_PLAY')} selected={shortPlayStatus} size="mini" icon={faForwardFast} />
         <NumberInput
           onBlur={() => handleAction('FPS_BLUR')()}
           onFocus={() => handleAction('FPS_FOCUS')()}

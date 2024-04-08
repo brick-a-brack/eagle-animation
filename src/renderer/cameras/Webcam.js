@@ -137,6 +137,10 @@ class Webcam {
   }
 
   async getCapabilities() {
+    if (!this?.stream) {
+      return [];
+    }
+
     const settings = this?.stream?.getVideoTracks()?.[0]?.getSettings() || {};
     const capabilities = this?.stream?.getVideoTracks()?.[0] && typeof this.stream.getVideoTracks()[0].getCapabilities === 'function' ? this.stream.getVideoTracks()[0].getCapabilities() : [];
 
