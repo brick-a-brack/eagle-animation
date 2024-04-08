@@ -19,8 +19,11 @@ import faMagnifyingGlass from '../../icons/faMagnifyingGlass';
 import faAperture from '../../icons/faAperture';
 import faFaceViewfinder from '../../icons/faFaceViewfinder';
 import faLightbulbOn from '../../icons/faLightbulbOn';
+import faRotate from '../../icons/faRotate';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import Action from '../Action';
 
-const CameraSettingsWindow = ({ t, cameraCapabilities, onCapabilityChange, onCapabilitiesReset, onSettingsChange = () => {}, appCapabilities = [], devices = [], settings = {} }) => {
+const CameraSettingsWindow = ({ t, cameraCapabilities, onCapabilityChange, onDevicesListRefresh = () => {}, onCapabilitiesReset, onSettingsChange = () => {}, appCapabilities = [], devices = [], settings = {} }) => {
   const [selectedTab, setSelectedTab] = useState(null);
   const form = useForm({
     mode: 'all',
@@ -92,6 +95,7 @@ const CameraSettingsWindow = ({ t, cameraCapabilities, onCapabilityChange, onCap
           <>
             <FormGroup label={t('Camera')} description={t('The camera device to use to take frames')}>
               <Select options={devices.map((e) => ({ value: e.id, label: e.label }))} register={register('CAMERA_ID')} />
+              <Action className={style.refreshIcon} action={() => onDevicesListRefresh()}><FontAwesomeIcon icon={faRotate} /></Action>
             </FormGroup>
             <FormGroup label={t('Frames to capture')} description={t('Number of frames to capture')}>
               <NumberInput register={register('CAPTURE_FRAMES')} min={1} />

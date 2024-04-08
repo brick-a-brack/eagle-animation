@@ -95,7 +95,7 @@ const Animator = ({ t }) => {
 
   const [project, setProject] = useState(null);
 
-  const { devices, currentCameraCapabilities, currentCamera, batteryStatus, actions: cameraActions } = useCamera();
+  const { devices, currentCameraCapabilities, currentCamera, batteryStatus, actions: cameraActions } = useCamera({ forceMaxQuality: !!settings?.FORCE_QUALITY });
 
   useEffect(() => {
     (async () => {
@@ -305,6 +305,10 @@ const Animator = ({ t }) => {
     cameraActions.capabilitiesReset();
   };
 
+  const handleDevicesRefresh = async () => {
+    cameraActions.refreshDevices();
+  };
+
   return (
     <>
       <Player
@@ -365,6 +369,7 @@ const Animator = ({ t }) => {
           onCapabilityChange={handleCapabilityChange}
           onSettingsChange={handleSettingsChange}
           onCapabilitiesReset={handleCapabilitiesReset}
+          onDevicesListRefresh={handleDevicesRefresh}
           appCapabilities={appCapabilities}
           devices={devices}
           settings={settings}
