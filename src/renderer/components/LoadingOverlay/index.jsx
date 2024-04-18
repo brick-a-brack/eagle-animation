@@ -1,10 +1,12 @@
-import * as style from './style.module.css';
-import IconQuit from './assets/quit.svg?jsx';
-import IconDone from './assets/done.svg?jsx';
-import { withTranslation } from 'react-i18next';
 import { useEffect } from 'react';
+import { withTranslation } from 'react-i18next';
 
-const LoadingOverlay = ({ t, publicCode = null, onCancel = null, isExporting = false }) => {
+import IconDone from './assets/done.svg?jsx';
+import IconQuit from './assets/quit.svg?jsx';
+
+import * as style from './style.module.css';
+
+const LoadingOverlay = ({ t, publicCode = null, onCancel = null, isExporting = false, progress = 0 }) => {
   useEffect(() => {
     document.body.style.overflow = 'hidden';
     return () => {
@@ -19,7 +21,12 @@ const LoadingOverlay = ({ t, publicCode = null, onCancel = null, isExporting = f
           <IconQuit />
         </div>
       )}
-      {isExporting && <span className={style.loader} />}
+      {isExporting && (
+        <>
+          <span className={style.loader} />
+          <div className={style.progress}>{Math.min(100, Math.max(0, Math.round(progress * 100)))}%</div>
+        </>
+      )}
       {!isExporting && (
         <div className={style.done}>
           <IconDone />

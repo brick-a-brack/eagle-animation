@@ -1,4 +1,5 @@
 import Heading from '../Heading';
+
 import * as style from './style.module.css';
 
 const FormLayout = ({ children, title = '' }) => (

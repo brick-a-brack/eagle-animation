@@ -1,8 +1,8 @@
-import 'react-tooltip/dist/react-tooltip.css';
-import { TooltipProvider } from 'react-tooltip';
-import { withTranslation } from 'react-i18next';
 import { useEffect } from 'react';
+import { withTranslation } from 'react-i18next';
+import { TooltipProvider } from 'react-tooltip';
 
+import 'react-tooltip/dist/react-tooltip.css';
 import './vars.module.css';
 import * as style from './style.module.css';
 

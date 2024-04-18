@@ -39,7 +39,7 @@ module.exports = {
         count++;
       });
       if (count) {
-        console.log(`i18next-scanner: count=${count}, file=${JSON.stringify(file.relative)}`);
+        console.log(`🗣️ i18next-scanner: count=${count}, file=${JSON.stringify(file.relative)}`);
       }
       done();
     },

@@ -1,4 +1,5 @@
 import Dexie from 'dexie';
+
 import { DEFAULT_FPS, VERSION } from '../config';
 
 class ProjectsDatabase extends Dexie {
@@ -133,19 +134,4 @@ export const moveFrame = async (projectId, trackId, frameId, beforeFrameId) => {
     }
   }
   return null;
-};
-
-export const normalizePictures = async (projectId, trackId, opts = {}) => {
-  await db.open();
-  let data = await db.projects.get(Number(projectId));
-  const sceneId = Number(trackId);
-  const frames = data?.project?.scenes?.[sceneId]?.pictures?.filter((e) => !e.deleted) || [];
-  const getNumberOfFrames = (frame, index) => {
-    if (opts.duplicateFramesAuto && opts.duplicateFramesAutoNumber && (index === 0 || index === frames.length - 1)) {
-      return Number(opts.duplicateFramesAutoNumber) + frame.length - 1;
-    }
-    return opts.duplicateFramesCopy ? frame.length : 1;
-  };
-  const files = frames?.reduce((acc, e, i) => [...acc, ...Array(getNumberOfFrames(e, i)).fill(e)], []);
-  return files;
 };

@@ -1,8 +1,8 @@
-import * as style from './style.module.css';
-
+import centerIcon from './assets/center.png';
 import gridIcon from './assets/grid.png';
 import marginsIcon from './assets/margins.png';
-import centerIcon from './assets/center.png';
+
+import * as style from './style.module.css';
 
 const GridIcon = ({ title = '', selected = false, value = '', register = {} }) => (
   <label className={`${style.field} ${selected ? style.selected : ''}`} title={title}>

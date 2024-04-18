@@ -1,6 +1,6 @@
-import { mkdirp } from 'mkdirp';
-import { copyFile } from 'fs';
 import { dialog } from 'electron';
+import { copyFile } from 'fs';
+import { mkdirp } from 'mkdirp';
 
 // Timestamp
 export const time = () => Math.floor(new Date().getTime() / 1000);

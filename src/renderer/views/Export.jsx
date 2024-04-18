@@ -1,19 +1,20 @@
 import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { withTranslation } from 'react-i18next';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
-import { useForm } from 'react-hook-form';
 
-import ActionsBar from '../components/ActionsBar';
 import ActionCard from '../components/ActionCard';
-import FormLayout from '../components/FormLayout';
+import ActionsBar from '../components/ActionsBar';
 import FormGroup from '../components/FormGroup';
+import FormLayout from '../components/FormLayout';
+import LoadingOverlay from '../components/LoadingOverlay';
+import NumberInput from '../components/NumberInput';
 import Select from '../components/Select';
 import Switch from '../components/Switch';
-import NumberInput from '../components/NumberInput';
-import LoadingOverlay from '../components/LoadingOverlay';
 import { ALLOWED_LETTERS } from '../config';
-import useSettings from '../hooks/useSettings';
+import { ExportFrames } from '../Exporter';
 import useAppCapabilities from '../hooks/useAppCapabilities';
+import useSettings from '../hooks/useSettings';
 
 const generateCustomUuid = (length) => {
   const array = new Uint32Array(length);
@@ -32,6 +33,9 @@ const Export = ({ t }) => {
   const [isInfosOpened, setIsInfosOpened] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
   const [publicCode, setPublicCode] = useState(null);
+  const [frameRenderingProgress, setFrameRenderingProgress] = useState(0);
+  const [videoRenderingProgress, setVideoRenderingProgress] = useState(0);
+  setFrameRenderingProgress;
   const [searchParams] = useSearchParams();
   const { settings } = useSettings();
   const { appCapabilities } = useAppCapabilities();
@@ -42,6 +46,7 @@ const Export = ({ t }) => {
       mode: 'none',
       format: 'h264',
       resolution: 'original',
+      framesFormat: 'original',
       duplicateFramesCopy: true,
       duplicateFramesAuto: false,
       duplicateFramesAutoNumber: 2,
@@ -62,6 +67,12 @@ const Export = ({ t }) => {
   }, []);
 
   useEffect(() => {
+    window.EAEvents('FFMPEG_PROGRESS', (evt, args) => {
+      setVideoRenderingProgress(args.progress || 0);
+    });
+  }, []);
+
+  useEffect(() => {
     (async () => {
       const bestMode = appCapabilities.includes('EXPORT_VIDEO') ? 'video' : appCapabilities.includes('EXPORT_FRAMES') ? 'frames' : appCapabilities.includes('BACKGROUND_SYNC') ? 'send' : 'none';
       if (
@@ -79,55 +90,76 @@ const Export = ({ t }) => {
     return null;
   }
 
+  const progress = watch('mode') === 'frames' ? Math.min(frameRenderingProgress, 1) : Math.min(frameRenderingProgress / 2, 0.5) + Math.min(videoRenderingProgress / 2, 0.5);
+
   const handleBack = async () => {
     navigate(searchParams.get('back') || '/');
   };
 
   const handleExport = async (data) => {
+    const exportRatio = 16 / 9;
+
     setIsInfosOpened(true);
     setIsExporting(true);
+    setFrameRenderingProgress(0);
+    setVideoRenderingProgress(0);
 
+    const resolution = data.resolution === 'original' ? null : { width: Number(data.resolution) * exportRatio, height: Number(data.resolution) };
     const newCode = data.mode === 'send' ? await generateCustomUuid(8) : null;
 
     if (data.mode === 'send') {
       setPublicCode(newCode);
     }
 
+    // Ask user to define output path
+    const outputPath =
+      data.mode === 'send'
+        ? null
+        : await window.EA('EXPORT_SELECT_PATH', {
+            type: data.mode === 'video' ? 'FILE' : 'FOLDER',
+            format: data.format,
+            translations: {
+              EXPORT_FRAMES: t('Export animation frames'),
+              EXPORT_VIDEO: t('Export as video'),
+              DEFAULT_FILE_NAME: t('video'),
+              EXT_NAME: t('Video file'),
+            },
+          });
+
+    // Compute all  frames
+    const frames = await ExportFrames(
+      project.project.scenes[Number(track)].pictures,
+      {
+        duplicateFramesCopy: data.duplicateFramesCopy,
+        duplicateFramesAuto: data.mode === 'send' ? true : data.duplicateFramesAuto,
+        duplicateFramesAutoNumber: data.mode === 'send' ? data.framerate : data.duplicateFramesAutoNumber,
+        forceFileExtension: data.mode === 'frames' ? (data.framesFormat === 'original' ? undefined : data.framesFormat) : 'jpg',
+        resolution,
+      },
+      (p) => setFrameRenderingProgress(p)
+    );
+
+    // Save frames / video on the disk
     await window.EA('EXPORT', {
+      frames,
+      output_path: outputPath,
       mode: data.mode,
       format: data.format,
-      resolution: data.resolution,
-      duplicate_frames_copy: data.duplicateFramesCopy,
-      duplicate_frames_auto: data.duplicateFramesAuto,
-      duplicate_frames_auto_number: data.duplicateFramesAutoNumber,
       framerate: data.framerate,
+      frames_format: data.framesFormat,
       custom_output_framerate: data.customOutputFramerate,
       custom_output_framerate_number: data.customOutputFramerateNumber,
       project_id: id,
       track_id: track,
       event_key: settings.EVENT_KEY,
       public_code: data.mode === 'send' ? newCode : undefined,
-      translations: {
-        EXPORT_FRAMES: t('Export animation frames'),
-        EXPORT_VIDEO: t('Export as video'),
-        DEFAULT_FILE_NAME: t('video'),
-        EXT_NAME: t('Video file'),
-      },
     });
-
-    if (data.mode !== 'send') {
-      setIsInfosOpened(false);
-    }
 
     setIsExporting(false);
   };
 
   const handleModeChange = (v) => () => {
     setValue('mode', v);
-    if (v === 'send') {
-      setValue('duplicateFramesAuto', true);
-      setValue('duplicateFramesAutoNumber', watch('framerate'));
-    }
   };
 
   const formats = [
@@ -139,6 +171,13 @@ const Export = ({ t }) => {
   ];
 
   const resolutions = ['original', 2160, 1440, 1080, 720, 480, 360].map((e) => ({ value: e, label: e === 'original' ? t('Original (Recommended)') : t('{{resolution}}p', { resolution: e }) }));
+
+  const framesFormats = [
+    { value: 'original', label: t('Original (Recommended)') },
+    { value: 'jpg', label: t('JPEG (.jpg)') },
+    { value: 'png', label: t('PNG (.png)') },
+    { value: 'webp', label: t('WEBP (.webp)') },
+  ];
 
   return (
     <>
@@ -160,8 +199,17 @@ const Export = ({ t }) => {
               </FormGroup>
             )}
 
-            {['video', 'send'].includes(watch('mode')) && (
-              <FormGroup label={t('Video resolution')} description={t('The exported video resolution')}>
+            {watch('mode') === 'frames' && (
+              <FormGroup label={t('Frames format')} description={t('The format of exported frames')}>
+                <Select control={control} options={framesFormats} register={register('framesFormat')} />
+              </FormGroup>
+            )}
+
+            {['video', 'frames', 'send'].includes(watch('mode')) && (
+              <FormGroup
+                label={watch('mode') === 'frames' ? t('Frames resolution') : t('Video resolution')}
+                description={watch('mode') === 'frames' ? t('The exported frames resolution') : t('The exported video resolution')}
+              >
                 <Select control={control} options={resolutions} register={register('resolution')} />
               </FormGroup>
             )}
@@ -185,16 +233,18 @@ const Export = ({ t }) => {
               </FormGroup>
             )}
 
-            <FormGroup label={t('Duplicate first and last frames')} description={t('Automatically duplicate the first and last frames')}>
-              <div style={{ display: 'inline-block' }}>
-                <Switch register={register('duplicateFramesAuto')} />
-              </div>
-              {watch('duplicateFramesAuto') && (
-                <div style={{ display: 'inline-block', marginLeft: 'var(--space-big)' }}>
-                  <NumberInput register={register('duplicateFramesAutoNumber')} min={2} max={10} />
+            {['video', 'frames'].includes(watch('mode')) && (
+              <FormGroup label={t('Duplicate first and last frames')} description={t('Automatically duplicate the first and last frames')}>
+                <div style={{ display: 'inline-block' }}>
+                  <Switch register={register('duplicateFramesAuto')} />
                 </div>
-              )}
-            </FormGroup>
+                {watch('duplicateFramesAuto') && (
+                  <div style={{ display: 'inline-block', marginLeft: 'var(--space-big)' }}>
+                    <NumberInput register={register('duplicateFramesAutoNumber')} min={2} max={10} />
+                  </div>
+                )}
+              </FormGroup>
+            )}
 
             {watch('mode') === 'frames' && (
               <FormGroup label={t('Duplicate frames')} description={t('Copies several times the duplicated frames')}>
@@ -214,6 +264,7 @@ const Export = ({ t }) => {
         <LoadingOverlay
           publicCode={publicCode}
           isExporting={isExporting}
+          progress={progress}
           onCancel={() => {
             setIsInfosOpened(false);
             setIsExporting(false);

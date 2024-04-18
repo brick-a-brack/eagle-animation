@@ -1,9 +1,9 @@
-import { useNavigate, useSearchParams } from 'react-router-dom';
 import { withTranslation } from 'react-i18next';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 
 import ActionsBar from '../components/ActionsBar';
-import useSettings from '../hooks/useSettings';
 import SettingsForm from '../components/SettingsForm';
+import useSettings from '../hooks/useSettings';
 
 const SettingsView = () => {
   const [searchParams] = useSearchParams();

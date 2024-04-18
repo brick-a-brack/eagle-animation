@@ -1,12 +1,13 @@
 import { withTranslation } from 'react-i18next';
 
-import Button from '../Button';
-import * as style from './style.module.css';
 import faArrowLeft from '../../icons/faArrowLeft';
+import faFileExport from '../../icons/faFileExport';
 import faGear from '../../icons/faGear';
 import faKeyboard from '../../icons/faKeyboard';
 import faTrash from '../../icons/faTrash';
-import faFileExport from '../../icons/faFileExport';
+import Button from '../Button';
+
+import * as style from './style.module.css';
 
 const ActionsBar = ({ onAction = null, actions = [], position = 'LEFT', t }) => {
   const handleAction = (action) => () => {

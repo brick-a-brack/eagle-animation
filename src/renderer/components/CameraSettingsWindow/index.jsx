@@ -1,29 +1,38 @@
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { withTranslation } from 'react-i18next';
 
-import * as style from './style.module.css';
+import faAperture from '../../icons/faAperture';
+import faCamera from '../../icons/faCamera';
+import faDroplet from '../../icons/faDroplet';
+import faFaceViewfinder from '../../icons/faFaceViewfinder';
+import faLightbulbOn from '../../icons/faLightbulbOn';
+import faMagnifyingGlass from '../../icons/faMagnifyingGlass';
+import faRotate from '../../icons/faRotate';
+import Action from '../Action';
+import ActionCard from '../ActionCard';
 import Slider from '../CustomSlider';
 import SliderSelect from '../CustomSliderSelect';
 import FormGroup from '../FormGroup';
-import Switch from '../Switch';
-import ActionCard from '../ActionCard';
-import Select from '../Select';
-import { withTranslation } from 'react-i18next';
 import IconTabs from '../IconTabs';
-import faDroplet from '../../icons/faDroplet';
-
 import NumberInput from '../NumberInput';
-import { useForm } from 'react-hook-form';
+import Select from '../Select';
+import Switch from '../Switch';
 
-import faCamera from '../../icons/faCamera';
-import faMagnifyingGlass from '../../icons/faMagnifyingGlass';
-import faAperture from '../../icons/faAperture';
-import faFaceViewfinder from '../../icons/faFaceViewfinder';
-import faLightbulbOn from '../../icons/faLightbulbOn';
-import faRotate from '../../icons/faRotate';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import Action from '../Action';
+import * as style from './style.module.css';
 
-const CameraSettingsWindow = ({ t, cameraCapabilities, onCapabilityChange, onDevicesListRefresh = () => {}, onCapabilitiesReset, onSettingsChange = () => {}, appCapabilities = [], devices = [], settings = {} }) => {
+const CameraSettingsWindow = ({
+  t,
+  cameraCapabilities,
+  onCapabilityChange,
+  onDevicesListRefresh = () => {},
+  onCapabilitiesReset,
+  onSettingsChange = () => {},
+  appCapabilities = [],
+  devices = [],
+  settings = {},
+}) => {
   const [selectedTab, setSelectedTab] = useState(null);
   const form = useForm({
     mode: 'all',
@@ -95,7 +104,9 @@ const CameraSettingsWindow = ({ t, cameraCapabilities, onCapabilityChange, onDev
           <>
             <FormGroup label={t('Camera')} description={t('The camera device to use to take frames')}>
               <Select options={devices.map((e) => ({ value: e.id, label: e.label }))} register={register('CAMERA_ID')} />
-              <Action className={style.refreshIcon} action={() => onDevicesListRefresh()}><FontAwesomeIcon icon={faRotate} /></Action>
+              <Action title={t('Refresh camera list')} className={style.refreshIcon} action={() => onDevicesListRefresh()}>
+                <FontAwesomeIcon icon={faRotate} />
+              </Action>
             </FormGroup>
             <FormGroup label={t('Frames to capture')} description={t('Number of frames to capture')}>
               <NumberInput register={register('CAPTURE_FRAMES')} min={1} />

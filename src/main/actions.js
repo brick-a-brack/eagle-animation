@@ -1,11 +1,17 @@
-import { join } from 'path-browserify';
-import { mkdirp } from 'mkdirp';
-import { homedir } from 'os';
-import fetch from 'node-fetch';
 import { shell } from 'electron';
 import envPaths from 'env-paths';
+import { existsSync } from 'fs';
+import { writeFile } from 'fs/promises';
+import { mkdirp } from 'mkdirp';
+import fetch from 'node-fetch';
+import { homedir } from 'os';
+import { join } from 'path-browserify';
 
+import { getEncodingProfile } from '../common/ffmpeg';
 import { CONTRIBUTE_REPOSITORY, DIRECTORY_NAME } from '../config';
+import { flushCamera, getCamera, getCameras } from './cameras';
+import { uploadFile } from './core/api';
+import { exportProjectScene, getSyncList, saveSyncList } from './core/export';
 import {
   applyProjectFrameLengthOffset,
   createProject,
@@ -20,12 +26,6 @@ import {
 } from './core/projects';
 import { getSettings, saveSettings } from './core/settings';
 import { selectFile, selectFolder } from './core/utils';
-import { exportProjectScene, getSyncList, normalizePictures, saveSyncList } from './core/export';
-
-import { uploadFile } from './core/api';
-import { existsSync } from 'fs';
-import { flushCamera, getCamera, getCameras } from './cameras';
-import { getEncodingProfile } from '../common/ffmpeg';
 
 const OLD_PROJECTS_PATH = join(homedir(), DIRECTORY_NAME);
 const PROJECTS_PATH = existsSync(OLD_PROJECTS_PATH) ? OLD_PROJECTS_PATH : envPaths(DIRECTORY_NAME, { suffix: '' }).data;
@@ -121,8 +121,8 @@ const actions = {
     shell.openExternal(link);
     return null;
   },
-  TAKE_PICTURE: async (evt, { project_id, track_id, buffer, before_frame_id = false }) => {
-    const data = await takePicture(join(PROJECTS_PATH, project_id), track_id, 'jpg', before_frame_id, buffer);
+  TAKE_PICTURE: async (evt, { project_id, track_id, buffer, before_frame_id = false, extension = 'jpg' }) => {
+    const data = await takePicture(join(PROJECTS_PATH, project_id), track_id, extension, before_frame_id, buffer);
     return computeProject(data);
   },
   LIST_NATIVE_CAMERAS: () => {
@@ -217,22 +217,11 @@ const actions = {
     ];
     return capabilities;
   },
-  EXPORT: async (
+  EXPORT_SELECT_PATH: async (
     evt,
     {
-      project_id,
-      track_id,
-      mode = 'video',
+      type = 'FILE',
       format = 'h264',
-      resolution = 'original',
-      duplicate_frames_copy = true,
-      duplicate_frames_auto = false,
-      duplicate_frames_auto_number = 2,
-      custom_output_framerate = false,
-      custom_output_framerate_number = 10,
-      public_code = 'default',
-      event_key = '',
-      framerate = 10,
       translations = {
         EXPORT_FRAMES: '',
         EXPORT_VIDEO: '',
@@ -241,14 +230,37 @@ const actions = {
       },
     }
   ) => {
+    if (type === 'FOLDER') {
+      return selectFolder(translations.EXPORT_FRAMES);
+    }
+    if (type === 'FILE') {
+      const profile = getEncodingProfile(format);
+      return selectFile(translations.DEFAULT_FILE_NAME, profile.extension, translations.EXPORT_VIDEO, translations.EXT_NAME);
+    }
+    return null;
+  },
+  EXPORT: async (
+    evt,
+    {
+      project_id,
+      track_id,
+      frames = [],
+      mode = 'video',
+      format = 'h264',
+      custom_output_framerate = false,
+      custom_output_framerate_number = 10,
+      output_path = null,
+      public_code = 'default',
+      event_key = '',
+      framerate = 10,
+    },
+    sendToRenderer
+  ) => {
     if (mode === 'frames') {
-      const path = await selectFolder(translations.EXPORT_FRAMES);
-      if (path) {
-        await normalizePictures(join(PROJECTS_PATH, project_id), track_id, path, {
-          duplicateFramesCopy: duplicate_frames_copy,
-          duplicateFramesAuto: duplicate_frames_auto,
-          duplicateFramesAutoNumber: duplicate_frames_auto_number,
-        });
+      if (output_path) {
+        for (const frame of frames) {
+          await writeFile(join(output_path, `frame-${frame.index.toString().padStart(6, '0')}.${frame.extension}`), frame.buffer);
+        }
       }
       return true;
     }
@@ -260,19 +272,20 @@ const actions = {
       await mkdirp(join(PROJECTS_PATH, '/.sync/'));
     }
 
-    const path =
-      mode === 'send'
-        ? join(PROJECTS_PATH, '/.sync/', `${public_code}.${profile.extension}`)
-        : await selectFile(translations.DEFAULT_FILE_NAME, profile.extension, translations.EXPORT_VIDEO, translations.EXT_NAME);
-    await exportProjectScene(join(PROJECTS_PATH, project_id), track_id, path, format, {
-      duplicateFramesCopy: duplicate_frames_copy,
-      duplicateFramesAuto: duplicate_frames_auto,
-      duplicateFramesAutoNumber: duplicate_frames_auto_number,
-      customOutputFramerate: custom_output_framerate,
-      customOutputFramerateNumber: custom_output_framerate_number,
-      resolution,
-      framerate: Number(framerate),
-    });
+    const path = mode === 'send' ? join(PROJECTS_PATH, '/.sync/', `${public_code}.${profile.extension}`) : output_path;
+    await exportProjectScene(
+      join(PROJECTS_PATH, project_id),
+      track_id,
+      frames,
+      path,
+      format,
+      {
+        customOutputFramerate: custom_output_framerate,
+        customOutputFramerateNumber: custom_output_framerate_number,
+        framerate: Number(framerate),
+      },
+      (progress) => sendToRenderer('FFMPEG_PROGRESS', { progress })
+    );
 
     if (mode === 'send') {
       const syncList = await getSyncList(PROJECTS_PATH);

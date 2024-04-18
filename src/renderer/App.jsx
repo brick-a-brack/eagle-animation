@@ -1,12 +1,12 @@
-import { Routes, Route, MemoryRouter as Router } from 'react-router-dom';
-import Container from './components/Container';
+import { MemoryRouter as Router, Route, Routes } from 'react-router-dom';
 
-import HomeView from './views/Home';
+import Container from './components/Container';
+import { WindowProvider } from './contexts/WindowContext';
 import AnimatorView from './views/Animator';
+import ExportView from './views/Export';
+import HomeView from './views/Home';
 import SettingsView from './views/Settings';
 import ShortcutsView from './views/Shortcuts';
-import ExportView from './views/Export';
-import { WindowProvider } from './contexts/WindowContext';
 
 const App = () => (
   <Container>

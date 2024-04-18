@@ -33,12 +33,9 @@ class NativeProxy {
   }
 
   initPreview() {
-    // eslint-disable-next-line no-async-promise-executor
-    return new Promise(async (resolve) => {
+    return new Promise((resolve) => {
       resolve(true);
-
-      // TODO: ADD EA Interface for that
-      window.IPC.stream('LIVE_VIEW_DATA', (evt, args) => {
+      window.EAEvents('LIVE_VIEW_DATA', (evt, args) => {
         this._drawLivePreview(this.video, args.data);
       });
     });

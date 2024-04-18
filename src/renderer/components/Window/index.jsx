@@ -3,8 +3,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import { useLayoutEffect, useRef } from 'react';
 
-import * as style from './style.module.css';
 import faXmark from '../../icons/faXmark';
+
+import * as style from './style.module.css';
 
 const Window = ({ children, onClose = () => {}, isOpened = false }) => {
   const ref = useRef();

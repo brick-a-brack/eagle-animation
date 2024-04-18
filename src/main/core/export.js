@@ -1,35 +1,29 @@
+import { readFile } from 'fs';
+import { writeFile } from 'fs/promises';
+import { mkdirp } from 'mkdirp';
 import { format, join } from 'path';
-import { v4 as uuidv4 } from 'uuid';
 import { rimraf } from 'rimraf';
-import { readFile, writeFile } from 'fs';
+import { v4 as uuidv4 } from 'uuid';
 
+import { ffmpeg } from './ffmpeg';
 import { getProjectData } from './projects';
-import { createDirectory, copy } from './utils';
-import { generate } from './ffmpeg';
+import { getFFmpegArgs, parseFFmpegLogs } from '../../common/ffmpeg';
 
-export const normalizePictures = async (projectPath, scene, outputPath, opts = {}) => {
-  const project = await getProjectData(projectPath);
-  const frames = project?.project?.scenes?.[scene]?.pictures?.filter((e) => !e.deleted) || [];
-
-  const getNumberOfFrames = (frame, index) => {
-    if (opts.duplicateFramesAuto && opts.duplicateFramesAutoNumber && (index === 0 || index === frames.length - 1)) {
-      return Number(opts.duplicateFramesAutoNumber) + frame.length - 1;
-    }
-    return opts.duplicateFramesCopy ? frame.length : 1;
-  };
-
-  const files = frames?.reduce((acc, e, i) => [...acc, ...Array(getNumberOfFrames(e, i)).fill(e)], []);
-  await createDirectory(outputPath);
-  for (let i = 0; i < files.length; i++) {
-    await copy(join(projectPath, `/${scene}/`, files[i].filename), join(outputPath, `frame-${i.toString().padStart(6, '0')}.jpg`));
-  }
-};
-
-export const exportProjectScene = async (projectPath, scene, filePath, format, opts = {}) => {
+export const exportProjectScene = async (projectPath, scene, frames, filePath, format, opts = {}, onProgress = () => {}) => {
   const project = await getProjectData(projectPath);
   const directoryPath = join(projectPath, `/.tmp-${uuidv4()}/`);
-  await normalizePictures(projectPath, scene, directoryPath, opts);
-  await generate(1920, 1080, directoryPath, format, filePath, opts?.framerate || project.project.scenes[scene].framerate, opts);
+  await mkdirp(directoryPath);
+  for (const frame of frames) {
+    await writeFile(join(directoryPath, `frame-${frame.index.toString().padStart(6, '0')}.${frame.extension}`), frame.buffer);
+  }
+
+  const fps = opts?.framerate || project.project.scenes[scene].framerate;
+  const args = getFFmpegArgs(format, filePath, fps, opts);
+
+  const handleData = (data) => {
+    parseFFmpegLogs(data, frames.length || 0, opts.customOutputFramerate ? opts.customOutputFramerateNumber : undefined, onProgress);
+  };
+  await ffmpeg(args, directoryPath, handleData);
   await rimraf(directoryPath);
 };
 

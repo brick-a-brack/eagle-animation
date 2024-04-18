@@ -349,14 +349,14 @@ class Webcam {
       context.drawImage(bitmap, 0, 0, bitmap.width, bitmap.height);
       //const context = canvas.getContext("bitmaprenderer");
       //context?.transferFromImageBitmap(bitmap);
-      return canvas;
+      return { type: 'image/png', buffer: canvas };
     } else {
       const canvas = document.createElement('canvas');
       canvas.width = this.video.videoWidth;
       canvas.height = this.video.videoHeight;
       const context = canvas.getContext('2d', { alpha: false });
       context.drawImage(this.video, 0, 0, canvas.width, canvas.height);
-      return canvas;
+      return { type: 'image/png', buffer: canvas };
     }
   }
 

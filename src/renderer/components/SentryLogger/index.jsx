@@ -1,9 +1,11 @@
 import * as Sentry from '@sentry/browser';
-import { Component } from 'react';
 import PropTypes from 'prop-types';
-import { SENTRY_DSN, VERSION } from '../../config';
-import * as style from './style.module.css';
+import { Component } from 'react';
 import { withTranslation } from 'react-i18next';
+
+import { SENTRY_DSN, VERSION } from '../../config';
+
+import * as style from './style.module.css';
 
 if (SENTRY_DSN) Sentry.init({ dsn: SENTRY_DSN, release: VERSION });
 

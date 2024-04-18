@@ -1,12 +1,12 @@
-import { CONTRIBUTE_REPOSITORY, VERSION } from '../config';
-import Header from '../components/Header';
 import { useEffect, useState } from 'react';
+import { withTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
-import ProjectsGrid from '../components/ProjectsGrid';
-import ProjectCard from '../components/ProjectCard';
-import { withTranslation } from 'react-i18next';
 import ActionsBar from '../components/ActionsBar';
+import Header from '../components/Header';
+import ProjectCard from '../components/ProjectCard';
+import ProjectsGrid from '../components/ProjectsGrid';
+import { CONTRIBUTE_REPOSITORY, VERSION } from '../config';
 import useCamera from '../hooks/useCamera';
 
 const HomeView = ({ t }) => {

@@ -1,11 +1,11 @@
-import { useEffect, useRef } from 'react';
+import { DndContext, MouseSensor, TouchSensor, useSensor, useSensors } from '@dnd-kit/core';
+import { horizontalListSortingStrategy, SortableContext, useSortable } from '@dnd-kit/sortable';
 import { CSS as DNDCSS } from '@dnd-kit/utilities';
 import animateScrollTo from 'animated-scroll-to';
+import { useEffect, useRef } from 'react';
 import { withTranslation } from 'react-i18next';
 
 import * as style from './style.module.css';
-import { DndContext, MouseSensor, TouchSensor, useSensor, useSensors } from '@dnd-kit/core';
-import { SortableContext, horizontalListSortingStrategy, useSortable } from '@dnd-kit/sortable';
 
 const SortableItem = ({ img, selected, onSelect, index }) => {
   const { setNodeRef, isDragging, transform, transition, listeners, attributes, active } = useSortable({ id: img.id });

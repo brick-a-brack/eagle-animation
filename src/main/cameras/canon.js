@@ -123,7 +123,7 @@ class CanonCamera {
       const clock = setInterval(() => {
         if (this.lastFrame !== null) {
           clearInterval(clock);
-          resolve(Buffer.from(this.lastFrame, 'base64'));
+          resolve({ type: 'image/jpeg', buffer: Buffer.from(this.lastFrame, 'base64') });
           this.lastFrame = null;
           this.liveModeEnabled = true;
         }

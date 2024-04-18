@@ -1,9 +1,9 @@
-import { readdirSync, statSync, readFile, writeFile, existsSync } from 'fs';
-import { join, format } from 'path';
-
-import { PROJECT_FILE, VERSION, DEFAULT_FPS } from '../../config';
-import { time, createDirectory } from './utils';
 import { randomUUID } from 'crypto';
+import { existsSync, readdirSync, readFile, statSync, writeFile } from 'fs';
+import { format, join } from 'path';
+
+import { DEFAULT_FPS, PROJECT_FILE, VERSION } from '../../config';
+import { createDirectory, time } from './utils';
 
 // Generate empty project
 export const generateProjectObject = (name) => ({
@@ -38,8 +38,7 @@ export const getProjectData = (path) =>
 
 // List all projects in a directory
 export const getProjectsList = (path) =>
-  // eslint-disable-next-line no-async-promise-executor
-  new Promise(async (resolve, reject) => {
+  new Promise((resolve, reject) => {
     try {
       const dirs = readdirSync(path).filter((f) => statSync(join(path, f)).isDirectory());
       const projects = [];

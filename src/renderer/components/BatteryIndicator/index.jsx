@@ -1,15 +1,15 @@
-import * as style from './style.module.css';
-
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { withTranslation } from 'react-i18next';
 
 import faBatteryBolt from '../../icons/faBatteryBolt';
-import faBatteryFull from '../../icons/faBatteryFull';
-import faBatteryThreeQuarters from '../../icons/faBatteryThreeQuarters';
-import faBatteryHalf from '../../icons/faBatteryHalf';
-import faBatteryQuarter from '../../icons/faBatteryQuarter';
-import faBatteryLow from '../../icons/faBatteryLow';
 import faBatteryEmpty from '../../icons/faBatteryEmpty';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import faBatteryFull from '../../icons/faBatteryFull';
+import faBatteryHalf from '../../icons/faBatteryHalf';
+import faBatteryLow from '../../icons/faBatteryLow';
+import faBatteryQuarter from '../../icons/faBatteryQuarter';
+import faBatteryThreeQuarters from '../../icons/faBatteryThreeQuarters';
+
+import * as style from './style.module.css';
 
 const getInfos = (value) => {
   if (value > 100 || value === 'AC') {

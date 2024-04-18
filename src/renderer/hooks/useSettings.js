@@ -1,4 +1,5 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+
 import { currentLanguage, setLanguage } from '../i18n';
 
 const DEFAULT_SETTINGS = {

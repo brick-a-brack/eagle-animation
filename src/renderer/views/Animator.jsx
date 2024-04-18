@@ -1,22 +1,23 @@
+import { arrayMove } from '@dnd-kit/sortable';
 import { useEffect, useRef, useState } from 'react';
 import { flushSync } from 'react-dom';
 import { withTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 
+import soundDelete from '~/resources/sounds/delete.mp3';
+import soundError from '~/resources/sounds/error.mp3';
+import soundShutter from '~/resources/sounds/shutter.mp3';
+
 import ActionsBar from '../components/ActionsBar';
+import CameraSettingsWindow from '../components/CameraSettingsWindow';
 import ControlBar from '../components/ControlBar';
 import KeyboardHandler from '../components/KeyboardHandler';
 import Player from '../components/Player';
 import Timeline from '../components/Timeline';
-import soundDelete from '~/resources/sounds/delete.mp3';
-import soundShutter from '~/resources/sounds/shutter.mp3';
-import soundError from '~/resources/sounds/error.mp3';
-import { arrayMove } from '@dnd-kit/sortable';
-import CameraSettingsWindow from '../components/CameraSettingsWindow';
 import Window from '../components/Window';
+import useAppCapabilities from '../hooks/useAppCapabilities';
 import useCamera from '../hooks/useCamera';
 import useSettings from '../hooks/useSettings';
-import useAppCapabilities from '../hooks/useAppCapabilities';
 
 // Play sound
 const playSound = (src, timeout = 2000) => {
@@ -122,7 +123,7 @@ const Animator = ({ t }) => {
     if (actionsEvents[action]) {
       actionsEvents[action](args);
     } else {
-      console.log('UNSUPPORTED EVENT', action, args);
+      console.log('💥 Unsupported event', action, args);
     }
   };
 
@@ -166,13 +167,13 @@ const Animator = ({ t }) => {
       for (let i = 0; i < (Number(nbPicturesToTake !== null ? nbPicturesToTake : settings.CAPTURE_FRAMES) || 1); i++) {
         const nbFramesToTake = (settings.AVERAGING_ENABLED ? Number(settings.AVERAGING_VALUE) : 1) || 1;
         try {
-          const buffer = await cameraActions.takePicture(nbFramesToTake);
+          const { type, buffer } = await cameraActions.takePicture(nbFramesToTake);
 
           if (!isMuted && settings.SOUNDS) {
             playSound(soundShutter);
           }
 
-          setProject(await window.EA('TAKE_PICTURE', { project_id: id, track_id: track, buffer, before_frame_id: currentFrameId }));
+          setProject(await window.EA('TAKE_PICTURE', { project_id: id, track_id: track, buffer, extension: type?.includes('png') ? 'png' : 'jpg', before_frame_id: currentFrameId }));
         } catch (err) {
           if (!isMuted && settings.SOUNDS) {
             playSound(soundError);

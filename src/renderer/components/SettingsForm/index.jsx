@@ -1,19 +1,18 @@
 import { useEffect } from 'react';
+import { useForm } from 'react-hook-form';
 import { withTranslation } from 'react-i18next';
 
-import FormGroup from '../FormGroup';
-import Select from '../Select';
-import Switch from '../Switch';
-import NumberInput from '../NumberInput';
-import { useForm } from 'react-hook-form';
-import Heading from '../Heading';
-import CustomSlider from '../CustomSlider';
-import FormLayout from '../FormLayout';
-import GridIcon from '../GridIcon';
-
-import Input from '../Input';
 import { LANGUAGES } from '../../config';
 import useAppCapabilities from '../../hooks/useAppCapabilities';
+import CustomSlider from '../CustomSlider';
+import FormGroup from '../FormGroup';
+import FormLayout from '../FormLayout';
+import GridIcon from '../GridIcon';
+import Heading from '../Heading';
+import Input from '../Input';
+import NumberInput from '../NumberInput';
+import Select from '../Select';
+import Switch from '../Switch';
 
 const SettingsForm = ({ settings = {}, onUpdate = () => {}, t }) => {
   const { appCapabilities } = useAppCapabilities();

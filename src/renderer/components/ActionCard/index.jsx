@@ -1,8 +1,10 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
 import faFileVideo from '../../icons/faFileVideo';
 import faFolderImage from '../../icons/faFolderImage';
 import faPaperPlane from '../../icons/faPaperPlane';
 import Action from '../Action';
+
 import * as style from './style.module.css';
 
 const icons = {

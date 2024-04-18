@@ -1,8 +1,10 @@
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { uniqueId } from 'lodash';
 import { useMemo } from 'react';
+
 import CustomTooltip from '../Tooltip';
+
 import * as style from './style.module.css';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const Button = ({ icon, onClick, title = '', size = 'mini', disabled = false, selected = false, selectedColor = 'normal', tooltipPosition = 'TOP', ...rest }) => {
   const uid = useMemo(() => uniqueId(), []);

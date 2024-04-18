@@ -1,9 +1,10 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import { isEqual } from 'lodash';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+
+import BatteryIndicator from '../BatteryIndicator';
 
 import * as style from './style.module.css';
-import BatteryIndicator from '../BatteryIndicator';
 
 const drawArea = (ctx, x, y, width, height) => {
   ctx.fillRect(x, y, width, 1);
@@ -158,12 +159,10 @@ class Player extends Component {
   }
 
   getRatio() {
-    // eslint-disable-line class-methods-use-this
     return 16 / 9;
   }
 
   getSize() {
-    // eslint-disable-line class-methods-use-this
     return {
       width: 1280,
       height: 720,

@@ -1,16 +1,16 @@
+import './i18n';
+
+import { Buffer } from 'buffer';
 import React from 'react';
 import { createRoot } from 'react-dom/client';
-import { Buffer } from 'buffer';
 
-import './i18n';
+import { Actions as WebActions, addEventListener } from './actions';
 import App from './App';
 import { BUILD } from './config';
 
-import WebActions from './actions';
-
 globalThis.Buffer = Buffer;
 
-console.log('Build', BUILD);
+console.log('🚀 Build', BUILD);
 
 window.EA = async (action, data) => {
   // IPC (Electron backend)
@@ -26,6 +26,20 @@ window.EA = async (action, data) => {
   // Web (Web browser backend)
   if (WebActions[action]) {
     return WebActions[action](null, data);
+  }
+};
+
+window.EAEvents = (name, callback = () => {}) => {
+  // IPC (Electron backend)
+  if (typeof window.IPC !== 'undefined') {
+    if (typeof callback !== 'undefined') {
+      window.IPC.stream(name, callback);
+    }
+  }
+
+  // Web (Web browser backend)
+  if (typeof addEventListener !== 'undefined') {
+    addEventListener(name, callback);
   }
 };
 

@@ -1,24 +1,31 @@
-import JSZip from 'jszip';
-import { LS_SETTINGS } from '../config';
-import { createFrame, getFrameBlob, getFrameBlobUrl } from './frames';
-import { saveAs } from 'file-saver';
-import {
-  applyFrameLengthOffset,
-  createProject,
-  deleteProject,
-  deleteProjectFrame,
-  getAllProjects,
-  getProject,
-  moveFrame,
-  normalizePictures,
-  sceneAddFrame,
-  updateProjectTitle,
-  updateSceneFPSValue,
-} from './projects';
-import { getFFmpeg } from './ffmpeg';
-import { getEncodingProfile, getFFmpegArgs } from '../../common/ffmpeg';
-import { fetchFile } from '@ffmpeg/util';
 import { isFirefox } from '@braintree/browser-detection';
+import { fetchFile } from '@ffmpeg/util';
+import { saveAs } from 'file-saver';
+import JSZip from 'jszip';
+
+import { getEncodingProfile, getFFmpegArgs, parseFFmpegLogs } from '../../common/ffmpeg';
+import { LS_SETTINGS } from '../config';
+import { getFFmpeg } from './ffmpeg';
+import { createFrame, getFrameBlobUrl } from './frames';
+import { applyFrameLengthOffset, createProject, deleteProject, deleteProjectFrame, getAllProjects, getProject, moveFrame, sceneAddFrame, updateProjectTitle, updateSceneFPSValue } from './projects';
+
+let events = [];
+
+export const addEventListener = (name, callback) => {
+  events.push([name, callback]);
+};
+
+export const removeEventListener = (name, callback) => {
+  events = events.filter(([evtName, evtCallback]) => evtName !== name || evtCallback !== callback);
+};
+
+export const sendEvent = (name, data) => {
+  for (const [eventName, eventCallback] of events) {
+    if (eventName === name && typeof eventCallback === 'function') {
+      eventCallback(name, data);
+    }
+  }
+};
 
 const getDefaultPreview = async (data) => {
   for (let i = 0; i < (data?.project?.scenes?.length || 0); i++) {
@@ -60,7 +67,7 @@ const computeProject = async (data) => {
   };
 };
 
-const actions = {
+export const Actions = {
   GET_LAST_VERSION: async () => {
     // Web version is always up-to-date, ignore update detection
     return { version: null };
@@ -116,9 +123,9 @@ const actions = {
     window.open(link, '_blank');
     return null;
   },
-  TAKE_PICTURE: async (evt, { project_id, track_id, buffer, before_frame_id = false }) => {
-    const frameId = await createFrame(buffer);
-    await sceneAddFrame(project_id, track_id, 'jpg', before_frame_id, frameId);
+  TAKE_PICTURE: async (evt, { project_id, track_id, buffer, before_frame_id = false, extension = 'jpg' }) => {
+    const frameId = await createFrame(buffer, extension);
+    await sceneAddFrame(project_id, track_id, extension, before_frame_id, frameId);
     const project = await getProject(project_id);
     return computeProject(project);
   },
@@ -150,65 +157,44 @@ const actions = {
 
     return capabilities;
   },
-  EXPORT: async (
-    evt,
-    {
-      project_id,
-      track_id,
-      mode = 'video',
-      format = 'h264',
-      resolution = 'original',
-      duplicate_frames_copy = true,
-      duplicate_frames_auto = false,
-      duplicate_frames_auto_number = 2,
-      custom_output_framerate = false,
-      custom_output_framerate_number = 10,
-    }
-  ) => {
+  EXPORT_SELECT_PATH: async () => null,
+  EXPORT: async (evt, { project_id, track_id, mode = 'video', format = 'h264', frames = [], custom_output_framerate = false, custom_output_framerate_number = 10 }) => {
     const trackId = Number(track_id);
-
     const project = await getProject(project_id);
-    const frames = await normalizePictures(project_id, trackId, {
-      duplicateFramesCopy: duplicate_frames_copy,
-      duplicateFramesAuto: duplicate_frames_auto,
-      duplicateFramesAutoNumber: duplicate_frames_auto_number,
-    });
 
     if (mode === 'frames') {
       const zip = new JSZip();
       for (let i = 0; i < frames.length; i++) {
         const frame = frames[i];
-        const blob = await getFrameBlob(frame.id);
-        zip.file(`frame-${i.toString().padStart(6, '0')}.jpg`, blob);
+        zip.file(`frame-${frame.index.toString().padStart(6, '0')}.${frame.extension}`, frame.buffer);
       }
-      zip.generateAsync({ type: 'blob' }).then(function (content) {
+      zip.generateAsync({ type: 'blob' }).then((content) => {
         saveAs(content, 'frames.zip');
       });
     }
 
     if (mode === 'video') {
-      const ffmpeg = await getFFmpeg(console.log);
-      console.log('FFMPEG READY', ffmpeg);
+      const handleData = (data) => {
+        parseFFmpegLogs(data?.message || '', frames.length || 0, custom_output_framerate ? custom_output_framerate_number : undefined, (progress) => {
+          sendEvent('FFMPEG_PROGRESS', { progress });
+        });
+      };
 
-      for (let i = 0; i < frames.length; i++) {
-        const frame = frames[i];
-        const blob = await getFrameBlob(frame.id);
-        await ffmpeg.writeFile(`frame-${i.toString().padStart(6, '0')}.jpg`, await fetchFile(blob));
+      const ffmpeg = await getFFmpeg(handleData);
+
+      for (const frame of frames) {
+        await ffmpeg.writeFile(`frame-${frame.index.toString().padStart(6, '0')}.${frame.extension}`, await fetchFile(new Blob([frame.buffer])));
       }
 
       const profile = getEncodingProfile(format);
       const output = `video.${profile.extension}`;
 
-      const args = getFFmpegArgs(1920, 1080, format, output, custom_output_framerate ? custom_output_framerate_number : project.project.scenes[trackId].framerate, {
-        duplicateFramesCopy: duplicate_frames_copy,
-        duplicateFramesAuto: duplicate_frames_auto,
-        duplicateFramesAutoNumber: duplicate_frames_auto_number,
+      const args = getFFmpegArgs(format, output, project.project.scenes[trackId].framerate, {
         customOutputFramerate: custom_output_framerate,
         customOutputFramerateNumber: custom_output_framerate_number,
-        resolution,
       });
 
-      console.log('FFMPEG RUN', args);
+      console.log(`🎞️ FFmpeg ${args.map((e) => `"${e}"`).join(' ')}`);
 
       await ffmpeg.exec(args);
       const data = await ffmpeg.readFile(output);
@@ -218,5 +204,3 @@ const actions = {
     return true;
   },
 };
-
-export default actions;

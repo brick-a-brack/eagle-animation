@@ -1,21 +1,22 @@
 import { withTranslation } from 'react-i18next';
 
-import Button from '../Button';
-import CustomTooltip from '../Tooltip';
-import CustomSlider from '../CustomSlider';
-import NumberInput from '../NumberInput';
-import * as style from './style.module.css';
-import faPlay from '../../icons/faPlay';
 import faArrowsRepeat from '../../icons/faArrowsRepeat';
-import faForwardFast from '../../icons/faForwardFast';
 import faCamera from '../../icons/faCamera';
 import faCameraSettings from '../../icons/faCameraSettings';
 import faDiamondHalfStroke from '../../icons/faDiamondHalfStroke';
+import faForwardFast from '../../icons/faForwardFast';
 import faFrame from '../../icons/faFrame';
-import faStop from '../../icons/faStop';
-import faImageSlash from '../../icons/faImageSlash';
-import faImageCirclePlus from '../../icons/faImageCirclePlus';
 import faImageCircleMinus from '../../icons/faImageCircleMinus';
+import faImageCirclePlus from '../../icons/faImageCirclePlus';
+import faImageSlash from '../../icons/faImageSlash';
+import faPlay from '../../icons/faPlay';
+import faStop from '../../icons/faStop';
+import Button from '../Button';
+import CustomSlider from '../CustomSlider';
+import NumberInput from '../NumberInput';
+import CustomTooltip from '../Tooltip';
+
+import * as style from './style.module.css';
 
 const ControlBar = ({
   gridStatus = false,

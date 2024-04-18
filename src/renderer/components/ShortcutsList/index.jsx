@@ -1,8 +1,9 @@
+import { Fragment } from 'react';
 import { withTranslation } from 'react-i18next';
 
-import * as style from './style.module.css';
 import Heading from '../Heading';
-import { Fragment } from 'react';
+
+import * as style from './style.module.css';
 
 const ShortcutsList = ({ t, shortcuts }) => {
   const keysTitles = {

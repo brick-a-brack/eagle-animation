@@ -1,8 +1,8 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { getCamera, getCameras, takePicture } from '../cameras';
 
-const applyCameraLabel = (e, i) => ({ ...e, label: `[${i}] ${e.label || ''}` });
+const applyCameraLabel = (e, i) => ({ ...e, label: `[${i + 1}] ${e.label || ''}` });
 
 const flushCanvas = (dom) => {
   if (dom) {
@@ -58,6 +58,8 @@ function useCamera(options = {}) {
   const actionSetCamera = useCallback(async (cameraId) => {
     if (cameraId !== currentCameraId) {
       if (currentCamera) {
+        setCurrentCameraId(null);
+        setCurrentCamera(null);
         currentCamera?.disconnect();
         flushCanvas(domRefs.current.imageDOM);
       }

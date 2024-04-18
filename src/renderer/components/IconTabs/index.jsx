@@ -1,6 +1,8 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import * as style from './style.module.css';
+
 import Action from '../Action';
+
+import * as style from './style.module.css';
 
 const IconTabs = ({ tabs = [], onClick = () => {} }) => {
   if (tabs.length === 0) {
