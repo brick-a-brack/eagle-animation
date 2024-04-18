@@ -1,10 +1,11 @@
+import { existsSync } from 'node:fs';
+import { writeFile } from 'node:fs/promises';
+import { homedir } from 'node:os';
+
 import { shell } from 'electron';
 import envPaths from 'env-paths';
-import { existsSync } from 'fs';
-import { writeFile } from 'fs/promises';
 import { mkdirp } from 'mkdirp';
 import fetch from 'node-fetch';
-import { homedir } from 'os';
 import { join } from 'path-browserify';
 
 import { getEncodingProfile } from '../common/ffmpeg';
@@ -13,6 +14,7 @@ import { flushCamera, getCamera, getCameras } from './cameras';
 import { uploadFile } from './core/api';
 import { exportProjectScene, getSyncList, saveSyncList } from './core/export';
 import {
+  applyHideFrameStatus,
   applyProjectFrameLengthOffset,
   createProject,
   deleteProject,
@@ -103,6 +105,10 @@ const actions = {
   },
   DEDUPLICATE_FRAME: async (evt, { project_id, track_id, frame_id }) => {
     const data = await applyProjectFrameLengthOffset(join(PROJECTS_PATH, project_id), track_id, frame_id, -1);
+    return computeProject(data);
+  },
+  HIDE_FRAME: async (evt, { project_id, track_id, frame_id, hidden }) => {
+    const data = await applyHideFrameStatus(project_id, track_id, frame_id, hidden);
     return computeProject(data);
   },
   MOVE_FRAME: async (evt, { project_id, track_id, frame_id, before_frame_id = false }) => {

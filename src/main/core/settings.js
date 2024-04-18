@@ -1,5 +1,5 @@
-import { readFile, writeFile } from 'fs';
-import { format } from 'path';
+import { readFile, writeFile } from 'node:fs/promises';
+import { format } from 'node:path';
 
 const defaultSettings = {
   CAMERA_ID: 0,
@@ -16,34 +16,25 @@ const defaultSettings = {
   EVENT_KEY: '',
 };
 
-export const getSettings = (path) =>
-  new Promise((resolve) => {
+// Get settings
+export const getSettings = async (path) => {
+  try {
     const file = format({ dir: path, base: 'settings.json' });
-    readFile(file, (err, data) => {
-      if (err) return resolve(defaultSettings);
-      try {
-        const settings = JSON.parse(data.toString('utf8'));
-        return resolve({ ...defaultSettings, ...(settings || {}) });
-      } catch (e) {
-        return resolve(defaultSettings);
-      }
-    });
-  });
+    const data = await readFile(file, 'utf8');
+    const settings = JSON.parse(data);
+    return { ...defaultSettings, ...(settings || {}) };
+  } catch (e) {
+    return defaultSettings;
+  }
+};
 
-// Project save
-export const saveSettings = (path, data) =>
-  new Promise((resolve) => {
+// Settings save
+export const saveSettings = async (path, data) => {
+  try {
     const file = format({ dir: path, base: 'settings.json' });
-    writeFile(
-      file,
-      JSON.stringify({
-        ...data,
-      }),
-      (err) => {
-        if (err) {
-          return resolve(defaultSettings);
-        }
-        return resolve({ ...defaultSettings, ...(data || {}) });
-      }
-    );
-  });
+    await writeFile(file, JSON.stringify({ ...data }));
+    return { ...defaultSettings, ...(data || {}) };
+  } catch (e) {
+    return defaultSettings;
+  }
+};

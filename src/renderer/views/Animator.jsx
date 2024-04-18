@@ -270,6 +270,9 @@ const Animator = ({ t }) => {
     EXPORT: () => {
       navigate(`/export/${id}/${track}?back=/animator/${id}/${track}`);
     },
+    HIDE_FRAME: async () => {
+      setProject(await window.EA('HIDE_FRAME', { project_id: id, track_id: track, frame_id: currentFrameId, hidden: !currentFrame?.hidden }));
+    },
     DUPLICATE: async () => {
       setProject(await window.EA('DUPLICATE_FRAME', { project_id: id, track_id: track, frame_id: currentFrameId }));
     },
@@ -361,6 +364,7 @@ const Animator = ({ t }) => {
         canDeduplicate={currentFrame.length > 1}
         framePosition={framePosition}
         frameQuantity={pictures.length}
+        isCurrentFrameHidden={!!currentFrame.hidden}
       />
       <Timeline pictures={pictures} onSelect={handleSelectFrame} onMove={handleFrameMove} select={currentFrameId} playing={isPlaying} />
       <KeyboardHandler onAction={handleAction} disabled={disableKeyboardShortcuts} />

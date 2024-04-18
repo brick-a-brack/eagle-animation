@@ -1,24 +1,7 @@
 import { dialog } from 'electron';
-import { copyFile } from 'fs';
-import { mkdirp } from 'mkdirp';
 
 // Timestamp
 export const time = () => Math.floor(new Date().getTime() / 1000);
-
-// Create a recursive directory
-export const createDirectory = async (path) => {
-  await mkdirp(path);
-  return true;
-};
-
-// Copy file
-export const copy = (from, to) =>
-  new Promise((resolve, reject) => {
-    copyFile(from, to, (err) => {
-      if (err) return reject(err);
-      return resolve(to);
-    });
-  });
 
 // Select an output folder
 export const selectFolder = async (title) => {

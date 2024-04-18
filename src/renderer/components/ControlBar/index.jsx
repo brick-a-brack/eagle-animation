@@ -4,6 +4,8 @@ import faArrowsRepeat from '../../icons/faArrowsRepeat';
 import faCamera from '../../icons/faCamera';
 import faCameraSettings from '../../icons/faCameraSettings';
 import faDiamondHalfStroke from '../../icons/faDiamondHalfStroke';
+import faEye from '../../icons/faEye';
+import faEyeSlash from '../../icons/faEyeSlash';
 import faForwardFast from '../../icons/faForwardFast';
 import faFrame from '../../icons/faFrame';
 import faImageCircleMinus from '../../icons/faImageCircleMinus';
@@ -31,6 +33,7 @@ const ControlBar = ({
   framePosition = false,
   frameQuantity = 0,
   canDeduplicate = false,
+  isCurrentFrameHidden = false,
   showCameraSettings = false,
   gridModes = [],
   onAction = null,
@@ -45,6 +48,9 @@ const ControlBar = ({
   return (
     <div className={style.container}>
       <div className={`${style.subcontainer} ${style.left}`}>
+        {!isPlaying && framePosition !== false && (
+          <Button title={isCurrentFrameHidden ? t('Unhide frame') : t('Hide frame')} onClick={handleAction('HIDE_FRAME')} size="mini" icon={isCurrentFrameHidden ? faEye : faEyeSlash} />
+        )}
         {!isPlaying && framePosition !== false && canDeduplicate && <Button title={t('Deduplicate frame')} onClick={handleAction('DEDUPLICATE')} size="mini" icon={faImageCircleMinus} />}
         {!isPlaying && framePosition !== false && <Button title={t('Duplicate frame')} onClick={handleAction('DUPLICATE')} size="mini" icon={faImageCirclePlus} />}
         {!isPlaying && framePosition !== false && <Button title={t('Remove frame')} onClick={handleAction('DELETE_FRAME')} size="mini" icon={faImageSlash} />}
@@ -67,7 +73,6 @@ const ControlBar = ({
           <span className={style.separator}>{' / '}</span>
           <span>{frameQuantity}</span>
         </div>
-
         <Button selectedColor="warning" title={!isPlaying ? t('Play') : t('Stop')} selected={isPlaying} onClick={handleAction('PLAY')} size="mini" icon={isPlaying ? faStop : faPlay} />
         <Button title={t('Loop')} onClick={handleAction('LOOP')} selected={loopStatus} size="mini" icon={faArrowsRepeat} />
         <Button title={t('Short play')} onClick={handleAction('SHORT_PLAY')} selected={shortPlayStatus} size="mini" icon={faForwardFast} />

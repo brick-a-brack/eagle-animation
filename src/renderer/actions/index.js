@@ -7,7 +7,19 @@ import { getEncodingProfile, getFFmpegArgs, parseFFmpegLogs } from '../../common
 import { LS_SETTINGS } from '../config';
 import { getFFmpeg } from './ffmpeg';
 import { createFrame, getFrameBlobUrl } from './frames';
-import { applyFrameLengthOffset, createProject, deleteProject, deleteProjectFrame, getAllProjects, getProject, moveFrame, sceneAddFrame, updateProjectTitle, updateSceneFPSValue } from './projects';
+import {
+  applyFrameLengthOffset,
+  applyHideFrameStatus,
+  createProject,
+  deleteProject,
+  deleteProjectFrame,
+  getAllProjects,
+  getProject,
+  moveFrame,
+  sceneAddFrame,
+  updateProjectTitle,
+  updateSceneFPSValue,
+} from './projects';
 
 let events = [];
 
@@ -91,6 +103,11 @@ export const Actions = {
   },
   DELETE_FRAME: async (evt, { project_id, track_id, frame_id }) => {
     await deleteProjectFrame(project_id, track_id, frame_id);
+    const project = await getProject(project_id);
+    return computeProject(project);
+  },
+  HIDE_FRAME: async (evt, { project_id, track_id, frame_id, hidden }) => {
+    await applyHideFrameStatus(project_id, track_id, frame_id, hidden);
     const project = await getProject(project_id);
     return computeProject(project);
   },

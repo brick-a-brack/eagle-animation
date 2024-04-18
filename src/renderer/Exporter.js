@@ -130,7 +130,7 @@ export const ExportFrames = async (
 
   for (let i = 0; i < files.length; i++) {
     const file = files[i];
-    if (file.deleted) {
+    if (file.deleted || file.hidden) {
       continue;
     }
     const targetExtension = file.filename.split('.').pop() || 'jpg';

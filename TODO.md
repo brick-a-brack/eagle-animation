@@ -26,9 +26,7 @@
 
 - Core
    - Generate picture preview to improve playback performances
-   - Store frames as PNG for webcams
    - Add the ability apply mirror effect to the camera image (X + Y + Both)
-   - Ability to mark frame as "masked" to test an animation without some frames, can be useful before a deletion
    - Support custom ratio
    - Support several scene by project
    - Support masking

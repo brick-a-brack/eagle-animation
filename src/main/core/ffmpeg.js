@@ -1,4 +1,5 @@
-import { execFile } from 'child_process';
+import { execFile } from 'node:child_process';
+
 import ffmpegExec from 'ffmpeg-static';
 
 const ffmpegPath = ffmpegExec ? ffmpegExec.replace('app.asar', 'app.asar.unpacked') : false;

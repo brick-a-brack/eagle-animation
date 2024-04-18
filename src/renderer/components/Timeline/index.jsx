@@ -1,9 +1,12 @@
 import { DndContext, MouseSensor, TouchSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { horizontalListSortingStrategy, SortableContext, useSortable } from '@dnd-kit/sortable';
 import { CSS as DNDCSS } from '@dnd-kit/utilities';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import animateScrollTo from 'animated-scroll-to';
 import { useEffect, useRef } from 'react';
 import { withTranslation } from 'react-i18next';
+
+import faEyeSlash from '../../icons/faEyeSlash';
 
 import * as style from './style.module.css';
 
@@ -25,11 +28,12 @@ const SortableItem = ({ img, selected, onSelect, index }) => {
         transition: active ? transition : undefined,
       }}
       onClick={() => onSelect(img)}
-      className={`${style.containerImg} ${selected ? style.selected : ''}`}
+      className={`${style.containerImg} ${selected ? style.selected : ''}  ${img.hidden ? style.isHidden : ''}`}
     >
       <span className={style.img}>
         <img alt="" className={style.imgcontent} src={img.link} />
       </span>
+      {img.hidden && <FontAwesomeIcon className={style.icon} icon={faEyeSlash} />}
       <span className={style.title}>{`#${index + 1}${img.length > 1 ? ` (${img.length})` : ''}`}</span>
     </span>
   );

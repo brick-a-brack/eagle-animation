@@ -18,6 +18,7 @@ const SHORTCUTS = {
   SHORT_PLAY: ['6'],
   DELETE_FRAME: ['backspace', 'del'],
   HOME: ['esc'],
+  HIDE_FRAME: ['h'],
   FRAME_LEFT: ['left', '1'],
   FRAME_RIGHT: ['right', '2'],
   FRAME_LIVE: ['up', '3', 'ctrl+right'],

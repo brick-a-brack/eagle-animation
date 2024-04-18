@@ -53,29 +53,31 @@ class Player extends Component {
     this.frames = [];
 
     this.computeFrames = () => {
-      this.frames = this.props.pictures.filter((e) => !e.deleted).reduce((acc, e) => [...acc, ...new Array(e.length || 1).fill(e)], []);
+      this.frames = this.props.pictures.filter((e) => !e.deleted /*&& !e.hidden*/).reduce((acc, e) => [...acc, ...new Array(e.length || 1).fill(e)], []);
     };
 
     this.computeFrames();
 
     this.play = () => {
       const exec = (force = false) => {
+        const filteredFrames = this.frames.filter((e) => !e.hidden);
+
         let newFrameIndex = false;
 
-        if ((this.state.frameIndex === false || !this.frames.length) && !force && !this.props.loopStatus) {
+        if ((this.state.frameIndex === false || !filteredFrames.length) && !force && !this.props.loopStatus) {
           return false;
-        } else if (this.frames.length && (force || (this.state.frameIndex === false && this.props.loopStatus))) {
-          newFrameIndex = this.props.shortPlayStatus && this.frames.length > this.props.shortPlayFrames ? this.frames.length - this.props.shortPlayFrames - 1 : 0;
-        } else if (this.state.frameIndex >= this.frames.length - 1) {
+        } else if (filteredFrames.length && (force || (this.state.frameIndex === false && this.props.loopStatus))) {
+          newFrameIndex = this.props.shortPlayStatus && filteredFrames.length > this.props.shortPlayFrames ? filteredFrames.length - this.props.shortPlayFrames - 1 : 0;
+        } else if (this.state.frameIndex >= filteredFrames.length - 1) {
           newFrameIndex = false;
         } else {
           newFrameIndex = this.state.frameIndex + 1;
         }
 
-        const frame = (newFrameIndex === false ? this.frames[this.frames.length - 1] : this.frames[newFrameIndex]) || false;
+        const frame = (newFrameIndex === false ? filteredFrames[filteredFrames.length - 1] : filteredFrames[newFrameIndex]) || false;
         this.drawFrame(frame.link || false);
         this.setState({ frameIndex: newFrameIndex });
-        this.props.onFrameChange(frame ? frame.id : false);
+        this.props.onFrameChange(newFrameIndex !== false && frame ? frame.id : false);
         return true;
       };
 
@@ -252,7 +254,7 @@ class Player extends Component {
           {frameIndex === false && batteryStatus !== null && <BatteryIndicator value={batteryStatus} />}
 
           {!isCameraReady && frameIndex === false && <span className={style.loader} />}
-          {!isCameraReady && frameIndex === false && <div className={style.info}>{t('If your camera does not load, try changing it in the settings')}</div>}
+          {!isCameraReady && frameIndex === false && <div className={style.info}>{t('If your camera does not load, try changing it in the camera settings')}</div>}
         </div>
       </div>
     );

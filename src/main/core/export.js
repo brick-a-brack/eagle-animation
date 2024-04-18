@@ -1,13 +1,13 @@
-import { readFile } from 'fs';
-import { writeFile } from 'fs/promises';
+import { readFile, writeFile } from 'node:fs/promises';
+import { format, join } from 'node:path';
+
 import { mkdirp } from 'mkdirp';
-import { format, join } from 'path';
 import { rimraf } from 'rimraf';
 import { v4 as uuidv4 } from 'uuid';
 
+import { getFFmpegArgs, parseFFmpegLogs } from '../../common/ffmpeg';
 import { ffmpeg } from './ffmpeg';
 import { getProjectData } from './projects';
-import { getFFmpegArgs, parseFFmpegLogs } from '../../common/ffmpeg';
 
 export const exportProjectScene = async (projectPath, scene, frames, filePath, format, opts = {}, onProgress = () => {}) => {
   const project = await getProjectData(projectPath);
@@ -28,28 +28,24 @@ export const exportProjectScene = async (projectPath, scene, frames, filePath, f
 };
 
 // Sync list
-export const getSyncList = (path) =>
-  new Promise((resolve) => {
+export const getSyncList = async (path) => {
+  try {
     const file = format({ dir: path, base: 'sync.json' });
-    readFile(file, (err, data) => {
-      if (err) return resolve([]);
-      try {
-        const sync = JSON.parse(data.toString('utf8'));
-        return resolve([...sync]);
-      } catch (e) {
-        return resolve([]);
-      }
-    });
-  });
+    const data = await readFile(file, 'utf8');
+    const sync = JSON.parse(data);
+    return [...sync];
+  } catch (e) {
+    return [];
+  }
+};
 
 // Save sync list
-export const saveSyncList = (path, data) =>
-  new Promise((resolve) => {
+export const saveSyncList = async (path, data) => {
+  try {
     const file = format({ dir: path, base: 'sync.json' });
-    writeFile(file, JSON.stringify([...data]), (err) => {
-      if (err) {
-        return resolve([]);
-      }
-      return resolve([...data]);
-    });
-  });
+    await writeFile(file, JSON.stringify([...data]));
+    return [...data];
+  } catch (e) {
+    return [];
+  }
+};

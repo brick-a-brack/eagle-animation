@@ -103,6 +103,16 @@ export const applyFrameLengthOffset = async (projectId, trackId, pictureId, offs
   return db.projects.update(Number(projectId), { project: { ...data.project } });
 };
 
+export const applyHideFrameStatus = async (projectId, trackId, pictureId, hidden) => {
+  await db.open();
+  let data = await db.projects.get(Number(projectId));
+  const sceneId = Number(trackId);
+  if (data.project.scenes[sceneId]) {
+    data.project.scenes[sceneId].pictures = data.project.scenes[sceneId].pictures.map((p) => (`${p.id}` !== `${pictureId}` ? p : { ...p, hidden }));
+  }
+  return db.projects.update(Number(projectId), { project: { ...data.project } });
+};
+
 export const deleteProjectFrame = async (projectId, trackId, pictureId) => {
   await db.open();
   let data = await db.projects.get(Number(projectId));
