@@ -1,3 +1,4 @@
+import resizeToFit from 'intrinsic-scale';
 import { isEqual } from 'lodash';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
@@ -33,6 +34,7 @@ class Player extends Component {
     };
 
     this.resize = () => {
+      this.initCanvas();
       const parentSize = this.dom.container.current.parentNode.getBoundingClientRect();
       const parentRatio = parentSize.width / parentSize.height;
 
@@ -53,7 +55,7 @@ class Player extends Component {
     this.frames = [];
 
     this.computeFrames = () => {
-      this.frames = this.props.pictures.filter((e) => !e.deleted /*&& !e.hidden*/).reduce((acc, e) => [...acc, ...new Array(e.length || 1).fill(e)], []);
+      this.frames = this.props.pictures.filter((e) => !e.deleted).reduce((acc, e) => [...acc, ...new Array(e.length || 1).fill(e)], []);
     };
 
     this.computeFrames();
@@ -91,6 +93,45 @@ class Player extends Component {
       }, 1000 / this.props.fps);
     };
 
+    this.initCanvas = () => {
+      if (this.dom.picture.current) {
+        if (this.dom.picture.current.width !== this.getSize().width) {
+          this.dom.picture.current.width = this.getSize().width;
+        }
+        if (this.dom.picture.current.height !== this.getSize().height) {
+          this.dom.picture.current.height = this.getSize().height;
+        }
+        if (this.dom.picture.current.style.width !== this.getSize().width) {
+          this.dom.picture.current.style.width = this.getSize().width;
+        }
+        if (this.dom.picture.current.style.height != this.getSize().height) {
+          this.dom.picture.current.style.height = this.getSize().height;
+        }
+      }
+      if (this.dom.grid.current) {
+        let shouldRedraw = false;
+        if (this.dom.grid.current.width !== this.getSize().width) {
+          this.dom.grid.current.width = this.getSize().width;
+          shouldRedraw = true;
+        }
+        if (this.dom.grid.current.height !== this.getSize().height) {
+          this.dom.grid.current.height = this.getSize().height;
+          shouldRedraw = true;
+        }
+        if (this.dom.grid.current.style.width !== this.getSize().width) {
+          this.dom.grid.current.style.width = this.getSize().width;
+          shouldRedraw = true;
+        }
+        if (this.dom.grid.current.style.height !== this.getSize().height) {
+          this.dom.grid.current.style.height = this.getSize().height;
+          shouldRedraw = true;
+        }
+        if (shouldRedraw) {
+          this.drawGrid();
+        }
+      }
+    };
+
     this.stop = () => {
       if (this.clock) {
         clearInterval(this.clock);
@@ -125,17 +166,17 @@ class Player extends Component {
   componentDidMount() {
     const { onInit } = this.props;
     onInit(this.dom.video.current, this.dom.videoFrame.current);
-    this.dom.picture.current.width = this.getSize().width;
-    this.dom.picture.current.height = this.getSize().height;
-    this.dom.picture.current.style.width = this.getSize().width;
-    this.dom.picture.current.style.height = this.getSize().height;
-    this.dom.grid.current.width = this.getSize().width;
-    this.dom.grid.current.height = this.getSize().height;
-    this.dom.grid.current.style.width = this.getSize().width;
-    this.dom.grid.current.style.height = this.getSize().height;
-    this.drawGrid();
-    window.addEventListener('resize', this.resize);
+
+    this.dom.video.current.onloadedmetadata = () => {
+      this.resize();
+    };
+    this.dom.video.current.onresize = () => {
+      this.resize();
+    };
+
     this.resize();
+    window.addEventListener('resize', this.resize);
+
     this.showFrame(false);
   }
 
@@ -153,6 +194,10 @@ class Player extends Component {
     if (!isEqual(prevProps.cameraCapabilities, this.props.cameraCapabilities)) {
       this.showFrame(false);
     }
+
+    if (!isEqual(prevProps.cameraId, this.props.cameraId)) {
+      this.initCanvas();
+    }
   }
 
   componentWillUnmount() {
@@ -160,13 +205,30 @@ class Player extends Component {
     this.stop();
   }
 
+  getVideoRatio() {
+    return 9 / 16;
+  }
+
   getRatio() {
-    return 16 / 9;
+    let ratio = null;
+    if (!ratio && this.dom.video.current) {
+      const tmpRatio = this.dom.video.current.videoWidth / this.dom.video.current.videoHeight;
+      if (tmpRatio > 0) {
+        ratio = tmpRatio;
+      }
+    }
+    if (!ratio && this.dom.videoFrame.current) {
+      const tmpRatio = this.dom.videoFrame.current.width / this.dom.videoFrame.current.height;
+      if (tmpRatio > 0) {
+        ratio = tmpRatio;
+      }
+    }
+    return ratio > 0 ? ratio : 16 / 9;
   }
 
   getSize() {
     return {
-      width: 1280,
+      width: 720 * this.getRatio(),
       height: 720,
     };
   }
@@ -219,12 +281,21 @@ class Player extends Component {
       () => {
         ctx.fillStyle = '#000000';
         ctx.fillRect(0, 0, this.getSize().width, this.getSize().height);
-        const ratioX = this.getSize().width / img.width;
-        const ratioY = this.getSize().height / img.height;
-        const minRatio = Math.min(ratioX, ratioY);
-        const width = Math.round(img.width * minRatio);
-        const height = Math.round(img.height * minRatio);
-        ctx.drawImage(img, 0, 0, img.width, img.height, Math.round((this.getSize().width - width) / 2), Math.round((this.getSize().height - height) / 2), width, height);
+
+        const ratioPosition = resizeToFit('contain', { width: this.getVideoRatio(), height: 1 }, { width: this.getSize().width, height: this.getSize().height });
+        const imagePosition = resizeToFit('cover', { width: img.width, height: img.height }, { width: ratioPosition.width, height: ratioPosition.height });
+
+        ctx.drawImage(
+          img,
+          0,
+          0,
+          img.width,
+          img.height,
+          Math.round(this.getSize().width / 2) - imagePosition.width / 2,
+          Math.round(this.getSize().height / 2) - imagePosition.height / 2,
+          imagePosition.width,
+          imagePosition.height
+        );
       },
       false
     );
@@ -232,8 +303,13 @@ class Player extends Component {
   }
 
   render() {
-    const { showGrid, onionValue, blendMode, isCameraReady, t, batteryStatus } = this.props;
+    const { showGrid, onionValue, blendMode, isCameraReady, t, batteryStatus, ratioLayerOpacity } = this.props;
     const { width, height, ready, frameIndex } = this.state;
+
+    const borders = resizeToFit('contain', { width: this.getVideoRatio(), height: 1 }, { width: this.getSize().width, height: this.getSize().height });
+    const borderLeftRight = (this.getSize().width - borders.width) / 2 / this.getSize().width;
+    const borderTopBottom = (this.getSize().height - borders.height) / 2 / this.getSize().height;
+
     return (
       <div className={`${style.playerContainer} ${frameIndex === false ? style.live : ''}`}>
         <div className={style.container} ref={this.dom.container} style={{ width: `${width}px`, height: `${height}px`, opacity: ready ? 1 : 0 }}>
@@ -249,6 +325,11 @@ class Player extends Component {
               mixBlendMode: !blendMode ? 'normal' : 'difference',
             }}
           />
+          {borderLeftRight > 0 && <div className={style.borderLeft} style={{ width: `${borderLeftRight * 100}%`, opacity: ratioLayerOpacity || 1 }} />}
+          {borderLeftRight > 0 && <div className={style.borderRight} style={{ width: `${borderLeftRight * 100}%`, opacity: ratioLayerOpacity || 1 }} />}
+          {borderTopBottom > 0 && <div className={style.borderTop} style={{ height: `${borderTopBottom * 100}%`, opacity: ratioLayerOpacity || 1 }} />}
+          {borderTopBottom > 0 && <div className={style.borderBottom} style={{ height: `${borderTopBottom * 100}%`, opacity: ratioLayerOpacity || 1 }} />}
+
           <canvas ref={this.dom.grid} className={style.layout} style={{ opacity: showGrid && frameIndex === false ? 1 : 0 }} />
 
           {frameIndex === false && batteryStatus !== null && <BatteryIndicator value={batteryStatus} />}
@@ -264,6 +345,7 @@ class Player extends Component {
 Player.propTypes = {
   blendMode: PropTypes.any.isRequired,
   onionValue: PropTypes.any.isRequired,
+  ratioLayerOpacity: PropTypes.number.isRequired,
   showGrid: PropTypes.bool.isRequired,
   isCameraReady: PropTypes.bool.isRequired,
   onInit: PropTypes.func.isRequired,

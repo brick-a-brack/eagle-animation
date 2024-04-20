@@ -4,12 +4,12 @@ import faArrowsRepeat from '../../icons/faArrowsRepeat';
 import faCamera from '../../icons/faCamera';
 import faCameraSettings from '../../icons/faCameraSettings';
 import faDiamondHalfStroke from '../../icons/faDiamondHalfStroke';
-import faEye from '../../icons/faEye';
-import faEyeSlash from '../../icons/faEyeSlash';
 import faForwardFast from '../../icons/faForwardFast';
 import faFrame from '../../icons/faFrame';
 import faImageCircleMinus from '../../icons/faImageCircleMinus';
 import faImageCirclePlus from '../../icons/faImageCirclePlus';
+import faImageEye from '../../icons/faImageEye';
+import faImageEyeSlash from '../../icons/faImageEyeSlash';
 import faImageSlash from '../../icons/faImageSlash';
 import faPlay from '../../icons/faPlay';
 import faStop from '../../icons/faStop';
@@ -49,7 +49,7 @@ const ControlBar = ({
     <div className={style.container}>
       <div className={`${style.subcontainer} ${style.left}`}>
         {!isPlaying && framePosition !== false && (
-          <Button title={isCurrentFrameHidden ? t('Unhide frame') : t('Hide frame')} onClick={handleAction('HIDE_FRAME')} size="mini" icon={isCurrentFrameHidden ? faEye : faEyeSlash} />
+          <Button title={isCurrentFrameHidden ? t('Unhide frame') : t('Hide frame')} onClick={handleAction('HIDE_FRAME')} size="mini" icon={isCurrentFrameHidden ? faImageEye : faImageEyeSlash} />
         )}
         {!isPlaying && framePosition !== false && canDeduplicate && <Button title={t('Deduplicate frame')} onClick={handleAction('DEDUPLICATE')} size="mini" icon={faImageCircleMinus} />}
         {!isPlaying && framePosition !== false && <Button title={t('Duplicate frame')} onClick={handleAction('DUPLICATE')} size="mini" icon={faImageCirclePlus} />}

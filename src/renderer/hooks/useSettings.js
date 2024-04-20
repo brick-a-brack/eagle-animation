@@ -10,7 +10,7 @@ const DEFAULT_SETTINGS = {
   AVERAGING_VALUE: 3,
   LANGUAGE: currentLanguage(),
   SHORT_PLAY: 20,
-  RATIO_OPACITY: 1, // Not supported yet
+  RATIO_OPACITY: 0.5,
   GRID_OPACITY: 1,
   GRID_MODES: ['GRID'], // GRID | CENTER | MARGINS
   GRID_LINES: 3,

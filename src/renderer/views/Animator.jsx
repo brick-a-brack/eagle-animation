@@ -96,7 +96,7 @@ const Animator = ({ t }) => {
 
   const [project, setProject] = useState(null);
 
-  const { devices, currentCameraCapabilities, currentCamera, batteryStatus, actions: cameraActions } = useCamera({ forceMaxQuality: !!settings?.FORCE_QUALITY });
+  const { devices, currentCameraCapabilities, currentCamera, currentCameraId, batteryStatus, actions: cameraActions } = useCamera({ forceMaxQuality: !!settings?.FORCE_QUALITY });
 
   useEffect(() => {
     (async () => {
@@ -330,6 +330,7 @@ const Animator = ({ t }) => {
         shortPlayStatus={shortPlayStatus}
         loopStatus={loopStatus}
         shortPlayFrames={Number(settings.SHORT_PLAY) || 1}
+        cameraId={currentCameraId}
         cameraCapabilities={currentCameraCapabilities}
         fps={fps}
         batteryStatus={batteryStatus}
@@ -337,6 +338,7 @@ const Animator = ({ t }) => {
         gridOpacity={parseFloat(settings.GRID_OPACITY)}
         gridColumns={Number(settings.GRID_COLUMNS)}
         gridLines={Number(settings.GRID_LINES)}
+        ratioLayerOpacity={settings.RATIO_OPACITY}
       />
       <ActionsBar actions={['BACK']} position="LEFT" onAction={handleAction} />
       <ActionsBar

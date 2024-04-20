@@ -8,7 +8,7 @@ const defaultSettings = {
   AVERAGING_VALUE: 3,
   //LANGUAGE: 'en', // default Handled by front side
   SHORT_PLAY: 20,
-  RATIO_OPACITY: 1,
+  RATIO_OPACITY: 0.5,
   GRID_OPACITY: 1,
   GRID_MODES: ['GRID'], // GRID | CENTER | MARGINS
   GRID_LINES: 3,

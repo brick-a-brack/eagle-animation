@@ -12,7 +12,7 @@ import NumberInput from '../components/NumberInput';
 import Select from '../components/Select';
 import Switch from '../components/Switch';
 import { ALLOWED_LETTERS } from '../config';
-import { ExportFrames } from '../Exporter';
+import { ExportFrames, GetBestResolution } from '../Exporter';
 import useAppCapabilities from '../hooks/useAppCapabilities';
 import useSettings from '../hooks/useSettings';
 
@@ -35,7 +35,8 @@ const Export = ({ t }) => {
   const [publicCode, setPublicCode] = useState(null);
   const [frameRenderingProgress, setFrameRenderingProgress] = useState(0);
   const [videoRenderingProgress, setVideoRenderingProgress] = useState(0);
-  setFrameRenderingProgress;
+  const [bestResolution, setBestResolution] = useState(null);
+
   const [searchParams] = useSearchParams();
   const { settings } = useSettings();
   const { appCapabilities } = useAppCapabilities();
@@ -63,6 +64,7 @@ const Export = ({ t }) => {
       const projectData = await window.EA('GET_PROJECT', { project_id: id });
       setProject(projectData);
       setValue('framerate', projectData.project.scenes[Number(track)].framerate);
+      setBestResolution(await GetBestResolution(projectData.project.scenes[Number(track)].pictures));
     })();
   }, []);
 
@@ -104,7 +106,16 @@ const Export = ({ t }) => {
     setFrameRenderingProgress(0);
     setVideoRenderingProgress(0);
 
-    const resolution = data.resolution === 'original' ? null : { width: Number(data.resolution) * exportRatio, height: Number(data.resolution) };
+    const files = project.project.scenes[Number(track)].pictures;
+
+    let resolution = data.resolution === 'original' ? null : { width: Number(data.resolution) * exportRatio, height: Number(data.resolution) };
+    if (data.mode !== 'frames' && !resolution) {
+      const maxResolution = await GetBestResolution(files, exportRatio);
+      if (maxResolution) {
+        resolution = { width: Number(maxResolution.height) * exportRatio, height: Number(maxResolution.height) };
+      }
+    }
+
     const newCode = data.mode === 'send' ? await generateCustomUuid(8) : null;
 
     if (data.mode === 'send') {
@@ -126,9 +137,9 @@ const Export = ({ t }) => {
             },
           });
 
-    // Compute all  frames
+    // Compute all frames
     const frames = await ExportFrames(
-      project.project.scenes[Number(track)].pictures,
+      files,
       {
         duplicateFramesCopy: data.duplicateFramesCopy,
         duplicateFramesAuto: data.mode === 'send' ? true : data.duplicateFramesAuto,
@@ -170,7 +181,9 @@ const Export = ({ t }) => {
     ...(appCapabilities.includes('EXPORT_VIDEO_VP9') ? [{ value: 'vp9', label: t('VP9 (.webm)') }] : []),
   ];
 
-  const resolutions = ['original', 2160, 1440, 1080, 720, 480, 360].map((e) => ({ value: e, label: e === 'original' ? t('Original (Recommended)') : t('{{resolution}}p', { resolution: e }) }));
+  const resolutions = [...new Set(['original', ...(bestResolution?.height ? [bestResolution.height] : []), 2160, 1440, 1080, 720, 480, 360, 240])]
+    .filter((height) => height === 'original' || !bestResolution || height <= bestResolution?.height)
+    .map((e) => ({ value: e, label: e === 'original' ? t('Original (Recommended)') : t('{{resolution}}p', { resolution: e }) }));
 
   const framesFormats = [
     { value: 'original', label: t('Original (Recommended)') },

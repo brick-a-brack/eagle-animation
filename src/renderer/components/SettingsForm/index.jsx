@@ -47,23 +47,28 @@ const SettingsForm = ({ settings = {}, onUpdate = () => {}, t }) => {
         <FormGroup label={t('Language')} description={t('The application language to use')}>
           <Select options={LNGS_OPTIONS} control={control} register={register('LANGUAGE')} />
         </FormGroup>
+        <Heading h={1}>{t('Playback')}</Heading>
         <FormGroup label={t('Short play')} description={t('Number of frames to play when short play is enabled')}>
           <NumberInput register={register('SHORT_PLAY')} min={1} />
         </FormGroup>
+        <Heading h={1}>{t('Capture')}</Heading>
         <FormGroup label={t('Sound effects')} description={t('Play sound effects when you take or remove a frame')}>
           <div>
             <Switch register={register('SOUNDS')} />
           </div>
         </FormGroup>
-        {/*<FormGroup label={t('Ratio opacity')} description={t('The opacity of aspect ratio layer')}>
-                    <CustomSlider
-                        step={0.01}
-                        min={0}
-                        max={1}
-                        value={watch('RATIO_OPACITY')}
-                        onChange={value => { setValue('RATIO_OPACITY', value); }}
-                    />
-                </FormGroup>*/}
+        <Heading h={1}>{t('Ratio')}</Heading>
+        <FormGroup label={t('Ratio opacity')} description={t('The opacity of aspect ratio layer')}>
+          <CustomSlider
+            step={0.01}
+            min={0}
+            max={1}
+            value={watch('RATIO_OPACITY')}
+            onChange={(value) => {
+              setValue('RATIO_OPACITY', value);
+            }}
+          />
+        </FormGroup>
         <Heading h={1}>{t('Grid')}</Heading>
         <FormGroup label={t('Grid modes')} description={t('Grid modes to use for the grid display')}>
           <GridIcon value="GRID" title={t('Classic grid')} register={register('GRID_MODES')} selected={(watch('GRID_MODES') || []).includes('GRID')} />

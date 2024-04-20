@@ -76,8 +76,8 @@ const GetFrameResolution = (link) =>
     imgObj.src = link;
   });
 
-export const GetResolutions = async (frames) => {
-  const resolutions = await Promise.all(frames.filter((frame) => !frame.deleted).map((frame) => GetFrameResolution(frame.link)));
+export const GetBestResolution = async (frames, ratio = 1) => {
+  const resolutions = await Promise.all(frames.filter((frame) => !frame.deleted && !frame.hidden).map((frame) => GetFrameResolution(frame.link)));
   let outputResolution = null;
   for (const resolution of resolutions) {
     if (!resolution) {
@@ -87,6 +87,11 @@ export const GetResolutions = async (frames) => {
       outputResolution = resolution;
     }
   }
+  if (ratio !== 1) {
+    const containedResolution = resizeToFit('contain', { width: ratio, height: 1 }, outputResolution);
+    return { width: containedResolution.width, height: containedResolution.height };
+  }
+
   return outputResolution;
 };
 
@@ -103,11 +108,7 @@ export const ExportFrames = async (
 ) => {
   const frames = [];
 
-  let resolution = opts.resolution;
-
-  if (!resolution) {
-    resolution = await GetResolutions(files);
-  }
+  let resolution = opts.resolution ? { width: Math.floor(opts.resolution.width), height: Math.floor(opts.resolution.height) } : opts.resolution;
 
   // For video export, it's required to fix unpair resolutions
   if (resolution && resolution.width % 2 !== 0) {
@@ -117,11 +118,7 @@ export const ExportFrames = async (
     resolution.height += 1;
   }
 
-  if (!resolution) {
-    return [];
-  }
-
-  console.log(`🤖 Exporting frames in ${resolution.width}x${resolution.height}`);
+  console.log(`🤖 Exporting frames in ${resolution ? `${resolution.width}x${resolution.height}` : 'original'}`);
 
   // Update progress
   if (typeof onProgress === 'function') {
@@ -140,7 +137,7 @@ export const ExportFrames = async (
       id: file.id,
       extension: computedExtension,
       mimeType: `image/${(computedExtension || 'jpg').replace('jpg', 'jpeg')}`,
-      buffer: Buffer.from(await (await ExportFrame(file.link, opts.resolution, computedExtension, 'cover')).arrayBuffer()),
+      buffer: Buffer.from(await (await ExportFrame(file.link, opts.resolution, typeof opts.forceFileExtension !== 'undefined' ? computedExtension : undefined, 'cover')).arrayBuffer()),
     });
 
     // Update progress

@@ -315,9 +315,14 @@ class Webcam {
     return allowedCapabilities;
   }
 
-  connect({ videoDOM } = { videoDOM: false }, settings = {}) {
+  connect({ videoDOM, imageDOM } = { videoDOM: false, imageDOM: false }, settings = {}) {
     this.video = videoDOM;
     this.settings = settings;
+
+    // Reset preview canvas size for preview
+    imageDOM.width = 0;
+    imageDOM.height = 0;
+
     return this.initPreview();
   }
 
