@@ -19,6 +19,10 @@ function useCamera(options = {}) {
   const [currentCamera, setCurrentCamera] = useState(null);
   const [cameraCapabilities, setCameraCapabilities] = useState([]);
   const domRefs = useRef(null);
+  const eventsRefs = useRef([
+    ...((typeof options?.eventsHandlers?.connect === 'function') ? [['connect', options?.eventsHandlers?.connect]] : []),
+    ...((typeof options?.eventsHandlers?.disconnect === 'function') ? [['disconnect', options?.eventsHandlers?.disconnect]] : []),
+  ]);
 
   // Initial load
   useEffect(() => {
@@ -34,6 +38,19 @@ function useCamera(options = {}) {
     return () => clearInterval(batteryInterval);
   }, []);
 
+  // Trigger event
+  const triggerEvent = useCallback((name, data = null) => {
+    for (const event of eventsRefs.current) {
+      try {
+        if (event[0] === name && typeof event[1] === 'function') {
+          event[1](name, data);
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    }
+  });
+
   // Action refresh devices list
   const actionRefreshDevices = useCallback(() => {
     getCameras().then((cameras) => setDevices(cameras.map(applyCameraLabel)));
@@ -47,8 +64,9 @@ function useCamera(options = {}) {
     domRefs.current.videoDOM = videoDOM;
     domRefs.current.imageDOM = imageDOM;
     if (currentCamera) {
-      await currentCamera.connect({ videoDOM: domRefs.current.videoDOM, imageDOM: domRefs.current.imageDOM }, options);
+      await currentCamera.connect({ videoDOM: domRefs.current.videoDOM, imageDOM: domRefs.current.imageDOM }, options, () => {});
       flushCanvas(domRefs.current.imageDOM);
+      triggerEvent('connect');
       currentCamera?.batteryStatus().then(setBatteryStatus);
       currentCamera.getCapabilities().then(setCameraCapabilities);
     }
@@ -61,6 +79,7 @@ function useCamera(options = {}) {
         setCurrentCameraId(null);
         setCurrentCamera(null);
         currentCamera?.disconnect();
+        triggerEvent('disconnect');
         flushCanvas(domRefs.current.imageDOM);
       }
       if (cameraId) {
@@ -68,6 +87,7 @@ function useCamera(options = {}) {
         const camera = getCamera(cameraId);
         if (domRefs?.current?.videoDOM && domRefs?.current?.imageDOM) {
           await camera?.connect({ videoDOM: domRefs?.current?.videoDOM, imageDOM: domRefs?.current?.imageDOM }, options);
+          triggerEvent('connect');
         }
         camera?.batteryStatus().then(setBatteryStatus);
         setCurrentCamera(camera);
@@ -97,6 +117,16 @@ function useCamera(options = {}) {
         currentCamera.getCapabilities().then(setCameraCapabilities);
       }
     }, 0);
+  });
+
+  // Add event listener
+  const actionAddEventListener = useCallback(async (name, callback) => {
+    eventsRefs.current.push([name, callback]);
+  });
+
+  // Remove event listener
+  const actionRemoveEventListener = useCallback(async (name, callback) => {
+    eventsRefs.current = eventsRefs.current.filter((e) => e[0] !== name || e[1] !== callback);
   });
 
   // Action set capability
@@ -132,6 +162,8 @@ function useCamera(options = {}) {
       takePicture: actionTakePicture,
       capabilitiesReset: actionCapabilitesReset,
       setCapability: actionSetCapability,
+      addEventListener: actionAddEventListener,
+      removeEventListener: actionRemoveEventListener,
     },
   };
 }

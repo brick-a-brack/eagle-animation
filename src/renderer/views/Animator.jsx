@@ -18,6 +18,7 @@ import Window from '../components/Window';
 import useAppCapabilities from '../hooks/useAppCapabilities';
 import useCamera from '../hooks/useCamera';
 import useSettings from '../hooks/useSettings';
+import { disconnect } from 'process';
 
 // Play sound
 const playSound = (src, timeout = 2000) => {
@@ -96,7 +97,13 @@ const Animator = ({ t }) => {
 
   const [project, setProject] = useState(null);
 
-  const { devices, currentCameraCapabilities, currentCamera, currentCameraId, batteryStatus, actions: cameraActions } = useCamera({ forceMaxQuality: !!settings?.FORCE_QUALITY });
+  const { devices, currentCameraCapabilities, currentCamera, currentCameraId, batteryStatus, actions: cameraActions } = useCamera({
+    forceMaxQuality: !!settings?.FORCE_QUALITY,
+    eventsHandlers: {
+      connect: () => { playerRef?.current?.resize() },
+      disconnect: () => { playerRef?.current?.resize() },
+    }
+  });
 
   useEffect(() => {
     (async () => {
@@ -156,36 +163,36 @@ const Animator = ({ t }) => {
 
   const takePictures =
     (nbPicturesToTake = null) =>
-    async () => {
-      if (isTakingPicture || !currentCamera) {
-        return;
-      }
-      flushSync(() => {
-        setIsTakingPicture(true);
-      });
-
-      for (let i = 0; i < (Number(nbPicturesToTake !== null ? nbPicturesToTake : settings.CAPTURE_FRAMES) || 1); i++) {
-        const nbFramesToTake = (settings.AVERAGING_ENABLED ? Number(settings.AVERAGING_VALUE) : 1) || 1;
-        try {
-          const { type, buffer } = await cameraActions.takePicture(nbFramesToTake);
-
-          if (!isMuted && settings.SOUNDS) {
-            playSound(soundShutter);
-          }
-
-          setProject(await window.EA('TAKE_PICTURE', { project_id: id, track_id: track, buffer, extension: type?.includes('png') ? 'png' : 'jpg', before_frame_id: currentFrameId }));
-        } catch (err) {
-          if (!isMuted && settings.SOUNDS) {
-            playSound(soundError);
-          }
-          console.error('Failed to take a picture', err);
+      async () => {
+        if (isTakingPicture || !currentCamera) {
+          return;
         }
-      }
+        flushSync(() => {
+          setIsTakingPicture(true);
+        });
 
-      flushSync(() => {
-        setIsTakingPicture(false);
-      });
-    };
+        for (let i = 0; i < (Number(nbPicturesToTake !== null ? nbPicturesToTake : settings.CAPTURE_FRAMES) || 1); i++) {
+          const nbFramesToTake = (settings.AVERAGING_ENABLED ? Number(settings.AVERAGING_VALUE) : 1) || 1;
+          try {
+            const { type, buffer } = await cameraActions.takePicture(nbFramesToTake);
+
+            if (!isMuted && settings.SOUNDS) {
+              playSound(soundShutter);
+            }
+
+            setProject(await window.EA('TAKE_PICTURE', { project_id: id, track_id: track, buffer, extension: type?.includes('png') ? 'png' : 'jpg', before_frame_id: currentFrameId }));
+          } catch (err) {
+            if (!isMuted && settings.SOUNDS) {
+              playSound(soundError);
+            }
+            console.error('Failed to take a picture', err);
+          }
+        }
+
+        flushSync(() => {
+          setIsTakingPicture(false);
+        });
+      };
 
   const actionsEvents = {
     PLAY: () => {
@@ -266,7 +273,7 @@ const Animator = ({ t }) => {
     SETTINGS: () => {
       navigate(`/settings?back=/animator/${id}/${track}`);
     },
-    MORE: () => {},
+    MORE: () => { },
     EXPORT: () => {
       navigate(`/export/${id}/${track}?back=/animator/${id}/${track}`);
     },

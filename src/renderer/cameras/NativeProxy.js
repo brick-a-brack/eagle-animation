@@ -32,13 +32,11 @@ class NativeProxy {
     img.src = src;
   }
 
-  initPreview() {
-    return new Promise((resolve) => {
-      resolve(true);
-      window.EAEvents('LIVE_VIEW_DATA', (evt, args) => {
-        this._drawLivePreview(this.video, args.data);
-      });
+  async initPreview() {
+    window.EAEvents('LIVE_VIEW_DATA', (evt, args) => {
+      this._drawLivePreview(this.video, args.data);
     });
+    return true;
   }
 
   async canResetCapabilities() {
@@ -58,11 +56,15 @@ class NativeProxy {
     return window.EA('GET_CAPABILITIES_NATIVE_CAMERA', { camera_id: this.context.id });
   }
 
-  async connect({ imageDOM } = { imageDOM: false }, settings = {}) {
+  async connect({ imageDOM } = { imageDOM: false }, settings = {}, onBinded = () => {}) {
     this.video = imageDOM;
     this.settings = settings;
     await window.EA('CONNECT_NATIVE_CAMERA', { camera_id: this.context.id });
-    return this.initPreview();
+    await this.initPreview();
+    if (typeof onBinded === 'function') {
+      onBinded();
+    }
+    return true;
   }
 
   async batteryStatus() {

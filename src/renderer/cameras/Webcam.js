@@ -15,7 +15,7 @@ class Webcam {
 
   initPreview() {
     // eslint-disable-next-line no-async-promise-executor
-    return new Promise(async (resolve) => {
+    return new Promise(async (resolve, reject) => {
       // Get preview stream
       this.stream = await navigator.mediaDevices
         .getUserMedia({
@@ -35,7 +35,7 @@ class Webcam {
           },
           audio: false,
         })
-        .catch((err) => console.error('failed', err));
+        .catch(reject);
 
       console.log('[CAMERA]', 'Init', this.video, this.stream);
       window.__DEBUG_DEVICE = this.stream;
@@ -315,7 +315,7 @@ class Webcam {
     return allowedCapabilities;
   }
 
-  connect({ videoDOM, imageDOM } = { videoDOM: false, imageDOM: false }, settings = {}) {
+  async connect({ videoDOM, imageDOM } = { videoDOM: false, imageDOM: false }, settings = {}, onBinded = () => {}) {
     this.video = videoDOM;
     this.settings = settings;
 
@@ -323,7 +323,13 @@ class Webcam {
     imageDOM.width = 0;
     imageDOM.height = 0;
 
-    return this.initPreview();
+    await this.initPreview();
+
+    if (typeof onBinded === 'function') {
+      onBinded();
+    }
+
+    return true;
   }
 
   async batteryStatus() {
