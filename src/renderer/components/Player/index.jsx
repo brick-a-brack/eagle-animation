@@ -206,7 +206,7 @@ class Player extends Component {
   }
 
   getVideoRatio() {
-    return 9 / 16;
+    return this.props.videoRatio || null;
   }
 
   getRatio() {
@@ -282,7 +282,13 @@ class Player extends Component {
         ctx.fillStyle = '#000000';
         ctx.fillRect(0, 0, this.getSize().width, this.getSize().height);
 
-        const ratioPosition = resizeToFit('contain', { width: this.getVideoRatio(), height: 1 }, { width: this.getSize().width, height: this.getSize().height });
+        let ratioPosition = null;
+        if (this.getVideoRatio()) {
+          ratioPosition = resizeToFit('contain', { width: this.getVideoRatio(), height: 1 }, { width: this.getSize().width, height: this.getSize().height });
+        } else {
+          ratioPosition = { width: this.getSize().width, height: this.getSize().height };
+        }
+
         const imagePosition = resizeToFit('cover', { width: img.width, height: img.height }, { width: ratioPosition.width, height: ratioPosition.height });
 
         ctx.drawImage(
@@ -325,10 +331,10 @@ class Player extends Component {
               mixBlendMode: !blendMode ? 'normal' : 'difference',
             }}
           />
-          {borderLeftRight > 0 && <div className={style.borderLeft} style={{ width: `${borderLeftRight * 100}%`, opacity: ratioLayerOpacity || 1 }} />}
-          {borderLeftRight > 0 && <div className={style.borderRight} style={{ width: `${borderLeftRight * 100}%`, opacity: ratioLayerOpacity || 1 }} />}
-          {borderTopBottom > 0 && <div className={style.borderTop} style={{ height: `${borderTopBottom * 100}%`, opacity: ratioLayerOpacity || 1 }} />}
-          {borderTopBottom > 0 && <div className={style.borderBottom} style={{ height: `${borderTopBottom * 100}%`, opacity: ratioLayerOpacity || 1 }} />}
+          {this.getVideoRatio() !== null && borderLeftRight > 0 && <div className={style.borderLeft} style={{ width: `${borderLeftRight * 100}%`, opacity: ratioLayerOpacity || 1 }} />}
+          {this.getVideoRatio() !== null && borderLeftRight > 0 && <div className={style.borderRight} style={{ width: `${borderLeftRight * 100}%`, opacity: ratioLayerOpacity || 1 }} />}
+          {this.getVideoRatio() !== null && borderTopBottom > 0 && <div className={style.borderTop} style={{ height: `${borderTopBottom * 100}%`, opacity: ratioLayerOpacity || 1 }} />}
+          {this.getVideoRatio() !== null && borderTopBottom > 0 && <div className={style.borderBottom} style={{ height: `${borderTopBottom * 100}%`, opacity: ratioLayerOpacity || 1 }} />}
 
           <canvas ref={this.dom.grid} className={style.layout} style={{ opacity: showGrid && frameIndex === false ? 1 : 0 }} />
 

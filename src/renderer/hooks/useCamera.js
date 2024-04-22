@@ -20,8 +20,8 @@ function useCamera(options = {}) {
   const [cameraCapabilities, setCameraCapabilities] = useState([]);
   const domRefs = useRef(null);
   const eventsRefs = useRef([
-    ...((typeof options?.eventsHandlers?.connect === 'function') ? [['connect', options?.eventsHandlers?.connect]] : []),
-    ...((typeof options?.eventsHandlers?.disconnect === 'function') ? [['disconnect', options?.eventsHandlers?.disconnect]] : []),
+    ...(typeof options?.eventsHandlers?.connect === 'function' ? [['connect', options?.eventsHandlers?.connect]] : []),
+    ...(typeof options?.eventsHandlers?.disconnect === 'function' ? [['disconnect', options?.eventsHandlers?.disconnect]] : []),
   ]);
 
   // Initial load

@@ -1,3 +1,5 @@
+import { useEffect } from 'react';
+import { useForm } from 'react-hook-form';
 import { withTranslation } from 'react-i18next';
 
 import faArrowsRepeat from '../../icons/faArrowsRepeat';
@@ -39,11 +41,29 @@ const ControlBar = ({
   onAction = null,
   t,
 }) => {
+  const form = useForm({
+    mode: 'all',
+    defaultValues: {
+      fps,
+    },
+  });
+  const { watch, register, getValues, setValue } = form;
+  const formValues = watch();
+
   const handleAction = (action, args) => () => {
     if (onAction) {
       onAction(action, args);
     }
   };
+
+  useEffect(() => {
+    const values = getValues();
+    handleAction('FPS_CHANGE', values.fps)();
+  }, [JSON.stringify(formValues)]);
+
+  useEffect(() => {
+    setValue('fps', fps);
+  }, [fps]);
 
   return (
     <div className={style.container}>
@@ -83,8 +103,7 @@ const ControlBar = ({
           min={1}
           max={60}
           tag={t('FPS')}
-          defaultValue={fps}
-          onValueChange={(v) => handleAction('FPS_CHANGE', v)()}
+          register={register('fps')}
         />
         <CustomTooltip anchorId="onion" />
       </div>

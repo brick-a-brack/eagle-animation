@@ -8,17 +8,18 @@ import soundDelete from '~/resources/sounds/delete.mp3';
 import soundError from '~/resources/sounds/error.mp3';
 import soundShutter from '~/resources/sounds/shutter.mp3';
 
+import { parseRatio } from '../common/ratio';
 import ActionsBar from '../components/ActionsBar';
 import CameraSettingsWindow from '../components/CameraSettingsWindow';
 import ControlBar from '../components/ControlBar';
 import KeyboardHandler from '../components/KeyboardHandler';
 import Player from '../components/Player';
+import ProjectSettingsWindow from '../components/ProjectSettingsWindow';
 import Timeline from '../components/Timeline';
 import Window from '../components/Window';
 import useAppCapabilities from '../hooks/useAppCapabilities';
 import useCamera from '../hooks/useCamera';
 import useSettings from '../hooks/useSettings';
-import { disconnect } from 'process';
 
 // Play sound
 const playSound = (src, timeout = 2000) => {
@@ -84,12 +85,14 @@ const Animator = ({ t }) => {
   const { settings, actions: settingsActions } = useSettings();
   const { appCapabilities } = useAppCapabilities();
   const [showCameraSettings, setShowCameraSettings] = useState(false);
+  const [showProjectSettings, setShowProjectSettings] = useState(false);
   const [isTakingPicture, setIsTakingPicture] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [loopStatus, setLoopStatus] = useState(false);
   const [shortPlayStatus, setShortPlayStatus] = useState(false);
   const [differenceStatus, setDifferenceStatus] = useState(false);
   const [fps, setFps] = useState(12);
+  const [ratio, setRatio] = useState(null);
   const [onionValue, setOnionValue] = useState(1);
   const [gridStatus, setGridStatus] = useState(false);
   const [currentFrameId, setCurrentFrameId] = useState(false);
@@ -97,12 +100,23 @@ const Animator = ({ t }) => {
 
   const [project, setProject] = useState(null);
 
-  const { devices, currentCameraCapabilities, currentCamera, currentCameraId, batteryStatus, actions: cameraActions } = useCamera({
+  const {
+    devices,
+    currentCameraCapabilities,
+    currentCamera,
+    currentCameraId,
+    batteryStatus,
+    actions: cameraActions,
+  } = useCamera({
     forceMaxQuality: !!settings?.FORCE_QUALITY,
     eventsHandlers: {
-      connect: () => { playerRef?.current?.resize() },
-      disconnect: () => { playerRef?.current?.resize() },
-    }
+      connect: () => {
+        playerRef?.current?.resize();
+      },
+      disconnect: () => {
+        playerRef?.current?.resize();
+      },
+    },
   });
 
   useEffect(() => {
@@ -110,6 +124,7 @@ const Animator = ({ t }) => {
       const updatedProject = await window.EA('GET_PROJECT', { project_id: id });
       setProject(updatedProject);
       setFps(updatedProject.project.scenes[track].framerate);
+      setRatio(updatedProject.project.scenes[track].ratio ? parseRatio(updatedProject.project.scenes[track].ratio) : null);
       if (settings) {
         await cameraActions.setCamera(settings?.CAMERA_ID);
       }
@@ -163,36 +178,36 @@ const Animator = ({ t }) => {
 
   const takePictures =
     (nbPicturesToTake = null) =>
-      async () => {
-        if (isTakingPicture || !currentCamera) {
-          return;
-        }
-        flushSync(() => {
-          setIsTakingPicture(true);
-        });
+    async () => {
+      if (isTakingPicture || !currentCamera) {
+        return;
+      }
+      flushSync(() => {
+        setIsTakingPicture(true);
+      });
 
-        for (let i = 0; i < (Number(nbPicturesToTake !== null ? nbPicturesToTake : settings.CAPTURE_FRAMES) || 1); i++) {
-          const nbFramesToTake = (settings.AVERAGING_ENABLED ? Number(settings.AVERAGING_VALUE) : 1) || 1;
-          try {
-            const { type, buffer } = await cameraActions.takePicture(nbFramesToTake);
+      for (let i = 0; i < (Number(nbPicturesToTake !== null ? nbPicturesToTake : settings.CAPTURE_FRAMES) || 1); i++) {
+        const nbFramesToTake = (settings.AVERAGING_ENABLED ? Number(settings.AVERAGING_VALUE) : 1) || 1;
+        try {
+          const { type, buffer } = await cameraActions.takePicture(nbFramesToTake);
 
-            if (!isMuted && settings.SOUNDS) {
-              playSound(soundShutter);
-            }
-
-            setProject(await window.EA('TAKE_PICTURE', { project_id: id, track_id: track, buffer, extension: type?.includes('png') ? 'png' : 'jpg', before_frame_id: currentFrameId }));
-          } catch (err) {
-            if (!isMuted && settings.SOUNDS) {
-              playSound(soundError);
-            }
-            console.error('Failed to take a picture', err);
+          if (!isMuted && settings.SOUNDS) {
+            playSound(soundShutter);
           }
-        }
 
-        flushSync(() => {
-          setIsTakingPicture(false);
-        });
-      };
+          setProject(await window.EA('TAKE_PICTURE', { project_id: id, track_id: track, buffer, extension: type?.includes('png') ? 'png' : 'jpg', before_frame_id: currentFrameId }));
+        } catch (err) {
+          if (!isMuted && settings.SOUNDS) {
+            playSound(soundError);
+          }
+          console.error('Failed to take a picture', err);
+        }
+      }
+
+      flushSync(() => {
+        setIsTakingPicture(false);
+      });
+    };
 
   const actionsEvents = {
     PLAY: () => {
@@ -267,13 +282,20 @@ const Animator = ({ t }) => {
       setDifferenceStatus(!differenceStatus);
     },
     FPS_CHANGE: async (v) => {
-      setFps(v);
-      setProject(await window.EA('UPDATE_FPS_VALUE', { project_id: id, track_id: track, fps: v }));
+      if (v) {
+        setProject(await window.EA('UPDATE_FPS_VALUE', { project_id: id, track_id: track, fps: v || '1' }));
+        if (isPlaying) {
+          playerRef?.current?.stop();
+        }
+      }
     },
     SETTINGS: () => {
       navigate(`/settings?back=/animator/${id}/${track}`);
     },
-    MORE: () => { },
+    PROJECT_SETTINGS: () => {
+      setShowProjectSettings((v) => !v);
+    },
+    MORE: () => {},
     EXPORT: () => {
       navigate(`/export/${id}/${track}?back=/animator/${id}/${track}`);
     },
@@ -320,6 +342,12 @@ const Animator = ({ t }) => {
     cameraActions.refreshDevices();
   };
 
+  const handleProjectSettingsChange = async (fields) => {
+    setRatio(fields.ratio);
+    setFps(fields.fps);
+    await window.EA('RENAME_PROJECT', { project_id: id, title: fields.title || '' });
+  };
+
   return (
     <>
       <Player
@@ -346,13 +374,15 @@ const Animator = ({ t }) => {
         gridColumns={Number(settings.GRID_COLUMNS)}
         gridLines={Number(settings.GRID_LINES)}
         ratioLayerOpacity={settings.RATIO_OPACITY}
+        videoRatio={ratio?.value || null}
       />
       <ActionsBar actions={['BACK']} position="LEFT" onAction={handleAction} />
       <ActionsBar
         actions={[
           'SETTINGS',
+          // TODO : check if a frame is available
           ...(appCapabilities.includes('EXPORT_VIDEO') || appCapabilities.includes('EXPORT_FRAMES') || appCapabilities.includes('BACKGROUND_SYNC') ? ['EXPORT'] : []),
-          'DELETE_PROJECT',
+          'PROJECT_SETTINGS',
         ]}
         position="RIGHT"
         onAction={handleAction}
@@ -376,7 +406,7 @@ const Animator = ({ t }) => {
         isCurrentFrameHidden={!!currentFrame.hidden}
       />
       <Timeline pictures={pictures} onSelect={handleSelectFrame} onMove={handleFrameMove} select={currentFrameId} playing={isPlaying} />
-      <KeyboardHandler onAction={handleAction} disabled={disableKeyboardShortcuts} />
+      {!showCameraSettings && !showProjectSettings && <KeyboardHandler onAction={handleAction} disabled={disableKeyboardShortcuts} />}
       <Window isOpened={showCameraSettings} onClose={() => setShowCameraSettings(false)}>
         <CameraSettingsWindow
           cameraCapabilities={currentCameraCapabilities}
@@ -387,6 +417,15 @@ const Animator = ({ t }) => {
           appCapabilities={appCapabilities}
           devices={devices}
           settings={settings}
+        />
+      </Window>
+      <Window isOpened={showProjectSettings} onClose={() => setShowProjectSettings(false)}>
+        <ProjectSettingsWindow
+          fps={fps}
+          title={project?.project?.title || ''}
+          ratio={ratio?.userValue || null}
+          onProjectSettingsChange={handleProjectSettingsChange}
+          onProjectDelete={() => handleAction('DELETE_PROJECT')}
         />
       </Window>
     </>

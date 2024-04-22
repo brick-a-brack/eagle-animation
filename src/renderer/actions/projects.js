@@ -55,9 +55,10 @@ export const deleteProject = async (id) => {
 
 export const updateSceneFPSValue = async (projectId, trackId, fps) => {
   await db.open();
+  const sceneId = Number(trackId);
   let data = await db.projects.get(Number(projectId));
-  if (data.project.scenes[trackId]) {
-    data.project.scenes[trackId].framerate = Number(fps);
+  if (data.project.scenes[sceneId]) {
+    data.project.scenes[sceneId].framerate = Number(fps);
   }
   return db.projects.update(Number(projectId), { project: { ...data.project } });
 };

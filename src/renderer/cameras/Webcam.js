@@ -37,7 +37,7 @@ class Webcam {
         })
         .catch(reject);
 
-      console.log('[CAMERA]', 'Init', this.video, this.stream);
+      //console.log('[CAMERA]', 'Init', this.video, this.stream);
       window.__DEBUG_DEVICE = this.stream;
 
       // Launch preview
@@ -50,7 +50,7 @@ class Webcam {
           resolve();
         });
 
-        console.log('[CAMERA]', 'Ready');
+        //console.log('[CAMERA]', 'Ready');
       }
     });
   }
