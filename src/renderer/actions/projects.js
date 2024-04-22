@@ -63,6 +63,17 @@ export const updateSceneFPSValue = async (projectId, trackId, fps) => {
   return db.projects.update(Number(projectId), { project: { ...data.project } });
 };
 
+export const updateSceneRatioValue = async (projectId, trackId, ratio) => {
+  await db.open();
+  const sceneId = Number(trackId);
+  let data = await db.projects.get(Number(projectId));
+  if (data.project.scenes[sceneId]) {
+    data.project.scenes[sceneId].ratio = ratio;
+  }
+  console.log('dbg', data.project.scenes[sceneId])
+  return db.projects.update(Number(projectId), { project: { ...data.project } });
+};
+
 export const updateProjectTitle = async (id, title) => {
   await db.open();
   let data = await db.projects.get(Number(id));

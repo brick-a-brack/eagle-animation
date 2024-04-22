@@ -25,6 +25,7 @@ import {
   renameProject,
   takePicture,
   updateSceneFPSvalue,
+  updateSceneRatioValue,
 } from './core/projects';
 import { getSettings, saveSettings } from './core/settings';
 import { selectFile, selectFolder } from './core/utils';
@@ -121,6 +122,10 @@ const actions = {
   },
   UPDATE_FPS_VALUE: async (evt, { project_id, track_id, fps }) => {
     const data = await updateSceneFPSvalue(join(PROJECTS_PATH, project_id), track_id, fps);
+    return computeProject(data);
+  },
+  UPDATE_RATIO_VALUE: async (evt, { project_id, track_id, ratio }) => {
+    const data = await updateSceneRatioValue(join(PROJECTS_PATH, project_id), track_id, ratio);
     return computeProject(data);
   },
   OPEN_LINK: async (evt, { link }) => {

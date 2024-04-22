@@ -81,6 +81,17 @@ export const updateSceneFPSvalue = async (path, track, fps) => {
   return data;
 };
 
+// Update scene ratio value
+export const updateSceneRatioValue = async (path, track, ratio) => {
+  let data = await getProjectData(path);
+  const trackId = Number(track);
+  if (data.project.scenes[trackId]) {
+    data.project.scenes[trackId].ratio = ratio;
+  }
+  await projectSave(path, data.project, true);
+  return data;
+};
+
 // Delete a project
 export const deleteProject = (path) =>
   new Promise((resolve, reject) => {

@@ -19,6 +19,7 @@ import {
   sceneAddFrame,
   updateProjectTitle,
   updateSceneFPSValue,
+  updateSceneRatioValue,
 } from './projects';
 
 let events = [];
@@ -133,6 +134,11 @@ export const Actions = {
   },
   UPDATE_FPS_VALUE: async (evt, { project_id, track_id, fps }) => {
     await updateSceneFPSValue(project_id, track_id, fps);
+    const project = await getProject(project_id);
+    return computeProject(project);
+  },
+  UPDATE_RATIO_VALUE: async (evt, { project_id, track_id, ratio }) => {
+    await updateSceneRatioValue(project_id, track_id, ratio);
     const project = await getProject(project_id);
     return computeProject(project);
   },

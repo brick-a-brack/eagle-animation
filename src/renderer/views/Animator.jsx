@@ -124,6 +124,8 @@ const Animator = ({ t }) => {
       const updatedProject = await window.EA('GET_PROJECT', { project_id: id });
       setProject(updatedProject);
       setFps(updatedProject.project.scenes[track].framerate);
+console.log(updatedProject.project.scenes[track]);
+
       setRatio(updatedProject.project.scenes[track].ratio ? parseRatio(updatedProject.project.scenes[track].ratio) : null);
       if (settings) {
         await cameraActions.setCamera(settings?.CAMERA_ID);
@@ -178,36 +180,36 @@ const Animator = ({ t }) => {
 
   const takePictures =
     (nbPicturesToTake = null) =>
-    async () => {
-      if (isTakingPicture || !currentCamera) {
-        return;
-      }
-      flushSync(() => {
-        setIsTakingPicture(true);
-      });
-
-      for (let i = 0; i < (Number(nbPicturesToTake !== null ? nbPicturesToTake : settings.CAPTURE_FRAMES) || 1); i++) {
-        const nbFramesToTake = (settings.AVERAGING_ENABLED ? Number(settings.AVERAGING_VALUE) : 1) || 1;
-        try {
-          const { type, buffer } = await cameraActions.takePicture(nbFramesToTake);
-
-          if (!isMuted && settings.SOUNDS) {
-            playSound(soundShutter);
-          }
-
-          setProject(await window.EA('TAKE_PICTURE', { project_id: id, track_id: track, buffer, extension: type?.includes('png') ? 'png' : 'jpg', before_frame_id: currentFrameId }));
-        } catch (err) {
-          if (!isMuted && settings.SOUNDS) {
-            playSound(soundError);
-          }
-          console.error('Failed to take a picture', err);
+      async () => {
+        if (isTakingPicture || !currentCamera) {
+          return;
         }
-      }
+        flushSync(() => {
+          setIsTakingPicture(true);
+        });
 
-      flushSync(() => {
-        setIsTakingPicture(false);
-      });
-    };
+        for (let i = 0; i < (Number(nbPicturesToTake !== null ? nbPicturesToTake : settings.CAPTURE_FRAMES) || 1); i++) {
+          const nbFramesToTake = (settings.AVERAGING_ENABLED ? Number(settings.AVERAGING_VALUE) : 1) || 1;
+          try {
+            const { type, buffer } = await cameraActions.takePicture(nbFramesToTake);
+
+            if (!isMuted && settings.SOUNDS) {
+              playSound(soundShutter);
+            }
+
+            setProject(await window.EA('TAKE_PICTURE', { project_id: id, track_id: track, buffer, extension: type?.includes('png') ? 'png' : 'jpg', before_frame_id: currentFrameId }));
+          } catch (err) {
+            if (!isMuted && settings.SOUNDS) {
+              playSound(soundError);
+            }
+            console.error('Failed to take a picture', err);
+          }
+        }
+
+        flushSync(() => {
+          setIsTakingPicture(false);
+        });
+      };
 
   const actionsEvents = {
     PLAY: () => {
@@ -289,13 +291,19 @@ const Animator = ({ t }) => {
         }
       }
     },
+    RATIO_CHANGE: async (v) => {
+      console.log('VVV', v)
+      if (v) {
+        setProject(await window.EA('UPDATE_RATIO_VALUE', { project_id: id, track_id: track, ratio: v || null }));
+      }
+    },
     SETTINGS: () => {
       navigate(`/settings?back=/animator/${id}/${track}`);
     },
     PROJECT_SETTINGS: () => {
       setShowProjectSettings((v) => !v);
     },
-    MORE: () => {},
+    MORE: () => { },
     EXPORT: () => {
       navigate(`/export/${id}/${track}?back=/animator/${id}/${track}`);
     },
@@ -343,9 +351,16 @@ const Animator = ({ t }) => {
   };
 
   const handleProjectSettingsChange = async (fields) => {
-    setRatio(fields.ratio);
-    setFps(fields.fps);
     await window.EA('RENAME_PROJECT', { project_id: id, title: fields.title || '' });
+
+    if (fields.fps) {
+      setFps(fields.fps);
+      handleAction('FPS_CHANGE', fields.fps);
+    }
+    if (fields.ratio) {
+      setRatio(fields.ratio);
+      handleAction('RATIO_CHANGE', fields.ratio.userValue)
+    }    
   };
 
   return (
