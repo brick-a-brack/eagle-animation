@@ -35,7 +35,10 @@ class Player extends Component {
 
     this.resize = () => {
       this.initCanvas();
-      const parentSize = this.dom.container.current.parentNode.getBoundingClientRect();
+      const parentSize = this?.dom?.container?.current?.parentNode?.getBoundingClientRect();
+      if (!parentSize) {
+        return;
+      }
       const parentRatio = parentSize.width / parentSize.height;
 
       let widthElem = 0;

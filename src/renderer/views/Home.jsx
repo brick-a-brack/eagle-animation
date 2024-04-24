@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { withTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
@@ -6,12 +6,13 @@ import ActionsBar from '../components/ActionsBar';
 import Header from '../components/Header';
 import ProjectCard from '../components/ProjectCard';
 import ProjectsGrid from '../components/ProjectsGrid';
-import { CONTRIBUTE_REPOSITORY, VERSION } from '../config';
+import useAppVersion from '../hooks/useAppVersion';
 import useCamera from '../hooks/useCamera';
+import useProjects from '../hooks/useProjects';
 
 const HomeView = ({ t }) => {
-  const [latestVersion, setLatestVersion] = useState(null);
-  const [projects, setProjects] = useState([]);
+  const { version, latestVersion, actions: versionActions } = useAppVersion();
+  const { projects, actions: projectsActions } = useProjects();
   const navigate = useNavigate();
   const { actions: cameraActions } = useCamera();
 
@@ -20,20 +21,12 @@ const HomeView = ({ t }) => {
   }, []);
 
   useEffect(() => {
-    (async () => {
-      // Get projects
-      setProjects(await window.EA('GET_PROJECTS'));
-
-      // Fetch updates
-      setLatestVersion((await window.EA('GET_LAST_VERSION').catch(() => null))?.version || null);
-
-      // Trigger background sync
-      window.EA('SYNC');
-    })();
+    // Trigger background sync
+    window.EA('SYNC');
   }, []);
 
   const handleCreateProject = async (_, title) => {
-    const project = await window.EA('NEW_PROJECT', { title });
+    const project = await projectsActions.create(title || t('Untitled'));
     navigate(`/animator/${project.id}/0`);
   };
 
@@ -42,11 +35,11 @@ const HomeView = ({ t }) => {
   };
 
   const handleRenameProject = async (id, title) => {
-    await window.EA('RENAME_PROJECT', { project_id: id, title: title || t('Untitled') });
+    projectsActions.rename(id, title || t('Untitled'));
   };
 
   const handleLink = () => {
-    window.EA('OPEN_LINK', { link: `https://github.com/${CONTRIBUTE_REPOSITORY}/releases` });
+    versionActions.openUpdatePage();
   };
 
   const handleAction = (action) => {
@@ -60,7 +53,7 @@ const HomeView = ({ t }) => {
 
   return (
     <>
-      <Header action={handleLink} version={VERSION} latestVersion={latestVersion} />
+      <Header action={handleLink} version={version} latestVersion={latestVersion} />
       <ActionsBar actions={['SETTINGS', 'SHORTCUTS']} position="RIGHT" onAction={handleAction} />
       <ProjectsGrid>
         <ProjectCard placeholder={t('New project')} onClick={handleCreateProject} icon="ADD" />

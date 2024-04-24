@@ -76,7 +76,10 @@ const GetFrameResolution = (link) =>
     imgObj.src = link;
   });
 
-export const GetBestResolution = async (frames, ratio = 1) => {
+export const GetBestResolution = async (frames, ratio = null) => {
+  if (!frames || frames.length === 0) {
+    return null;
+  }
   const resolutions = await Promise.all(frames.filter((frame) => !frame.deleted && !frame.hidden).map((frame) => GetFrameResolution(frame.link)));
   let outputResolution = null;
   for (const resolution of resolutions) {
@@ -87,13 +90,16 @@ export const GetBestResolution = async (frames, ratio = 1) => {
       outputResolution = resolution;
     }
   }
-  if (ratio !== 1) {
+  if (ratio !== null) {
     const containedResolution = resizeToFit('contain', { width: ratio, height: 1 }, outputResolution);
     return { width: containedResolution.width, height: containedResolution.height };
   }
 
   return outputResolution;
 };
+
+export const floorResolutionValue = (v) => (v ? (Math.floor(v) % 2 !== 0 ? Math.floor(v) + 1 : Math.floor(v)) : v);
+export const floorResolution = (v) => (v ? { width: v.width ? floorResolutionValue(v.width) : v.width, height: v.height ? floorResolutionValue(v.height) : v.height } : v);
 
 export const ExportFrames = async (
   files = [],
@@ -108,17 +114,9 @@ export const ExportFrames = async (
 ) => {
   const frames = [];
 
-  let resolution = opts.resolution ? { width: Math.floor(opts.resolution.width), height: Math.floor(opts.resolution.height) } : opts.resolution;
+  const resolution = floorResolution(opts.resolution);
 
-  // For video export, it's required to fix unpair resolutions
-  if (resolution && resolution.width % 2 !== 0) {
-    resolution.width += 1;
-  }
-  if (resolution && resolution.height % 2 !== 0) {
-    resolution.height += 1;
-  }
-
-  console.log(`🤖 Exporting frames in ${resolution ? `${resolution.width}x${resolution.height}` : 'original'}`);
+  console.log(`🤖 Exporting frames in ${resolution ? `${resolution.width || '(auto)'}x${resolution.height}` : 'original'}`);
 
   // Update progress
   if (typeof onProgress === 'function') {
@@ -133,11 +131,18 @@ export const ExportFrames = async (
     const targetExtension = file.filename.split('.').pop() || 'jpg';
     const computedExtension = (typeof opts.forceFileExtension !== 'undefined' ? opts.forceFileExtension : targetExtension) || targetExtension;
 
+    // If needed we calc the width based on frame ratio and defined height
+    let copiedResolution = structuredClone(resolution);
+    if (copiedResolution && !copiedResolution.width) {
+      const frameResolution = await GetFrameResolution(file.link);
+      copiedResolution.width = floorResolutionValue((copiedResolution.height * frameResolution.width) / frameResolution.height) || copiedResolution.height;
+    }
+
     frames.push({
       id: file.id,
       extension: computedExtension,
       mimeType: `image/${(computedExtension || 'jpg').replace('jpg', 'jpeg')}`,
-      buffer: Buffer.from(await (await ExportFrame(file.link, opts.resolution, typeof opts.forceFileExtension !== 'undefined' ? computedExtension : undefined, 'cover')).arrayBuffer()),
+      buffer: Buffer.from(await (await ExportFrame(file.link, copiedResolution, typeof opts.forceFileExtension !== 'undefined' ? computedExtension : undefined, 'cover')).arrayBuffer()),
     });
 
     // Update progress

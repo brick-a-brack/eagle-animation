@@ -4,7 +4,7 @@
 
 ![Eagle Animation in use by Théo Aron](docs/imgs/img_2.png)
 
-**EagleAnimation** is an awesome, free and open-source stop motion animation software. It is available for Windows, macOS and Linux.
+**EagleAnimation** is an awesome, free and open-source stop motion animation software. It is available for Windows, macOS, Linux and also works with any web browser. It's a great alternative to _Stop Motion Studio_, _Dragon Frame_ and _Boats Animator_.
 
 👉 _This project is supported by Brick à Brack, the non-profit organization that owns [Brickfilms.com](https://brickfilms.com/) - The biggest brickfilming community, you can join us, it's free and
 without ads!_ 🎥

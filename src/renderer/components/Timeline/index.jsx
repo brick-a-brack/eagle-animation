@@ -7,6 +7,7 @@ import { useEffect, useRef } from 'react';
 import { withTranslation } from 'react-i18next';
 
 import faEyeSlash from '../../icons/faEyeSlash';
+import faRectangleHistory from '../../icons/faRectangleHistory';
 
 import * as style from './style.module.css';
 
@@ -23,8 +24,8 @@ const SortableItem = ({ img, selected, onSelect, index }) => {
       style={{
         opacity: isDragging ? 1 : undefined,
         zIndex: isDragging ? 999 : undefined,
-        minWidth: `${img.length * 80}px`,
-        transform: active ? DNDCSS.Transform.toString({ ...transform, y: 0 }) : undefined,
+        minWidth: `80px`,
+        transform: active ? DNDCSS.Transform.toString({ ...transform, y: 0, scaleX: 1, scaleY: 1 }) : undefined,
         transition: active ? transition : undefined,
       }}
       onClick={() => onSelect(img)}
@@ -34,6 +35,7 @@ const SortableItem = ({ img, selected, onSelect, index }) => {
         <img alt="" className={style.imgcontent} src={img.link} />
       </span>
       {img.hidden && <FontAwesomeIcon className={style.icon} icon={faEyeSlash} />}
+      {!img.hidden && img.length > 1 && <FontAwesomeIcon className={style.iconDuplicate} icon={faRectangleHistory} />}
       <span className={style.title}>{`#${index + 1}${img.length > 1 ? ` (${img.length})` : ''}`}</span>
     </span>
   );

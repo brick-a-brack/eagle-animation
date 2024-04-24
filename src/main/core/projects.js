@@ -50,46 +50,10 @@ export const getProjectsList = async (path) => {
     }
 
     const fetchedProjects = await Promise.all(projects);
-    return fetchedProjects.filter((p) => p && p.project.deleted !== true) || [];
+    return fetchedProjects.filter((p) => p && p.project?.deleted !== true) || [];
   } catch (err) {
     return [];
   }
-};
-
-// Rename a project
-export const renameProject = (path, name) =>
-  new Promise((resolve, reject) => {
-    getProjectData(path)
-      .then((data) =>
-        projectSave(path, { ...data.project, title: name }, false).then((dataProject) => {
-          resolve(dataProject);
-        })
-      )
-      .catch((err) => {
-        reject(err);
-      });
-  });
-
-// Update scene FPS value
-export const updateSceneFPSvalue = async (path, track, fps) => {
-  let data = await getProjectData(path);
-  const trackId = Number(track);
-  if (data.project.scenes[trackId]) {
-    data.project.scenes[trackId].framerate = fps;
-  }
-  await projectSave(path, data.project, true);
-  return data;
-};
-
-// Update scene ratio value
-export const updateSceneRatioValue = async (path, track, ratio) => {
-  let data = await getProjectData(path);
-  const trackId = Number(track);
-  if (data.project.scenes[trackId]) {
-    data.project.scenes[trackId].ratio = ratio;
-  }
-  await projectSave(path, data.project, true);
-  return data;
 };
 
 // Delete a project
@@ -105,39 +69,6 @@ export const deleteProject = (path) =>
         reject(err);
       });
   });
-
-// Delete a project
-export const deleteProjectFrame = async (path, track, pictureId) => {
-  let data = await getProjectData(path);
-  const trackId = Number(track);
-  if (data.project.scenes[trackId]) {
-    data.project.scenes[trackId].pictures = data.project.scenes[trackId].pictures.map((p) => (`${p.id}` !== `${pictureId}` ? p : { ...p, deleted: true }));
-  }
-  await projectSave(path, data.project, true);
-  return data;
-};
-
-// Apply length offset to a specific frame
-export const applyProjectFrameLengthOffset = async (path, track, pictureId, offset) => {
-  let data = await getProjectData(path);
-  const trackId = Number(track);
-  if (data.project.scenes[trackId]) {
-    data.project.scenes[trackId].pictures = data.project.scenes[trackId].pictures.map((p) => (`${p.id}` !== `${pictureId}` ? p : { ...p, length: (p.length || 1) + offset || 1 }));
-  }
-  await projectSave(path, data.project, true);
-  return data;
-};
-
-// Apply hidden status to a specific frame
-export const applyHideFrameStatus = async (path, track, pictureId, hidden) => {
-  let data = await getProjectData(path);
-  const trackId = Number(track);
-  if (data.project.scenes[trackId]) {
-    data.project.scenes[trackId].pictures = data.project.scenes[trackId].pictures.map((p) => (`${p.id}` !== `${pictureId}` ? p : { ...p, hidden }));
-  }
-  await projectSave(path, data.project, true);
-  return data;
-};
 
 // Project save
 export const projectSave = async (path, data, updateTime = true) => {
@@ -198,67 +129,14 @@ const createImageFile = async (projectPath, scene, ext, data) => {
   };
 };
 
-export const takePicture = async (projectPath, track, ext, beforeFrameId, buffer) => {
+// Create pictur object
+export const savePicture = async (projectPath, track, ext, buffer) => {
   const trackId = Number(track);
-  const data = await getProjectData(projectPath);
   const file = await createImageFile(projectPath, trackId, ext, buffer);
-  if (data.project.scenes[trackId]) {
-    const index = beforeFrameId === false ? -1 : data.project.scenes[trackId].pictures.findIndex((f) => `${f.id}` === `${beforeFrameId}`);
-
-    const newFrame = {
-      id: file.id,
-      filename: file.filename,
-      deleted: false,
-      length: 1,
-    };
-
-    if (index !== -1) {
-      data.project.scenes[trackId].pictures = [...data.project.scenes[trackId].pictures.slice(0, index), newFrame, ...data.project.scenes[trackId].pictures.slice(index)];
-    } else {
-      data.project.scenes[trackId].pictures = [...data.project.scenes[trackId].pictures, newFrame];
-    }
-
-    await projectSave(projectPath, data.project, true);
-  }
-  return data;
+  return {
+    id: file.id,
+    filename: file.filename,
+    deleted: false,
+    length: 1,
+  };
 };
-
-export const moveFrame = async (projectPath, track, frameId, beforeFrameId) => {
-  const trackId = Number(track);
-  const data = await getProjectData(projectPath);
-
-  if (data.project.scenes[trackId]) {
-    const index = beforeFrameId === false ? -1 : data.project.scenes[trackId].pictures.findIndex((f) => `${f.id}` === `${beforeFrameId}`);
-    const frame = data.project.scenes[trackId].pictures.find((f) => `${f.id}` === `${frameId}`);
-    if (frame) {
-      if (index != -1) {
-        data.project.scenes[trackId].pictures = [
-          ...data.project.scenes[trackId].pictures.slice(0, index).filter((f) => `${f.id}` !== `${frameId}`),
-          frame,
-          ...data.project.scenes[trackId].pictures.slice(index).filter((f) => `${f.id}` !== `${frameId}`),
-        ];
-      } else {
-        data.project.scenes[trackId].pictures = [...data.project.scenes[trackId].pictures.filter((f) => `${f.id}` !== `${frameId}`), frame];
-      }
-      await projectSave(projectPath, data.project, true);
-    }
-  }
-  return data;
-};
-
-/*
-// Project selector
-export const projectSelector = () => new Promise((resolve) => {
-    Electron.remote.dialog.showOpenDialog({
-        properties: ['openFile'],
-        filters: [{
-            name: 'Eagle Animation Project',
-            extensions: [PROJECT_FILE_EXTENSION]
-        }]
-    }, (paths) => {
-        if (paths && paths.length)
-            return resolve(dirname(paths[0]));
-        return resolve(false);
-    });
-});
-*/

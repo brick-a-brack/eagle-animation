@@ -13,20 +13,7 @@ import { CONTRIBUTE_REPOSITORY, DIRECTORY_NAME } from '../config';
 import { flushCamera, getCamera, getCameras } from './cameras';
 import { uploadFile } from './core/api';
 import { exportProjectScene, getSyncList, saveSyncList } from './core/export';
-import {
-  applyHideFrameStatus,
-  applyProjectFrameLengthOffset,
-  createProject,
-  deleteProject,
-  deleteProjectFrame,
-  getProjectData,
-  getProjectsList,
-  moveFrame,
-  renameProject,
-  takePicture,
-  updateSceneFPSvalue,
-  updateSceneRatioValue,
-} from './core/projects';
+import { createProject, deleteProject, getProjectData, getProjectsList, projectSave, savePicture } from './core/projects';
 import { getSettings, saveSettings } from './core/settings';
 import { selectFile, selectFolder } from './core/utils';
 
@@ -35,11 +22,13 @@ const PROJECTS_PATH = existsSync(OLD_PROJECTS_PATH) ? OLD_PROJECTS_PATH : envPat
 
 console.log(`💾 Eagle Animation files will be saved in the following folder: ${PROJECTS_PATH}`);
 
+const getPictureLink = (path, sceneIndex, filename) => `${path}/${sceneIndex}/${filename}`;
+
 const getDefaultPreview = (data) => {
   for (let i = 0; i < (data?.project?.scenes?.length || 0); i++) {
     for (const picture of data?.project?.scenes?.[i]?.pictures || []) {
-      if (!picture.deleted) {
-        return `${data._path}/${i}/${picture.filename}`;
+      if (!picture?.deleted) {
+        return getPictureLink(data._path, i, picture.filename);
       }
     }
   }
@@ -48,28 +37,33 @@ const getDefaultPreview = (data) => {
 
 // TODO: .preview => img to display
 const computeProject = (data) => {
-  let preview = getDefaultPreview(data);
-  const scenes = data.project.scenes.map((scene, i) => ({
+  const copiedData = structuredClone(data);
+
+  let preview = getDefaultPreview(copiedData);
+  const scenes = copiedData.project.scenes.map((scene, i) => ({
     ...scene,
-    pictures: scene.pictures
-      .filter((p) => !p.deleted)
-      .map((picture) => ({
-        ...picture,
-        link: `${data._path}/${i}/${picture.filename}`,
-      })),
+    pictures: scene.pictures.map((picture) => ({
+      ...picture,
+      link: getPictureLink(copiedData._path, i, picture.filename),
+    })),
   }));
 
-  return {
-    ...data,
+  let output = {
+    ...copiedData,
     id: data._path.replaceAll('\\', '/').split('/').pop(),
     preview,
     project: {
-      ...data.project,
+      ...copiedData.project,
       scenes,
     },
-    _path: null,
-    _file: null,
+    _path: undefined,
+    _file: undefined,
   };
+
+  delete output._path;
+  delete output._file;
+
+  return output;
 };
 
 const actions = {
@@ -96,45 +90,22 @@ const actions = {
     await deleteProject(join(PROJECTS_PATH, project_id));
     return null;
   },
-  DELETE_FRAME: async (evt, { project_id, track_id, frame_id }) => {
-    const data = await deleteProjectFrame(join(PROJECTS_PATH, project_id), track_id, frame_id);
-    return computeProject(data);
+  SAVE_PROJECT: async (evt, { project_id, data = {} }) => {
+    await projectSave(join(PROJECTS_PATH, project_id), data.project, true);
+    const updatedData = await getProjectData(join(PROJECTS_PATH, project_id));
+    return computeProject(updatedData);
   },
-  DUPLICATE_FRAME: async (evt, { project_id, track_id, frame_id }) => {
-    const data = await applyProjectFrameLengthOffset(join(PROJECTS_PATH, project_id), track_id, frame_id, 1);
-    return computeProject(data);
-  },
-  DEDUPLICATE_FRAME: async (evt, { project_id, track_id, frame_id }) => {
-    const data = await applyProjectFrameLengthOffset(join(PROJECTS_PATH, project_id), track_id, frame_id, -1);
-    return computeProject(data);
-  },
-  HIDE_FRAME: async (evt, { project_id, track_id, frame_id, hidden }) => {
-    const data = await applyHideFrameStatus(project_id, track_id, frame_id, hidden);
-    return computeProject(data);
-  },
-  MOVE_FRAME: async (evt, { project_id, track_id, frame_id, before_frame_id = false }) => {
-    const data = await moveFrame(join(PROJECTS_PATH, project_id), track_id, frame_id, before_frame_id);
-    return computeProject(data);
-  },
-  RENAME_PROJECT: async (evt, { project_id, title }) => {
-    const data = await renameProject(join(PROJECTS_PATH, project_id), title);
-    return computeProject(data);
-  },
-  UPDATE_FPS_VALUE: async (evt, { project_id, track_id, fps }) => {
-    const data = await updateSceneFPSvalue(join(PROJECTS_PATH, project_id), track_id, fps);
-    return computeProject(data);
-  },
-  UPDATE_RATIO_VALUE: async (evt, { project_id, track_id, ratio }) => {
-    const data = await updateSceneRatioValue(join(PROJECTS_PATH, project_id), track_id, ratio);
-    return computeProject(data);
+  SAVE_PICTURE: async (evt, { project_id, track_id, buffer, extension = 'jpg' }) => {
+    const data = await getProjectData(join(PROJECTS_PATH, project_id));
+    const picture = await savePicture(join(PROJECTS_PATH, project_id), track_id, extension, buffer);
+    return {
+      ...picture,
+      link: getPictureLink(data._path, track_id, picture.filename),
+    };
   },
   OPEN_LINK: async (evt, { link }) => {
     shell.openExternal(link);
     return null;
-  },
-  TAKE_PICTURE: async (evt, { project_id, track_id, buffer, before_frame_id = false, extension = 'jpg' }) => {
-    const data = await takePicture(join(PROJECTS_PATH, project_id), track_id, extension, before_frame_id, buffer);
-    return computeProject(data);
   },
   LIST_NATIVE_CAMERAS: () => {
     return getCameras();

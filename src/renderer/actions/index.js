@@ -7,20 +7,7 @@ import { getEncodingProfile, getFFmpegArgs, parseFFmpegLogs } from '../../common
 import { LS_SETTINGS } from '../config';
 import { getFFmpeg } from './ffmpeg';
 import { createFrame, getFrameBlobUrl } from './frames';
-import {
-  applyFrameLengthOffset,
-  applyHideFrameStatus,
-  createProject,
-  deleteProject,
-  deleteProjectFrame,
-  getAllProjects,
-  getProject,
-  moveFrame,
-  sceneAddFrame,
-  updateProjectTitle,
-  updateSceneFPSValue,
-  updateSceneRatioValue,
-} from './projects';
+import { createProject, deleteProject, getAllProjects, getProject, saveProject } from './projects';
 
 let events = [];
 
@@ -53,37 +40,40 @@ const getDefaultPreview = async (data) => {
 
 // TODO: .preview => img to display
 const computeProject = async (data) => {
-  let preview = await getDefaultPreview(data);
+  const copiedData = structuredClone(data);
+  let preview = await getDefaultPreview(copiedData);
   const scenes = await Promise.all(
-    data.project.scenes.map(async (scene) => ({
-      ...scene,
-      pictures: await Promise.all(
-        scene.pictures
-          .filter((p) => !p.deleted)
-          .map(async (picture) => ({
+    copiedData?.project?.scenes?.map(async (scene) => {
+      return {
+        ...scene,
+        pictures: await Promise.all(
+          scene.pictures.map(async (picture) => ({
             ...picture,
             link: await getFrameBlobUrl(picture.id),
           }))
-      ),
-    }))
+        ),
+      };
+    })
   );
 
-  return {
-    id: data.id,
+  let output = {
+    id: copiedData.id,
     preview,
     project: {
-      ...data.project,
+      ...copiedData?.project,
       scenes,
     },
-    _path: null,
-    _file: null,
   };
+
+  delete output._path;
+  delete output._file;
+
+  return output;
 };
 
 export const Actions = {
   GET_LAST_VERSION: async () => {
-    // Web version is always up-to-date, ignore update detection
-    return { version: null };
+    return { version: null }; // Web version is always up-to-date, ignore update detection
   },
   GET_PROJECTS: async () => {
     const projects = await getAllProjects();
@@ -98,59 +88,31 @@ export const Actions = {
     const project = await getProject(project_id);
     return computeProject(project);
   },
+  SAVE_PROJECT: async (evt, { project_id, data }) => {
+    if (!data) {
+      return null;
+    }
+    await saveProject(project_id, data);
+    const project = await getProject(project_id);
+    return computeProject(project);
+  },
   DELETE_PROJECT: async (evt, { project_id }) => {
     await deleteProject(project_id);
     return null;
-  },
-  DELETE_FRAME: async (evt, { project_id, track_id, frame_id }) => {
-    await deleteProjectFrame(project_id, track_id, frame_id);
-    const project = await getProject(project_id);
-    return computeProject(project);
-  },
-  HIDE_FRAME: async (evt, { project_id, track_id, frame_id, hidden }) => {
-    await applyHideFrameStatus(project_id, track_id, frame_id, hidden);
-    const project = await getProject(project_id);
-    return computeProject(project);
-  },
-  DUPLICATE_FRAME: async (evt, { project_id, track_id, frame_id }) => {
-    await applyFrameLengthOffset(project_id, track_id, frame_id, 1);
-    const project = await getProject(project_id);
-    return computeProject(project);
-  },
-  DEDUPLICATE_FRAME: async (evt, { project_id, track_id, frame_id }) => {
-    await applyFrameLengthOffset(project_id, track_id, frame_id, -1);
-    const project = await getProject(project_id);
-    return computeProject(project);
-  },
-  MOVE_FRAME: async (evt, { project_id, track_id, frame_id, before_frame_id = false }) => {
-    await moveFrame(project_id, track_id, frame_id, before_frame_id);
-    const project = await getProject(project_id);
-    return computeProject(project);
-  },
-  RENAME_PROJECT: async (evt, { project_id, title }) => {
-    await updateProjectTitle(project_id, title);
-    const project = await getProject(project_id);
-    return computeProject(project);
-  },
-  UPDATE_FPS_VALUE: async (evt, { project_id, track_id, fps }) => {
-    await updateSceneFPSValue(project_id, track_id, fps);
-    const project = await getProject(project_id);
-    return computeProject(project);
-  },
-  UPDATE_RATIO_VALUE: async (evt, { project_id, track_id, ratio }) => {
-    await updateSceneRatioValue(project_id, track_id, ratio);
-    const project = await getProject(project_id);
-    return computeProject(project);
   },
   OPEN_LINK: async (evt, { link }) => {
     window.open(link, '_blank');
     return null;
   },
-  TAKE_PICTURE: async (evt, { project_id, track_id, buffer, before_frame_id = false, extension = 'jpg' }) => {
+  SAVE_PICTURE: async (evt, { buffer, extension = 'jpg' }) => {
     const frameId = await createFrame(buffer, extension);
-    await sceneAddFrame(project_id, track_id, extension, before_frame_id, frameId);
-    const project = await getProject(project_id);
-    return computeProject(project);
+    return {
+      id: `${frameId}`,
+      filename: `${frameId}.${extension || 'dat'}`,
+      deleted: false,
+      length: 1,
+      link: await getFrameBlobUrl(frameId),
+    };
   },
   GET_SETTINGS: async () => {
     try {

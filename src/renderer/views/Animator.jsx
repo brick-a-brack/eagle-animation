@@ -1,4 +1,3 @@
-import { arrayMove } from '@dnd-kit/sortable';
 import { useEffect, useRef, useState } from 'react';
 import { flushSync } from 'react-dom';
 import { withTranslation } from 'react-i18next';
@@ -19,6 +18,7 @@ import Timeline from '../components/Timeline';
 import Window from '../components/Window';
 import useAppCapabilities from '../hooks/useAppCapabilities';
 import useCamera from '../hooks/useCamera';
+import useProject from '../hooks/useProject';
 import useSettings from '../hooks/useSettings';
 
 // Play sound
@@ -98,7 +98,7 @@ const Animator = ({ t }) => {
   const [currentFrameId, setCurrentFrameId] = useState(false);
   const [disableKeyboardShortcuts, setDisableKeyboardShortcuts] = useState(false);
 
-  const [project, setProject] = useState(null);
+  const { project, actions: projectActions } = useProject({ id });
 
   const {
     devices,
@@ -119,27 +119,32 @@ const Animator = ({ t }) => {
     },
   });
 
+  // Sync framerate when project change
+  useEffect(() => {
+    setFps(project?.scenes?.[track]?.framerate);
+  }, [project?.scenes?.[track]?.framerate]);
+
+  // Sync ratio when project change
+  useEffect(() => {
+    setRatio(project?.scenes?.[track]?.ratio ? parseRatio(project?.scenes?.[track]?.ratio) : null);
+  }, [project?.scenes?.[track]?.ratio]);
+
+  // Select previously selected camera
   useEffect(() => {
     (async () => {
-      const updatedProject = await window.EA('GET_PROJECT', { project_id: id });
-      setProject(updatedProject);
-      setFps(updatedProject.project.scenes[track].framerate);
-console.log(updatedProject.project.scenes[track]);
-
-      setRatio(updatedProject.project.scenes[track].ratio ? parseRatio(updatedProject.project.scenes[track].ratio) : null);
       if (settings) {
         await cameraActions.setCamera(settings?.CAMERA_ID);
       }
     })();
-  }, [settings]);
+  }, [settings?.CAMERA_ID]);
 
+  // Shortcut if informations are not ready
   if (!project || !settings || !devices) {
     return null;
   }
 
   // ---- RUNTIME LOGIC
-
-  const pictures = project.project.scenes[track].pictures.filter((e) => !e.deleted);
+  const pictures = project.scenes[track].pictures.filter((e) => !e.deleted);
   const framePosition = currentFrameId === false ? false : pictures.findIndex((p) => p.id === currentFrameId) + 1 || 1;
   const currentFrame = currentFrameId === false ? false : pictures.find((p) => p.id === currentFrameId) || false;
 
@@ -164,52 +169,45 @@ console.log(updatedProject.project.scenes[track]);
       return;
     }
 
-    // Optimistic update
-    setProject((project) => {
-      let copiedProject = { ...project };
-      copiedProject.project.scenes[track].pictures = arrayMove(copiedProject.project.scenes[track].pictures, e.oldIndex, e.newIndex);
-      return copiedProject;
-    });
-
-    // Background API update and resync
     const frameId = pictures[e.oldIndex].id;
     const beforeFrame = pictures?.[e.newIndex - (e.newIndex > e.oldIndex ? -1 : 0)]?.id;
+
+    projectActions.moveFrame(track, frameId, beforeFrame);
     playerRef.current.showFrame(frameId);
-    setProject(await window.EA('MOVE_FRAME', { project_id: id, track_id: track, frame_id: frameId, before_frame_id: beforeFrame === null ? false : beforeFrame }));
   };
 
   const takePictures =
     (nbPicturesToTake = null) =>
-      async () => {
-        if (isTakingPicture || !currentCamera) {
-          return;
-        }
-        flushSync(() => {
-          setIsTakingPicture(true);
-        });
+    async () => {
+      if (isTakingPicture || !currentCamera) {
+        return;
+      }
+      flushSync(() => {
+        setIsTakingPicture(true);
+      });
 
-        for (let i = 0; i < (Number(nbPicturesToTake !== null ? nbPicturesToTake : settings.CAPTURE_FRAMES) || 1); i++) {
-          const nbFramesToTake = (settings.AVERAGING_ENABLED ? Number(settings.AVERAGING_VALUE) : 1) || 1;
-          try {
-            const { type, buffer } = await cameraActions.takePicture(nbFramesToTake);
+      for (let i = 0; i < (Number(nbPicturesToTake !== null ? nbPicturesToTake : settings.CAPTURE_FRAMES) || 1); i++) {
+        const nbFramesToTake = (settings.AVERAGING_ENABLED ? Number(settings.AVERAGING_VALUE) : 1) || 1;
+        try {
+          const { type, buffer } = await cameraActions.takePicture(nbFramesToTake);
 
-            if (!isMuted && settings.SOUNDS) {
-              playSound(soundShutter);
-            }
-
-            setProject(await window.EA('TAKE_PICTURE', { project_id: id, track_id: track, buffer, extension: type?.includes('png') ? 'png' : 'jpg', before_frame_id: currentFrameId }));
-          } catch (err) {
-            if (!isMuted && settings.SOUNDS) {
-              playSound(soundError);
-            }
-            console.error('Failed to take a picture', err);
+          if (!isMuted && settings.SOUNDS) {
+            playSound(soundShutter);
           }
-        }
 
-        flushSync(() => {
-          setIsTakingPicture(false);
-        });
-      };
+          await projectActions.addFrame(track, buffer, type?.includes('png') ? 'png' : 'jpg', currentFrameId);
+        } catch (err) {
+          if (!isMuted && settings.SOUNDS) {
+            playSound(soundError);
+          }
+          console.error('Failed to take a picture', err);
+        }
+      }
+
+      flushSync(() => {
+        setIsTakingPicture(false);
+      });
+    };
 
   const actionsEvents = {
     PLAY: () => {
@@ -248,7 +246,7 @@ console.log(updatedProject.project.scenes[track]);
       }
       const newId = getPreviousFrameId(pictures, currentFrameId) !== currentFrameId ? getPreviousFrameId(pictures, currentFrameId) : getNextFrameId(pictures, currentFrameId);
       playerRef.current.showFrame(newId);
-      setProject(await window.EA('DELETE_FRAME', { project_id: id, track_id: track, frame_id: currentFrameId }));
+      projectActions.deleteFrame(track, currentFrameId);
     },
     BACK: () => {
       navigate('/');
@@ -284,18 +282,13 @@ console.log(updatedProject.project.scenes[track]);
       setDifferenceStatus(!differenceStatus);
     },
     FPS_CHANGE: async (v) => {
-      if (v) {
-        setProject(await window.EA('UPDATE_FPS_VALUE', { project_id: id, track_id: track, fps: v || '1' }));
-        if (isPlaying) {
-          playerRef?.current?.stop();
-        }
+      projectActions.changeFPS(track, v || '1');
+      if (isPlaying) {
+        playerRef?.current?.stop();
       }
     },
     RATIO_CHANGE: async (v) => {
-      console.log('VVV', v)
-      if (v) {
-        setProject(await window.EA('UPDATE_RATIO_VALUE', { project_id: id, track_id: track, ratio: v || null }));
-      }
+      projectActions.changeRatio(track, v || null);
     },
     SETTINGS: () => {
       navigate(`/settings?back=/animator/${id}/${track}`);
@@ -303,21 +296,18 @@ console.log(updatedProject.project.scenes[track]);
     PROJECT_SETTINGS: () => {
       setShowProjectSettings((v) => !v);
     },
-    MORE: () => { },
+    MORE: () => {},
     EXPORT: () => {
       navigate(`/export/${id}/${track}?back=/animator/${id}/${track}`);
     },
     HIDE_FRAME: async () => {
-      setProject(await window.EA('HIDE_FRAME', { project_id: id, track_id: track, frame_id: currentFrameId, hidden: !currentFrame?.hidden }));
+      projectActions.applyHiddenFrameStatus(track, currentFrameId, !currentFrame?.hidden);
     },
     DUPLICATE: async () => {
-      setProject(await window.EA('DUPLICATE_FRAME', { project_id: id, track_id: track, frame_id: currentFrameId }));
+      projectActions.actionApplyDuplicateFrameOffset(track, currentFrameId, 1);
     },
     DEDUPLICATE: async () => {
-      if (currentFrame.length <= 1) {
-        return;
-      }
-      setProject(await window.EA('DEDUPLICATE_FRAME', { project_id: id, track_id: track, frame_id: currentFrameId }));
+      projectActions.actionApplyDuplicateFrameOffset(track, currentFrameId, -1);
     },
     MUTE: () => {
       setIsMuted(!isMuted);
@@ -351,16 +341,14 @@ console.log(updatedProject.project.scenes[track]);
   };
 
   const handleProjectSettingsChange = async (fields) => {
-    await window.EA('RENAME_PROJECT', { project_id: id, title: fields.title || '' });
-
+    projectActions.rename(fields.title || '');
     if (fields.fps) {
       setFps(fields.fps);
       handleAction('FPS_CHANGE', fields.fps);
     }
-    if (fields.ratio) {
-      setRatio(fields.ratio);
-      handleAction('RATIO_CHANGE', fields.ratio.userValue)
-    }    
+
+    setRatio(fields.ratio);
+    handleAction('RATIO_CHANGE', fields.ratio.userValue);
   };
 
   return (
@@ -395,8 +383,7 @@ console.log(updatedProject.project.scenes[track]);
       <ActionsBar
         actions={[
           'SETTINGS',
-          // TODO : check if a frame is available
-          ...(appCapabilities.includes('EXPORT_VIDEO') || appCapabilities.includes('EXPORT_FRAMES') || appCapabilities.includes('BACKGROUND_SYNC') ? ['EXPORT'] : []),
+          ...(pictures?.length > 0 && (appCapabilities.includes('EXPORT_VIDEO') || appCapabilities.includes('EXPORT_FRAMES') || appCapabilities.includes('BACKGROUND_SYNC')) ? ['EXPORT'] : []),
           'PROJECT_SETTINGS',
         ]}
         position="RIGHT"
@@ -437,7 +424,7 @@ console.log(updatedProject.project.scenes[track]);
       <Window isOpened={showProjectSettings} onClose={() => setShowProjectSettings(false)}>
         <ProjectSettingsWindow
           fps={fps}
-          title={project?.project?.title || ''}
+          title={project?.title || ''}
           ratio={ratio?.userValue || null}
           onProjectSettingsChange={handleProjectSettingsChange}
           onProjectDelete={() => handleAction('DELETE_PROJECT')}
