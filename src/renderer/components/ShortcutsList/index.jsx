@@ -20,6 +20,8 @@ const ShortcutsList = ({ t, shortcuts }) => {
     del: t('Del'),
     esc: t('Esc'),
     ctrl: t('Ctrl'),
+    home: t('Home'),
+    end: t('End'),
   };
 
   const categoriesTitles = {
