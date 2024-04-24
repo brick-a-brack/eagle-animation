@@ -348,7 +348,7 @@ const Animator = ({ t }) => {
     }
 
     setRatio(fields.ratio);
-    handleAction('RATIO_CHANGE', fields.ratio.userValue);
+    handleAction('RATIO_CHANGE', fields?.ratio?.userValue || '');
   };
 
   return (
