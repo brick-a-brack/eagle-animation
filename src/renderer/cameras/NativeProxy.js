@@ -11,25 +11,33 @@ class NativeProxy {
   }
 
   _drawLivePreview(dom, src) {
-    if (!dom || !src) {
-      return;
-    }
+    return new Promise((resolve) => {
+      if (!dom || !src) {
+        return resolve(false);
+      }
 
-    const ctx = dom.getContext('2d');
-    const img = new Image();
-    img.addEventListener('error', () => {
-      ctx.clearRect(0, 0, dom.width, dom.height);
+      const ctx = dom.getContext('2d');
+      const img = new Image();
+      img.addEventListener('error', () => {
+        ctx.clearRect(0, 0, dom.width, dom.height);
+        resolve(true);
+      });
+      img.addEventListener(
+        'load',
+        function () {
+          if (dom.width !== this.naturalWidth) {
+            dom.width = this.naturalWidth;
+          }
+          if (dom.height !== this.naturalHeight) {
+            dom.height = this.naturalHeight;
+          }
+          ctx.drawImage(img, 0, 0, img.naturalWidth, img.naturalHeight, 0, 0, img.naturalWidth, img.naturalHeight);
+          resolve(true);
+        },
+        false
+      );
+      img.src = src;
     });
-    img.addEventListener(
-      'load',
-      function () {
-        dom.width = this.naturalWidth;
-        dom.height = this.naturalHeight;
-        ctx.drawImage(img, 0, 0, img.naturalWidth, img.naturalHeight, 0, 0, img.naturalWidth, img.naturalHeight);
-      },
-      false
-    );
-    img.src = src;
   }
 
   async initPreview() {

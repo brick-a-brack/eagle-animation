@@ -403,6 +403,13 @@ class Webcam {
   }
 
   async disconnect() {
+    if (this.video) {
+      this.video.src = null;
+      this.video.srcObject = null;
+      if (typeof this.video?.stop === 'function') {
+        this.video.stop();
+      }
+    }
     if (this.stream) {
       this.stream.getTracks().forEach((track) => {
         track.stop();

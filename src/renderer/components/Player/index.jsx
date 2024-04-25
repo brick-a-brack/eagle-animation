@@ -33,6 +33,9 @@ class Player extends Component {
       frameIndex: false, // Frame index contains the position in the animation (including duplicated frames)
     };
 
+    // Used to detect size change on canvas based preview
+    this.videoFrameObserver = null;
+
     this.resize = () => {
       this.initCanvas();
       const parentSize = this?.dom?.container?.current?.parentNode?.getBoundingClientRect();
@@ -180,6 +183,13 @@ class Player extends Component {
     this.resize();
     window.addEventListener('resize', this.resize);
 
+    this.videoFrameObserver = new MutationObserver(() => {
+      this.resize();
+    });
+    this.videoFrameObserver.observe(this.dom.videoFrame.current, {
+      attributeFilter: ["height", "width"],
+    });
+
     this.showFrame(false);
   }
 
@@ -204,6 +214,9 @@ class Player extends Component {
   }
 
   componentWillUnmount() {
+    if (this.videoFrameObserver) {
+      this.videoFrameObserver.disconnect();
+    }
     window.removeEventListener('resize', this.resize);
     this.stop();
   }
@@ -214,7 +227,7 @@ class Player extends Component {
 
   getRatio() {
     let ratio = null;
-    if (!ratio && this.dom.video.current) {
+    if (!ratio && this.dom.video.current && (this.dom.video.current.src || this.dom.video.current.srcObject)) {
       const tmpRatio = this.dom.video.current.videoWidth / this.dom.video.current.videoHeight;
       if (tmpRatio > 0) {
         ratio = tmpRatio;
