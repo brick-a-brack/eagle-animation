@@ -3,7 +3,6 @@ import { withTranslation } from 'react-i18next';
 import { TooltipProvider } from 'react-tooltip';
 
 import 'react-tooltip/dist/react-tooltip.css';
-import './vars.module.css';
 import * as style from './style.module.css';
 
 const Container = ({ children, t }) => {
