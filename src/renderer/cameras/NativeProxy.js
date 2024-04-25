@@ -67,8 +67,8 @@ class NativeProxy {
   async connect({ imageDOM } = { imageDOM: false }, settings = {}, onBinded = () => {}) {
     this.video = imageDOM;
     this.settings = settings;
-    await window.EA('CONNECT_NATIVE_CAMERA', { camera_id: this.context.id });
-    await this.initPreview();
+     window.EA('CONNECT_NATIVE_CAMERA', { camera_id: this.context.id });
+     this.initPreview();
     if (typeof onBinded === 'function') {
       onBinded();
     }
