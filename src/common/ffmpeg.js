@@ -32,7 +32,21 @@ export const getEncodingProfile = (format) => {
   return profiles[format] || null;
 };
 
-export const getFFmpegArgs = (width = 1920, height = 1080, encodingProfile = false, outputFile = false, fps = 24, opts = {}) => {
+export const parseFFmpegLogs = (logPart, nbFrames = 0, outputFramerate = null, onProgress = () => {}) => {
+  (logPart || '').split('\n').forEach((line) => {
+    const currentFrame = line?.split('fps=')?.[0]?.split('frame=')?.[1]?.replaceAll(' ', '')?.replaceAll('\t', '') || null;
+    if (currentFrame) {
+      let divider = outputFramerate === null ? nbFrames : nbFrames * outputFramerate;
+      divider = divider <= 0 ? 1 : divider;
+      const value = Number(currentFrame) / divider;
+      if (value) {
+        onProgress(value);
+      }
+    }
+  });
+};
+
+export const getFFmpegArgs = (encodingProfile = false, outputFile = false, fps = 24, opts = {}) => {
   if (typeof profiles[encodingProfile] === 'undefined') {
     throw new Error('UNKNOWN_PROFILE');
   }
@@ -46,7 +60,7 @@ export const getFFmpegArgs = (width = 1920, height = 1080, encodingProfile = fal
   }
 
   // Default -y to overwite
-  const args = ['-y'];
+  const args = ['-y', '-stats_period', '0.1'];
 
   // Input framerate
   args.push('-r', `${Number(fps) > 0 && Number(fps) <= 240 ? Number(fps) : 12}`);
@@ -54,17 +68,8 @@ export const getFFmpegArgs = (width = 1920, height = 1080, encodingProfile = fal
   // Add all images in the path
   args.push('-i', 'frame-%06d.jpg');
 
-  // Output resolution
-  const customHeight = opts.resolution && opts.resolution !== 'original' ? `,scale=w=-2:h=${opts.resolution}:force_original_aspect_ratio=1` : '';
-
-  // AutoScale input to ratio
-  args.push('-vf', `scale=w=${width}:h=${height}:force_original_aspect_ratio=1,pad=${width}:${height}:(ow-iw)/2:(oh-ih)/2${customHeight}`);
-
   // Codec
   args.push('-c:v', profile.codec);
-
-  // Bitrate
-  //args.push('-b:v', '128M');
 
   // Preset
   if (profile.preset) {

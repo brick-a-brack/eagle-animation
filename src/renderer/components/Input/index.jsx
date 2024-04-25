@@ -1,4 +1,5 @@
 import React from 'react';
+
 import * as style from './style.module.css';
 
 const Input = ({ register = {}, className = '', ...rest }) => {

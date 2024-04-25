@@ -5,7 +5,19 @@
   },
   "extends": ["eslint:recommended", "plugin:react/recommended", "plugin:react/jsx-runtime", "@electron-toolkit", "@electron-toolkit/eslint-config-prettier"],
   "rules": {
-    "react/prop-types": "off"
+    "react/prop-types": "off",
+    "simple-import-sort/imports": ["error", {
+      "groups": [
+        ["^\\u0000"],
+        ["^node:"],
+        ["^@?\\w"],
+        ["^"],
+        ["^\\."],
+        ["^.+\\.?(graphql)$"],
+        ["^.+\\.?(css)$"]
+      ]
+    }],
+    "simple-import-sort/exports": "error"
   },
   "env": {
     "browser": true,
@@ -17,5 +29,6 @@
     "react": {
       "version": "detect"
     }
-  }
+  },
+  "plugins": ["simple-import-sort"]
 }

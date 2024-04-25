@@ -4,13 +4,10 @@ const ProjectsGrid = ({ children }) => {
   return (
     <div className={style.wrapper}>
       {children}
-      {Array.apply(null, { length: 60 }) // eslint-disable-line prefer-spread
+      {Array.apply(null, { length: 60 })
         .map(Number.call, Number)
         .map((_, key) => (
-          <div
-            key={key} // eslint-disable-line react/no-array-index-key
-            className={style.fakeBox}
-          />
+          <div key={key} className={style.fakeBox} />
         ))}
     </div>
   );

@@ -1,4 +1,5 @@
 import { resolve } from 'node:path';
+
 import react from '@vitejs/plugin-react';
 import mediaMinMax from 'postcss-media-minmax';
 import { defineConfig, normalizePath } from 'vite';

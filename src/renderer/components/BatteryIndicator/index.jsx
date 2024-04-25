@@ -1,39 +1,45 @@
-import * as style from './style.module.css';
-
-import IconBattery0 from './assets/battery-0.svg?jsx';
-import IconBattery25 from './assets/battery-25.svg?jsx';
-import IconBattery50 from './assets/battery-50.svg?jsx';
-import IconBattery75 from './assets/battery-75.svg?jsx';
-import IconBattery100 from './assets/battery-100.svg?jsx';
-import IconBatteryAC from './assets/battery-ac.svg?jsx';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { withTranslation } from 'react-i18next';
 
+import faBatteryBolt from '../../icons/faBatteryBolt';
+import faBatteryEmpty from '../../icons/faBatteryEmpty';
+import faBatteryFull from '../../icons/faBatteryFull';
+import faBatteryHalf from '../../icons/faBatteryHalf';
+import faBatteryLow from '../../icons/faBatteryLow';
+import faBatteryQuarter from '../../icons/faBatteryQuarter';
+import faBatteryThreeQuarters from '../../icons/faBatteryThreeQuarters';
+
+import * as style from './style.module.css';
+
 const getInfos = (value) => {
-  if (value > 100) {
-    return { icon: IconBatteryAC, value: 100, status: 'high' };
+  if (value > 100 || value === 'AC') {
+    return { icon: faBatteryBolt, value: null, status: 'high' };
   }
   if (value === 100) {
-    return { icon: IconBattery100, value, status: 'high' };
+    return { icon: faBatteryFull, value, status: 'high' };
   }
   if (value >= 75) {
-    return { icon: IconBattery75, value, status: 'high' };
+    return { icon: faBatteryThreeQuarters, value, status: 'high' };
   }
   if (value >= 50) {
-    return { icon: IconBattery50, value, status: 'medium' };
+    return { icon: faBatteryHalf, value, status: 'medium' };
   }
   if (value >= 25) {
-    return { icon: IconBattery25, value, status: 'medium' };
+    return { icon: faBatteryQuarter, value, status: 'medium' };
   }
-  return { icon: IconBattery0, value, status: 'low' };
+  if (value >= 10) {
+    return { icon: faBatteryLow, value, status: 'low' };
+  }
+  return { icon: faBatteryEmpty, value, status: 'low' };
 };
 
 const BatteryIndicator = ({ value = 0, t }) => {
-  const { icon: Icon, value: parsedValue, status } = getInfos(value);
+  const { icon, value: parsedValue, status } = getInfos(value);
 
   return (
     <div className={`${style.indicator} ${style[status]}`}>
-      <Icon />
-      <span>{t('{{value}}%', { value: parsedValue })}</span>
+      <FontAwesomeIcon icon={icon} />
+      {parsedValue !== null && <span>{t('{{value}}%', { value: parsedValue })}</span>}
     </div>
   );
 };

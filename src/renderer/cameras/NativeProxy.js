@@ -11,37 +11,40 @@ class NativeProxy {
   }
 
   _drawLivePreview(dom, src) {
-    if (!dom || !src) {
-      return;
-    }
+    return new Promise((resolve) => {
+      if (!dom || !src) {
+        return resolve(false);
+      }
 
-    const ctx = dom.getContext('2d');
-    const img = new Image();
-    img.addEventListener('error', () => {
-      ctx.clearRect(0, 0, dom.width, dom.height);
+      const ctx = dom.getContext('2d');
+      const img = new Image();
+      img.addEventListener('error', () => {
+        ctx.clearRect(0, 0, dom.width, dom.height);
+        resolve(true);
+      });
+      img.addEventListener(
+        'load',
+        function () {
+          if (dom.width !== this.naturalWidth) {
+            dom.width = this.naturalWidth;
+          }
+          if (dom.height !== this.naturalHeight) {
+            dom.height = this.naturalHeight;
+          }
+          ctx.drawImage(img, 0, 0, img.naturalWidth, img.naturalHeight, 0, 0, img.naturalWidth, img.naturalHeight);
+          resolve(true);
+        },
+        false
+      );
+      img.src = src;
     });
-    img.addEventListener(
-      'load',
-      function () {
-        dom.width = this.naturalWidth;
-        dom.height = this.naturalHeight;
-        ctx.drawImage(img, 0, 0, img.naturalWidth, img.naturalHeight, 0, 0, img.naturalWidth, img.naturalHeight);
-      },
-      false
-    );
-    img.src = src;
   }
 
-  initPreview() {
-    // eslint-disable-next-line no-async-promise-executor
-    return new Promise(async (resolve) => {
-      resolve(true);
-
-      // TODO: ADD EA Interface for that
-      window.IPC.stream('LIVE_VIEW_DATA', (evt, args) => {
-        this._drawLivePreview(this.video, args.data);
-      });
+  async initPreview() {
+    window.EAEvents('LIVE_VIEW_DATA', (evt, args) => {
+      this._drawLivePreview(this.video, args.data);
     });
+    return true;
   }
 
   async canResetCapabilities() {
@@ -61,11 +64,15 @@ class NativeProxy {
     return window.EA('GET_CAPABILITIES_NATIVE_CAMERA', { camera_id: this.context.id });
   }
 
-  async connect({ imageDOM } = { imageDOM: false }, settings = {}) {
+  async connect({ imageDOM } = { imageDOM: false }, settings = {}, onBinded = () => {}) {
     this.video = imageDOM;
     this.settings = settings;
-    await window.EA('CONNECT_NATIVE_CAMERA', { camera_id: this.context.id });
-    return this.initPreview();
+     window.EA('CONNECT_NATIVE_CAMERA', { camera_id: this.context.id });
+     this.initPreview();
+    if (typeof onBinded === 'function') {
+      onBinded();
+    }
+    return true;
   }
 
   async batteryStatus() {

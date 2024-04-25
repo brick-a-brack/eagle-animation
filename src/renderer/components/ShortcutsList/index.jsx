@@ -1,8 +1,9 @@
+import { Fragment } from 'react';
 import { withTranslation } from 'react-i18next';
 
-import * as style from './style.module.css';
 import Heading from '../Heading';
-import { Fragment } from 'react';
+
+import * as style from './style.module.css';
 
 const ShortcutsList = ({ t, shortcuts }) => {
   const keysTitles = {
@@ -19,6 +20,8 @@ const ShortcutsList = ({ t, shortcuts }) => {
     del: t('Del'),
     esc: t('Esc'),
     ctrl: t('Ctrl'),
+    home: t('Home'),
+    end: t('End'),
   };
 
   const categoriesTitles = {
@@ -56,6 +59,7 @@ const ShortcutsList = ({ t, shortcuts }) => {
     DUPLICATE: t('Duplicate current frame'),
     DEDUPLICATE: t('Deduplicate current frame'),
     GRID: t('Show / Hide grid'),
+    HIDE_FRAME: t('Show / Hide current frame in the animation'),
   };
 
   const categories = {
@@ -76,7 +80,7 @@ const ShortcutsList = ({ t, shortcuts }) => {
       'ONION_MORE',
       'GRID',
     ],
-    ACTIONS: ['DELETE_FRAME', 'DUPLICATE', 'DEDUPLICATE'],
+    ACTIONS: ['DELETE_FRAME', 'DUPLICATE', 'DEDUPLICATE', 'HIDE_FRAME'],
     NAVIGATION: ['FRAME_LEFT', 'FRAME_RIGHT', 'FRAME_LIVE', 'FRAME_FIRST'],
     OTHER: ['HOME'],
   };

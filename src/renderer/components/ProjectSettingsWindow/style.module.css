@@ -1,0 +1,10 @@
+.actions {
+    width:calc(100% - 2 * var(--space-huge));
+    margin: 0 var(--space-huge) ;
+}
+
+.title {
+    text-align: center;
+    margin-top: var(--space-medium) !important;
+    margin-bottom: var(--space-medium) !important;
+}

@@ -1,9 +1,10 @@
-import { withTranslation } from 'react-i18next';
 import { compareVersions } from 'compare-versions';
+import { withTranslation } from 'react-i18next';
+
+import Action from '../Action';
+import Logo from './assets/logo.svg?jsx';
 
 import * as style from './style.module.css';
-import Logo from './assets/logo.svg?jsx';
-import Action from '../Action';
 
 const Header = ({ action = null, version, latestVersion, t }) => {
   const canBeUpdated = compareVersions(latestVersion || '0.0.0', version || '0.0.0') === 1;

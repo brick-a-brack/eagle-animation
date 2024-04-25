@@ -33,7 +33,7 @@
 }
 
 .icon svg {
-    fill: var(--color-theme-light);
+    color: var(--color-theme-light);
     height: 50px;
     width: 50px;
 }
@@ -52,7 +52,7 @@
 
 .block.selected .icon svg,
 .block.secondary .icon svg {
-    fill: var(--color-primary);
+    color: var(--color-primary);
 }
 
 .block.selected .title,

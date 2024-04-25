@@ -1,15 +1,11 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import resizeToFit from 'intrinsic-scale';
 import { isEqual } from 'lodash';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+
+import BatteryIndicator from '../BatteryIndicator';
 
 import * as style from './style.module.css';
-import Slider from '../CustomSlider';
-import FormGroup from '../FormGroup';
-import Heading from '../Heading';
-import Switch from '../Switch';
-import ActionCard from '../ActionCard';
-import Select from '../Select';
-import BatteryIndicator from '../BatteryIndicator';
 
 const drawArea = (ctx, x, y, width, height) => {
   ctx.fillRect(x, y, width, 1);
@@ -37,8 +33,15 @@ class Player extends Component {
       frameIndex: false, // Frame index contains the position in the animation (including duplicated frames)
     };
 
+    // Used to detect size change on canvas based preview
+    this.videoFrameObserver = null;
+
     this.resize = () => {
-      const parentSize = this.dom.container.current.parentNode.getBoundingClientRect();
+      this.initCanvas();
+      const parentSize = this?.dom?.container?.current?.parentNode?.getBoundingClientRect();
+      if (!parentSize) {
+        return;
+      }
       const parentRatio = parentSize.width / parentSize.height;
 
       let widthElem = 0;
@@ -65,22 +68,24 @@ class Player extends Component {
 
     this.play = () => {
       const exec = (force = false) => {
+        const filteredFrames = this.frames.filter((e) => !e.hidden);
+
         let newFrameIndex = false;
 
-        if ((this.state.frameIndex === false || !this.frames.length) && !force && !this.props.loopStatus) {
+        if ((this.state.frameIndex === false || !filteredFrames.length) && !force && !this.props.loopStatus) {
           return false;
-        } else if (this.frames.length && (force || (this.state.frameIndex === false && this.props.loopStatus))) {
-          newFrameIndex = this.props.shortPlayStatus && this.frames.length > this.props.shortPlayFrames ? this.frames.length - this.props.shortPlayFrames - 1 : 0;
-        } else if (this.state.frameIndex >= this.frames.length - 1) {
+        } else if (filteredFrames.length && (force || (this.state.frameIndex === false && this.props.loopStatus))) {
+          newFrameIndex = this.props.shortPlayStatus && filteredFrames.length > this.props.shortPlayFrames ? filteredFrames.length - this.props.shortPlayFrames - 1 : 0;
+        } else if (this.state.frameIndex >= filteredFrames.length - 1) {
           newFrameIndex = false;
         } else {
           newFrameIndex = this.state.frameIndex + 1;
         }
 
-        const frame = (newFrameIndex === false ? this.frames[this.frames.length - 1] : this.frames[newFrameIndex]) || false;
+        const frame = (newFrameIndex === false ? filteredFrames[filteredFrames.length - 1] : filteredFrames[newFrameIndex]) || false;
         this.drawFrame(frame.link || false);
         this.setState({ frameIndex: newFrameIndex });
-        this.props.onFrameChange(frame ? frame.id : false);
+        this.props.onFrameChange(newFrameIndex !== false && frame ? frame.id : false);
         return true;
       };
 
@@ -92,6 +97,45 @@ class Player extends Component {
           this.stop();
         }
       }, 1000 / this.props.fps);
+    };
+
+    this.initCanvas = () => {
+      if (this.dom.picture.current) {
+        if (this.dom.picture.current.width !== this.getSize().width) {
+          this.dom.picture.current.width = this.getSize().width;
+        }
+        if (this.dom.picture.current.height !== this.getSize().height) {
+          this.dom.picture.current.height = this.getSize().height;
+        }
+        if (this.dom.picture.current.style.width !== this.getSize().width) {
+          this.dom.picture.current.style.width = this.getSize().width;
+        }
+        if (this.dom.picture.current.style.height != this.getSize().height) {
+          this.dom.picture.current.style.height = this.getSize().height;
+        }
+      }
+      if (this.dom.grid.current) {
+        let shouldRedraw = false;
+        if (this.dom.grid.current.width !== this.getSize().width) {
+          this.dom.grid.current.width = this.getSize().width;
+          shouldRedraw = true;
+        }
+        if (this.dom.grid.current.height !== this.getSize().height) {
+          this.dom.grid.current.height = this.getSize().height;
+          shouldRedraw = true;
+        }
+        if (this.dom.grid.current.style.width !== this.getSize().width) {
+          this.dom.grid.current.style.width = this.getSize().width;
+          shouldRedraw = true;
+        }
+        if (this.dom.grid.current.style.height !== this.getSize().height) {
+          this.dom.grid.current.style.height = this.getSize().height;
+          shouldRedraw = true;
+        }
+        if (shouldRedraw) {
+          this.drawGrid();
+        }
+      }
     };
 
     this.stop = () => {
@@ -128,17 +172,24 @@ class Player extends Component {
   componentDidMount() {
     const { onInit } = this.props;
     onInit(this.dom.video.current, this.dom.videoFrame.current);
-    this.dom.picture.current.width = this.getSize().width;
-    this.dom.picture.current.height = this.getSize().height;
-    this.dom.picture.current.style.width = this.getSize().width;
-    this.dom.picture.current.style.height = this.getSize().height;
-    this.dom.grid.current.width = this.getSize().width;
-    this.dom.grid.current.height = this.getSize().height;
-    this.dom.grid.current.style.width = this.getSize().width;
-    this.dom.grid.current.style.height = this.getSize().height;
-    this.drawGrid();
-    window.addEventListener('resize', this.resize);
+
+    this.dom.video.current.onloadedmetadata = () => {
+      this.resize();
+    };
+    this.dom.video.current.onresize = () => {
+      this.resize();
+    };
+
     this.resize();
+    window.addEventListener('resize', this.resize);
+
+    this.videoFrameObserver = new MutationObserver(() => {
+      this.resize();
+    });
+    this.videoFrameObserver.observe(this.dom.videoFrame.current, {
+      attributeFilter: ["height", "width"],
+    });
+
     this.showFrame(false);
   }
 
@@ -152,25 +203,48 @@ class Player extends Component {
       }
     }
 
-    if (!isEqual(prevProps.capabilities, this.props.capabilities)) {
+    // Force to display live view if capabilities changed
+    if (!isEqual(prevProps.cameraCapabilities, this.props.cameraCapabilities)) {
       this.showFrame(false);
+    }
+
+    if (!isEqual(prevProps.cameraId, this.props.cameraId)) {
+      this.initCanvas();
     }
   }
 
   componentWillUnmount() {
+    if (this.videoFrameObserver) {
+      this.videoFrameObserver.disconnect();
+    }
     window.removeEventListener('resize', this.resize);
     this.stop();
   }
 
+  getVideoRatio() {
+    return this.props.videoRatio || null;
+  }
+
   getRatio() {
-    // eslint-disable-line class-methods-use-this
-    return 16 / 9;
+    let ratio = null;
+    if (!ratio && this.dom.video.current && (this.dom.video.current.src || this.dom.video.current.srcObject)) {
+      const tmpRatio = this.dom.video.current.videoWidth / this.dom.video.current.videoHeight;
+      if (tmpRatio > 0) {
+        ratio = tmpRatio;
+      }
+    }
+    if (!ratio && this.dom.videoFrame.current) {
+      const tmpRatio = this.dom.videoFrame.current.width / this.dom.videoFrame.current.height;
+      if (tmpRatio > 0) {
+        ratio = tmpRatio;
+      }
+    }
+    return ratio > 0 ? ratio : 16 / 9;
   }
 
   getSize() {
-    // eslint-disable-line class-methods-use-this
     return {
-      width: 1280,
+      width: 720 * this.getRatio(),
       height: 720,
     };
   }
@@ -223,12 +297,27 @@ class Player extends Component {
       () => {
         ctx.fillStyle = '#000000';
         ctx.fillRect(0, 0, this.getSize().width, this.getSize().height);
-        const ratioX = this.getSize().width / img.width;
-        const ratioY = this.getSize().height / img.height;
-        const minRatio = Math.min(ratioX, ratioY);
-        const width = Math.round(img.width * minRatio);
-        const height = Math.round(img.height * minRatio);
-        ctx.drawImage(img, 0, 0, img.width, img.height, Math.round((this.getSize().width - width) / 2), Math.round((this.getSize().height - height) / 2), width, height);
+
+        let ratioPosition = null;
+        if (this.getVideoRatio()) {
+          ratioPosition = resizeToFit('contain', { width: this.getVideoRatio(), height: 1 }, { width: this.getSize().width, height: this.getSize().height });
+        } else {
+          ratioPosition = { width: this.getSize().width, height: this.getSize().height };
+        }
+
+        const imagePosition = resizeToFit('cover', { width: img.width, height: img.height }, { width: ratioPosition.width, height: ratioPosition.height });
+
+        ctx.drawImage(
+          img,
+          0,
+          0,
+          img.width,
+          img.height,
+          Math.round(this.getSize().width / 2) - imagePosition.width / 2,
+          Math.round(this.getSize().height / 2) - imagePosition.height / 2,
+          imagePosition.width,
+          imagePosition.height
+        );
       },
       false
     );
@@ -236,47 +325,17 @@ class Player extends Component {
   }
 
   render() {
-    const { showGrid, onionValue, blendMode, isCameraReady, t, capabilities, showCameraSettings, batteryStatus } = this.props;
+    const { showGrid, onionValue, blendMode, isCameraReady, t, batteryStatus, ratioLayerOpacity } = this.props;
     const { width, height, ready, frameIndex } = this.state;
 
-    const selectOptionsTranslations = {
-      continuous: t('Automatic'),
-      manual: t('Manual'),
-      AutoAmbiencePriority: t('Automatic'),
-      Cloudy: t('Cloudy'),
-      Daylight: t('Daylight'),
-      Flash: t('Flash'),
-      Fluorescent: t('Fluorescent'),
-      Shade: t('Shade'),
-      Tungsten: t('Tungsten'),
-      WhitePaper: t('Manual'),
-    };
-
-    const capsTranslations = {
-      BRIGHTNESS: t('Brightness'),
-      COLOR_TEMPERATURE: t('White balance'),
-      CONTRAST: t('Contrast'),
-      FOCUS_DISTANCE: t('Focus'),
-      FOCUS_MODE: t('Automatic focus'),
-      EXPOSURE_COMPENSATION: t('Exposure compensation'),
-      EXPOSURE_MODE: t('Automatic exposure'),
-      EXPOSURE_TIME: t('Exposure time'),
-      ZOOM_POSITION_X: t('Horizontal position'),
-      SATURATION: t('Saturation'),
-      SHARPNESS: t('Sharpness'),
-      ZOOM_POSITION_Y: t('Vertical position'),
-      WHITE_BALANCE_MODE: t('Automatic white balance'),
-      ZOOM: t('Zoom'),
-      APERTURE: t('Aperture'),
-      WHITE_BALANCE: t('White balance'),
-      SHUTTER_SPEED: t('Shutter speed'),
-      ISO: t('ISO'),
-    };
+    const borders = resizeToFit('contain', { width: this.getVideoRatio(), height: 1 }, { width: this.getSize().width, height: this.getSize().height });
+    const borderLeftRight = (this.getSize().width - borders.width) / 2 / this.getSize().width;
+    const borderTopBottom = (this.getSize().height - borders.height) / 2 / this.getSize().height;
 
     return (
       <div className={`${style.playerContainer} ${frameIndex === false ? style.live : ''}`}>
         <div className={style.container} ref={this.dom.container} style={{ width: `${width}px`, height: `${height}px`, opacity: ready ? 1 : 0 }}>
-          <video ref={this.dom.video} className={style.layout} style={{ opacity: frameIndex === false ? 1 : 0 }} />
+          <video ref={this.dom.video} className={style.layout} style={{ opacity: isCameraReady && frameIndex === false ? 1 : 0 }} />
           <div style={{ opacity: frameIndex === false ? 1 : 0 }} className={style.layout}>
             <canvas ref={this.dom.videoFrame} className={style.layoutVideoFrame} />
           </div>
@@ -284,75 +343,21 @@ class Player extends Component {
             ref={this.dom.picture}
             className={style.layout}
             style={{
-              opacity: frameIndex !== false || blendMode ? 1 : 1 - onionValue,
+              opacity: !isCameraReady && frameIndex === false ? 0 : (frameIndex !== false || blendMode ? 1 : 1 - onionValue),
               mixBlendMode: !blendMode ? 'normal' : 'difference',
             }}
           />
-          <canvas ref={this.dom.grid} className={style.layout} style={{ opacity: showGrid && frameIndex === false ? 1 : 0 }} />
+          {this.getVideoRatio() !== null && borderLeftRight > 0 && <div className={style.borderLeft} style={{ width: `${borderLeftRight * 100}%`, opacity: ratioLayerOpacity || 1 }} />}
+          {this.getVideoRatio() !== null && borderLeftRight > 0 && <div className={style.borderRight} style={{ width: `${borderLeftRight * 100}%`, opacity: ratioLayerOpacity || 1 }} />}
+          {this.getVideoRatio() !== null && borderTopBottom > 0 && <div className={style.borderTop} style={{ height: `${borderTopBottom * 100}%`, opacity: ratioLayerOpacity || 1 }} />}
+          {this.getVideoRatio() !== null && borderTopBottom > 0 && <div className={style.borderBottom} style={{ height: `${borderTopBottom * 100}%`, opacity: ratioLayerOpacity || 1 }} />}
 
-          {frameIndex === false && batteryStatus !== null && <BatteryIndicator value={batteryStatus} />}
+          <canvas ref={this.dom.grid} className={style.layout} style={{ opacity: isCameraReady && showGrid && frameIndex === false ? 1 : 0 }} />
+
+          {isCameraReady && frameIndex === false && batteryStatus !== null && <BatteryIndicator value={batteryStatus} />}
 
           {!isCameraReady && frameIndex === false && <span className={style.loader} />}
-          {!isCameraReady && frameIndex === false && <div className={style.info}>{t('If your camera does not load, try changing it in the settings')}</div>}
-
-          <div className={`${style.settings} ${showCameraSettings ? style.open : ''}`}>
-            <Heading h={2} className={style.settingsTitle}>
-              {t('Camera settings')}
-            </Heading>
-
-            {capabilities.map((cap) => {
-              if (cap.type === 'RANGE') {
-                return (
-                  <FormGroup
-                    key={cap.id}
-                    label={capsTranslations[cap.id] || cap.id}
-                    description={t('[{{min}}, {{max}}] • {{value}}', { min: Math.round(cap.min), max: Math.round(cap.max), value: Math.round(cap.value) })}
-                  >
-                    <Slider
-                      min={cap.min}
-                      max={cap.max}
-                      value={cap.value}
-                      step={cap.step}
-                      onChange={(value) => {
-                        this.props.onCapabilityChange(cap.id, value);
-                      }}
-                    />
-                  </FormGroup>
-                );
-              }
-              if (cap.type === 'SWITCH') {
-                return (
-                  <FormGroup key={cap.id} label={capsTranslations[cap.id] || cap.id}>
-                    <Switch
-                      checked={cap.value === true}
-                      onChange={() => {
-                        if (cap.value === true) {
-                          this.props.onCapabilityChange(cap.id, false);
-                        } else {
-                          this.props.onCapabilityChange(cap.id, true);
-                        }
-                      }}
-                    />
-                  </FormGroup>
-                );
-              }
-              if (cap.type === 'SELECT') {
-                return (
-                  <FormGroup key={cap.id} label={capsTranslations[cap.id] || cap.id}>
-                    <Select
-                      options={cap.values.map((e) => ({ ...e, label: selectOptionsTranslations[e.label] || e.label }))}
-                      value={cap.value}
-                      onChange={(evt) => {
-                        this.props.onCapabilityChange(cap.id, evt.target.value);
-                      }}
-                    />
-                  </FormGroup>
-                );
-              }
-              return null;
-            })}
-            {capabilities.some((cap) => cap.canReset) && <ActionCard className={style.settingsReset} title={t('Reset settings')} action={() => this.props.onCapabilitiesReset()} sizeAuto secondary />}
-          </div>
+          {!isCameraReady && frameIndex === false && <div className={style.info}>{t('If your camera does not load, try changing it in the camera settings')}</div>}
         </div>
       </div>
     );
@@ -362,6 +367,7 @@ class Player extends Component {
 Player.propTypes = {
   blendMode: PropTypes.any.isRequired,
   onionValue: PropTypes.any.isRequired,
+  ratioLayerOpacity: PropTypes.number.isRequired,
   showGrid: PropTypes.bool.isRequired,
   isCameraReady: PropTypes.bool.isRequired,
   onInit: PropTypes.func.isRequired,

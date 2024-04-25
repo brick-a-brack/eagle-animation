@@ -108,6 +108,49 @@
     object-fit: contain;
 }
 
+
+
+.borderLeft,
+.borderRight,
+.borderTop,
+.borderBottom {
+    background: #000;
+    position: absolute;
+}
+
+.borderLeft,
+.borderRight {
+    height: 100%;
+}
+
+.borderTop,
+.borderBottom {
+    width: 100%;
+}
+
+
+.borderLeft {
+    left: 0;
+}
+
+.borderRight {
+    right: 0;
+}
+
+.borderTop {
+    top: 0;
+}
+
+.borderBottom {
+    bottom: 0;
+}
+
+
+
+
+
+
+
 @keyframes rotate {
     0% {
         border-radius: 10%;

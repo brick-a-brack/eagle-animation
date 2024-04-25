@@ -1,7 +1,7 @@
 .formGroup {
   align-items: center;
   display: flex;
-  margin: calc(2 * var(--space-big)) 0;
+  margin: calc(1.5 * var(--space-big)) 0;
   width: 100%;
 }
 

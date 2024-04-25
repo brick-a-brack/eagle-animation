@@ -15,7 +15,7 @@ class Webcam {
 
   initPreview() {
     // eslint-disable-next-line no-async-promise-executor
-    return new Promise(async (resolve) => {
+    return new Promise(async (resolve, reject) => {
       // Get preview stream
       this.stream = await navigator.mediaDevices
         .getUserMedia({
@@ -35,9 +35,9 @@ class Webcam {
           },
           audio: false,
         })
-        .catch((err) => console.error('failed', err));
+        .catch(reject);
 
-      console.log('[CAMERA]', 'Init', this.video, this.stream);
+      //console.log('[CAMERA]', 'Init', this.video, this.stream);
       window.__DEBUG_DEVICE = this.stream;
 
       // Launch preview
@@ -50,7 +50,7 @@ class Webcam {
           resolve();
         });
 
-        console.log('[CAMERA]', 'Ready');
+        //console.log('[CAMERA]', 'Ready');
       }
     });
   }
@@ -62,34 +62,42 @@ class Webcam {
 
   async resetCapabilities() {
     const mediaStreamTrack = this.stream.getVideoTracks()[0];
-    await mediaStreamTrack
-      .applyConstraints({
-        advanced: [
-          {
-            brightness: 128,
-            contrast: 128,
-            colorTemperature: 2200,
-            exposureCompensation: 0,
-            exposureMode: 'continuous',
-            exposureTime: 625,
-            focusDistance: 0,
-            focusMode: 'continuous',
-            pan: 0,
-            saturation: 128,
-            sharpness: 128,
-            tilt: 0,
-            whiteBalanceMode: 'continuous',
-            zoom: 100,
-          },
-        ],
-      })
-      .catch(console.error);
+    const values = {
+      brightness: 128,
+      contrast: 128,
+      colorTemperature: 2200,
+      exposureCompensation: 0,
+      exposureMode: 'continuous',
+      exposureTime: 625,
+      focusDistance: 0,
+      focusMode: 'continuous',
+      pan: 0,
+      iso: 100,
+      saturation: 128,
+      sharpness: 128,
+      tilt: 0,
+      whiteBalanceMode: 'continuous',
+      zoom: 100,
+    };
+
+    const proms = [];
+    for (const key in values) {
+      proms.push(
+        mediaStreamTrack
+          .applyConstraints({
+            advanced: [{ [key]: values[key] }],
+          })
+          .catch(console.error)
+      );
+    }
+    await Promise.all(proms);
     return null;
   }
 
   async applyCapability(key, value) {
     const settings = this?.stream?.getVideoTracks()?.[0]?.getSettings() || {};
     const mediaStreamTrack = this.stream.getVideoTracks()[0];
+    const capabilities = this?.stream?.getVideoTracks()?.[0] && typeof this.stream.getVideoTracks()[0].getCapabilities === 'function' ? this.stream.getVideoTracks()[0].getCapabilities() : {};
 
     const keyNames = {
       FOCUS_MODE: 'focusMode',
@@ -106,6 +114,7 @@ class Webcam {
       ZOOM: 'zoom',
       ZOOM_POSITION_Y: 'tilt',
       ZOOM_POSITION_X: 'pan',
+      ISO: 'iso',
     };
 
     const cap = keyNames[key] || null;
@@ -117,12 +126,22 @@ class Webcam {
         ...(cap === 'focusMode' ? { focusDistance: settings.focusDistance } : {}),
         ...(cap === 'exposureMode'
           ? {
-              exposureCompensation: settings.exposureCompensation,
-              exposureTime: settings.exposureTime,
+              ...(capabilities.exposureCompensation ? { exposureCompensation: settings.exposureCompensation } : {}),
+              ...(capabilities.exposureTime ? { exposureTime: settings.exposureTime } : {}),
+              ...(capabilities.iso ? { iso: settings.iso } : {}),
             }
           : {}),
-        ...(cap === 'whiteBalanceMode' ? { colorTemperature: settings.colorTemperature } : {}),
-        ...(cap === 'zoom' ? { pan: settings.pan, tilt: settings.tilt } : {}),
+        ...(cap === 'whiteBalanceMode'
+          ? {
+              ...(capabilities.colorTemperature ? { colorTemperature: settings.colorTemperature } : {}),
+            }
+          : {}),
+        ...(cap === 'zoom'
+          ? {
+              ...(capabilities.pan ? { pan: settings.pan } : {}),
+              ...(capabilities.tilt ? { tilt: settings.tilt } : {}),
+            }
+          : {}),
       },
     ];
 
@@ -137,8 +156,12 @@ class Webcam {
   }
 
   async getCapabilities() {
+    if (!this?.stream) {
+      return [];
+    }
+
     const settings = this?.stream?.getVideoTracks()?.[0]?.getSettings() || {};
-    const capabilities = this?.stream?.getVideoTracks()?.[0] && typeof this.stream.getVideoTracks()[0].getCapabilities === 'function' ? this.stream.getVideoTracks()[0].getCapabilities() : [];
+    const capabilities = this?.stream?.getVideoTracks()?.[0] && typeof this.stream.getVideoTracks()[0].getCapabilities === 'function' ? this.stream.getVideoTracks()[0].getCapabilities() : {};
 
     const allowedCapabilities = [
       ...(capabilities.focusMode
@@ -259,6 +282,18 @@ class Webcam {
           ]
         : []),
 
+      ...(capabilities.iso && settings.exposureMode === 'manual'
+        ? [
+            {
+              id: 'ISO',
+              type: 'RANGE',
+              ...capabilities.iso,
+              value: settings.iso,
+              canReset: true,
+            },
+          ]
+        : []),
+
       ...(capabilities.exposureTime && settings.exposureMode === 'manual'
         ? [
             {
@@ -311,10 +346,21 @@ class Webcam {
     return allowedCapabilities;
   }
 
-  connect({ videoDOM } = { videoDOM: false }, settings = {}) {
+  async connect({ videoDOM, imageDOM } = { videoDOM: false, imageDOM: false }, settings = {}, onBinded = () => {}) {
     this.video = videoDOM;
     this.settings = settings;
-    return this.initPreview();
+
+    // Reset preview canvas size for preview
+    imageDOM.width = 0;
+    imageDOM.height = 0;
+
+    await this.initPreview();
+
+    if (typeof onBinded === 'function') {
+      onBinded();
+    }
+
+    return true;
   }
 
   async batteryStatus() {
@@ -345,18 +391,25 @@ class Webcam {
       context.drawImage(bitmap, 0, 0, bitmap.width, bitmap.height);
       //const context = canvas.getContext("bitmaprenderer");
       //context?.transferFromImageBitmap(bitmap);
-      return canvas;
+      return { type: 'image/png', buffer: canvas };
     } else {
       const canvas = document.createElement('canvas');
       canvas.width = this.video.videoWidth;
       canvas.height = this.video.videoHeight;
       const context = canvas.getContext('2d', { alpha: false });
       context.drawImage(this.video, 0, 0, canvas.width, canvas.height);
-      return canvas;
+      return { type: 'image/png', buffer: canvas };
     }
   }
 
   async disconnect() {
+    if (this.video) {
+      this.video.src = null;
+      this.video.srcObject = null;
+      if (typeof this.video?.stop === 'function') {
+        this.video.stop();
+      }
+    }
     if (this.stream) {
       this.stream.getTracks().forEach((track) => {
         track.stop();

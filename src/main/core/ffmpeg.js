@@ -1,43 +1,31 @@
-import ffmpeg from 'ffmpeg-static';
-import { execFile } from 'child_process';
-import { getFFmpegArgs } from '../../common/ffmpeg';
+import { execFile } from 'node:child_process';
 
-// eslint-disable-next-line
-const ffmpegPath = ffmpeg ? ffmpeg.replace('app.asar', 'app.asar.unpacked') : false;
+import ffmpegExec from 'ffmpeg-static';
 
-export const generate = (width = 1920, height = 1080, directory = false, outputProfil = false, outputFile = false, fps = 24, opts = {}) => {
-  return new Promise((resolve, reject) => {
-    let args = [];
-    try {
-      args = getFFmpegArgs(width, height, outputProfil, outputFile, fps, opts);
-    } catch (err) {
-      return reject(err);
-    }
+const ffmpegPath = ffmpegExec ? ffmpegExec.replace('app.asar', 'app.asar.unpacked') : false;
 
-    console.log(`ffmpeg.exe ${args.map((e) => `"${e}"`).join(' ')}`);
+export const ffmpeg = (args = [], directory = false, onData = () => {}) => {
+  return new Promise((resolve) => {
+    console.log(`🎞️ FFmpeg ${args.map((e) => `"${e}"`).join(' ')}`);
 
     // Exec
-    const exec = execFile(ffmpegPath, args, { cwd: directory });
-
-    let std = '';
+    const exec = execFile(ffmpegPath, args, directory ? { cwd: directory } : {});
 
     exec.stdout.on('data', (data) => {
-      std += data;
+      onData(data);
     });
 
     exec.stderr.on('data', (data) => {
-      std += data;
+      onData(data);
     });
 
     exec.on('close', (code) => {
-      console.log(std);
-      console.log(`child process exited with code ${code}`);
+      console.log(`🎞️ FFmpeg exited with code ${code}`);
       resolve();
     });
 
     exec.on('exit', (code) => {
-      console.log(std);
-      console.log(`child process exited with code ${code}`);
+      console.log(`🎞️ FFmpeg exited with code ${code}`);
       resolve();
     });
   });

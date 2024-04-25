@@ -1,5 +1,5 @@
-import { Camera as WebcamCamera, CameraBrowser as WebcamCameraBrowser } from './Webcam';
 import { Camera as NativeProxyCamera, CameraBrowser as NativeProxyBrowser } from './NativeProxy';
+import { Camera as WebcamCamera, CameraBrowser as WebcamCameraBrowser } from './Webcam';
 
 const Cameras = [
   { browser: WebcamCameraBrowser, item: WebcamCamera },
@@ -138,10 +138,10 @@ export const takePicture = async (camera, nbFramesToTake = 1) => {
     }
   }
 
-  const finalCanvas = bufferList.length > 1 ? await mergePictures(bufferList) : bufferList?.[0];
-  if (finalCanvas instanceof HTMLCanvasElement) {
-    const data = finalCanvas.toDataURL('image/jpeg');
-    return Buffer.from(data.replace(/^data:image\/\w+;base64,/, ''), 'base64');
+  const finalCanvas = bufferList.length > 1 ? { type: 'image/png', buffer: await mergePictures(bufferList.map((e) => e?.buffer)) } : bufferList?.[0];
+  if (finalCanvas?.buffer instanceof HTMLCanvasElement) {
+    const data = finalCanvas?.buffer?.toDataURL('image/png');
+    return { type: 'image/png', buffer: Buffer.from(data.replace(/^data:image\/\w+;base64,/, ''), 'base64') };
   }
   return finalCanvas;
 };

@@ -1,11 +1,15 @@
-import { useEffect, useRef } from 'react';
+import { DndContext, MouseSensor, TouchSensor, useSensor, useSensors } from '@dnd-kit/core';
+import { horizontalListSortingStrategy, SortableContext, useSortable } from '@dnd-kit/sortable';
 import { CSS as DNDCSS } from '@dnd-kit/utilities';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import animateScrollTo from 'animated-scroll-to';
+import { useEffect, useRef } from 'react';
 import { withTranslation } from 'react-i18next';
 
+import faEyeSlash from '../../icons/faEyeSlash';
+import faRectangleHistory from '../../icons/faRectangleHistory';
+
 import * as style from './style.module.css';
-import { DndContext, MouseSensor, TouchSensor, useSensor, useSensors } from '@dnd-kit/core';
-import { SortableContext, horizontalListSortingStrategy, useSortable } from '@dnd-kit/sortable';
 
 const SortableItem = ({ img, selected, onSelect, index }) => {
   const { setNodeRef, isDragging, transform, transition, listeners, attributes, active } = useSortable({ id: img.id });
@@ -20,16 +24,18 @@ const SortableItem = ({ img, selected, onSelect, index }) => {
       style={{
         opacity: isDragging ? 1 : undefined,
         zIndex: isDragging ? 999 : undefined,
-        minWidth: `${img.length * 80}px`,
-        transform: active ? DNDCSS.Transform.toString({ ...transform, y: 0 }) : undefined,
+        minWidth: `80px`,
+        transform: active ? DNDCSS.Transform.toString({ ...transform, y: 0, scaleX: 1, scaleY: 1 }) : undefined,
         transition: active ? transition : undefined,
       }}
       onClick={() => onSelect(img)}
-      className={`${style.containerImg} ${selected ? style.selected : ''}`}
+      className={`${style.containerImg} ${selected ? style.selected : ''}  ${img.hidden ? style.isHidden : ''}`}
     >
       <span className={style.img}>
         <img alt="" className={style.imgcontent} src={img.link} />
       </span>
+      {img.hidden && <FontAwesomeIcon className={style.icon} icon={faEyeSlash} />}
+      {!img.hidden && img.length > 1 && <FontAwesomeIcon className={style.iconDuplicate} icon={faRectangleHistory} />}
       <span className={style.title}>{`#${index + 1}${img.length > 1 ? ` (${img.length})` : ''}`}</span>
     </span>
   );

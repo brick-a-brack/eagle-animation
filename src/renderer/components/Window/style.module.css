@@ -1,0 +1,67 @@
+.bgd {
+  background: rgb(0 0 0 / 0%);
+  height: 100vh;
+  left: 0;
+  opacity: 1;
+  overflow: hidden;
+  pointer-events: none;
+  position: fixed;
+  top: 0;
+  transition: background-color 0.3s ease-in-out;
+  user-select: none;
+  width: 100%;
+  z-index: 999999;
+}
+
+.window {
+  background: #2f3136;
+  border-top: solid 3px var(--color-primary);
+    box-shadow: 0 0 10px 0 rgb(114 114 114 / 10%);
+    max-height: 100vh;
+    min-height: 35vh;
+    opacity: 0;
+    overflow: auto;
+    position: fixed;
+    transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+    width: 100%;
+    bottom: 0;
+    transform: translate(0%, 101%);
+}
+
+.content {
+  box-sizing: border-box;
+}
+
+.opened {
+  background: rgb(0 13 22 / 40%);
+  pointer-events: all;
+}
+
+.opened .window {
+  opacity: 1;
+  transform: translate(0%, 0%);
+}
+
+.close {
+  color: var(--color-primary);
+  cursor: pointer;
+  display: inline-block;
+  height: 1.25rem;
+  opacity: 1;
+  position: absolute;
+  right: var(--space-medium);
+  top: var(--space-medium);
+  transition: opacity 0.3s ease-in-out;
+  user-select: none;
+  width: 1.25rem;
+  z-index: 5;
+}
+
+.close:hover {
+  opacity: 0.7;
+}
+
+.close svg {
+  height: 100%;
+  width: 100%;
+}

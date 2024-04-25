@@ -12,7 +12,7 @@ const setValueAndEmitEvent = (dom, value) => {
   dom.dispatchEvent(ev2);
 };
 
-const NumberInput = ({ register = {}, className = '', tag = '', style = {}, min = -Infinity, max = Infinity, onFocus, onBlur, onValueChange = null, ...rest }) => {
+const NumberInput = ({ register = {}, className = '', tag = '', step = 1, style = {}, min = -Infinity, max = Infinity, onFocus, onBlur, onValueChange = null, ...rest }) => {
   const handleButtonClick =
     (applyValue = 0) =>
     (evt) => {
@@ -71,7 +71,7 @@ const NumberInput = ({ register = {}, className = '', tag = '', style = {}, min 
         }}
         type="button"
         className={styleCss.button}
-        onClick={handleButtonClick(-1)}
+        onClick={handleButtonClick(-1 * step)}
       >
         -
       </button>
@@ -85,7 +85,7 @@ const NumberInput = ({ register = {}, className = '', tag = '', style = {}, min 
         }}
         type="button"
         className={styleCss.button}
-        onClick={handleButtonClick(1)}
+        onClick={handleButtonClick(1 * step)}
       >
         +
       </button>

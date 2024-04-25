@@ -1,9 +1,16 @@
-import { readdirSync, statSync, readFile, writeFile, existsSync } from 'fs';
-import { join, format } from 'path';
+import { randomUUID } from 'node:crypto';
+import { readdir, readFile, stat, writeFile } from 'node:fs/promises';
+import { format, join } from 'node:path';
 
-import { PROJECT_FILE, VERSION, DEFAULT_FPS } from '../../config';
-import { time, createDirectory } from './utils';
-import { randomUUID } from 'crypto';
+import { mkdirp } from 'mkdirp';
+
+import { DEFAULT_FPS, PROJECT_FILE, VERSION } from '../../config';
+import { time } from './utils';
+
+const exists = async (path) => {
+  const info = await stat(path).catch(() => null);
+  return !!info;
+};
 
 // Generate empty project
 export const generateProjectObject = (name) => ({
@@ -22,64 +29,31 @@ export const generateProjectObject = (name) => ({
 });
 
 // Read the project.json file in a specified directory
-export const getProjectData = (path) =>
-  new Promise((resolve, reject) => {
-    const file = format({ dir: path, base: PROJECT_FILE });
-    readFile(file, (err, data) => {
-      if (err) return reject(err);
-      try {
-        const project = JSON.parse(data.toString('utf8'));
-        return resolve({ project, _path: path, _file: file });
-      } catch (e) {
-        return reject(e);
-      }
-    });
-  });
+export const getProjectData = async (path) => {
+  const file = format({ dir: path, base: PROJECT_FILE });
+  const data = await readFile(file, 'utf8');
+  const project = JSON.parse(data);
+  return { project, _path: path, _file: file };
+};
 
 // List all projects in a directory
-export const getProjectsList = (path) =>
-  // eslint-disable-next-line no-async-promise-executor
-  new Promise(async (resolve, reject) => {
-    try {
-      const dirs = readdirSync(path).filter((f) => statSync(join(path, f)).isDirectory());
-      const projects = [];
-      for (let i = 0; i < dirs.length; i++) {
+export const getProjectsList = async (path) => {
+  try {
+    const dirs = await readdir(path);
+    const stats = await Promise.all(dirs.map((f) => stat(join(path, f))));
+
+    const projects = [];
+    for (let i = 0; i < dirs.length; i++) {
+      if (stats[i].isDirectory()) {
         projects.push(getProjectData(join(path, dirs[i])).catch(() => null));
       }
-      Promise.all(projects)
-        .then((data) => {
-          resolve(data.filter((p) => p && p.project.deleted !== true));
-        })
-        .catch((e) => reject(e));
-    } catch (err) {
-      if (err.code === 'ENOENT') return resolve([]);
-      return reject(err);
     }
-  });
 
-// Rename a project
-export const renameProject = (path, name) =>
-  new Promise((resolve, reject) => {
-    getProjectData(path)
-      .then((data) =>
-        projectSave(path, { ...data.project, title: name }, false).then((dataProject) => {
-          resolve(dataProject);
-        })
-      )
-      .catch((err) => {
-        reject(err);
-      });
-  });
-
-// Update scene FPS value
-export const updateSceneFPSvalue = async (path, track, fps) => {
-  let data = await getProjectData(path);
-  const trackId = Number(track);
-  if (data.project.scenes[trackId]) {
-    data.project.scenes[trackId].framerate = fps;
+    const fetchedProjects = await Promise.all(projects);
+    return fetchedProjects.filter((p) => p && p.project?.deleted !== true) || [];
+  } catch (err) {
+    return [];
   }
-  await projectSave(path, data.project, true);
-  return data;
 };
 
 // Delete a project
@@ -96,61 +70,28 @@ export const deleteProject = (path) =>
       });
   });
 
-// Delete a project
-export const deleteProjectFrame = async (path, track, pictureId) => {
-  let data = await getProjectData(path);
-  const trackId = Number(track);
-  if (data.project.scenes[trackId]) {
-    data.project.scenes[trackId].pictures = data.project.scenes[trackId].pictures.map((p) => (`${p.id}` !== `${pictureId}` ? p : { ...p, deleted: true }));
-  }
-  await projectSave(path, data.project, true);
-  return data;
-};
-
-// Apply length offset to a specific frame
-export const applyProjectFrameLengthOffset = async (path, track, pictureId, offset) => {
-  let data = await getProjectData(path);
-  const trackId = Number(track);
-  if (data.project.scenes[trackId]) {
-    data.project.scenes[trackId].pictures = data.project.scenes[trackId].pictures.map((p) => (`${p.id}` !== `${pictureId}` ? p : { ...p, length: (p.length || 1) + offset || 1 }));
-  }
-  await projectSave(path, data.project, true);
-  return data;
-};
-
 // Project save
-export const projectSave = (path, data, updateTime = true) =>
-  new Promise((resolve, reject) => {
-    const newData = { ...data, updated: time() };
-    const file = format({ dir: path, base: PROJECT_FILE });
-    writeFile(
-      file,
-      JSON.stringify({
-        ...data,
-        ...(updateTime ? { updated: time() } : {}),
-      }),
-      (err) => {
-        if (err) return reject(err);
-        return resolve({ project: newData, _path: path, _file: file });
-      }
-    );
-  });
+export const projectSave = async (path, data, updateTime = true) => {
+  const newData = { ...data, updated: time() };
+  const file = format({ dir: path, base: PROJECT_FILE });
+  await writeFile(
+    file,
+    JSON.stringify({
+      ...data,
+      ...(updateTime ? { updated: time() } : {}),
+    })
+  );
+  return { project: newData, _path: path, _file: file };
+};
 
 // Project create
-export const createProject = (path, name) =>
-  new Promise((resolve, reject) => {
-    const directoryName = randomUUID();
-    const projectPath = join(path, directoryName);
-    createDirectory(projectPath)
-      .then(() =>
-        projectSave(projectPath, generateProjectObject(name)).then(() => {
-          resolve(getProjectData(projectPath));
-        })
-      )
-      .catch((err) => {
-        reject(err);
-      });
-  });
+export const createProject = async (path, name) => {
+  const directoryName = randomUUID();
+  const projectPath = join(path, directoryName);
+  await mkdirp(projectPath);
+  await projectSave(projectPath, generateProjectObject(name));
+  return getProjectData(projectPath);
+};
 
 // Choose picture id
 const choosePictureId = async (projectPath, scene, ext = 'jpg') => {
@@ -163,7 +104,7 @@ const choosePictureId = async (projectPath, scene, ext = 'jpg') => {
   }
   let newId = Math.max(0, ...data.project.scenes[scene].pictures.map((e) => e.id));
   let filePath = false;
-  while (filePath === false || existsSync(filePath)) {
+  while (filePath === false || (await exists(filePath))) {
     newId++;
     filePath = join(projectPath, `/${scene}/`, `${newId}.${ext}`);
   }
@@ -171,91 +112,31 @@ const choosePictureId = async (projectPath, scene, ext = 'jpg') => {
 };
 
 // Create image file
-const createImageFile = (projectPath, scene, ext, data) =>
-  new Promise((resolve, reject) => {
-    const directoryPath = join(projectPath, `/${scene}/`);
-    createDirectory(directoryPath)
-      .then(() =>
-        choosePictureId(projectPath, scene, ext).then((id) => {
-          const filePath = join(projectPath, `/${scene}/`, `${id}.${ext}`);
-          if (existsSync(filePath)) return reject(new Error('FILE_ALREADY_EXISTS'));
-          writeFile(filePath, data, (err) => {
-            if (err) return reject(err);
-            return resolve({
-              id,
-              filename: `${id}.${ext}`,
-              scene,
-              path: filePath,
-            });
-          });
-        })
-      )
-      .catch((err) => {
-        reject(err);
-      });
-  });
+const createImageFile = async (projectPath, scene, ext, data) => {
+  const directoryPath = join(projectPath, `/${scene}/`);
+  await mkdirp(directoryPath);
+  const id = await choosePictureId(projectPath, scene, ext);
+  const filePath = join(projectPath, `/${scene}/`, `${id}.${ext}`);
+  if (await exists(filePath)) {
+    throw new Error('FILE_ALREADY_EXISTS');
+  }
+  await writeFile(filePath, data);
+  return {
+    id,
+    filename: `${id}.${ext}`,
+    scene,
+    path: filePath,
+  };
+};
 
-export const takePicture = async (projectPath, track, ext, beforeFrameId, buffer) => {
+// Create pictur object
+export const savePicture = async (projectPath, track, ext, buffer) => {
   const trackId = Number(track);
-  const data = await getProjectData(projectPath);
   const file = await createImageFile(projectPath, trackId, ext, buffer);
-  if (data.project.scenes[trackId]) {
-    const index = beforeFrameId === false ? -1 : data.project.scenes[trackId].pictures.findIndex((f) => `${f.id}` === `${beforeFrameId}`);
-
-    const newFrame = {
-      id: file.id,
-      filename: file.filename,
-      deleted: false,
-      length: 1,
-    };
-
-    if (index !== -1) {
-      data.project.scenes[trackId].pictures = [...data.project.scenes[trackId].pictures.slice(0, index), newFrame, ...data.project.scenes[trackId].pictures.slice(index)];
-    } else {
-      data.project.scenes[trackId].pictures = [...data.project.scenes[trackId].pictures, newFrame];
-    }
-
-    await projectSave(projectPath, data.project, true);
-  }
-  return data;
+  return {
+    id: file.id,
+    filename: file.filename,
+    deleted: false,
+    length: 1,
+  };
 };
-
-export const moveFrame = async (projectPath, track, frameId, beforeFrameId) => {
-  const trackId = Number(track);
-  const data = await getProjectData(projectPath);
-
-  if (data.project.scenes[trackId]) {
-    const index = beforeFrameId === false ? -1 : data.project.scenes[trackId].pictures.findIndex((f) => `${f.id}` === `${beforeFrameId}`);
-    const frame = data.project.scenes[trackId].pictures.find((f) => `${f.id}` === `${frameId}`);
-    if (frame) {
-      if (index != -1) {
-        data.project.scenes[trackId].pictures = [
-          ...data.project.scenes[trackId].pictures.slice(0, index).filter((f) => `${f.id}` !== `${frameId}`),
-          frame,
-          ...data.project.scenes[trackId].pictures.slice(index).filter((f) => `${f.id}` !== `${frameId}`),
-        ];
-      } else {
-        data.project.scenes[trackId].pictures = [...data.project.scenes[trackId].pictures.filter((f) => `${f.id}` !== `${frameId}`), frame];
-      }
-      await projectSave(projectPath, data.project, true);
-    }
-  }
-  return data;
-};
-
-/*
-// Project selector
-export const projectSelector = () => new Promise((resolve) => {
-    Electron.remote.dialog.showOpenDialog({
-        properties: ['openFile'],
-        filters: [{
-            name: 'Eagle Animation Project',
-            extensions: [PROJECT_FILE_EXTENSION]
-        }]
-    }, (paths) => {
-        if (paths && paths.length)
-            return resolve(dirname(paths[0]));
-        return resolve(false);
-    });
-});
-*/

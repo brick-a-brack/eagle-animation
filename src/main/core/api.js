@@ -1,4 +1,5 @@
-import { promises as fs } from 'fs';
+import { readFile, stat } from 'node:fs/promises';
+
 import fetch from 'node-fetch';
 
 import { APP_NAME, PARTNER_API, VERSION } from '../config';
@@ -118,8 +119,8 @@ export const finishUpload = async (session, parts) => {
 };
 
 export const uploadFile = async (apiKey, publicCode, fileExtension, filePath) => {
-  const file = await fs.readFile(filePath);
-  const { size: fileSize } = await fs.stat(filePath);
+  const file = await readFile(filePath);
+  const { size: fileSize } = await stat(filePath);
   const session = await startUploading(apiKey, publicCode, fileExtension, fileSize);
 
   let etags = [];
