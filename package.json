@@ -22,7 +22,7 @@
   "scripts": {
     "start:electron": "electron-vite dev",
     "start:electron:prod": "electron-vite preview",
-    "start:web": "vite",
+    "start:web": "vite --host",
     "start:web:prod": "vite preview",
     "build:web": "vite build",
     "build:unpack": "electron-vite build && electron-builder --dir",

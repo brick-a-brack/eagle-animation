@@ -194,5 +194,6 @@
   "Frames resolution": "Resolução dos quadros",
   "The exported frames resolution": "A resolução dos quadros exportados",
   "Use project ratio": "Use a proporção do projeto",
-  "Normalize all the frames to match the project aspect ratio": "Normalize todos os quadros para corresponder à proporção do projeto"
+  "Normalize all the frames to match the project aspect ratio": "Normalize todos os quadros para corresponder à proporção do projeto",
+  "Choose a camera": "__NOT_TRANSLATED__"
 }

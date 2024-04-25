@@ -62,34 +62,42 @@ class Webcam {
 
   async resetCapabilities() {
     const mediaStreamTrack = this.stream.getVideoTracks()[0];
-    await mediaStreamTrack
-      .applyConstraints({
-        advanced: [
-          {
-            brightness: 128,
-            contrast: 128,
-            colorTemperature: 2200,
-            exposureCompensation: 0,
-            exposureMode: 'continuous',
-            exposureTime: 625,
-            focusDistance: 0,
-            focusMode: 'continuous',
-            pan: 0,
-            saturation: 128,
-            sharpness: 128,
-            tilt: 0,
-            whiteBalanceMode: 'continuous',
-            zoom: 100,
-          },
-        ],
-      })
-      .catch(console.error);
+    const values = {
+      brightness: 128,
+      contrast: 128,
+      colorTemperature: 2200,
+      exposureCompensation: 0,
+      exposureMode: 'continuous',
+      exposureTime: 625,
+      focusDistance: 0,
+      focusMode: 'continuous',
+      pan: 0,
+      iso: 100,
+      saturation: 128,
+      sharpness: 128,
+      tilt: 0,
+      whiteBalanceMode: 'continuous',
+      zoom: 100,
+    };
+
+    const proms = [];
+    for (const key in values) {
+      proms.push(
+        mediaStreamTrack
+          .applyConstraints({
+            advanced: [{ [key]: values[key] }],
+          })
+          .catch(console.error)
+      );
+    }
+    await Promise.all(proms);
     return null;
   }
 
   async applyCapability(key, value) {
     const settings = this?.stream?.getVideoTracks()?.[0]?.getSettings() || {};
     const mediaStreamTrack = this.stream.getVideoTracks()[0];
+    const capabilities = this?.stream?.getVideoTracks()?.[0] && typeof this.stream.getVideoTracks()[0].getCapabilities === 'function' ? this.stream.getVideoTracks()[0].getCapabilities() : {};
 
     const keyNames = {
       FOCUS_MODE: 'focusMode',
@@ -106,6 +114,7 @@ class Webcam {
       ZOOM: 'zoom',
       ZOOM_POSITION_Y: 'tilt',
       ZOOM_POSITION_X: 'pan',
+      ISO: 'iso',
     };
 
     const cap = keyNames[key] || null;
@@ -117,12 +126,22 @@ class Webcam {
         ...(cap === 'focusMode' ? { focusDistance: settings.focusDistance } : {}),
         ...(cap === 'exposureMode'
           ? {
-              exposureCompensation: settings.exposureCompensation,
-              exposureTime: settings.exposureTime,
+              ...(capabilities.exposureCompensation ? { exposureCompensation: settings.exposureCompensation } : {}),
+              ...(capabilities.exposureTime ? { exposureTime: settings.exposureTime } : {}),
+              ...(capabilities.iso ? { iso: settings.iso } : {}),
             }
           : {}),
-        ...(cap === 'whiteBalanceMode' ? { colorTemperature: settings.colorTemperature } : {}),
-        ...(cap === 'zoom' ? { pan: settings.pan, tilt: settings.tilt } : {}),
+        ...(cap === 'whiteBalanceMode'
+          ? {
+              ...(capabilities.colorTemperature ? { colorTemperature: settings.colorTemperature } : {}),
+            }
+          : {}),
+        ...(cap === 'zoom'
+          ? {
+              ...(capabilities.pan ? { pan: settings.pan } : {}),
+              ...(capabilities.tilt ? { tilt: settings.tilt } : {}),
+            }
+          : {}),
       },
     ];
 
@@ -142,7 +161,7 @@ class Webcam {
     }
 
     const settings = this?.stream?.getVideoTracks()?.[0]?.getSettings() || {};
-    const capabilities = this?.stream?.getVideoTracks()?.[0] && typeof this.stream.getVideoTracks()[0].getCapabilities === 'function' ? this.stream.getVideoTracks()[0].getCapabilities() : [];
+    const capabilities = this?.stream?.getVideoTracks()?.[0] && typeof this.stream.getVideoTracks()[0].getCapabilities === 'function' ? this.stream.getVideoTracks()[0].getCapabilities() : {};
 
     const allowedCapabilities = [
       ...(capabilities.focusMode
@@ -258,6 +277,18 @@ class Webcam {
               type: 'RANGE',
               ...capabilities.exposureCompensation,
               value: settings.exposureCompensation,
+              canReset: true,
+            },
+          ]
+        : []),
+
+      ...(capabilities.iso && settings.exposureMode === 'manual'
+        ? [
+            {
+              id: 'ISO',
+              type: 'RANGE',
+              ...capabilities.iso,
+              value: settings.iso,
               canReset: true,
             },
           ]

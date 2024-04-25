@@ -195,5 +195,6 @@
   "Frames resolution": "Rozdzielczość klatek",
   "The exported frames resolution": "Rozdzielczość eksportowanych klatek",
   "Use project ratio": "Użyj proporcji projektu",
-  "Normalize all the frames to match the project aspect ratio": "Normalizuj wszystkie klatki, aby pasowały do proporcji projektu"
+  "Normalize all the frames to match the project aspect ratio": "Normalizuj wszystkie klatki, aby pasowały do proporcji projektu",
+  "Choose a camera": "__NOT_TRANSLATED__"
 }

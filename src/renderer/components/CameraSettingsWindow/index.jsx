@@ -26,9 +26,9 @@ const CameraSettingsWindow = ({
   t,
   cameraCapabilities,
   onCapabilityChange,
-  onDevicesListRefresh = () => {},
+  onDevicesListRefresh = () => { },
   onCapabilitiesReset,
-  onSettingsChange = () => {},
+  onSettingsChange = () => { },
   appCapabilities = [],
   devices = [],
   settings = {},
@@ -103,7 +103,7 @@ const CameraSettingsWindow = ({
         {selectedCategory.id === 'CAMERAS' && (
           <>
             <FormGroup label={t('Camera')} description={t('The camera device to use to take frames')}>
-              <Select options={devices.map((e) => ({ value: e.id, label: e.label }))} register={register('CAMERA_ID')} />
+              <Select options={[{ value: '', label: t('Choose a camera') }, ...devices.map((e) => ({ value: e.id, label: e.label }))]} register={register('CAMERA_ID')} />
               <Action title={t('Refresh camera list')} className={style.refreshIcon} action={() => onDevicesListRefresh()}>
                 <FontAwesomeIcon icon={faRotate} />
               </Action>

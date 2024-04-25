@@ -194,5 +194,6 @@
   "Frames resolution": "Resolución de los fotogramas",
   "The exported frames resolution": "La resolución de los fotogramas exportados",
   "Use project ratio": "Usar la proporción del proyecto",
-  "Normalize all the frames to match the project aspect ratio": "Normalizar todos los fotogramas para que coincidan con la proporción del proyecto"
+  "Normalize all the frames to match the project aspect ratio": "Normalizar todos los fotogramas para que coincidan con la proporción del proyecto",
+  "Choose a camera": "__NOT_TRANSLATED__"
 }
