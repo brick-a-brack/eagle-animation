@@ -140,6 +140,7 @@ export const ExportFrames = async (
 
     frames.push({
       id: file.id,
+      length: file.length || 1,
       extension: computedExtension,
       mimeType: `image/${(computedExtension || 'jpg').replace('jpg', 'jpeg')}`,
       buffer: Buffer.from(await (await ExportFrame(file.link, copiedResolution, typeof opts.forceFileExtension !== 'undefined' ? computedExtension : undefined, 'cover')).arrayBuffer()),
