@@ -17,6 +17,7 @@ function useCamera(options = {}) {
   const [currentCameraId, setCurrentCameraId] = useState(null);
   const [batteryStatus, setBatteryStatus] = useState(null);
   const [currentCamera, setCurrentCamera] = useState(null);
+  const [isReady, setIsReady] = useState(false);
   const [cameraCapabilities, setCameraCapabilities] = useState([]);
   const domRefs = useRef(null);
   const eventsRefs = useRef([
@@ -40,6 +41,9 @@ function useCamera(options = {}) {
 
   // Trigger event
   const triggerEvent = useCallback((name, data = null) => {
+    if (['connect', 'disconnect']) {
+      setIsReady(name === 'connect');
+    }
     for (const event of eventsRefs.current) {
       try {
         if (event[0] === name && typeof event[1] === 'function') {
@@ -150,10 +154,11 @@ function useCamera(options = {}) {
   });
 
   return {
+    isCameraReady: isReady,
     devices,
     currentCameraId,
     currentCameraCapabilities: cameraCapabilities || [],
-    currentCamera: currentCamera || null,
+    currentCamera: (isReady ? currentCamera : null) || null,
     batteryStatus: batteryStatus || null,
     actions: {
       setDomRefs: actionSetDomRefs,

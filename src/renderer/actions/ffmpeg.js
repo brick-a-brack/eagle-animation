@@ -4,10 +4,7 @@ import { toBlobURL } from '@ffmpeg/util';
 export const getFFmpeg = async (callback = () => {}) => {
   const baseURL = '/';
   const ffmpeg = new FFmpeg();
-  ffmpeg.on('log', (l) => {
-    console.log(l);
-    callback(l);
-  });
+  ffmpeg.on('log', callback);
   ffmpeg.on('error', callback);
   ffmpeg.on('progress', callback);
   await ffmpeg

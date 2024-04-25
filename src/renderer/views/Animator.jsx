@@ -101,6 +101,7 @@ const Animator = ({ t }) => {
   const { project, actions: projectActions } = useProject({ id });
 
   const {
+    isCameraReady,
     devices,
     currentCameraCapabilities,
     currentCamera,
@@ -356,7 +357,7 @@ const Animator = ({ t }) => {
       <Player
         t={t}
         ref={playerRef}
-        isCameraReady={!!currentCamera}
+        isCameraReady={isCameraReady}
         onInit={handlePlayerInit}
         onFrameChange={setCurrentFrameId}
         onPlayingStatusChange={setIsPlaying}

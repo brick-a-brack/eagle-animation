@@ -322,7 +322,7 @@ class Player extends Component {
     return (
       <div className={`${style.playerContainer} ${frameIndex === false ? style.live : ''}`}>
         <div className={style.container} ref={this.dom.container} style={{ width: `${width}px`, height: `${height}px`, opacity: ready ? 1 : 0 }}>
-          <video ref={this.dom.video} className={style.layout} style={{ opacity: frameIndex === false ? 1 : 0 }} />
+          <video ref={this.dom.video} className={style.layout} style={{ opacity: isCameraReady && frameIndex === false ? 1 : 0 }} />
           <div style={{ opacity: frameIndex === false ? 1 : 0 }} className={style.layout}>
             <canvas ref={this.dom.videoFrame} className={style.layoutVideoFrame} />
           </div>
@@ -330,7 +330,7 @@ class Player extends Component {
             ref={this.dom.picture}
             className={style.layout}
             style={{
-              opacity: frameIndex !== false || blendMode ? 1 : 1 - onionValue,
+              opacity: !isCameraReady && frameIndex === false ? 0 : (frameIndex !== false || blendMode ? 1 : 1 - onionValue),
               mixBlendMode: !blendMode ? 'normal' : 'difference',
             }}
           />
@@ -339,9 +339,9 @@ class Player extends Component {
           {this.getVideoRatio() !== null && borderTopBottom > 0 && <div className={style.borderTop} style={{ height: `${borderTopBottom * 100}%`, opacity: ratioLayerOpacity || 1 }} />}
           {this.getVideoRatio() !== null && borderTopBottom > 0 && <div className={style.borderBottom} style={{ height: `${borderTopBottom * 100}%`, opacity: ratioLayerOpacity || 1 }} />}
 
-          <canvas ref={this.dom.grid} className={style.layout} style={{ opacity: showGrid && frameIndex === false ? 1 : 0 }} />
+          <canvas ref={this.dom.grid} className={style.layout} style={{ opacity: isCameraReady && showGrid && frameIndex === false ? 1 : 0 }} />
 
-          {frameIndex === false && batteryStatus !== null && <BatteryIndicator value={batteryStatus} />}
+          {isCameraReady && frameIndex === false && batteryStatus !== null && <BatteryIndicator value={batteryStatus} />}
 
           {!isCameraReady && frameIndex === false && <span className={style.loader} />}
           {!isCameraReady && frameIndex === false && <div className={style.info}>{t('If your camera does not load, try changing it in the camera settings')}</div>}
