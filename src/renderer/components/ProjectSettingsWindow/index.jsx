@@ -13,19 +13,6 @@ import Select from '../Select';
 import * as style from './style.module.css';
 
 const ProjectSettingsWindow = ({ t, onProjectSettingsChange = () => {}, onProjectDelete = () => {}, title = '', fps = 12, ratio = null }) => {
-  const form = useForm({
-    mode: 'all',
-    defaultValues: {
-      title,
-      fps,
-      ratio,
-      customRatio: '1.75',
-    },
-  });
-  const { watch, register, getValues, setValue, control } = form;
-
-  const formValues = watch();
-
   const RATIOS = [
     { value: '', label: t('Automatic') },
     { value: '4:3', label: '4:3 ' + t('(Old TV)') }, // 1.33
@@ -37,6 +24,19 @@ const ProjectSettingsWindow = ({ t, onProjectSettingsChange = () => {}, onProjec
     { value: '3:4', label: '3:4 ' + t('(Social media)') }, // 0.75
     { value: 'custom', label: t('Custom') },
   ];
+
+  const form = useForm({
+    mode: 'all',
+    defaultValues: {
+      title,
+      fps,
+      ratio: ratio ? (RATIOS.find((e) => e.value === ratio) ? ratio : 'custom') : '',
+      customRatio: RATIOS.find((e) => e.value === ratio) ? '1.75' : ratio,
+    },
+  });
+  const { watch, register, getValues, setValue, control } = form;
+
+  const formValues = watch();
 
   useEffect(() => {
     setValue('fps', fps);
