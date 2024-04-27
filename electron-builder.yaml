@@ -24,7 +24,6 @@ mac:
   artifactName: Eagle-Animation-${version}-mac.${ext}
   category: public.app-category.photography
   icon: out/renderer/icon.icns
-  hardenedRuntime: false
   extendInfo:
     NSMicrophoneUsageDescription: Please give us access to your microphone
     NSCameraUsageDescription: Please give us access to your camera
