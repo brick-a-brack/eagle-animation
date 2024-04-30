@@ -8,6 +8,7 @@ export const VERSION = json.version;
 export const LS_PREFIX = 'ea_';
 export const LS_LANGUAGE = `${LS_PREFIX}language`;
 export const LS_SETTINGS = `${LS_PREFIX}settings`;
+export const LS_PERMISSIONS = `${LS_PREFIX}permissions`;
 
 // Eagle Animation files
 export const DIRECTORY_NAME = 'EagleAnimation';

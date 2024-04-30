@@ -19,7 +19,7 @@ const generateFakeFrame = (resolution, format) =>
     );
   });
 
-const ExportFrame = (
+export const ExportFrame = (
   link,
   resolution = null, // {width, height}
   format = null, // png | jpg | webp

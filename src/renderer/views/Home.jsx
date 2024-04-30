@@ -6,6 +6,7 @@ import ActionsBar from '../components/ActionsBar';
 import Header from '../components/Header';
 import ProjectCard from '../components/ProjectCard';
 import ProjectsGrid from '../components/ProjectsGrid';
+import { LS_PERMISSIONS } from '../config';
 import useAppVersion from '../hooks/useAppVersion';
 import useCamera from '../hooks/useCamera';
 import useProjects from '../hooks/useProjects';
@@ -16,9 +17,17 @@ const HomeView = ({ t }) => {
   const navigate = useNavigate();
   const { actions: cameraActions } = useCamera();
 
+  // Unload camera
   useEffect(() => {
     cameraActions.setCamera(null);
   }, []);
+
+  // Permissions redirect
+  useEffect(() => {
+    if (!localStorage.getItem(LS_PERMISSIONS)) {
+      navigate('/permissions?back=/');
+    }
+  });
 
   useEffect(() => {
     // Trigger background sync

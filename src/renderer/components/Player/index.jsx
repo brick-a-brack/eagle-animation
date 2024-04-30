@@ -187,7 +187,7 @@ class Player extends Component {
       this.resize();
     });
     this.videoFrameObserver.observe(this.dom.videoFrame.current, {
-      attributeFilter: ["height", "width"],
+      attributeFilter: ['height', 'width'],
     });
 
     this.showFrame(false);
@@ -343,7 +343,7 @@ class Player extends Component {
             ref={this.dom.picture}
             className={style.layout}
             style={{
-              opacity: !isCameraReady && frameIndex === false ? 0 : (frameIndex !== false || blendMode ? 1 : 1 - onionValue),
+              opacity: !isCameraReady && frameIndex === false ? 0 : frameIndex !== false || blendMode ? 1 : 1 - onionValue,
               mixBlendMode: !blendMode ? 'normal' : 'difference',
             }}
           />

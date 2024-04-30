@@ -1,8 +1,8 @@
 import { existsSync } from 'node:fs';
-import { writeFile } from 'node:fs/promises';
+import { readFile, writeFile } from 'node:fs/promises';
 import { homedir } from 'node:os';
 
-import { shell } from 'electron';
+import { shell, systemPreferences } from 'electron';
 import envPaths from 'env-paths';
 import { mkdirp } from 'mkdirp';
 import fetch from 'node-fetch';
@@ -67,6 +67,25 @@ const computeProject = (data) => {
 };
 
 const actions = {
+  GET_MEDIA_PERMISSIONS: async () => {
+    if (typeof systemPreferences.getMediaAccessStatus === 'function') {
+      const [camera, microphone] = await Promise.all([systemPreferences.getMediaAccessStatus('camera'), systemPreferences.getMediaAccessStatus('microphone')]);
+      return {
+        camera,
+        microphone,
+      };
+    }
+    return {
+      camera: 'granted',
+      microphone: 'granted',
+    };
+  },
+  ASK_MEDIA_PERMISSION: async (evt, { mediaType }) => {
+    if (typeof systemPreferences.askForMediaAccess === 'function') {
+      return systemPreferences.askForMediaAccess(mediaType);
+    }
+    return true;
+  },
   GET_LAST_VERSION: async () => {
     if (CONTRIBUTE_REPOSITORY) {
       const res = await fetch(`https://raw.githubusercontent.com/${CONTRIBUTE_REPOSITORY}/master/package.json`).then((res) => res.json());
@@ -77,6 +96,9 @@ const actions = {
   GET_PROJECTS: async () => {
     const projects = await getProjectsList(PROJECTS_PATH);
     return projects.map(computeProject);
+  },
+  GET_PICTURE: async (evt, { project_id, track, filename }) => {
+    return readFile(getPictureLink(join(PROJECTS_PATH, project_id), track, filename));
   },
   NEW_PROJECT: async (evt, { title }) => {
     const data = await createProject(PROJECTS_PATH, title);

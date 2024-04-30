@@ -4,18 +4,21 @@ import { withTranslation } from 'react-i18next';
 
 import { LANGUAGES } from '../../config';
 import useAppCapabilities from '../../hooks/useAppCapabilities';
+import useCamera from '../../hooks/useCamera';
 import CustomSlider from '../CustomSlider';
 import FormGroup from '../FormGroup';
 import FormLayout from '../FormLayout';
 import GridIcon from '../GridIcon';
 import Heading from '../Heading';
 import Input from '../Input';
+import MediaStatus from '../MediaStatus';
 import NumberInput from '../NumberInput';
 import Select from '../Select';
 import Switch from '../Switch';
 
 const SettingsForm = ({ settings = {}, onUpdate = () => {}, t }) => {
   const { appCapabilities } = useAppCapabilities();
+  const { permissions, actions: cameraActions } = useCamera();
   const form = useForm({
     mode: 'all',
     defaultValues: settings,
@@ -47,6 +50,23 @@ const SettingsForm = ({ settings = {}, onUpdate = () => {}, t }) => {
         <FormGroup label={t('Language')} description={t('The application language to use')}>
           <Select options={LNGS_OPTIONS} control={control} register={register('LANGUAGE')} />
         </FormGroup>
+
+        <Heading h={1}>{t('Permissions')}</Heading>
+        <MediaStatus
+          type={'camera'}
+          permission={permissions?.camera}
+          action={() => {
+            cameraActions.askPermission('camera');
+          }}
+        />
+        <MediaStatus
+          title={'microphone'}
+          permission={permissions?.microphone}
+          action={() => {
+            cameraActions.askPermission('microphone');
+          }}
+        />
+
         <Heading h={1}>{t('Playback')}</Heading>
         <FormGroup label={t('Short play')} description={t('Number of frames to play when short play is enabled')}>
           <NumberInput register={register('SHORT_PLAY')} min={1} />
