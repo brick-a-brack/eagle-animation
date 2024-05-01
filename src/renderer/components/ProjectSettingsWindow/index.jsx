@@ -84,7 +84,7 @@ const ProjectSettingsWindow = ({ t, onProjectSettingsChange = () => {}, onProjec
         )}
       </FormGroup>
       <FormGroup label={t('Delete')} description={t('Delete the project and all photos taken')}>
-        <ActionCard action={onProjectDelete} className={style.settingsReset} title={t('Delete')} sizeAuto secondary />
+        <ActionCard action={onProjectDelete} title={t('Delete')} sizeAuto secondary />
       </FormGroup>
     </div>
   );

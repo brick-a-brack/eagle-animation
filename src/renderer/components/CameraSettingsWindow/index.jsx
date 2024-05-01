@@ -212,7 +212,7 @@ const CameraSettingsWindow = ({
 
         {selectedCategory.id === 'CAMERAS' && cameraCapabilities.some((cap) => cap.canReset) && (
           <FormGroup label={t('Reset camera settings')} description={t('Reset the current camera settings, all values will be reset to default')}>
-            <ActionCard className={style.settingsReset} title={t('Reset settings')} action={() => onCapabilitiesReset()} sizeAuto secondary />
+            <ActionCard title={t('Reset settings')} action={() => onCapabilitiesReset()} sizeAuto secondary />
           </FormGroup>
         )}
       </div>
