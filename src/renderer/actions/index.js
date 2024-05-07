@@ -38,7 +38,7 @@ const getDefaultPreview = async (data) => {
   return null;
 };
 
-const computeProject = async (data) => {
+const computeProject = async (data, bindPictureLink = true) => {
   const copiedData = structuredClone(data);
   let preview = await getDefaultPreview(copiedData);
   const scenes = await Promise.all(
@@ -48,7 +48,7 @@ const computeProject = async (data) => {
         pictures: await Promise.all(
           scene.pictures.map(async (picture) => ({
             ...picture,
-            link: await getFrameBlobUrl(picture.id),
+            link: bindPictureLink ? await getFrameBlobUrl(picture.id) : null,
           }))
         ),
       };
@@ -120,7 +120,7 @@ export const Actions = {
   },
   GET_PROJECTS: async () => {
     const projects = await getAllProjects();
-    return Promise.all(projects.map(computeProject));
+    return Promise.all(projects.map(d => computeProject(d, false)));
   },
   NEW_PROJECT: async (evt, { title }) => {
     const id = await createProject(title);

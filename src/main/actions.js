@@ -96,9 +96,6 @@ const actions = {
     const projects = await getProjectsList(PROJECTS_PATH);
     return projects.map(computeProject);
   },
-  GET_PICTURE: async (evt, { project_id, track, filename }) => {
-    return readFile(getPictureLink(join(PROJECTS_PATH, project_id), track, filename));
-  },
   NEW_PROJECT: async (evt, { title }) => {
     const data = await createProject(PROJECTS_PATH, title);
     return computeProject(data);

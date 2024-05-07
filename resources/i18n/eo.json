@@ -206,5 +206,9 @@
   "Permissions setup": "Agordo de permesoj",
   "Eagle Animation requires camera and microphone permissions to work, if skipped, you will be able to grant access in the settings.": "Eagle Animation postulas kameraajn kaj mikrofonajn permesojn por funkcii, se vi preterlasas, vi povos doni aliron en la agordoj poste.",
   "Let's go!": "Ni ek!",
-  "Skip setup": "Preterigi agordon"
+  "Skip setup": "Preterigi agordon",
+  "Reverse horizontally": "Inversigi horizontale",
+  "Reverse the camera horizontally": "Inversigi la kameron horizontale",
+  "Reverse vertically": "Inversigi vertikale",
+  "Reverse the camera vertically": "Inversigi la kameron vertikale"
 }

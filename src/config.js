@@ -30,47 +30,111 @@ export const LANGUAGES = [
   {
     value: 'en',
     label: 'English',
-    tLabel: (t) => t('English'),
   },
   {
     value: 'fr',
     label: 'Français',
-    tLabel: (t) => t('Français'),
   },
   {
     value: 'de',
     label: 'Deutsch',
-    tLabel: (t) => t('Deutsch'),
   },
   {
     value: 'es',
     label: 'Español',
-    tLabel: (t) => t('Español'),
   },
   {
     value: 'it',
     label: 'Italiano',
-    tLabel: (t) => t('Italiano'),
   },
   {
     value: 'pl',
     label: 'Polski',
-    tLabel: (t) => t('Polski'),
   },
   {
     value: 'pt',
     label: 'Português',
-    tLabel: (t) => t('Português'),
   },
   {
     value: 'eo',
     label: 'Esperanto',
-    tLabel: (t) => t('Esperanto'),
+  },
+  {
+    value: 'bg',
+    label: 'Български',
+  },
+  {
+    value: 'cs',
+    label: 'Čeština',
+  },
+  {
+    value: 'da',
+    label: 'Dansk',
+  },
+  {
+    value: 'et',
+    label: 'Eesti',
+  },
+  {
+    value: 'el',
+    label: 'Ελληνικά',
+  },
+  {
+    value: 'ga',
+    label: 'Gaeilge',
+  },
+  {
+    value: 'hr',
+    label: 'Hrvatski',
+  },
+  {
+    value: 'lv',
+    label: 'Latviešu valoda',
+  },
+  {
+    value: 'hu',
+    label: 'Magyar',
+  },
+  {
+    value: 'mt',
+    label: 'Malti',
+  },
+  {
+    value: 'nl',
+    label: 'Nederlands',
+  },
+  {
+    value: 'ro',
+    label: 'Română',
+  },
+  {
+    value: 'sk',
+    label: 'Slovenčina',
+  },
+  {
+    value: 'sl',
+    label: 'Slovenščina',
+  },
+  {
+    value: 'fi',
+    label: 'Suomi',
+  },
+  {
+    value: 'sv',
+    label: 'Svenska',
+  },
+  {
+    value: 'uk',
+    label: 'Українська',
+  },
+  {
+    value: 'ru',
+    label: 'Русский',
   },
 ];
 
 // Allowed languages
-export const ALLOWED_LANGUAGES = ['en', 'fr', 'de', 'es', 'it', 'pt', 'pl', 'eo'];
+export const ALLOWED_LANGUAGES = ['en', 'fr', 'de', 'es', 'it', 'pt', 'pl', 'eo', 'bg', 'cs', 'da', 'et', 'el', 'ga', 'hr', 'lv', 'hu', 'mt', 'nl', 'ro', 'sk', 'sl', 'fi', 'sv', 'uk', 'ru'];
 export const DEFAULT_LANGUAGE = 'en';
 
 // Partner API url

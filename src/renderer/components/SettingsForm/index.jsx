@@ -33,16 +33,7 @@ const SettingsForm = ({ settings = {}, onUpdate = () => {}, t }) => {
     onUpdate(values);
   }, [JSON.stringify(formValues)]);
 
-  const LNGS_OPTIONS = LANGUAGES.map((e) => ({
-    ...e,
-    label: !['en', 'fr', 'de'].includes(e.value) ? (
-      <>
-        {e.label} {t('(Automated)')}
-      </>
-    ) : (
-      e.label
-    ),
-  }));
+  const LNGS_OPTIONS = [...LANGUAGES].sort((a,b) => a.label > b.label ? 1 : -1);
 
   return (
     <form id="settings">

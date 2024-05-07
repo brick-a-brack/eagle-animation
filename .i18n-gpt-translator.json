@@ -1,21 +1,7 @@
 {
-    "folder": "resources/i18n/",
-    "sourceLngs": [
-        "fr",
-        "en"
-    ],
-    "destinationLngs": [
-        "es",
-        "de",
-        "pl",
-        "pt",
-        "it",
-        "eo"
-    ],
-    "context": "EagleAnimation is an awesome, free and open-source stop motion animation software. It is available for Windows, macOS and Linux.",
-    "doNotEdit": [
-        "Brick à Brack",
-        "Brickfilms.com",
-        "Eagle Animation"
-    ]
+  "folder": "resources/i18n/",
+  "sourceLngs": ["fr", "en"],
+  "destinationLngs": ["de", "es", "it", "pt", "pl", "eo", "bg", "cs", "da", "et", "el", "ga", "hr", "lv", "hu", "mt", "nl", "ro", "sk", "sl", "fi", "sv", "uk", "ru"],
+  "context": "EagleAnimation is an awesome, free and open-source stop motion animation software. It is available for Windows, macOS and Linux.",
+  "doNotEdit": ["Brick à Brack", "Brickfilms.com", "Eagle Animation"]
 }

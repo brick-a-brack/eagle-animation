@@ -207,5 +207,9 @@
   "Permissions setup": "Konfiguracja uprawnień",
   "Eagle Animation requires camera and microphone permissions to work, if skipped, you will be able to grant access in the settings.": "Eagle Animation wymaga uprawnień do kamery i mikrofonu, aby działać. Jeśli pominiesz, będziesz mógł przyznać dostęp w ustawieniach.",
   "Let's go!": "Zaczynajmy!",
-  "Skip setup": "Pomiń konfigurację"
+  "Skip setup": "Pomiń konfigurację",
+  "Reverse horizontally": "Odwróć poziomo",
+  "Reverse the camera horizontally": "Odwróć kamerę poziomo",
+  "Reverse vertically": "Odwróć pionowo",
+  "Reverse the camera vertically": "Odwróć kamerę pionowo"
 }
