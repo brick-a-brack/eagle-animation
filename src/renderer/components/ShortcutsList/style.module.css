@@ -4,44 +4,44 @@
 }
 
 .line {
-    width: 100%;
     display: flex;
-    justify-content: space-between;
-    gap: var(--space-medium);
     font-size: var(--font-size-6);
+    gap: var(--space-medium);
+    justify-content: space-between;
+    width: 100%;
 }
 
 .line > div:last-child {
-    text-align: right;
-    display: flex;
-    gap: var(--space-small);
-    flex-direction: column;
     align-items: flex-end;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-small);
+    text-align: right;
 }
 
 .shortcut {
+    align-items: center;
     display: flex;
     flex-direction: row;
-    align-items: center;
 }
 
 .key {
-    font-weight: 800;
-    font-size: var(--font-size-7);
     background-color: var(--color-theme-medium);
-    padding: 2px 4px;
-    margin: 0 6px;
-    display: inline-block;
     border-radius: 4px;
+    display: inline-block;
+    font-size: var(--font-size-7);
+    font-weight: 800;
+    margin: 0 6px;
     min-width:20px;
+    padding: 2px 4px;
     text-align: center;
 }
 
 .table {
-    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-big);
     margin: auto;
     max-width: 600px;
-    display: flex;
-    gap: var(--space-big);
-    flex-direction: column;
+    width: 100%;
 }

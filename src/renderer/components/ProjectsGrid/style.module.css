@@ -1,12 +1,11 @@
 .wrapper {
-  align-content: flex-start;
+  place-content: flex-start center;
   box-sizing: border-box;
   display: flex;
   flex-flow: row wrap;
   flex-wrap: wrap;
   font-size: 0;
   height: calc(100vh - 200px);
-  justify-content: center;
   line-height: 0;
   margin: auto;
   overflow-y: auto;
@@ -43,7 +42,7 @@
   width: 300px;
 }
 
-@media screen and (max-height: 600px) {
+@media screen and (height <= 600px) {
   .wrapper {
     height: calc(100vh);
   }

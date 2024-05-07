@@ -57,7 +57,7 @@
   width: 100%;
 }
 
-@media screen and (max-height: 600px) {
+@media screen and (height <= 600px) {
   .container {
     display: none;
   }

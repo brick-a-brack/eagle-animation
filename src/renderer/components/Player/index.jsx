@@ -333,7 +333,7 @@ class Player extends Component {
     const borders = resizeToFit('contain', { width: this.getVideoRatio(), height: 1 }, { width: this.getSize().width, height: this.getSize().height });
     const borderLeftRight = (this.getSize().width - borders.width) / 2 / this.getSize().width;
     const borderTopBottom = (this.getSize().height - borders.height) / 2 / this.getSize().height;
-const reverseClassNames = `${reverseX ? style.reverseX : ''} ${reverseY ? style.reverseY : ''}`;
+    const reverseClassNames = `${reverseX ? style.reverseX : ''} ${reverseY ? style.reverseY : ''}`;
 
     return (
       <div className={`${style.playerContainer} ${frameIndex === false ? style.live : ''}`}>

@@ -33,7 +33,7 @@ const SettingsForm = ({ settings = {}, onUpdate = () => {}, t }) => {
     onUpdate(values);
   }, [JSON.stringify(formValues)]);
 
-  const LNGS_OPTIONS = [...LANGUAGES].sort((a,b) => a.label > b.label ? 1 : -1);
+  const LNGS_OPTIONS = [...LANGUAGES].sort((a, b) => (a.label > b.label ? 1 : -1));
 
   return (
     <form id="settings">

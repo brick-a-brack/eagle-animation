@@ -16,16 +16,16 @@
 .window {
   background: #2f3136;
   border-top: solid 3px var(--color-primary);
+    bottom: 0;
     box-shadow: 0 0 10px 0 rgb(114 114 114 / 10%);
     max-height: 100vh;
     min-height: 35vh;
     opacity: 0;
     overflow: auto;
     position: fixed;
+    transform: translate(0%, 101%);
     transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
     width: 100%;
-    bottom: 0;
-    transform: translate(0%, 101%);
 }
 
 .content {

@@ -120,7 +120,7 @@ export const Actions = {
   },
   GET_PROJECTS: async () => {
     const projects = await getAllProjects();
-    return Promise.all(projects.map(d => computeProject(d, false)));
+    return Promise.all(projects.map((d) => computeProject(d, false)));
   },
   NEW_PROJECT: async (evt, { title }) => {
     const id = await createProject(title);

@@ -35,12 +35,12 @@
 }
 
 .progress {
-    font-size: var(--font-size-4);
-    top: calc(50% + 24px + var(--space-huge));
     color: #fff;
-    text-align: center;
-    width:100%;
+    font-size: var(--font-size-4);
     position: absolute;
+    text-align: center;
+    top: calc(50% + 24px + var(--space-huge));
+    width:100%;
 }
 
 .done {

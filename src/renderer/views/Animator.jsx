@@ -4,9 +4,9 @@ import { withTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import soundDelete from '~/resources/sounds/delete.mp3';
+import soundEagle from '~/resources/sounds/eagle.mp3';
 import soundError from '~/resources/sounds/error.mp3';
 import soundShutter from '~/resources/sounds/shutter.mp3';
-import soundEagle from '~/resources/sounds/eagle.mp3';
 
 import ActionsBar from '../components/ActionsBar';
 import CameraSettingsWindow from '../components/CameraSettingsWindow';
@@ -191,7 +191,7 @@ const Animator = ({ t }) => {
       for (let i = 0; i < (Number(nbPicturesToTake !== null ? nbPicturesToTake : settings.CAPTURE_FRAMES) || 1); i++) {
         const nbFramesToTake = (settings.AVERAGING_ENABLED ? Number(settings.AVERAGING_VALUE) : 1) || 1;
         try {
-          const { type, buffer } = await cameraActions.takePicture(nbFramesToTake,settings.REVERSE_X,settings.REVERSE_Y);
+          const { type, buffer } = await cameraActions.takePicture(nbFramesToTake, settings.REVERSE_X, settings.REVERSE_Y);
           if (!isMuted && settings.SOUNDS) {
             const isAprilFoolsDay = new Date().getDate() === 1 && new Date().getMonth() === 3;
             playSound(isAprilFoolsDay ? soundEagle : soundShutter);

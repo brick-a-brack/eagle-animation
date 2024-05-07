@@ -72,16 +72,8 @@ export const LANGUAGES = [
     label: 'Dansk',
   },
   {
-    value: 'et',
-    label: 'Eesti',
-  },
-  {
     value: 'el',
     label: 'Ελληνικά',
-  },
-  {
-    value: 'ga',
-    label: 'Gaeilge',
   },
   {
     value: 'hr',
@@ -94,10 +86,6 @@ export const LANGUAGES = [
   {
     value: 'hu',
     label: 'Magyar',
-  },
-  {
-    value: 'mt',
-    label: 'Malti',
   },
   {
     value: 'nl',
@@ -124,17 +112,13 @@ export const LANGUAGES = [
     label: 'Svenska',
   },
   {
-    value: 'uk',
-    label: 'Українська',
-  },
-  {
     value: 'ru',
     label: 'Русский',
   },
 ];
 
 // Allowed languages
-export const ALLOWED_LANGUAGES = ['en', 'fr', 'de', 'es', 'it', 'pt', 'pl', 'eo', 'bg', 'cs', 'da', 'et', 'el', 'ga', 'hr', 'lv', 'hu', 'mt', 'nl', 'ro', 'sk', 'sl', 'fi', 'sv', 'uk', 'ru'];
+export const ALLOWED_LANGUAGES = ['en', 'fr', 'de', 'es', 'it', 'pt', 'pl', 'eo', 'bg', 'cs', 'da', 'el', 'hr', 'lv', 'hu', 'nl', 'ro', 'sk', 'sl', 'fi', 'sv', 'ru'];
 export const DEFAULT_LANGUAGE = 'en';
 
 // Partner API url

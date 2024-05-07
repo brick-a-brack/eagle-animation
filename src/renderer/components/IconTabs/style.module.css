@@ -4,27 +4,27 @@
 }
 
 .tabContainer {
-    display: flex;
     border-bottom-right-radius: 3px;
+    display: flex;
     position:relative;
 }
 
 .tab {
-    width: 45px;
-    height: 45px;
-    background: #2f3136;
-    display: flex;
     align-items: center;
-    justify-content: center;
+    background: #2f3136;
     border-bottom: 3px solid var(--color-primary);
-    overflow: hidden;
     border-left: 1px solid var(--color-theme-light);
+    display: flex;
+    height: 45px;
+    justify-content: center;
+    overflow: hidden;
+    width: 45px;
 }
 
 .tab svg {
     color: #fff;
-    width: 22px;
     height: 22px;
+    width: 22px;
     z-index:1;
 }
 
@@ -40,12 +40,12 @@
 
 .backgroundTab {
     background: var(--color-primary);
-    transform: translateX(0%);
-    width: 45px;
     height:45px;
+    left:0;
     position: absolute;
     top:0;
-    left:0;
-    z-index:0;
+    transform: translateX(0%);
     transition: transform .25s ease-in-out;
+    width: 45px;
+    z-index:0;
 }
