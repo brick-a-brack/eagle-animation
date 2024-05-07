@@ -126,9 +126,9 @@ function useCamera(options = {}) {
   });
 
   // Action take picture
-  const actionTakePicture = useCallback(async (nbFramesToTake = 1) => {
+  const actionTakePicture = useCallback(async (nbFramesToTake = 1, reverseX = false, reverseY = false) => {
     if (currentCamera) {
-      return takePicture(currentCamera, nbFramesToTake);
+      return takePicture(currentCamera, nbFramesToTake, reverseX, reverseY);
     }
     return null;
   });

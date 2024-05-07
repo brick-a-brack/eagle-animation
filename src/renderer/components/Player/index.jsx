@@ -327,18 +327,19 @@ class Player extends Component {
   }
 
   render() {
-    const { showGrid, onionValue, blendMode, isCameraReady, t, batteryStatus, ratioLayerOpacity } = this.props;
+    const { showGrid, onionValue, blendMode, isCameraReady, t, batteryStatus, ratioLayerOpacity, reverseX, reverseY } = this.props;
     const { width, height, ready, frameIndex } = this.state;
 
     const borders = resizeToFit('contain', { width: this.getVideoRatio(), height: 1 }, { width: this.getSize().width, height: this.getSize().height });
     const borderLeftRight = (this.getSize().width - borders.width) / 2 / this.getSize().width;
     const borderTopBottom = (this.getSize().height - borders.height) / 2 / this.getSize().height;
+const reverseClassNames = `${reverseX ? style.reverseX : ''} ${reverseY ? style.reverseY : ''}`;
 
     return (
       <div className={`${style.playerContainer} ${frameIndex === false ? style.live : ''}`}>
         <div className={style.container} ref={this.dom.container} style={{ width: `${width}px`, height: `${height}px`, opacity: ready ? 1 : 0 }}>
-          <video ref={this.dom.video} className={style.layout} style={{ opacity: isCameraReady && frameIndex === false ? 1 : 0 }} />
-          <div style={{ opacity: frameIndex === false ? 1 : 0 }} className={style.layout}>
+          <video ref={this.dom.video} className={`${style.layout} ${reverseClassNames}`} style={{ opacity: isCameraReady && frameIndex === false ? 1 : 0 }} />
+          <div style={{ opacity: frameIndex === false ? 1 : 0 }} className={`${style.layout} ${reverseClassNames}`}>
             <canvas ref={this.dom.videoFrame} className={style.layoutVideoFrame} />
           </div>
           <canvas

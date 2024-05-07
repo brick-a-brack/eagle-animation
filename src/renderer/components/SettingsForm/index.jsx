@@ -35,7 +35,7 @@ const SettingsForm = ({ settings = {}, onUpdate = () => {}, t }) => {
 
   const LNGS_OPTIONS = LANGUAGES.map((e) => ({
     ...e,
-    label: ['es', 'it', 'pl', 'pt', 'eo'].includes(e.value) ? (
+    label: !['en', 'fr', 'de'].includes(e.value) ? (
       <>
         {e.label} {t('(Automated)')}
       </>

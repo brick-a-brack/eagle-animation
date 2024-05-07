@@ -128,27 +128,95 @@ const mergePictures = async (pictures = []) => {
   return canvas;
 };
 
-export const takePicture = async (camera, nbFramesToTake = 1) =>
-  new Promise(async (resolve) => { // eslint-disable-line no-async-promise-executor
-    const bufferList = [];
+const reversePicture = async (picture, reverseX = false, reverseY = false) => {
+  // Convert to canvas
+  let canvas = picture;
+  if (!(canvas instanceof HTMLCanvasElement)) {
+    canvas = await convertBufferToCanvas(canvas);
+  }
 
-    for (let i = 0; i < nbFramesToTake || i < 1; i++) {
-      const data = await camera.takePicture();
-      if (data) {
-        bufferList.push(data);
-      }
-    }
+  const imageData = {
+    width: canvas.width,
+    height: canvas.height,
+    data: canvas.getContext('2d', { alpha: false }).getImageData(0, 0, canvas.width, canvas.height).data,
+  };
 
-    const finalCanvas = bufferList.length > 1 ? { type: 'image/png', buffer: await mergePictures(bufferList.map((e) => e?.buffer)) } : bufferList?.[0];
-    if (finalCanvas?.buffer instanceof HTMLCanvasElement) {
-      finalCanvas?.buffer?.toBlob(
-        async (blob) => {
-          return resolve(Buffer.from(await blob.arrayBuffer()));
-        },
-        `image/png`,
-        1
-      );
-    } else {
-      return resolve(Buffer.from(finalCanvas?.buffer));
+  // Define final width and height
+  const width = imageData.width;
+  const height = imageData.height;
+  const dataArray = new Uint8ClampedArray(width * height * 4);
+
+  for (let x = 0; x < width; x++) {
+    for (let y = 0; y < height; y++) {
+      // Source pixels indexes
+      const sourceRedIdx = y * (width * 4) + x * 4;
+      const sourceGreenIdx = y * (width * 4) + x * 4 + 1;
+      const sourceBlueIdx = y * (width * 4) + x * 4 + 2;
+      const sourceAlphaIdx = y * (width * 4) + x * 4 + 3;
+
+      // Destination pixels indexes
+      const outX = reverseX ? width - x : x;
+      const outY = reverseY ? height - y : y;
+      const destRedIdx = outY * (width * 4) + outX * 4;
+      const destGreenIdx = outY * (width * 4) + outX * 4 + 1;
+      const destBlueIdx = outY * (width * 4) + outX * 4 + 2;
+      const destAlphaIdx = outY * (width * 4) + outX * 4 + 3;
+
+      // Transfer data
+      dataArray[destRedIdx] = imageData.data[sourceRedIdx];
+      dataArray[destGreenIdx] = imageData.data[sourceGreenIdx];
+      dataArray[destBlueIdx] = imageData.data[sourceBlueIdx];
+      dataArray[destAlphaIdx] = imageData.data[sourceAlphaIdx];
     }
+  }
+
+  const imgValues = new ImageData(dataArray, width, height);
+
+  const outputCanvas = document.createElement('canvas');
+  outputCanvas.width = width;
+  outputCanvas.height = height;
+  const ctx = outputCanvas.getContext('2d', { alpha: false });
+  ctx.putImageData(imgValues, 0, 0, 0, 0, width, height);
+
+  return outputCanvas;
+};
+
+const canvasToArrayBuffer = (canvas) =>
+  new Promise((resolve) => {
+    canvas?.toBlob(
+      async (blob) => {
+        return resolve(Buffer.from(await blob.arrayBuffer()));
+      },
+      `image/png`,
+      1
+    );
   });
+
+export const takePicture = async (camera, nbFramesToTake = 1, reverseX = true, reverseY = false) => {
+  // eslint-disable-line no-async-promise-executor
+  const bufferList = [];
+
+  // Take pictures
+  for (let i = 0; i < nbFramesToTake || i < 1; i++) {
+    const data = await camera.takePicture();
+    if (data) {
+      bufferList.push(data);
+    }
+  }
+
+  // Merge frames
+  let finalCanvas = bufferList.length > 1 ? { type: 'image/png', buffer: await mergePictures(bufferList.map((e) => e?.buffer)) } : bufferList?.[0];
+
+  // Reverse frame
+  if (reverseX || reverseY) {
+    finalCanvas = { type: 'image/png', buffer: await reversePicture(finalCanvas.buffer, reverseX, reverseY) };
+  }
+
+  // Canvas to buffer
+  if (finalCanvas?.buffer instanceof HTMLCanvasElement) {
+    finalCanvas.buffer = await canvasToArrayBuffer(finalCanvas.buffer);
+  }
+
+  // Return data
+  return Buffer.from(finalCanvas?.buffer);
+};

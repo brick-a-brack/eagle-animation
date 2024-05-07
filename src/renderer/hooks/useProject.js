@@ -18,7 +18,7 @@ function useProject(options) {
   useEffect(() => {
     const clock = setInterval(() => {
       setProjectClock(new Date().getTime());
-    }, 1000);
+    }, 100);
     return () => clearInterval(clock);
   }, [projectClock]);
 

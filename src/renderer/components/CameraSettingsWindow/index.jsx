@@ -111,6 +111,15 @@ const CameraSettingsWindow = ({
             <FormGroup label={t('Frames to capture')} description={t('Number of frames to capture')}>
               <NumberInput register={register('CAPTURE_FRAMES')} min={1} />
             </FormGroup>
+
+            <FormGroup label={t('Reverse horizontally')} description={t('Reverse the camera horizontally')}>
+            <Switch register={register('REVERSE_X')} />
+            </FormGroup>
+            
+            <FormGroup label={t('Reverse vertically')} description={t('Reverse the camera vertically')}>
+            <Switch register={register('REVERSE_Y')} />
+            </FormGroup>
+
             <FormGroup label={t('Frame averaging')} description={t('Frame averaging will take several frames to remove picture noise, camera must be perfectly stable')}>
               <div style={{ display: 'inline-block' }}>
                 <Switch register={register('AVERAGING_ENABLED')} />

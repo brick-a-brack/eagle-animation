@@ -32,6 +32,19 @@
     width: 100%;
 }
 
+/* Reverse */
+.reverseX {
+    transform: scale(-1, 1);
+}
+
+.reverseY {
+    transform: scale(1, -1);
+}
+
+.reverseX.reverseY {
+    transform: scale(-1, -1) !important;
+}
+
 .loader {
     animation: 1s linear infinite rotate;
     background: var(--color-primary);

@@ -191,7 +191,7 @@ const Animator = ({ t }) => {
       for (let i = 0; i < (Number(nbPicturesToTake !== null ? nbPicturesToTake : settings.CAPTURE_FRAMES) || 1); i++) {
         const nbFramesToTake = (settings.AVERAGING_ENABLED ? Number(settings.AVERAGING_VALUE) : 1) || 1;
         try {
-          const { type, buffer } = await cameraActions.takePicture(nbFramesToTake);
+          const { type, buffer } = await cameraActions.takePicture(nbFramesToTake,settings.REVERSE_X,settings.REVERSE_Y);
           if (!isMuted && settings.SOUNDS) {
             const isAprilFoolsDay = new Date().getDate() === 1 && new Date().getMonth() === 3;
             playSound(isAprilFoolsDay ? soundEagle : soundShutter);
@@ -380,6 +380,8 @@ const Animator = ({ t }) => {
         gridLines={Number(settings.GRID_LINES)}
         ratioLayerOpacity={settings.RATIO_OPACITY}
         videoRatio={ratio?.value || null}
+        reverseX={settings.REVERSE_X}
+        reverseY={settings.REVERSE_Y}
       />
       <ActionsBar actions={['BACK']} position="LEFT" onAction={handleAction} />
       <ActionsBar
