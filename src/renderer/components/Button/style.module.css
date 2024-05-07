@@ -1,16 +1,15 @@
 .button {
-    align-content: center;
     align-items: center;
     background-color: var(--color-primary);
     border-radius: 50%;
     cursor: pointer;
     display: flex;
     height: 42px;
-    justify-content: center;
     line-height: 42px;
     margin-left: 5px;
     margin-right: 5px;
     padding: 10px;
+    place-content: center center;
     position: relative;
     text-align: center;
     transition: all .3s ease-in-out;
@@ -19,27 +18,27 @@
 }
 
 .button:hover {
-    background-color: hsl(225 75% 62% / 1);
+    background-color: hsl(225deg 75% 62% / 100%);
 }
 
 .buttonMini {
-    align-content: center;
     align-items: center;
-    /*background-color: #7f8186;*/
+
+    /* background-color: #7f8186; */
     background-color: var(--color-theme-medium);
     border-radius: 50%;
     cursor: pointer;
     display: flex;
     height: 36px;
-    justify-content: center;
     line-height: 36px;
     margin: 5px;
     padding: 5px;
+    place-content: center center;
     position: relative;
     text-align: center;
+    transition: all .3s ease-in-out;
     user-select: none;
     width: 36px;
-    transition: all .3s ease-in-out;
 }
 
 .buttonMini:hover {
@@ -56,11 +55,11 @@
 
 
 .buttonMini.selected:hover {
-    background-color: hsl(225 75% 62% / 1);
+    background-color: hsl(225deg 75% 62% / 100%);
 }
 
 .buttonMini.selectedWarning:hover {
-    background-color: hsl(0 75% 62% / 1);
+    background-color: hsl(0deg 75% 62% / 100%);
 }
 
 

@@ -1,15 +1,31 @@
+@keyframes shine {
+  to {
+      background-position-x: -200%;
+  }
+}
+
 .container {
   /* Height img + scollbar */
   background-color: #484b51;
   bottom: 0;
   box-sizing: border-box;
   max-height: 97px;
-  overflow-x: scroll;
-  overflow-y: hidden;
+  overflow: scroll hidden;
   padding-left: 2px;
   padding-right: 2px;
   position: absolute;
   white-space: nowrap;
+  width: 100%;
+}
+
+.skeleton {
+  animation: 1.5s shine linear infinite;
+  background: linear-gradient(110deg, hsl(0deg 0% 0%) 25%, hsl(0deg 0% 8%) 50%, hsl(0deg 0% 0%) 75%);
+  background-color: hsl(0deg 0% 86%);
+  background-size: 200% 100%;
+  height: 100%;
+  position: absolute;
+  transition: background-color .2s ease-in-out;
   width: 100%;
 }
 
@@ -73,31 +89,31 @@
 }
 
 .isHidden .img {
-  opacity: 0.2;
-  filter: grayscale(1)
+  filter: grayscale(1);
+  opacity: 0.2
 }
 
 .icon {
-  transform: translate(-50%, -50%);
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  color: rgba(255, 255, 255, 0.5);
-  width: 24px;
+  color: rgb(255 255 255 / 50%);
   height: 24px;
+  left: 50%;
   pointer-events: none;
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 24px;
 }
 
 .iconDuplicate {
-  transform: translate(-50%, -50%);
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  color: rgba(255, 255, 255, 0.5);
-  width: 24px;
+  color: rgb(255 255 255 / 50%);
   height: 24px;
-  pointer-events: none;
+  left: 50%;
   opacity:1;
+  pointer-events: none;
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 24px;
 }
 
 .containerImg:hover .title {

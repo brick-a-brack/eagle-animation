@@ -1,15 +1,15 @@
 .indicator {
+    align-items: center;
+    display: flex;
     font-size: var(--font-size-8);
-    padding: var(--space-small);
-    line-height: var(--font-size-7);
-    position: absolute;
+    font-weight: 600;
     left: 0;
+    line-height: var(--font-size-7);
+    padding: var(--space-small);
+    pointer-events: none;
+    position: absolute;
     top: 0;
     width: 100%;
-    display: flex;
-    align-items: center;
-    font-weight: 600;
-    pointer-events: none;
 }
 
 .indicator svg {

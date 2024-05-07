@@ -16,6 +16,7 @@ export const DEVICE = !document
         : sessionStorage.getItem('isPWA')
           ? 'PWA'
           : 'WEB';
+
 export const REVISION = import.meta.env.VITE_COMMIT_HASH || 'local';
 
 // Computes build tag

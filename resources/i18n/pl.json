@@ -196,5 +196,20 @@
   "The exported frames resolution": "Rozdzielczość eksportowanych klatek",
   "Use project ratio": "Użyj proporcji projektu",
   "Normalize all the frames to match the project aspect ratio": "Normalizuj wszystkie klatki, aby pasowały do proporcji projektu",
-  "Choose a camera": "__NOT_TRANSLATED__"
+  "Choose a camera": "Wybierz kamerę",
+  "Camera access": "Dostęp do kamery",
+  "Microphone access": "Dostęp do mikrofonu",
+  "Grant access to the camera to capture photos": "Zezwól na dostęp do kamery, aby robić zdjęcia",
+  "Grant access to the microphone to record voices and sounds": "Zezwól na dostęp do mikrofonu, aby nagrywać głosy i dźwięki",
+  "Acces granted": "Dostęp przyznany",
+  "Grant permission": "Przyznać uprawnienia",
+  "Permissions": "Uprawnienia",
+  "Permissions setup": "Konfiguracja uprawnień",
+  "Eagle Animation requires camera and microphone permissions to work, if skipped, you will be able to grant access in the settings.": "Eagle Animation wymaga uprawnień do kamery i mikrofonu, aby działać. Jeśli pominiesz, będziesz mógł przyznać dostęp w ustawieniach.",
+  "Let's go!": "Zaczynajmy!",
+  "Skip setup": "Pomiń konfigurację",
+  "Reverse horizontally": "Odwróć poziomo",
+  "Reverse the camera horizontally": "Odwróć kamerę poziomo",
+  "Reverse vertically": "Odwróć pionowo",
+  "Reverse the camera vertically": "Odwróć kamerę pionowo"
 }

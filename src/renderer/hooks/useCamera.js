@@ -14,6 +14,7 @@ const flushCanvas = (dom) => {
 function useCamera(options = {}) {
   const capabilitiesIntervals = useRef({});
   const [devices, setDevices] = useState(null);
+  const [permissions, setPermissions] = useState(null);
   const [currentCameraId, setCurrentCameraId] = useState(null);
   const [batteryStatus, setBatteryStatus] = useState(null);
   const [currentCamera, setCurrentCamera] = useState(null);
@@ -28,6 +29,10 @@ function useCamera(options = {}) {
   // Initial load
   useEffect(() => {
     getCameras().then((cameras) => setDevices(cameras.map(applyCameraLabel)));
+    (async () => {
+      const perms = await window.EA('GET_MEDIA_PERMISSIONS');
+      setPermissions(perms);
+    })();
   }, []);
 
   // Battery refresh
@@ -41,7 +46,7 @@ function useCamera(options = {}) {
 
   // Trigger event
   const triggerEvent = useCallback((name, data = null) => {
-    if (['connect', 'disconnect']) {
+    if (['connect', 'disconnect'].includes(name)) {
       setIsReady(name === 'connect');
     }
     for (const event of eventsRefs.current) {
@@ -53,6 +58,22 @@ function useCamera(options = {}) {
         console.error(e);
       }
     }
+  });
+
+  // Action ask permission
+  const actionAskPermission = useCallback(async (mediaType) => {
+    const ret = await window.EA('ASK_MEDIA_PERMISSION', { mediaType });
+    setPermissions((oldState) => {
+      let d = oldState ? structuredClone(oldState) : null;
+      if (!d) {
+        d = { camera: 'denied', microphone: 'denied' };
+      }
+      if (ret) {
+        oldState[mediaType] = 'granted';
+      }
+      return d;
+    });
+    return ret;
   });
 
   // Action refresh devices list
@@ -105,9 +126,9 @@ function useCamera(options = {}) {
   });
 
   // Action take picture
-  const actionTakePicture = useCallback((nbFramesToTake = 1) => {
+  const actionTakePicture = useCallback(async (nbFramesToTake = 1, reverseX = false, reverseY = false) => {
     if (currentCamera) {
-      return takePicture(currentCamera, nbFramesToTake);
+      return takePicture(currentCamera, nbFramesToTake, reverseX, reverseY);
     }
     return null;
   });
@@ -160,6 +181,7 @@ function useCamera(options = {}) {
     currentCameraCapabilities: cameraCapabilities || [],
     currentCamera: (isReady ? currentCamera : null) || null,
     batteryStatus: batteryStatus || null,
+    permissions: permissions || null,
     actions: {
       setDomRefs: actionSetDomRefs,
       setCamera: actionSetCamera,
@@ -169,6 +191,7 @@ function useCamera(options = {}) {
       setCapability: actionSetCapability,
       addEventListener: actionAddEventListener,
       removeEventListener: actionRemoveEventListener,
+      askPermission: actionAskPermission,
     },
   };
 }

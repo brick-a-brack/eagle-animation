@@ -195,5 +195,20 @@
   "The exported frames resolution": "La rezolucio de eksportitaj bildoj",
   "Use project ratio": "Uzi la projekta proporcio",
   "Normalize all the frames to match the project aspect ratio": "Normigi ĉiujn bildojn por ke ili kongruu kun la projekta aspekta proporcio",
-  "Choose a camera": "__NOT_TRANSLATED__"
+  "Choose a camera": "Elektu kameron",
+  "Camera access": "Alirebligo al la kamerao",
+  "Microphone access": "Alirebligo al la mikrofono",
+  "Grant access to the camera to capture photos": "Permesi aliron al la kamerao por kapti fotojn",
+  "Grant access to the microphone to record voices and sounds": "Permesi aliron al la mikrofono por registri voĉojn kaj sonojn",
+  "Acces granted": "Aliro permesita",
+  "Grant permission": "Doni permeson",
+  "Permissions": "Permesoj",
+  "Permissions setup": "Agordo de permesoj",
+  "Eagle Animation requires camera and microphone permissions to work, if skipped, you will be able to grant access in the settings.": "Eagle Animation postulas kameraajn kaj mikrofonajn permesojn por funkcii, se vi preterlasas, vi povos doni aliron en la agordoj poste.",
+  "Let's go!": "Ni ek!",
+  "Skip setup": "Preterigi agordon",
+  "Reverse horizontally": "Inversigi horizontale",
+  "Reverse the camera horizontally": "Inversigi la kameron horizontale",
+  "Reverse vertically": "Inversigi vertikale",
+  "Reverse the camera vertically": "Inversigi la kameron vertikale"
 }

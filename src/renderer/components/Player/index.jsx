@@ -7,6 +7,8 @@ import BatteryIndicator from '../BatteryIndicator';
 
 import * as style from './style.module.css';
 
+const PLAYER_USABLE_FRAME_PROPERTY = 'preview'; // 'link' for original, 'preview' for 720p preview, 'thumbnail' for 80p preview
+
 const drawArea = (ctx, x, y, width, height) => {
   ctx.fillRect(x, y, width, 1);
   ctx.fillRect(x, y + height, width, 1);
@@ -83,7 +85,7 @@ class Player extends Component {
         }
 
         const frame = (newFrameIndex === false ? filteredFrames[filteredFrames.length - 1] : filteredFrames[newFrameIndex]) || false;
-        this.drawFrame(frame.link || false);
+        this.drawFrame(frame[PLAYER_USABLE_FRAME_PROPERTY] || false);
         this.setState({ frameIndex: newFrameIndex });
         this.props.onFrameChange(newFrameIndex !== false && frame ? frame.id : false);
         return true;
@@ -143,7 +145,7 @@ class Player extends Component {
         clearInterval(this.clock);
       }
       const frame = this.frames[this.frames.length - 1] || false; // Draw last frame for onion feature
-      this.drawFrame(frame.link || false);
+      this.drawFrame(frame[PLAYER_USABLE_FRAME_PROPERTY] || false);
       this.setState({ frameIndex: false });
       this.props.onFrameChange(false);
       this.props.onPlayingStatusChange(false);
@@ -155,7 +157,7 @@ class Player extends Component {
       }
       if (id === false) {
         const frame = this.frames[this.frames.length - 1] || false; // Draw last frame for onion feature
-        this.drawFrame(frame.link || false);
+        this.drawFrame(frame[PLAYER_USABLE_FRAME_PROPERTY] || false);
         this.setState({ frameIndex: false });
         this.props.onFrameChange(false);
         return;
@@ -163,7 +165,7 @@ class Player extends Component {
       const frame = this.frames.find((e) => e.id === id) || false;
       const frameIndex = this.frames.findIndex((e) => e.id === id);
       this.setState({ frameIndex: frameIndex === -1 ? false : frameIndex });
-      this.drawFrame(frame.link || false);
+      this.drawFrame(frame[PLAYER_USABLE_FRAME_PROPERTY] || false);
       this.props.onFrameChange(frame.id);
       this.props.onPlayingStatusChange(false);
     };
@@ -187,7 +189,7 @@ class Player extends Component {
       this.resize();
     });
     this.videoFrameObserver.observe(this.dom.videoFrame.current, {
-      attributeFilter: ["height", "width"],
+      attributeFilter: ['height', 'width'],
     });
 
     this.showFrame(false);
@@ -325,25 +327,26 @@ class Player extends Component {
   }
 
   render() {
-    const { showGrid, onionValue, blendMode, isCameraReady, t, batteryStatus, ratioLayerOpacity } = this.props;
+    const { showGrid, onionValue, blendMode, isCameraReady, t, batteryStatus, ratioLayerOpacity, reverseX, reverseY } = this.props;
     const { width, height, ready, frameIndex } = this.state;
 
     const borders = resizeToFit('contain', { width: this.getVideoRatio(), height: 1 }, { width: this.getSize().width, height: this.getSize().height });
     const borderLeftRight = (this.getSize().width - borders.width) / 2 / this.getSize().width;
     const borderTopBottom = (this.getSize().height - borders.height) / 2 / this.getSize().height;
+    const reverseClassNames = `${reverseX ? style.reverseX : ''} ${reverseY ? style.reverseY : ''}`;
 
     return (
       <div className={`${style.playerContainer} ${frameIndex === false ? style.live : ''}`}>
         <div className={style.container} ref={this.dom.container} style={{ width: `${width}px`, height: `${height}px`, opacity: ready ? 1 : 0 }}>
-          <video ref={this.dom.video} className={style.layout} style={{ opacity: isCameraReady && frameIndex === false ? 1 : 0 }} />
-          <div style={{ opacity: frameIndex === false ? 1 : 0 }} className={style.layout}>
+          <video ref={this.dom.video} className={`${style.layout} ${reverseClassNames}`} style={{ opacity: isCameraReady && frameIndex === false ? 1 : 0 }} />
+          <div style={{ opacity: frameIndex === false ? 1 : 0 }} className={`${style.layout} ${reverseClassNames}`}>
             <canvas ref={this.dom.videoFrame} className={style.layoutVideoFrame} />
           </div>
           <canvas
             ref={this.dom.picture}
             className={style.layout}
             style={{
-              opacity: !isCameraReady && frameIndex === false ? 0 : (frameIndex !== false || blendMode ? 1 : 1 - onionValue),
+              opacity: !isCameraReady && frameIndex === false ? 0 : frameIndex !== false || blendMode ? 1 : 1 - onionValue,
               mixBlendMode: !blendMode ? 'normal' : 'difference',
             }}
           />

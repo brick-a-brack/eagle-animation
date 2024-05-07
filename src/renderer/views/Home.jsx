@@ -1,3 +1,4 @@
+import { isFirefox, isSafari } from '@braintree/browser-detection';
 import { useEffect } from 'react';
 import { withTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
@@ -6,6 +7,7 @@ import ActionsBar from '../components/ActionsBar';
 import Header from '../components/Header';
 import ProjectCard from '../components/ProjectCard';
 import ProjectsGrid from '../components/ProjectsGrid';
+import { LS_PERMISSIONS } from '../config';
 import useAppVersion from '../hooks/useAppVersion';
 import useCamera from '../hooks/useCamera';
 import useProjects from '../hooks/useProjects';
@@ -16,8 +18,16 @@ const HomeView = ({ t }) => {
   const navigate = useNavigate();
   const { actions: cameraActions } = useCamera();
 
+  // Unload camera
   useEffect(() => {
     cameraActions.setCamera(null);
+  }, []);
+
+  // Permissions redirect
+  useEffect(() => {
+    if (!localStorage.getItem(LS_PERMISSIONS) && (isFirefox() || isSafari())) {
+      navigate('/permissions?back=/');
+    }
   }, []);
 
   useEffect(() => {

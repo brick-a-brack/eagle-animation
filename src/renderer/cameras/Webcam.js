@@ -375,12 +375,16 @@ class Webcam {
 
     if (typeof ImageCapture !== 'undefined') {
       const imageCapture = new ImageCapture(this.stream.getVideoTracks()[0]);
-      const bitmap =
-        (await imageCapture
-          .takePhoto({})
-          .then((blob) => createImageBitmap(blob))
-          .catch(() => null)) || (await imageCapture.grabFrame({}).catch(() => null));
+      const arrBuffer = await imageCapture
+        .takePhoto({})
+        .then((blob) => blob.arrayBuffer())
+        .catch(() => null);
 
+      if (arrBuffer) {
+        return { type: 'image/png', buffer: arrBuffer };
+      }
+
+      const bitmap = await imageCapture.grabFrame({}).catch(() => null);
       if (!bitmap) {
         return;
       }
@@ -389,8 +393,6 @@ class Webcam {
       canvas.height = bitmap.height;
       const context = canvas.getContext('2d', { alpha: false });
       context.drawImage(bitmap, 0, 0, bitmap.width, bitmap.height);
-      //const context = canvas.getContext("bitmaprenderer");
-      //context?.transferFromImageBitmap(bitmap);
       return { type: 'image/png', buffer: canvas };
     } else {
       const canvas = document.createElement('canvas');

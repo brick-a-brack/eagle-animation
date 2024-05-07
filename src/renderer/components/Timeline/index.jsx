@@ -11,6 +11,15 @@ import faRectangleHistory from '../../icons/faRectangleHistory';
 
 import * as style from './style.module.css';
 
+const getPicturesKey = (pictures) => {
+  const data = structuredClone(pictures);
+  for (let i = 0; i < pictures.length; i++) {
+    delete data[i].thumbnail;
+    delete data[i].preview;
+  }
+  return JSON.stringify(data);
+};
+
 const SortableItem = ({ img, selected, onSelect, index }) => {
   const { setNodeRef, isDragging, transform, transition, listeners, attributes, active } = useSortable({ id: img.id });
   return (
@@ -32,7 +41,8 @@ const SortableItem = ({ img, selected, onSelect, index }) => {
       className={`${style.containerImg} ${selected ? style.selected : ''}  ${img.hidden ? style.isHidden : ''}`}
     >
       <span className={style.img}>
-        <img alt="" className={style.imgcontent} src={img.link} />
+        <div className={style.skeleton} />
+        {img.thumbnail && <img alt="" className={style.imgcontent} src={img.thumbnail} loading="lazy" />}
       </span>
       {img.hidden && <FontAwesomeIcon className={style.icon} icon={faEyeSlash} />}
       {!img.hidden && img.length > 1 && <FontAwesomeIcon className={style.iconDuplicate} icon={faRectangleHistory} />}
@@ -71,7 +81,7 @@ const Timeline = ({ onSelect, onMove, select = false, pictures = [], playing = f
         horizontalOffset: (-window.innerWidth + document.querySelector(key).getBoundingClientRect().width) / 2,
       });
     }
-  }, [select, JSON.stringify(pictures), playing]);
+  }, [select, getPicturesKey(pictures), playing]);
 
   const getIndex = (id) => pictures.findIndex((e) => `${e.id}` === `${id}`);
 

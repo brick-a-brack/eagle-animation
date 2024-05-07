@@ -1,21 +1,25 @@
+import { isFirefox, isSafari } from '@braintree/browser-detection';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { withTranslation } from 'react-i18next';
 
 import { LANGUAGES } from '../../config';
 import useAppCapabilities from '../../hooks/useAppCapabilities';
+import useCamera from '../../hooks/useCamera';
 import CustomSlider from '../CustomSlider';
 import FormGroup from '../FormGroup';
 import FormLayout from '../FormLayout';
 import GridIcon from '../GridIcon';
 import Heading from '../Heading';
 import Input from '../Input';
+import MediaStatus from '../MediaStatus';
 import NumberInput from '../NumberInput';
 import Select from '../Select';
 import Switch from '../Switch';
 
 const SettingsForm = ({ settings = {}, onUpdate = () => {}, t }) => {
   const { appCapabilities } = useAppCapabilities();
+  const { permissions, actions: cameraActions } = useCamera();
   const form = useForm({
     mode: 'all',
     defaultValues: settings,
@@ -29,16 +33,7 @@ const SettingsForm = ({ settings = {}, onUpdate = () => {}, t }) => {
     onUpdate(values);
   }, [JSON.stringify(formValues)]);
 
-  const LNGS_OPTIONS = LANGUAGES.map((e) => ({
-    ...e,
-    label: ['es', 'it', 'pl', 'pt', 'eo'].includes(e.value) ? (
-      <>
-        {e.label} {t('(Automated)')}
-      </>
-    ) : (
-      e.label
-    ),
-  }));
+  const LNGS_OPTIONS = [...LANGUAGES].sort((a, b) => (a.label > b.label ? 1 : -1));
 
   return (
     <form id="settings">
@@ -47,6 +42,27 @@ const SettingsForm = ({ settings = {}, onUpdate = () => {}, t }) => {
         <FormGroup label={t('Language')} description={t('The application language to use')}>
           <Select options={LNGS_OPTIONS} control={control} register={register('LANGUAGE')} />
         </FormGroup>
+
+        {(isSafari() || isFirefox()) && (
+          <>
+            <Heading h={1}>{t('Permissions')}</Heading>
+            <MediaStatus
+              type={'camera'}
+              permission={permissions?.camera}
+              action={() => {
+                cameraActions.askPermission('camera');
+              }}
+            />
+            <MediaStatus
+              title={'microphone'}
+              permission={permissions?.microphone}
+              action={() => {
+                cameraActions.askPermission('microphone');
+              }}
+            />
+          </>
+        )}
+
         <Heading h={1}>{t('Playback')}</Heading>
         <FormGroup label={t('Short play')} description={t('Number of frames to play when short play is enabled')}>
           <NumberInput register={register('SHORT_PLAY')} min={1} />

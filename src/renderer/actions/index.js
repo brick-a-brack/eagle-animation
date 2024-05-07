@@ -38,8 +38,7 @@ const getDefaultPreview = async (data) => {
   return null;
 };
 
-// TODO: .preview => img to display
-const computeProject = async (data) => {
+const computeProject = async (data, bindPictureLink = true) => {
   const copiedData = structuredClone(data);
   let preview = await getDefaultPreview(copiedData);
   const scenes = await Promise.all(
@@ -49,7 +48,7 @@ const computeProject = async (data) => {
         pictures: await Promise.all(
           scene.pictures.map(async (picture) => ({
             ...picture,
-            link: await getFrameBlobUrl(picture.id),
+            link: bindPictureLink ? await getFrameBlobUrl(picture.id) : null,
           }))
         ),
       };
@@ -71,13 +70,57 @@ const computeProject = async (data) => {
   return output;
 };
 
+let dedupProms = {};
+
 export const Actions = {
+  GET_MEDIA_PERMISSIONS: async () => {
+    if (isFirefox()) {
+      dedupProms.testCamera =
+        dedupProms.testCamera ||
+        navigator.mediaDevices
+          .getUserMedia({ video: true })
+          .then(() => true)
+          .catch(() => false);
+
+      dedupProms.testMicrophone =
+        dedupProms.testMicrophone ||
+        navigator.mediaDevices
+          .getUserMedia({ audio: true })
+          .then(() => true)
+          .catch(() => false);
+
+      const [firefoxCameraPermission, firefoxMicrophonePermission] = await Promise.all([dedupProms.testCamera, dedupProms.testMicrophone]);
+      return {
+        camera: firefoxCameraPermission ? 'granted' : 'denied',
+        microphone: firefoxMicrophonePermission ? 'granted' : 'denied',
+      };
+    } else {
+      const [cameraPermission, microphonePermission] = await Promise.all([
+        navigator.permissions.query({ name: 'camera' }).catch(() => null),
+        navigator.permissions.query({ name: 'microphone' }).catch(() => null),
+      ]);
+      return {
+        camera: cameraPermission?.state === 'granted' ? 'granted' : 'denied',
+        microphone: microphonePermission?.state === 'granted' ? 'granted' : 'denied',
+      };
+    }
+  },
+  ASK_MEDIA_PERMISSION: async (evt, { mediaType }) => {
+    const permission = await navigator.mediaDevices
+      .getUserMedia({
+        ...(mediaType === 'camera' ? { video: true } : {}),
+        ...(mediaType === 'microphone' ? { audio: true } : {}),
+      })
+      .then(() => true)
+      .catch(() => false);
+    return permission;
+  },
   GET_LAST_VERSION: async () => {
     return { version: null }; // Web version is always up-to-date, ignore update detection
   },
   GET_PROJECTS: async () => {
     const projects = await getAllProjects();
-    return Promise.all(projects.map(computeProject));
+    return Promise.all(projects.map((d) => computeProject(d, false)));
   },
   NEW_PROJECT: async (evt, { title }) => {
     const id = await createProject(title);

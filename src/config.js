@@ -8,6 +8,7 @@ export const VERSION = json.version;
 export const LS_PREFIX = 'ea_';
 export const LS_LANGUAGE = `${LS_PREFIX}language`;
 export const LS_SETTINGS = `${LS_PREFIX}settings`;
+export const LS_PERMISSIONS = `${LS_PREFIX}permissions`;
 
 // Eagle Animation files
 export const DIRECTORY_NAME = 'EagleAnimation';
@@ -29,47 +30,95 @@ export const LANGUAGES = [
   {
     value: 'en',
     label: 'English',
-    tLabel: (t) => t('English'),
   },
   {
     value: 'fr',
     label: 'Français',
-    tLabel: (t) => t('Français'),
   },
   {
     value: 'de',
     label: 'Deutsch',
-    tLabel: (t) => t('Deutsch'),
   },
   {
     value: 'es',
     label: 'Español',
-    tLabel: (t) => t('Español'),
   },
   {
     value: 'it',
     label: 'Italiano',
-    tLabel: (t) => t('Italiano'),
   },
   {
     value: 'pl',
     label: 'Polski',
-    tLabel: (t) => t('Polski'),
   },
   {
     value: 'pt',
     label: 'Português',
-    tLabel: (t) => t('Português'),
   },
   {
     value: 'eo',
     label: 'Esperanto',
-    tLabel: (t) => t('Esperanto'),
+  },
+  {
+    value: 'bg',
+    label: 'Български',
+  },
+  {
+    value: 'cs',
+    label: 'Čeština',
+  },
+  {
+    value: 'da',
+    label: 'Dansk',
+  },
+  {
+    value: 'el',
+    label: 'Ελληνικά',
+  },
+  {
+    value: 'hr',
+    label: 'Hrvatski',
+  },
+  {
+    value: 'lv',
+    label: 'Latviešu valoda',
+  },
+  {
+    value: 'hu',
+    label: 'Magyar',
+  },
+  {
+    value: 'nl',
+    label: 'Nederlands',
+  },
+  {
+    value: 'ro',
+    label: 'Română',
+  },
+  {
+    value: 'sk',
+    label: 'Slovenčina',
+  },
+  {
+    value: 'sl',
+    label: 'Slovenščina',
+  },
+  {
+    value: 'fi',
+    label: 'Suomi',
+  },
+  {
+    value: 'sv',
+    label: 'Svenska',
+  },
+  {
+    value: 'ru',
+    label: 'Русский',
   },
 ];
 
 // Allowed languages
-export const ALLOWED_LANGUAGES = ['en', 'fr', 'de', 'es', 'it', 'pt', 'pl', 'eo'];
+export const ALLOWED_LANGUAGES = ['en', 'fr', 'de', 'es', 'it', 'pt', 'pl', 'eo', 'bg', 'cs', 'da', 'el', 'hr', 'lv', 'hu', 'nl', 'ro', 'sk', 'sl', 'fi', 'sv', 'ru'];
 export const DEFAULT_LANGUAGE = 'en';
 
 // Partner API url

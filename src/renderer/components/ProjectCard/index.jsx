@@ -32,7 +32,7 @@ const ProjectCard = ({ id = '', placeholder = '', title = '', picture = '', onCl
 
   return (
     <div className={style.box}>
-      <div className={style.banner}>{picture && <img alt="" src={picture} />}</div>
+      <div className={style.banner}>{picture && <img alt="" src={picture} loading="lazy" />}</div>
       <div role="button" tabIndex={0} className={style.bannerhover} onClick={handleClick}>
         {icon === 'ADD' && <IconAdd />}
         {icon === 'EDIT' && <IconEdit />}

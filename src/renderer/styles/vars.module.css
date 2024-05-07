@@ -28,9 +28,10 @@ body {
   --font: "Open Sans";
   --input-height: 30px;
   --color-primary: #486ee5;
+  --color-success: #48e548;
   --color-alert: #e54848;
   --color-warning: #e59248;
-  --color-theme-light: hsl(223 4% 45% / 1);
+  --color-theme-light: hsl(223deg 4% 45% / 100%);
   --color-theme-medium: #5f6166;
   --color-theme-dark: #2f3136;
 }

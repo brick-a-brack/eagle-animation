@@ -17,6 +17,8 @@ const DEFAULT_SETTINGS = {
   GRID_COLUMNS: 3,
   EVENT_KEY: '',
   SOUNDS: true,
+  REVERSE_X: false,
+  REVERSE_Y: false,
 };
 
 function useSettings() {

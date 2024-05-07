@@ -92,7 +92,7 @@ const ShortcutsList = ({ t, shortcuts }) => {
           <Heading h={1}>{categoriesTitles[category] || category}</Heading>
           {categories[category].map((key) => (
             <div key={key} className={style.line}>
-              <div className={style.action}>{titles[key] || key}</div>
+              <div>{titles[key] || key}</div>
               <div>
                 {shortcuts[key].reduce(
                   (acc, v) => [

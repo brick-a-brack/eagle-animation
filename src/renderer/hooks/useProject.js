@@ -1,7 +1,11 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
+
+import { OptimizeFrame } from '../core/Optimizer';
 
 function useProject(options) {
   const [projectData, setProjectData] = useState(null);
+  const [projectClock, setProjectClock] = useState(null);
+  const framesCache = useRef({});
 
   // Initial load
   useEffect(() => {
@@ -9,6 +13,14 @@ function useProject(options) {
       setProjectData(data);
     });
   }, [options.id]);
+
+  // Project preview clock
+  useEffect(() => {
+    const clock = setInterval(() => {
+      setProjectClock(new Date().getTime());
+    }, 100);
+    return () => clearInterval(clock);
+  }, [projectClock]);
 
   // Auto save
   useEffect(() => {
@@ -130,7 +142,6 @@ function useProject(options) {
   // Action add frame
   const actionAddFrame = useCallback(async (trackId, buffer, extension = 'jpg', beforeFrameId = false) => {
     const sceneId = Number(trackId);
-
     const addedPicture = await window.EA('SAVE_PICTURE', {
       project_id: options?.id,
       track_id: sceneId,
@@ -152,8 +163,50 @@ function useProject(options) {
     });
   });
 
+  const bindPreviewPictures = (pData) => {
+    if (!pData?.project) {
+      return null;
+    }
+
+    let d = structuredClone(pData);
+
+    for (let sceneId = 0; sceneId < d.project.scenes.length; sceneId++) {
+      for (let frameIndex = 0; frameIndex < d.project.scenes[sceneId].pictures.length; frameIndex++) {
+        const frame = d.project.scenes[sceneId].pictures[frameIndex];
+
+        // THUMBNAIL SUPPORT
+        if (framesCache.current[`${options?.id}_${sceneId}_${frame.id}_thumbnail`]) {
+          d.project.scenes[sceneId].pictures[frameIndex].thumbnail = framesCache.current[`${options?.id}_${sceneId}_${frame.id}_thumbnail`] || null;
+        } else {
+          d.project.scenes[sceneId].pictures[frameIndex].thumbnail = null;
+          (async () => {
+            const url = await OptimizeFrame(options?.id, sceneId, frame.id, 'thumbnail', frame.link);
+            if (url) {
+              framesCache.current[`${options?.id}_${sceneId}_${frame.id}_thumbnail`] = url;
+            }
+          })();
+        }
+
+        // PREVIEW SUPPORT
+        if (framesCache.current[`${options?.id}_${sceneId}_${frame.id}_preview`]) {
+          d.project.scenes[sceneId].pictures[frameIndex].preview = framesCache.current[`${options?.id}_${sceneId}_${frame.id}_preview`] || null;
+        } else {
+          d.project.scenes[sceneId].pictures[frameIndex].preview = null;
+          (async () => {
+            const url = await OptimizeFrame(options?.id, sceneId, frame.id, 'preview', frame.link);
+            if (url) {
+              framesCache.current[`${options?.id}_${sceneId}_${frame.id}_preview`] = url;
+            }
+          })();
+        }
+      }
+    }
+
+    return d;
+  };
+
   return {
-    project: projectData?.project || null,
+    project: bindPreviewPictures(projectData)?.project || null,
     actions: {
       changeFPS: actionChangeFPS,
       changeRatio: actionChangeRatio,
