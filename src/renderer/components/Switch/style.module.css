@@ -10,8 +10,8 @@
 .slider {
   background-color: var(--color-theme-light);
   border-radius: 34px;
-  inset: 0;
   cursor: pointer;
+  inset: 0;
   position: absolute;
   transition: 0.4s;
 }

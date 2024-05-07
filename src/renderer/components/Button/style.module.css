@@ -1,5 +1,4 @@
 .button {
-    place-content: center center;
     align-items: center;
     background-color: var(--color-primary);
     border-radius: 50%;
@@ -10,6 +9,7 @@
     margin-left: 5px;
     margin-right: 5px;
     padding: 10px;
+    place-content: center center;
     position: relative;
     text-align: center;
     transition: all .3s ease-in-out;
@@ -22,7 +22,6 @@
 }
 
 .buttonMini {
-    place-content: center center;
     align-items: center;
 
     /* background-color: #7f8186; */
@@ -34,6 +33,7 @@
     line-height: 36px;
     margin: 5px;
     padding: 5px;
+    place-content: center center;
     position: relative;
     text-align: center;
     transition: all .3s ease-in-out;
