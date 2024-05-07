@@ -6,6 +6,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import soundDelete from '~/resources/sounds/delete.mp3';
 import soundError from '~/resources/sounds/error.mp3';
 import soundShutter from '~/resources/sounds/shutter.mp3';
+import soundEagle from '~/resources/sounds/eagle.mp3';
 
 import ActionsBar from '../components/ActionsBar';
 import CameraSettingsWindow from '../components/CameraSettingsWindow';
@@ -192,7 +193,8 @@ const Animator = ({ t }) => {
         try {
           const { type, buffer } = await cameraActions.takePicture(nbFramesToTake);
           if (!isMuted && settings.SOUNDS) {
-            playSound(soundShutter);
+            const isAprilFoolsDay = new Date().getDate() === 1 && new Date().getMonth() === 3;
+            playSound(isAprilFoolsDay ? soundEagle : soundShutter);
           }
 
           await projectActions.addFrame(track, Buffer.from(buffer), type?.includes('png') ? 'png' : 'jpg', currentFrameId);
