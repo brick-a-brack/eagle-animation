@@ -10,9 +10,10 @@ class BlobFramesDatabase extends Dexie {
 }
 
 const db = new BlobFramesDatabase();
+const openedDb = db.open();
 
 export const createFrame = async (buffer, extension) => {
-  await db.open();
+  await openedDb;
   return db.frames.add({ buffer, extension });
 };
 
@@ -22,7 +23,7 @@ export const getFrameBlobUrl = async (id) => {
   if (cachedUrls[Number(id)]) {
     return cachedUrls[Number(id)];
   }
-  await db.open();
+  await openedDb;
   const frame = await db.frames.get(Number(id));
   if (!frame) {
     return null;
@@ -36,7 +37,7 @@ export const getFrameBlobUrl = async (id) => {
 };
 
 export const getFrameBlob = async (id) => {
-  await db.open();
+  await openedDb;
   const frame = await db.frames.get(Number(id));
   if (!frame) {
     return null;

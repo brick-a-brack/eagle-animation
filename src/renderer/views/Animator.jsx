@@ -7,7 +7,6 @@ import soundDelete from '~/resources/sounds/delete.mp3';
 import soundError from '~/resources/sounds/error.mp3';
 import soundShutter from '~/resources/sounds/shutter.mp3';
 
-import { parseRatio } from '../common/ratio';
 import ActionsBar from '../components/ActionsBar';
 import CameraSettingsWindow from '../components/CameraSettingsWindow';
 import ControlBar from '../components/ControlBar';
@@ -16,6 +15,7 @@ import Player from '../components/Player';
 import ProjectSettingsWindow from '../components/ProjectSettingsWindow';
 import Timeline from '../components/Timeline';
 import Window from '../components/Window';
+import { parseRatio } from '../core/ratio';
 import useAppCapabilities from '../hooks/useAppCapabilities';
 import useCamera from '../hooks/useCamera';
 import useProject from '../hooks/useProject';
@@ -191,12 +191,11 @@ const Animator = ({ t }) => {
         const nbFramesToTake = (settings.AVERAGING_ENABLED ? Number(settings.AVERAGING_VALUE) : 1) || 1;
         try {
           const { type, buffer } = await cameraActions.takePicture(nbFramesToTake);
-
           if (!isMuted && settings.SOUNDS) {
             playSound(soundShutter);
           }
 
-          await projectActions.addFrame(track, buffer, type?.includes('png') ? 'png' : 'jpg', currentFrameId);
+          await projectActions.addFrame(track, Buffer.from(buffer), type?.includes('png') ? 'png' : 'jpg', currentFrameId);
         } catch (err) {
           if (!isMuted && settings.SOUNDS) {
             playSound(soundError);

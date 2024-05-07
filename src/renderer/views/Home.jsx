@@ -1,3 +1,4 @@
+import { isFirefox, isSafari } from '@braintree/browser-detection';
 import { useEffect } from 'react';
 import { withTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
@@ -24,10 +25,10 @@ const HomeView = ({ t }) => {
 
   // Permissions redirect
   useEffect(() => {
-    if (!localStorage.getItem(LS_PERMISSIONS)) {
+    if (!localStorage.getItem(LS_PERMISSIONS) && (isFirefox() || isSafari())) {
       navigate('/permissions?back=/');
     }
-  });
+  }, []);
 
   useEffect(() => {
     // Trigger background sync

@@ -1,3 +1,4 @@
+import { isFirefox, isSafari } from '@braintree/browser-detection';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { withTranslation } from 'react-i18next';
@@ -51,21 +52,25 @@ const SettingsForm = ({ settings = {}, onUpdate = () => {}, t }) => {
           <Select options={LNGS_OPTIONS} control={control} register={register('LANGUAGE')} />
         </FormGroup>
 
-        <Heading h={1}>{t('Permissions')}</Heading>
-        <MediaStatus
-          type={'camera'}
-          permission={permissions?.camera}
-          action={() => {
-            cameraActions.askPermission('camera');
-          }}
-        />
-        <MediaStatus
-          title={'microphone'}
-          permission={permissions?.microphone}
-          action={() => {
-            cameraActions.askPermission('microphone');
-          }}
-        />
+        {(isSafari() || isFirefox()) && (
+          <>
+            <Heading h={1}>{t('Permissions')}</Heading>
+            <MediaStatus
+              type={'camera'}
+              permission={permissions?.camera}
+              action={() => {
+                cameraActions.askPermission('camera');
+              }}
+            />
+            <MediaStatus
+              title={'microphone'}
+              permission={permissions?.microphone}
+              action={() => {
+                cameraActions.askPermission('microphone');
+              }}
+            />
+          </>
+        )}
 
         <Heading h={1}>{t('Playback')}</Heading>
         <FormGroup label={t('Short play')} description={t('Number of frames to play when short play is enabled')}>

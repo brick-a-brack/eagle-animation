@@ -13,7 +13,6 @@
    - Build APK using Capacitor (Android)
 
 - Core
-   - Generate picture preview to improve playback performances
    - Add the ability apply mirror effect to the camera image (X + Y + Both)
    - Support several scene by project
    - Support masking

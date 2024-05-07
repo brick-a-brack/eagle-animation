@@ -1,3 +1,9 @@
+@keyframes shine {
+  to {
+      background-position-x: -200%;
+  }
+}
+
 .container {
   /* Height img + scollbar */
   background-color: #484b51;
@@ -10,6 +16,17 @@
   padding-right: 2px;
   position: absolute;
   white-space: nowrap;
+  width: 100%;
+}
+
+.skeleton {
+  animation: 1.5s shine linear infinite;
+  background: linear-gradient(110deg, hsl(0, 0%, 0%) 25%, hsl(0, 0%, 8%) 50%, hsl(0, 0%, 0%) 75%);
+  background-color: hsl(0deg 0% 86%);
+  background-size: 200% 100%;
+  height: 100%;
+  position: absolute;
+  transition: background-color .2s ease-in-out;
   width: 100%;
 }
 

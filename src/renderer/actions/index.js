@@ -38,7 +38,6 @@ const getDefaultPreview = async (data) => {
   return null;
 };
 
-// TODO: .preview => img to display
 const computeProject = async (data) => {
   const copiedData = structuredClone(data);
   let preview = await getDefaultPreview(copiedData);

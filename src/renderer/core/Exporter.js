@@ -44,8 +44,9 @@ export const ExportFrame = (
       }
 
       const canvas = document.createElement('canvas');
-      const height = resolution?.height || this.naturalHeight;
-      const width = resolution?.width || this.naturalWidth;
+      const initialRatio = this.naturalWidth / this.naturalHeight;
+      const height = (resolution?.height === null && resolution?.width ? Math.round(resolution?.width / initialRatio) : resolution?.height) || this.naturalHeight;
+      const width = (resolution?.width === null && resolution?.height ? Math.round(resolution?.height * initialRatio) : resolution?.width) || this.naturalWidth;
       canvas.height = height;
       canvas.width = width;
       const { width: outWidth, height: outHeight, x: outX, y: outY } = resizeToFit(mode, { width: this.naturalWidth, height: this.naturalHeight }, { width, height });

@@ -128,20 +128,27 @@ const mergePictures = async (pictures = []) => {
   return canvas;
 };
 
-export const takePicture = async (camera, nbFramesToTake = 1) => {
-  const bufferList = [];
+export const takePicture = async (camera, nbFramesToTake = 1) =>
+  new Promise(async (resolve) => { // eslint-disable-line no-async-promise-executor
+    const bufferList = [];
 
-  for (let i = 0; i < nbFramesToTake || i < 1; i++) {
-    const data = await camera.takePicture();
-    if (data) {
-      bufferList.push(data);
+    for (let i = 0; i < nbFramesToTake || i < 1; i++) {
+      const data = await camera.takePicture();
+      if (data) {
+        bufferList.push(data);
+      }
     }
-  }
 
-  const finalCanvas = bufferList.length > 1 ? { type: 'image/png', buffer: await mergePictures(bufferList.map((e) => e?.buffer)) } : bufferList?.[0];
-  if (finalCanvas?.buffer instanceof HTMLCanvasElement) {
-    const data = finalCanvas?.buffer?.toDataURL('image/png');
-    return { type: 'image/png', buffer: Buffer.from(data.replace(/^data:image\/\w+;base64,/, ''), 'base64') };
-  }
-  return finalCanvas;
-};
+    const finalCanvas = bufferList.length > 1 ? { type: 'image/png', buffer: await mergePictures(bufferList.map((e) => e?.buffer)) } : bufferList?.[0];
+    if (finalCanvas?.buffer instanceof HTMLCanvasElement) {
+      finalCanvas?.buffer?.toBlob(
+        async (blob) => {
+          return resolve(Buffer.from(await blob.arrayBuffer()));
+        },
+        `image/png`,
+        1
+      );
+    } else {
+      return resolve(Buffer.from(finalCanvas?.buffer));
+    }
+  });

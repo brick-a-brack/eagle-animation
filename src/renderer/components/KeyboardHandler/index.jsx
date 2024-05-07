@@ -1,6 +1,6 @@
 import KeyboardEventHandler from 'react-keyboard-event-handler';
 
-import SHORTCUTS from '../../common/shortcuts';
+import SHORTCUTS from '../../core/shortcuts';
 
 const KeyboardHandler = ({ onAction = null, disabled = false }) => {
   const handleAction = (action) => () => {

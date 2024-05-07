@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { withTranslation } from 'react-i18next';
 
-import { parseRatio } from '../../common/ratio';
+import { parseRatio } from '../../core/ratio';
 import ActionCard from '../ActionCard';
 import FormGroup from '../FormGroup';
 import Heading from '../Heading';

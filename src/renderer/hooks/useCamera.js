@@ -126,7 +126,7 @@ function useCamera(options = {}) {
   });
 
   // Action take picture
-  const actionTakePicture = useCallback((nbFramesToTake = 1) => {
+  const actionTakePicture = useCallback(async (nbFramesToTake = 1) => {
     if (currentCamera) {
       return takePicture(currentCamera, nbFramesToTake);
     }

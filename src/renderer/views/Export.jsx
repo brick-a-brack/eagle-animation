@@ -3,7 +3,6 @@ import { useForm } from 'react-hook-form';
 import { withTranslation } from 'react-i18next';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 
-import { parseRatio } from '../common/ratio';
 import ActionCard from '../components/ActionCard';
 import ActionsBar from '../components/ActionsBar';
 import FormGroup from '../components/FormGroup';
@@ -13,7 +12,8 @@ import NumberInput from '../components/NumberInput';
 import Select from '../components/Select';
 import Switch from '../components/Switch';
 import { ALLOWED_LETTERS } from '../config';
-import { ExportFrames, floorResolution, floorResolutionValue, GetBestResolution } from '../Exporter';
+import { ExportFrames, floorResolution, floorResolutionValue, GetBestResolution } from '../core/Exporter';
+import { parseRatio } from '../core/ratio';
 import useAppCapabilities from '../hooks/useAppCapabilities';
 import useProject from '../hooks/useProject';
 import useSettings from '../hooks/useSettings';

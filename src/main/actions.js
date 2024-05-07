@@ -35,7 +35,6 @@ const getDefaultPreview = (data) => {
   return null;
 };
 
-// TODO: .preview => img to display
 const computeProject = (data) => {
   const copiedData = structuredClone(data);
 
