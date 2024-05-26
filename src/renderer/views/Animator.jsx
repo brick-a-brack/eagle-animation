@@ -86,6 +86,7 @@ const Animator = ({ t }) => {
   const { settings, actions: settingsActions } = useSettings();
   const { appCapabilities } = useAppCapabilities();
   const [showCameraSettings, setShowCameraSettings] = useState(false);
+  const [maskingMode, setMaskingMode] = useState('DISABLED');
   const [showProjectSettings, setShowProjectSettings] = useState(false);
   const [isTakingPicture, setIsTakingPicture] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
@@ -324,6 +325,12 @@ const Animator = ({ t }) => {
     FPS_BLUR: () => {
       setDisableKeyboardShortcuts(false);
     },
+    TOOGLE_MASKING_MODE: () => {
+      setMaskingMode((previousState) => {
+        const values = ['DISABLED', 'UNIQUE', 'CONTINUOUS'];
+        return values?.[values?.indexOf(previousState) + 1] || values?.[0];
+      });
+    },
   };
 
   const handlePlayerInit = (videoDOM = null, imageDOM = null) => {
@@ -410,6 +417,7 @@ const Animator = ({ t }) => {
         framePosition={framePosition}
         frameQuantity={pictures.length}
         isCurrentFrameHidden={!!currentFrame.hidden}
+        maskingMode={maskingMode}
       />
       <Timeline pictures={pictures} onSelect={handleSelectFrame} onMove={handleFrameMove} select={currentFrameId} playing={isPlaying} />
       {!showCameraSettings && !showProjectSettings && <KeyboardHandler onAction={handleAction} disabled={disableKeyboardShortcuts} />}

@@ -6,6 +6,7 @@ import faArrowsRepeat from '../../icons/faArrowsRepeat';
 import faCamera from '../../icons/faCamera';
 import faCameraSettings from '../../icons/faCameraSettings';
 import faDiamondHalfStroke from '../../icons/faDiamondHalfStroke';
+import faEraser from '../../icons/faEraser';
 import faForwardFast from '../../icons/faForwardFast';
 import faFrame from '../../icons/faFrame';
 import faImageCircleMinus from '../../icons/faImageCircleMinus';
@@ -22,6 +23,12 @@ import CustomTooltip from '../Tooltip';
 
 import * as style from './style.module.css';
 
+const MASKING_MODES = {
+  DISABLED: (t) => t('Disabled'),
+  UNIQUE: (t) => t('Unique'),
+  CONTINUOUS: (t) => t('Continuous'),
+};
+
 const ControlBar = ({
   gridStatus = false,
   differenceStatus = false,
@@ -31,6 +38,7 @@ const ControlBar = ({
   isCameraReady = false,
   shortPlayStatus = false,
   loopStatus = false,
+  maskingMode = 'DISABLED',
   fps = 12,
   framePosition = false,
   frameQuantity = 0,
@@ -84,6 +92,13 @@ const ControlBar = ({
           <CustomSlider step={0.01} min={0} max={1} value={onionValue} onChange={(value) => handleAction('ONION_CHANGE', value)()} />
         </div>
         <Button style={{ marginLeft: 'var(--space-big)' }} title={t('Camera settings')} selected={showCameraSettings} onClick={handleAction('CAMERA_SETTINGS')} size="mini" icon={faCameraSettings} />
+        <Button
+          title={t('Masking mode ({{status}})', { status: (MASKING_MODES[maskingMode] || MASKING_MODES.DISABLED)(t) })}
+          selected={maskingMode !== 'DISABLED'}
+          onClick={handleAction('TOOGLE_MASKING_MODE')}
+          size="mini"
+          icon={faEraser}
+        />
       </div>
       <Button disabled={isTakingPicture || !isCameraReady} onClick={handleAction('TAKE_PICTURE')} size="normal" icon={faCamera} />
       <div className={`${style.subcontainer} ${style.right}`}>
