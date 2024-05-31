@@ -31,7 +31,7 @@ const getDefaultPreview = async (data) => {
   for (let i = 0; i < (data?.project?.scenes?.length || 0); i++) {
     for (const picture of data?.project?.scenes?.[i]?.pictures || []) {
       if (!picture.deleted) {
-        return getFrameBlobUrl(picture.id);
+        return getFrameBlobUrl(picture.filename?.split('.')?.[0]);
       }
     }
   }
@@ -48,7 +48,7 @@ const computeProject = async (data, bindPictureLink = true) => {
         pictures: await Promise.all(
           scene.pictures.map(async (picture) => ({
             ...picture,
-            link: bindPictureLink ? await getFrameBlobUrl(picture.id) : null,
+            link: bindPictureLink ? await getFrameBlobUrl(picture.filename?.split('.')?.[0]) : null,
           }))
         ),
       };
@@ -150,7 +150,6 @@ export const Actions = {
   SAVE_PICTURE: async (evt, { buffer, extension = 'jpg' }) => {
     const frameId = await createFrame(buffer, extension);
     return {
-      id: `${frameId}`,
       filename: `${frameId}.${extension || 'dat'}`,
       deleted: false,
       length: 1,

@@ -56,6 +56,7 @@ const ShortcutsList = ({ t, shortcuts }) => {
     ONION_MORE: t('Increase onion skin'),
     ONION_LESS: t('Decrease onion skin'),
     MUTE: t('Mute / Unmute sounds'),
+    CLONE: t('Clone current frame'),
     DUPLICATE: t('Duplicate current frame'),
     DEDUPLICATE: t('Deduplicate current frame'),
     GRID: t('Show / Hide grid'),
@@ -80,7 +81,7 @@ const ShortcutsList = ({ t, shortcuts }) => {
       'ONION_MORE',
       'GRID',
     ],
-    ACTIONS: ['DELETE_FRAME', 'DUPLICATE', 'DEDUPLICATE', 'HIDE_FRAME'],
+    ACTIONS: ['DELETE_FRAME', 'CLONE', 'DUPLICATE', 'DEDUPLICATE', 'HIDE_FRAME'],
     NAVIGATION: ['FRAME_LEFT', 'FRAME_RIGHT', 'FRAME_LIVE', 'FRAME_FIRST'],
     OTHER: ['HOME'],
   };

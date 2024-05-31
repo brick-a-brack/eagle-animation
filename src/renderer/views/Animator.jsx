@@ -306,10 +306,13 @@ const Animator = ({ t }) => {
       projectActions.applyHiddenFrameStatus(track, currentFrameId, !currentFrame?.hidden);
     },
     DUPLICATE: async () => {
-      projectActions.actionApplyDuplicateFrameOffset(track, currentFrameId, 1);
+      projectActions.applyDuplicateFrameOffset(track, currentFrameId, 1);
+    },
+    CLONE: async () => {
+      projectActions.cloneFrame(track, currentFrameId);
     },
     DEDUPLICATE: async () => {
-      projectActions.actionApplyDuplicateFrameOffset(track, currentFrameId, -1);
+      projectActions.applyDuplicateFrameOffset(track, currentFrameId, -1);
     },
     MUTE: () => {
       setIsMuted(!isMuted);
@@ -368,8 +371,8 @@ const Animator = ({ t }) => {
         showGrid={gridStatus}
         blendMode={differenceStatus}
         shortPlayStatus={shortPlayStatus}
-        loopStatus={loopStatus}
         shortPlayFrames={Number(settings.SHORT_PLAY) || 1}
+        loopStatus={loopStatus}
         cameraId={currentCameraId}
         cameraCapabilities={currentCameraCapabilities}
         fps={fps}
@@ -411,7 +414,15 @@ const Animator = ({ t }) => {
         frameQuantity={pictures.length}
         isCurrentFrameHidden={!!currentFrame.hidden}
       />
-      <Timeline pictures={pictures} onSelect={handleSelectFrame} onMove={handleFrameMove} select={currentFrameId} playing={isPlaying} />
+      <Timeline
+        pictures={pictures}
+        onSelect={handleSelectFrame}
+        onMove={handleFrameMove}
+        select={currentFrameId}
+        playing={isPlaying}
+        shortPlayStatus={shortPlayStatus}
+        shortPlayFrames={Number(settings.SHORT_PLAY) || 1}
+      />
       {!showCameraSettings && !showProjectSettings && <KeyboardHandler onAction={handleAction} disabled={disableKeyboardShortcuts} />}
       <Window isOpened={showCameraSettings} onClose={() => setShowCameraSettings(false)}>
         <CameraSettingsWindow
