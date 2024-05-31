@@ -7,9 +7,9 @@ import { useEffect, useRef } from 'react';
 import { withTranslation } from 'react-i18next';
 
 import faEyeSlash from '../../icons/faEyeSlash';
+import faForwardFast from '../../icons/faForwardFast';
 
 import * as style from './style.module.css';
-import faForwardFast from '../../icons/faForwardFast';
 
 const getPicturesKey = (pictures) => {
   const data = structuredClone(pictures);
@@ -46,12 +46,8 @@ const SortableItem = ({ img, isShortPlayBegining = false, selected, onSelect, in
       </span>
       {img.hidden && <FontAwesomeIcon className={style.icon} icon={faEyeSlash} />}
       {isShortPlayBegining && <FontAwesomeIcon className={style.shortPlayIcon} icon={faForwardFast} />}
-      {img.length > 1 && <span className={style.duplicated}>
-        {`x${img.length}`}
-      </span>}
-      <span className={style.title}>
-        {`#${index + 1}`}
-      </span>
+      {img.length > 1 && <span className={style.duplicated}>{`x${img.length}`}</span>}
+      <span className={style.title}>{`#${index + 1}`}</span>
     </span>
   );
 };
@@ -93,7 +89,7 @@ const Timeline = ({ onSelect, onMove, select = false, pictures = [], playing = f
   // Get short play picture id
   const displayedFrames = pictures.filter((e) => !e.deleted && !e.hidden).reduce((acc, e) => [...acc, ...new Array(e.length || 1).fill(e)], []);
   const shortPlayFrameIndex = shortPlayStatus && shortPlayFrames > 0 && displayedFrames.length > shortPlayFrames ? displayedFrames.length - shortPlayFrames : 0;
-  const shortPlayFrameId = shortPlayStatus && shortPlayFrames > 0 ? (displayedFrames?.[shortPlayFrameIndex]?.id || null) : null;
+  const shortPlayFrameId = shortPlayStatus && shortPlayFrames > 0 ? displayedFrames?.[shortPlayFrameIndex]?.id || null : null;
 
   return (
     <DndContext

@@ -1,6 +1,6 @@
 @keyframes shine {
   to {
-      background-position-x: -200%;
+    background-position-x: -200%;
   }
 }
 
@@ -126,21 +126,27 @@
 }
 
 .shortPlayIcon {
-  color: rgb(255 255 255 / 50%);
+  background-color: var(--color-primary);
+  border-top-right-radius: var(--border-radius-small);
+  bottom: 0;
+  color: rgb(255 255 255);
   height: 14px;
-  left: var(--space-tiny);
+  left: 0;
+  padding: var(--space-tiny) var(--space-small);
   pointer-events: none;
   position: absolute;
-  bottom: var(--space-tiny);
 }
 
 .duplicated {
-  color: rgb(255 255 255 / 50%);
+  background-color: var(--color-primary);
+  border-top-left-radius: var(--border-radius-small);
+  bottom: 0;
+  color: rgb(255 255 255);
+  font-size: var(--font-size-7);
   height: 14px;
   line-height: 14px;
-  font-size: var(--font-size-7);
-  right: var(--space-tiny);
+  padding: var(--space-tiny) var(--space-small);
   pointer-events: none;
   position: absolute;
-  bottom: var(--space-tiny);
+  right: 0;
 }
