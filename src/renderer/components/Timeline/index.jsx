@@ -7,9 +7,9 @@ import { useEffect, useRef } from 'react';
 import { withTranslation } from 'react-i18next';
 
 import faEyeSlash from '../../icons/faEyeSlash';
-import faRectangleHistory from '../../icons/faRectangleHistory';
 
 import * as style from './style.module.css';
+import faForwardFast from '../../icons/faForwardFast';
 
 const getPicturesKey = (pictures) => {
   const data = structuredClone(pictures);
@@ -20,7 +20,7 @@ const getPicturesKey = (pictures) => {
   return JSON.stringify(data);
 };
 
-const SortableItem = ({ img, selected, onSelect, index }) => {
+const SortableItem = ({ img, isShortPlayBegining = false, selected, onSelect, index }) => {
   const { setNodeRef, isDragging, transform, transition, listeners, attributes, active } = useSortable({ id: img.id });
   return (
     <span
@@ -45,13 +45,18 @@ const SortableItem = ({ img, selected, onSelect, index }) => {
         {img.thumbnail && <img alt="" className={style.imgcontent} src={img.thumbnail} loading="lazy" />}
       </span>
       {img.hidden && <FontAwesomeIcon className={style.icon} icon={faEyeSlash} />}
-      {!img.hidden && img.length > 1 && <FontAwesomeIcon className={style.iconDuplicate} icon={faRectangleHistory} />}
-      <span className={style.title}>{`#${index + 1}${img.length > 1 ? ` (${img.length})` : ''}`}</span>
+      {isShortPlayBegining && <FontAwesomeIcon className={style.shortPlayIcon} icon={faForwardFast} />}
+      {img.length > 1 && <span className={style.duplicated}>
+        {`x${img.length}`}
+      </span>}
+      <span className={style.title}>
+        {`#${index + 1}`}
+      </span>
     </span>
   );
 };
 
-const Timeline = ({ onSelect, onMove, select = false, pictures = [], playing = false, t }) => {
+const Timeline = ({ onSelect, onMove, select = false, pictures = [], playing = false, shortPlayStatus = false, shortPlayFrames = 0, t }) => {
   const ref = useRef(null);
 
   const sensors = useSensors(
@@ -85,6 +90,11 @@ const Timeline = ({ onSelect, onMove, select = false, pictures = [], playing = f
 
   const getIndex = (id) => pictures.findIndex((e) => `${e.id}` === `${id}`);
 
+  // Get short play picture id
+  const displayedFrames = pictures.filter((e) => !e.deleted && !e.hidden).reduce((acc, e) => [...acc, ...new Array(e.length || 1).fill(e)], []);
+  const shortPlayFrameIndex = shortPlayStatus && shortPlayFrames > 0 && displayedFrames.length > shortPlayFrames ? displayedFrames.length - shortPlayFrames : 0;
+  const shortPlayFrameId = shortPlayStatus && shortPlayFrames > 0 ? (displayedFrames?.[shortPlayFrameIndex]?.id || null) : null;
+
   return (
     <DndContext
       sensors={sensors}
@@ -105,7 +115,7 @@ const Timeline = ({ onSelect, onMove, select = false, pictures = [], playing = f
           {pictures
             .filter((e) => !e.deleted)
             .map((img, index) => (
-              <SortableItem key={`timeline-item-${img.id}`} index={index} img={img} selected={select === img.id} onSelect={onSelect} />
+              <SortableItem key={`timeline-item-${img.id}`} index={index} img={img} selected={select === img.id} onSelect={onSelect} isShortPlayBegining={shortPlayFrameId === img.id} />
             ))}
         </SortableContext>
         <span className={`${style.containerImg} ${style.camera} ${select === false ? style.selected : ''}`}>
