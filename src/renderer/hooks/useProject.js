@@ -94,6 +94,25 @@ function useProject(options) {
     });
   });
 
+  // Action clone frame
+  const actionCloneFrame = useCallback(async (trackId, frameId) => {
+    const sceneId = Number(trackId);
+    setProjectData((oldData) => {
+      let d = structuredClone(oldData);
+      if (d.project.scenes[sceneId]) {
+        const newId = Math.max(0, ...d.project.scenes[sceneId].pictures.map((e) => e.id)) + 1;
+        d.project.scenes[sceneId].pictures = d.project.scenes[sceneId].pictures.reduce((acc, p) => {
+          if (`${p.id}` !== `${frameId}`) {
+            return [...acc, p];
+          } else {
+            return [...acc, p, { ...p, id: newId }];
+          }
+        }, []);
+      }
+      return d;
+    });
+  });
+
   // Action delete frame
   const actionDeleteFrame = useCallback(async (trackId, frameId) => {
     const sceneId = Number(trackId);
@@ -152,11 +171,12 @@ function useProject(options) {
     setProjectData((oldData) => {
       let d = structuredClone(oldData);
       if (d.project.scenes[sceneId]) {
+        const newId = Math.max(0, ...d.project.scenes[sceneId].pictures.map((e) => e.id)) + 1;
         const index = beforeFrameId === false ? -1 : d.project.scenes[sceneId].pictures.findIndex((f) => `${f.id}` === `${beforeFrameId}`);
         if (index >= 0) {
-          d.project.scenes[sceneId].pictures = [...d.project.scenes[sceneId].pictures.slice(0, index), addedPicture, ...d.project.scenes[sceneId].pictures.slice(index)];
+          d.project.scenes[sceneId].pictures = [...d.project.scenes[sceneId].pictures.slice(0, index), { ...addedPicture, id: newId }, ...d.project.scenes[sceneId].pictures.slice(index)];
         } else {
-          d.project.scenes[sceneId].pictures = [...d.project.scenes[sceneId].pictures, addedPicture];
+          d.project.scenes[sceneId].pictures = [...d.project.scenes[sceneId].pictures, { ...addedPicture, id: newId }];
         }
       }
       return d;
@@ -211,7 +231,8 @@ function useProject(options) {
       changeFPS: actionChangeFPS,
       changeRatio: actionChangeRatio,
       applyHiddenFrameStatus: actionApplyHiddenFrameStatus,
-      actionApplyDuplicateFrameOffset: actionApplyDuplicateFrameOffset,
+      applyDuplicateFrameOffset: actionApplyDuplicateFrameOffset,
+      cloneFrame: actionCloneFrame,
       deleteFrame: actionDeleteFrame,
       rename: actionRename,
       moveFrame: actionMoveFrame,

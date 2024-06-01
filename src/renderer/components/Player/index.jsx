@@ -77,7 +77,7 @@ class Player extends Component {
         if ((this.state.frameIndex === false || !filteredFrames.length) && !force && !this.props.loopStatus) {
           return false;
         } else if (filteredFrames.length && (force || (this.state.frameIndex === false && this.props.loopStatus))) {
-          newFrameIndex = this.props.shortPlayStatus && filteredFrames.length > this.props.shortPlayFrames ? filteredFrames.length - this.props.shortPlayFrames - 1 : 0;
+          newFrameIndex = this.props.shortPlayStatus && this.props.shortPlayFrames > 0 && filteredFrames.length > this.props.shortPlayFrames ? filteredFrames.length - this.props.shortPlayFrames : 0;
         } else if (this.state.frameIndex >= filteredFrames.length - 1) {
           newFrameIndex = false;
         } else {

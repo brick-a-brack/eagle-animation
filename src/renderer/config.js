@@ -23,4 +23,4 @@ export const REVISION = import.meta.env.VITE_COMMIT_HASH || 'local';
 export const BUILD = `${DEVICE.toLowerCase()}-${REVISION.substring(0, 7)}`;
 
 // Letters to generate a code
-export const ALLOWED_LETTERS = 'ABCDEFGHJKLMNOPQRTUVWXYZ0123456789';
+export const ALLOWED_LETTERS = 'ABCDEFGHJKLMNPQRTVWXYZ0123456789'; // ISOU removed

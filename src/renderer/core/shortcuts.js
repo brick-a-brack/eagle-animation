@@ -26,6 +26,7 @@ const SHORTCUTS = {
   ONION_MORE: ['+'],
   ONION_LESS: ['-'],
   MUTE: ['m', '/', 'ctrl+m'],
+  CLONE: ['c'],
   DUPLICATE: ['pageup'],
   DEDUPLICATE: ['pagedown'],
   GRID: ['g'],

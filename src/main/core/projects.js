@@ -122,7 +122,6 @@ const createImageFile = async (projectPath, scene, ext, data) => {
   }
   await writeFile(filePath, data);
   return {
-    id,
     filename: `${id}.${ext}`,
     scene,
     path: filePath,
@@ -134,7 +133,6 @@ export const savePicture = async (projectPath, track, ext, buffer) => {
   const trackId = Number(track);
   const file = await createImageFile(projectPath, trackId, ext, buffer);
   return {
-    id: file.id,
     filename: file.filename,
     deleted: false,
     length: 1,
