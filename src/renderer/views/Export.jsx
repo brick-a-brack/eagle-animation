@@ -191,7 +191,7 @@ const Export = ({ t }) => {
       {
         duplicateFramesCopy: data.duplicateFramesCopy,
         duplicateFramesAuto: data.mode === 'send' ? true : data.duplicateFramesAuto,
-        duplicateFramesAutoNumber: data.mode === 'send' ? project?.scenes?.[Number(track)]?.framerate / 2 : data.duplicateFramesAutoNumber,
+        duplicateFramesAutoNumber: data.mode === 'send' ? Math.ceil(project?.scenes?.[Number(track)]?.framerate / 2) : data.duplicateFramesAutoNumber,
         forceFileExtension: data.mode === 'frames' ? (data.framesFormat === 'original' ? undefined : data.framesFormat) : 'jpg',
         resolution,
       },
