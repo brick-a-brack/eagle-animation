@@ -17,7 +17,7 @@ import NumberInput from '../NumberInput';
 import Select from '../Select';
 import Switch from '../Switch';
 
-const SettingsForm = ({ settings = {}, onUpdate = () => {}, t }) => {
+const SettingsForm = ({ settings = {}, onUpdate = () => { }, t }) => {
   const { appCapabilities } = useAppCapabilities();
   const { permissions, actions: cameraActions } = useCamera();
   const form = useForm({
@@ -66,6 +66,11 @@ const SettingsForm = ({ settings = {}, onUpdate = () => {}, t }) => {
         <Heading h={1}>{t('Playback')}</Heading>
         <FormGroup label={t('Short play')} description={t('Number of frames to play when short play is enabled')}>
           <NumberInput register={register('SHORT_PLAY')} min={1} />
+        </FormGroup>
+        <FormGroup label={t('Play from the begining')} description={t('Always play the animation from the first frame')}>
+          <div>
+            <Switch register={register('PLAY_FROM_BEGINING')} />
+          </div>
         </FormGroup>
         <Heading h={1}>{t('Capture')}</Heading>
         <FormGroup label={t('Sound effects')} description={t('Play sound effects when you take or remove a frame')}>

@@ -216,7 +216,7 @@ const Animator = ({ t }) => {
       if (isPlaying) {
         playerRef.current.stop();
       } else {
-        playerRef.current.play();
+        playerRef.current.play(settings.PLAY_FROM_BEGINING);
       }
     },
     TAKE_PICTURE: takePictures(),
