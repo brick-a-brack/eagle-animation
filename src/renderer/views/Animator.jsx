@@ -197,7 +197,7 @@ const Animator = ({ t }) => {
             playSound(isAprilFoolsDay ? soundEagle : soundShutter);
           }
 
-          await projectActions.addFrame(track, Buffer.from(buffer), type?.includes('png') ? 'png' : 'jpg', currentFrameId);
+          await projectActions.addFrame(track, Buffer.from(buffer), type?.includes('png') ? 'png' : 'jpg', isPlaying ? false : currentFrameId);
         } catch (err) {
           if (!isMuted && settings.SOUNDS) {
             playSound(soundError);
@@ -365,7 +365,6 @@ const Animator = ({ t }) => {
         onInit={handlePlayerInit}
         onFrameChange={setCurrentFrameId}
         onPlayingStatusChange={setIsPlaying}
-        showCameraSettings={showCameraSettings}
         pictures={pictures}
         onionValue={onionValue}
         showGrid={gridStatus}
