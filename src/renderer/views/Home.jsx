@@ -70,7 +70,7 @@ const HomeView = ({ t }) => {
         {[...projects]
           .sort((a, b) => b.project.updated - a.project.updated)
           .map((e) => (
-            <ProjectCard key={e.id} id={e.id} title={e.project.title} picture={e.preview} onClick={handleOpenProject} onTitleChange={handleRenameProject} />
+            <ProjectCard key={e.id} id={e.id} title={e.project.title} picture={e.preview} nbFrames={e?.stats?.frames || 0} onClick={handleOpenProject} onTitleChange={handleRenameProject} />
           ))}
       </ProjectsGrid>
     </>
