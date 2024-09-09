@@ -17,7 +17,7 @@ import NumberInput from '../NumberInput';
 import Select from '../Select';
 import Switch from '../Switch';
 
-const SettingsForm = ({ settings = {}, onUpdate = () => { }, t }) => {
+const SettingsForm = ({ settings = {}, onUpdate = () => {}, t }) => {
   const { appCapabilities } = useAppCapabilities();
   const { permissions, actions: cameraActions } = useCamera();
   const form = useForm({
