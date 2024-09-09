@@ -35,7 +35,7 @@ const LoadingOverlay = ({ t, publicCode = null, onCancel = null, isExporting = f
       {publicCode && (
         <div className={style.code}>
           {t("You'll be able to get your film using this code:")}
-          <div className={style.codeValue}>{publicCode}</div>
+          <div className={style.codeValue}>{publicCode.split('').reduce((acc, e, i) => acc + (i && i % 2 === 0 ? ' ' : '') + e, '').trim()}</div>
         </div>
       )}
       {isExporting && <div className={style.info}>{t('Export will take a while, please be patient')}</div>}

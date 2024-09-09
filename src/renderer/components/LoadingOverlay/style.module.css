@@ -30,8 +30,10 @@
 }
 
 .codeValue {
-    font-size: var(--font-size-0);
-    margin-top: var(--space-big);
+    font-size: calc(1.2 * var(--font-size-0));
+    margin-top: calc( 2 * var(--space-big));
+    font-weight: 600;
+    letter-spacing: 2px;
 }
 
 .progress {
