@@ -36,7 +36,7 @@ const HomeView = ({ t }) => {
   }, []);
 
   const handleCreateProject = async (_, title) => {
-    const project = await projectsActions.create(title || t('Untitled'));
+    const project = await projectsActions.create(title || '');
     navigate(`/animator/${project.id}/0`);
   };
 
@@ -45,7 +45,7 @@ const HomeView = ({ t }) => {
   };
 
   const handleRenameProject = async (id, title) => {
-    projectsActions.rename(id, title || t('Untitled'));
+    projectsActions.rename(id, title || '');
   };
 
   const handleLink = () => {

@@ -5,10 +5,11 @@ import IconEdit from './assets/edit.svg?jsx';
 import IconOpen from './assets/open.svg?jsx';
 
 import * as style from './style.module.css';
+import { withTranslation } from 'react-i18next';
 
 let renameEvents = {};
 
-const ProjectCard = ({ id = '', placeholder = '', title = '', picture = '', onClick = null, onTitleChange = null, icon = 'EDIT' }) => {
+const ProjectCard = ({ id = '', placeholder = '', title = '', picture = '', onClick = null, onTitleChange = null, icon = 'EDIT', t }) => {
   const ref = useRef(null);
 
   const handleClick = () => {
@@ -39,10 +40,10 @@ const ProjectCard = ({ id = '', placeholder = '', title = '', picture = '', onCl
         {icon === 'OPEN' && <IconOpen />}
       </div>
       <div className={style.title}>
-        <input placeholder={placeholder} ref={ref} defaultValue={title || ''} onChange={handleRename} />
+        <input placeholder={placeholder || t('Untitled')} ref={ref} defaultValue={title || ''} onChange={handleRename} />
       </div>
     </div>
   );
 };
 
-export default ProjectCard;
+export default withTranslation()(ProjectCard);
