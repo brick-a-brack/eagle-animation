@@ -68,13 +68,15 @@ class Player extends Component {
 
     this.computeFrames();
 
-    this.play = () => {
+    this.play = (playFromBegining = false) => {
+      const startOnLiveView = this.state.frameIndex === false;
+
       const exec = (force = false) => {
         const filteredFrames = this.frames.filter((e) => !e.hidden);
 
         let newFrameIndex = false;
 
-        if ((this.state.frameIndex === false || !filteredFrames.length) && !force && !this.props.loopStatus) {
+        if ((this.state.frameIndex === false || !filteredFrames.length) && !force && !startOnLiveView && !this.props.loopStatus) {
           return false;
         } else if (filteredFrames.length && (force || (this.state.frameIndex === false && this.props.loopStatus))) {
           newFrameIndex = this.props.shortPlayStatus && this.props.shortPlayFrames > 0 && filteredFrames.length > this.props.shortPlayFrames ? filteredFrames.length - this.props.shortPlayFrames : 0;
@@ -92,7 +94,7 @@ class Player extends Component {
       };
 
       this.props.onPlayingStatusChange(true);
-      exec(true); // Reset frame position at the launch
+      exec(playFromBegining);
 
       this.clock = setInterval(() => {
         if (!exec()) {

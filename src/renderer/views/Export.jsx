@@ -31,7 +31,7 @@ const generateCustomUuid = (length) => {
 const Export = ({ t }) => {
   const { id, track } = useParams();
   const navigate = useNavigate();
-  const { project } = useProject({ id });
+  const { project, actions: projectActions } = useProject({ id });
 
   const [isInfosOpened, setIsInfosOpened] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
@@ -168,6 +168,9 @@ const Export = ({ t }) => {
 
     if (data.mode === 'send') {
       setPublicCode(newCode);
+      if (!project.title) {
+        projectActions.rename(newCode);
+      }
     }
 
     // Ask user to define output path

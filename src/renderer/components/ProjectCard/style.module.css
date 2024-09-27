@@ -9,6 +9,7 @@
       margin: 20px;
       overflow: hidden;
       width: 300px;
+      position: relative;
   }
 
   .banner {

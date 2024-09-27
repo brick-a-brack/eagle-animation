@@ -1,5 +1,18 @@
 import { useCallback, useEffect, useState } from 'react';
 
+// Use loop for performance issues
+const countFrames = (project) => {
+  let count = 0;
+  for (const scene of project.scenes) {
+    for (const picture of scene.pictures) {
+      if (!picture.deleted) {
+        count++;
+      }
+    }
+  }
+  return count;
+};
+
 function useProjects(options) {
   const [projectsData, setProjectsData] = useState(null);
 
@@ -44,7 +57,7 @@ function useProjects(options) {
   });
 
   return {
-    projects: projectsData || [],
+    projects: projectsData?.map((e) => ({ ...(e || {}), stats: { frames: countFrames(e.project) } })) || [],
     actions: {
       refresh: actionRefresh,
       create: actionCreate,

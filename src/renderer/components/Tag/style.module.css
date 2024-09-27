@@ -1,0 +1,65 @@
+.tag {
+  background: rgb(27 27 27 / 70%);
+  border-radius: var(--border-radius-small);
+  color: #fff;
+  font-size: var(--font-size-7);
+  font-weight: 700;
+  line-height: var(--line-size-7);
+  padding: 2px 6px;
+  position: absolute;
+  display: flex;
+  align-items: center;
+
+  --tag-margin: 6px;
+}
+
+.mini {
+  --tag-margin: 0px;
+
+  border-radius: 0;
+  font-size: var(--font-size-8);
+  line-height: var(--line-size-8);
+  padding: 0 4px;
+}
+
+.mini.left.top {
+  border-bottom-right-radius: var(--border-radius-small);
+}
+
+.mini.right.top {
+  border-bottom-left-radius: var(--border-radius-small);
+}
+
+.mini.left.bottom {
+  border-top-right-radius: var(--border-radius-small);
+}
+
+.mini.right.bottom {
+  border-top-left-radius: var(--border-radius-small);
+}
+
+.tag svg {
+  margin-right: var(--space-small);
+  width:20px;
+  height:20px;
+}
+
+.tag.noSvgSpace svg {
+  margin-right: 0;
+}
+
+.left {
+  left: var(--tag-margin);
+}
+
+.right {
+  right: var(--tag-margin);
+}
+
+.top {
+  top: var(--tag-margin);
+}
+
+.bottom {
+  bottom: var(--tag-margin);
+}
