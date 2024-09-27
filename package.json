@@ -98,7 +98,7 @@
     "stylelint": "^16.6.1",
     "stylelint-config-standard": "^36.0.0",
     "stylelint-order": "^6.0.4",
-    "vite": "^5.3.1",
+    "vite": "^5.4.8",
     "vite-plugin-static-copy": "^1.0.5",
     "vite-plugin-svgr": "^4.2.0"
   },
