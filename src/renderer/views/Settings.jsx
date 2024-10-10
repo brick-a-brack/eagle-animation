@@ -4,6 +4,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import ActionsBar from '../components/ActionsBar';
 import SettingsForm from '../components/SettingsForm';
 import useSettings from '../hooks/useSettings';
+import LoadingPage from '../components/LoadingPage';
 
 const SettingsView = () => {
   const [searchParams] = useSearchParams();
@@ -16,8 +17,9 @@ const SettingsView = () => {
 
   return (
     <>
+      <LoadingPage show={!settings} />
       <ActionsBar actions={['BACK']} onAction={handleBack} />
-      {settings && <SettingsForm settings={settings} onUpdate={settingsActions.setSettings} />}
+      {settings && false && <SettingsForm settings={settings} onUpdate={settingsActions.setSettings} />}
     </>
   );
 };
