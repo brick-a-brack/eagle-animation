@@ -1,10 +1,13 @@
 import resizeToFit from 'intrinsic-scale';
 
+import { Buffer } from 'buffer';
+
 const generateFakeFrame = (resolution, format) =>
   new Promise((resolve) => {
-    const canvas = document.createElement('canvas');
+    //const canvas = document.createElement('canvas');
     const height = resolution?.height || 1;
     const width = resolution?.width || 1;
+    const canvas = new OffscreenCanvas(width, height);
     canvas.height = height;
     canvas.width = width;
     const ctx = canvas.getContext('2d', { alpha: false });
@@ -19,63 +22,61 @@ const generateFakeFrame = (resolution, format) =>
     );
   });
 
-export const ExportFrame = (
+export const loadImageToCanvas = async (link) => {
+  const resp = await fetch(link);
+  if (!resp.ok) {
+    throw 'network error';
+  }
+  const blob = await resp.blob();
+  const bmp = await createImageBitmap(blob);
+  const { width, height } = bmp;
+  const canvas = new OffscreenCanvas(width, height);
+  const ctx = canvas.getContext('2d');
+  ctx.drawImage(bmp, 0, 0);
+  bmp.close();
+  //const imgObj = ctx.getImageData(0, 0, width, height);
+  return { width, height, img: canvas };
+};
+
+export const ExportFrame = async (
   link,
   resolution = null, // {width, height}
   format = null, // png | jpg | webp
   mode = 'cover' // cover | contain
-) =>
-  new Promise((resolve) => {
-    // Note: We could have directly returned the blob content here if
-    // there were no changes to be made, but the case of corrupted
-    // images would not have been handled. This is why all images are
-    // loaded and, depending on the case, returned
+) => {
+  // Note: We could have directly returned the blob content here if
+  // there were no changes to be made, but the case of corrupted
+  // images would not have been handled. This is why all images are
+  // loaded and, depending on the case, returned
 
-    const imgObj = new Image();
-    imgObj.onerror = () => {
-      return resolve(generateFakeFrame(resolution, format));
-    };
-    imgObj.onload = function () {
-      // Shortcut
-      if (resolution == null && format === null) {
-        return fetch(link)
-          .then((e) => resolve(e.blob()))
-          .catch(() => resolve(generateFakeFrame(resolution, format)));
-      }
+  const { width: naturalWidth, height: naturalHeight, img } = await loadImageToCanvas(link);
 
-      const canvas = document.createElement('canvas');
-      const initialRatio = this.naturalWidth / this.naturalHeight;
-      const height = (resolution?.height === null && resolution?.width ? Math.round(resolution?.width / initialRatio) : resolution?.height) || this.naturalHeight;
-      const width = (resolution?.width === null && resolution?.height ? Math.round(resolution?.height * initialRatio) : resolution?.width) || this.naturalWidth;
-      canvas.height = height;
-      canvas.width = width;
-      const { width: outWidth, height: outHeight, x: outX, y: outY } = resizeToFit(mode, { width: this.naturalWidth, height: this.naturalHeight }, { width, height });
-      const ctx = canvas.getContext('2d', { alpha: false });
-      ctx.fillStyle = '#000000';
-      ctx.fillRect(0, 0, width, height);
-      ctx.drawImage(imgObj, 0, 0, this.naturalWidth, this.naturalHeight, outX, outY, outWidth, outHeight);
-      canvas.toBlob(
-        (blob) => {
-          return resolve(blob);
-        },
-        `image/${(format || 'png').replace('jpg', 'jpeg')}`,
-        1
-      );
-    };
-    imgObj.src = link;
-  });
+  const initialRatio = naturalWidth / naturalHeight;
+  const height = (resolution?.height === null && resolution?.width ? Math.round(resolution?.width / initialRatio) : resolution?.height) || naturalHeight;
+  const width = (resolution?.width === null && resolution?.height ? Math.round(resolution?.height * initialRatio) : resolution?.width) || naturalWidth;
+  const canvas = new OffscreenCanvas(width, height);
+  canvas.height = height;
+  canvas.width = width;
+  const { width: outWidth, height: outHeight, x: outX, y: outY } = resizeToFit(mode, { width: naturalWidth, height: naturalHeight }, { width, height });
+  const ctx = canvas.getContext('2d', { alpha: false });
+  ctx.fillStyle = '#000000';
+  ctx.fillRect(0, 0, width, height);
+  ctx.drawImage(img, 0, 0, naturalWidth, naturalHeight, outX, outY, outWidth, outHeight);
+  console.log('YOLOOOO')
 
-const GetFrameResolution = (link) =>
-  new Promise((resolve) => {
-    const imgObj = new Image();
-    imgObj.onerror = () => {
-      return resolve(null);
-    };
-    imgObj.onload = function () {
-      return resolve({ height: this.naturalHeight, width: this.naturalWidth });
-    };
-    imgObj.src = link;
-  });
+return canvas.convertToBlob(  { type:`image/${(format || 'png').replace('jpg', 'jpeg')}` });
+};
+
+const GetFrameResolution = async (link) => {
+  const resp = await fetch(link);
+  if (!resp.ok) {
+    throw 'network error';
+  }
+  const blob = await resp.blob();
+  const bmp = await createImageBitmap(blob);
+  const { width, height } = bmp;
+  return { width, height };
+};
 
 export const GetBestResolution = async (frames, ratio = null) => {
   if (!frames || frames.length === 0) {
@@ -139,12 +140,16 @@ export const ExportFrames = async (
       copiedResolution.width = floorResolutionValue((copiedResolution.height * frameResolution.width) / frameResolution.height) || copiedResolution.height;
     }
 
+const frameBlob = await ExportFrame(file.link, copiedResolution, typeof opts.forceFileExtension !== 'undefined' ? computedExtension : undefined, 'cover');
+
+console.log('frameBlob', frameBlob)
+
     frames.push({
       id: file.id,
       length: file.length || 1,
       extension: computedExtension,
       mimeType: `image/${(computedExtension || 'jpg').replace('jpg', 'jpeg')}`,
-      buffer: Buffer.from(await (await ExportFrame(file.link, copiedResolution, typeof opts.forceFileExtension !== 'undefined' ? computedExtension : undefined, 'cover')).arrayBuffer()),
+      buffer: Buffer.from(await frameBlob.arrayBuffer()),
     });
 
     // Update progress
