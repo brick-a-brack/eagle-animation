@@ -381,6 +381,7 @@ const Animator = ({ t }) => {
         gridColumns={Number(settings.GRID_COLUMNS)}
         gridLines={Number(settings.GRID_LINES)}
         ratioLayerOpacity={settings.RATIO_OPACITY}
+        loopShowLive={settings.LOOP_SHOW_LIVE}
         videoRatio={ratio?.value || null}
         reverseX={settings.REVERSE_X}
         reverseY={settings.REVERSE_Y}

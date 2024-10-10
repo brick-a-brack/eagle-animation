@@ -86,6 +86,11 @@ class Player extends Component {
           newFrameIndex = this.state.frameIndex + 1;
         }
 
+        // Set to first frame if the loopShowLive option is enabled
+        if (newFrameIndex === false && filteredFrames.length && !this.props.loopShowLive && this.props.loopStatus) {
+          newFrameIndex = this.props.shortPlayStatus && this.props.shortPlayFrames > 0 && filteredFrames.length > this.props.shortPlayFrames ? filteredFrames.length - this.props.shortPlayFrames : 0;
+        }
+
         const frame = (newFrameIndex === false ? filteredFrames[filteredFrames.length - 1] : filteredFrames[newFrameIndex]) || false;
         this.drawFrame(frame[PLAYER_USABLE_FRAME_PROPERTY] || false);
         this.setState({ frameIndex: newFrameIndex });
