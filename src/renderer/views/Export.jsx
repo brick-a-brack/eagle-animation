@@ -17,6 +17,7 @@ import { parseRatio } from '../core/ratio';
 import useAppCapabilities from '../hooks/useAppCapabilities';
 import useProject from '../hooks/useProject';
 import useSettings from '../hooks/useSettings';
+import LoadingPage from '../components/LoadingPage';
 
 const generateCustomUuid = (length) => {
   const array = new Uint32Array(length);
@@ -123,15 +124,19 @@ const Export = ({ t }) => {
     })();
   }, [appCapabilities]);
 
-  if (!project || !settings) {
-    return null;
-  }
-
-  const progress = watch('mode') === 'frames' ? Math.min(frameRenderingProgress, 1) : Math.min(frameRenderingProgress / 2, 0.5) + Math.min(videoRenderingProgress / 2, 0.5);
 
   const handleBack = async () => {
     navigate(searchParams.get('back') || '/');
   };
+
+  if (!project || !settings || !bestResolution) {
+    return <>
+      <ActionsBar actions={['BACK']} onAction={handleBack} />
+      <LoadingPage show={true} />
+    </>;
+  }
+
+  const progress = watch('mode') === 'frames' ? Math.min(frameRenderingProgress, 1) : Math.min(frameRenderingProgress / 2, 0.5) + Math.min(videoRenderingProgress / 2, 0.5);
 
   const handleExport = async (data) => {
     const files = project.scenes[Number(track)].pictures;
@@ -227,6 +232,7 @@ const Export = ({ t }) => {
   return (
     <>
       <ActionsBar actions={['BACK']} onAction={handleBack} />
+      <LoadingPage show={!settings} />
       {settings && (
         <form id="export">
           <FormLayout title={t('Export')}>
