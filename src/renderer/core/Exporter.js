@@ -2,25 +2,18 @@ import resizeToFit from 'intrinsic-scale';
 
 import { Buffer } from 'buffer';
 
-const generateFakeFrame = (resolution, format) =>
-  new Promise((resolve) => {
-    //const canvas = document.createElement('canvas');
-    const height = resolution?.height || 1;
-    const width = resolution?.width || 1;
-    const canvas = new OffscreenCanvas(width, height);
-    canvas.height = height;
-    canvas.width = width;
-    const ctx = canvas.getContext('2d', { alpha: false });
-    ctx.fillStyle = '#000000';
-    ctx.fillRect(0, 0, width, height);
-    canvas.toBlob(
-      (blob) => {
-        return resolve(blob);
-      },
-      `image/${(format || 'png').replace('jpg', 'jpeg')}`,
-      1
-    );
-  });
+const generateFakeFrame = async (resolution) => {
+  //const canvas = document.createElement('canvas');
+  const height = resolution?.height || 1;
+  const width = resolution?.width || 1;
+  const canvas = new OffscreenCanvas(width, height);
+  canvas.height = height;
+  canvas.width = width;
+  const ctx = canvas.getContext('2d', { alpha: false });
+  ctx.fillStyle = '#000000';
+  ctx.fillRect(0, 0, width, height);
+  return { width, height, img: canvas };
+};
 
 export const loadImageToCanvas = async (link) => {
   const resp = await fetch(link);
@@ -47,9 +40,15 @@ export const ExportFrame = async (
   // Note: We could have directly returned the blob content here if
   // there were no changes to be made, but the case of corrupted
   // images would not have been handled. This is why all images are
-  // loaded and, depending on the case, returned
+  // loaded and, depending on the case, return the frame or an empty one
 
-  const { width: naturalWidth, height: naturalHeight, img } = await loadImageToCanvas(link);
+  let data = null;
+  try {
+    data = await loadImageToCanvas(link);
+  } catch (err) {
+    data = await generateFakeFrame(resolution);
+  }
+  const { width: naturalWidth, height: naturalHeight, img } = data;
 
   const initialRatio = naturalWidth / naturalHeight;
   const height = (resolution?.height === null && resolution?.width ? Math.round(resolution?.width / initialRatio) : resolution?.height) || naturalHeight;
@@ -62,9 +61,7 @@ export const ExportFrame = async (
   ctx.fillStyle = '#000000';
   ctx.fillRect(0, 0, width, height);
   ctx.drawImage(img, 0, 0, naturalWidth, naturalHeight, outX, outY, outWidth, outHeight);
-  console.log('YOLOOOO')
-
-return canvas.convertToBlob(  { type:`image/${(format || 'png').replace('jpg', 'jpeg')}` });
+  return canvas.convertToBlob({ type: `image/${(format || 'png').replace('jpg', 'jpeg')}` });
 };
 
 const GetFrameResolution = async (link) => {
@@ -140,9 +137,9 @@ export const ExportFrames = async (
       copiedResolution.width = floorResolutionValue((copiedResolution.height * frameResolution.width) / frameResolution.height) || copiedResolution.height;
     }
 
-const frameBlob = await ExportFrame(file.link, copiedResolution, typeof opts.forceFileExtension !== 'undefined' ? computedExtension : undefined, 'cover');
+    const frameBlob = await ExportFrame(file.link, copiedResolution, typeof opts.forceFileExtension !== 'undefined' ? computedExtension : undefined, 'cover');
 
-console.log('frameBlob', frameBlob)
+    console.log('frameBlob', frameBlob);
 
     frames.push({
       id: file.id,
