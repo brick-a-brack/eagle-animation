@@ -19,7 +19,7 @@ const SettingsView = () => {
     <>
       <LoadingPage show={!settings} />
       <ActionsBar actions={['BACK']} onAction={handleBack} />
-      {settings && false && <SettingsForm settings={settings} onUpdate={settingsActions.setSettings} />}
+      {settings && <SettingsForm settings={settings} onUpdate={settingsActions.setSettings} />}
     </>
   );
 };
