@@ -1,9 +1,9 @@
 import Dexie from 'dexie';
 import pLimit from 'p-limit';
 
-import { ExportFrame } from './Exporter';
+import { ExportFrame } from './WorkerExporter';
 
-const limit = pLimit(25);
+const limit = pLimit(100);
 
 class BlobFramesDatabase extends Dexie {
   constructor() {

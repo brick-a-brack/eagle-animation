@@ -3,22 +3,22 @@ import { useForm } from 'react-hook-form';
 import { withTranslation } from 'react-i18next';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 
+import { floorResolution, floorResolutionValue, getBestResolution } from '../../common/resolution';
 import ActionCard from '../components/ActionCard';
 import ActionsBar from '../components/ActionsBar';
 import FormGroup from '../components/FormGroup';
 import FormLayout from '../components/FormLayout';
 import LoadingOverlay from '../components/LoadingOverlay';
+import LoadingPage from '../components/LoadingPage';
 import NumberInput from '../components/NumberInput';
 import Select from '../components/Select';
 import Switch from '../components/Switch';
 import { ALLOWED_LETTERS } from '../config';
-import { floorResolution, floorResolutionValue, GetBestResolution } from '../core/Exporter';
-import { ExportFrames } from '../core/Exporter2';
 import { parseRatio } from '../core/ratio';
+import { ExportFrames, ExtractFramesResolutions } from '../core/WorkerExporter';
 import useAppCapabilities from '../hooks/useAppCapabilities';
 import useProject from '../hooks/useProject';
 import useSettings from '../hooks/useSettings';
-import LoadingPage from '../components/LoadingPage';
 
 const generateCustomUuid = (length) => {
   const array = new Uint32Array(length);
@@ -38,6 +38,7 @@ const Export = ({ t }) => {
   const [isInfosOpened, setIsInfosOpened] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
   const [publicCode, setPublicCode] = useState(null);
+  const [resolutions, setResolutions] = useState(null);
   const [frameRenderingProgress, setFrameRenderingProgress] = useState(0);
   const [videoRenderingProgress, setVideoRenderingProgress] = useState(0);
   const [bestResolution, setBestResolution] = useState(null);
@@ -89,15 +90,24 @@ const Export = ({ t }) => {
     { value: 'webp', label: t('WEBP (.webp)') },
   ];
 
+  const framesKey = JSON.stringify(project?.scenes?.[Number(track)]?.pictures);
+  useEffect(() => {
+    ExtractFramesResolutions(project?.scenes?.[Number(track)]?.pictures)
+      .then(setResolutions)
+      .catch(() => setResolutions(null));
+  }, [framesKey]);
+
   useEffect(() => {
     (async () => {
+      
+      console.log('DEBUG', project?.scenes?.[Number(track)]?.pictures, resolutions, projectRatio)
       if (watch('mode') !== 'frames' || watch('matchAspectRatio')) {
-        setBestResolution(await GetBestResolution(project?.scenes?.[Number(track)]?.pictures, projectRatio));
+        setBestResolution(getBestResolution(project?.scenes?.[Number(track)]?.pictures, resolutions, projectRatio));
       } else {
-        setBestResolution(await GetBestResolution(project?.scenes?.[Number(track)]?.pictures));
+        setBestResolution(getBestResolution(project?.scenes?.[Number(track)]?.pictures, resolutions));
       }
     })();
-  }, [JSON.stringify(project?.scenes?.[Number(track)]?.pictures), projectRatio, watch('matchAspectRatio'), watch('mode')]);
+  }, [framesKey, projectRatio, watch('matchAspectRatio'), watch('mode'), resolutions]);
 
   useEffect(() => {
     window.EAEvents('FFMPEG_PROGRESS', (evt, args) => {
@@ -125,16 +135,17 @@ const Export = ({ t }) => {
     })();
   }, [appCapabilities]);
 
-
   const handleBack = async () => {
     navigate(searchParams.get('back') || '/');
   };
 
   if (!project || !settings || !bestResolution) {
-    return <>
-      <ActionsBar actions={['BACK']} onAction={handleBack} />
-      <LoadingPage show={true} />
-    </>;
+    return (
+      <>
+        <ActionsBar actions={['BACK']} onAction={handleBack} />
+        <LoadingPage show={true} />
+      </>
+    );
   }
 
   const progress = watch('mode') === 'frames' ? Math.min(frameRenderingProgress, 1) : Math.min(frameRenderingProgress / 2, 0.5) + Math.min(videoRenderingProgress / 2, 0.5);
@@ -158,7 +169,7 @@ const Export = ({ t }) => {
       if (projectRatio) {
         resolution = { width: Number(data.videoResolution) * projectRatio, height: Number(data.videoResolution) };
       } else {
-        const maxResolution = await GetBestResolution(files);
+        const maxResolution = getBestResolution(files, resolutions);
         resolution = { width: (Number(data.videoResolution) * maxResolution.width) / maxResolution.height, height: Number(data.videoResolution) };
       }
     }

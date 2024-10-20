@@ -183,6 +183,41 @@ function useProject(options) {
     });
   });
 
+  // Load image and compute previews
+  useEffect(() => {
+    if (!projectData?.project) {
+      return;
+    }
+
+    for (let sceneId = 0; sceneId < projectData.project.scenes.length; sceneId++) {
+      for (let frameIndex = 0; frameIndex < projectData.project.scenes[sceneId].pictures.length; frameIndex++) {
+        const frame = projectData.project.scenes[sceneId].pictures[frameIndex];
+
+        // THUMBNAIL SUPPORT
+        if (typeof framesCache.current[`${options?.id}_${sceneId}_${frame.id}_thumbnail`] === 'undefined') {
+          framesCache.current[`${options?.id}_${sceneId}_${frame.id}_thumbnail`] = null;
+          (async () => {
+            framesCache.current[`${options?.id}_${sceneId}_${frame.id}_thumbnail`] = await (async () => {
+              const url = await OptimizeFrame(options?.id, sceneId, frame.id, 'thumbnail', frame.link);
+              return url || null;
+            })();
+          })();
+        }
+
+        // PREVIEW SUPPORT
+        if (typeof framesCache.current[`${options?.id}_${sceneId}_${frame.id}_preview`] === 'undefined') {
+          framesCache.current[`${options?.id}_${sceneId}_${frame.id}_preview`] = null;
+          (async () => {
+            framesCache.current[`${options?.id}_${sceneId}_${frame.id}_preview`] = await (async () => {
+              const url = await OptimizeFrame(options?.id, sceneId, frame.id, 'preview', frame.link);
+              return url || null;
+            })();
+          })();
+        }
+      }
+    }
+  }, [JSON.stringify(projectData), projectClock]);
+
   const bindPreviewPictures = (pData) => {
     if (!pData?.project) {
       return null;
@@ -195,33 +230,18 @@ function useProject(options) {
         const frame = d.project.scenes[sceneId].pictures[frameIndex];
 
         // THUMBNAIL SUPPORT
-        if (framesCache.current[`${options?.id}_${sceneId}_${frame.id}_thumbnail`]) {
+        d.project.scenes[sceneId].pictures[frameIndex].thumbnail = null;
+        if (typeof framesCache.current[`${options?.id}_${sceneId}_${frame.id}_thumbnail`] !== 'undefined') {
           d.project.scenes[sceneId].pictures[frameIndex].thumbnail = framesCache.current[`${options?.id}_${sceneId}_${frame.id}_thumbnail`] || null;
-        } else {
-          d.project.scenes[sceneId].pictures[frameIndex].thumbnail = null;
-          (async () => {
-            const url = await OptimizeFrame(options?.id, sceneId, frame.id, 'thumbnail', frame.link);
-            if (url) {
-              framesCache.current[`${options?.id}_${sceneId}_${frame.id}_thumbnail`] = url;
-            }
-          })();
         }
 
         // PREVIEW SUPPORT
-        if (framesCache.current[`${options?.id}_${sceneId}_${frame.id}_preview`]) {
+        d.project.scenes[sceneId].pictures[frameIndex].preview = null;
+        if (typeof framesCache.current[`${options?.id}_${sceneId}_${frame.id}_preview`] !== 'undefined') {
           d.project.scenes[sceneId].pictures[frameIndex].preview = framesCache.current[`${options?.id}_${sceneId}_${frame.id}_preview`] || null;
-        } else {
-          d.project.scenes[sceneId].pictures[frameIndex].preview = null;
-          (async () => {
-            const url = await OptimizeFrame(options?.id, sceneId, frame.id, 'preview', frame.link);
-            if (url) {
-              framesCache.current[`${options?.id}_${sceneId}_${frame.id}_preview`] = url;
-            }
-          })();
         }
       }
     }
-
     return d;
   };
 

@@ -1,9 +1,9 @@
+import { Buffer } from 'buffer';
 import resizeToFit from 'intrinsic-scale';
 
-import { Buffer } from 'buffer';
+import { floorResolution, floorResolutionValue } from '../common/resolution';
 
 const generateFakeFrame = async (resolution) => {
-  //const canvas = document.createElement('canvas');
   const height = resolution?.height || 1;
   const width = resolution?.width || 1;
   const canvas = new OffscreenCanvas(width, height);
@@ -15,20 +15,50 @@ const generateFakeFrame = async (resolution) => {
   return { width, height, img: canvas };
 };
 
-export const loadImageToCanvas = async (link) => {
-  const resp = await fetch(link);
+export const getBlobLink = (link) =>
+  new Promise((resolve, reject) => {
+    const handler = (e) => {
+      if (e.data.event !== 'FETCH_CALLBACK') {
+        return;
+      }
+      if (e.data.error) {
+        removeEventListener('message', handler);
+        return reject(e.data.error);
+      }
+      if (e.data.link === link) {
+        removeEventListener('message', handler);
+        return resolve(e.data.blobLink);
+      }
+    }
+    addEventListener('message', handler);
+    postMessage({ id: null, event: 'FETCH', data: { link } });
+  });
+
+export const loadImageBitmap = async (link) => {
+  // It's not possible to load local file from web worker using electron
+  // We ask the main thread to load the image and return the blob url
+  const usableLink = !link.startsWith('blob:') ? await getBlobLink(link) : link;
+  const resp = await fetch(usableLink);
   if (!resp.ok) {
-    throw 'network error';
+    throw new Error('Network error');
   }
   const blob = await resp.blob();
-  const bmp = await createImageBitmap(blob);
+  return createImageBitmap(blob);
+};
+
+export const loadImageToCanvas = async (link) => {
+  const bmp = await loadImageBitmap(link);
   const { width, height } = bmp;
   const canvas = new OffscreenCanvas(width, height);
   const ctx = canvas.getContext('2d');
   ctx.drawImage(bmp, 0, 0);
   bmp.close();
-  //const imgObj = ctx.getImageData(0, 0, width, height);
   return { width, height, img: canvas };
+};
+
+const GetFrameResolution = async (link) => {
+  const bmp = await loadImageBitmap(link);
+  return { width: bmp.width, height: bmp.height };
 };
 
 export const ExportFrame = async (
@@ -64,41 +94,13 @@ export const ExportFrame = async (
   return canvas.convertToBlob({ type: `image/${(format || 'png').replace('jpg', 'jpeg')}` });
 };
 
-const GetFrameResolution = async (link) => {
-  const resp = await fetch(link);
-  if (!resp.ok) {
-    throw 'network error';
-  }
-  const blob = await resp.blob();
-  const bmp = await createImageBitmap(blob);
-  const { width, height } = bmp;
-  return { width, height };
-};
-
-export const GetBestResolution = async (frames, ratio = null) => {
+export const ExtractFramesResolutions = async (frames) => {
   if (!frames || frames.length === 0) {
-    return null;
+    return [];
   }
-  const resolutions = await Promise.all(frames.filter((frame) => !frame.deleted && !frame.hidden).map((frame) => GetFrameResolution(frame.link)));
-  let outputResolution = null;
-  for (const resolution of resolutions) {
-    if (!resolution) {
-      continue;
-    }
-    if (!outputResolution || resolution.height > outputResolution.height) {
-      outputResolution = resolution;
-    }
-  }
-  if (ratio !== null) {
-    const containedResolution = resizeToFit('contain', { width: ratio, height: 1 }, outputResolution);
-    return { width: containedResolution.width, height: containedResolution.height };
-  }
-
-  return outputResolution;
+  const resolutions = await Promise.all(frames.map((frame) => GetFrameResolution(frame.link).catch(() => null)));
+  return resolutions;
 };
-
-export const floorResolutionValue = (v) => (v ? (Math.floor(v) % 2 !== 0 ? Math.floor(v) + 1 : Math.floor(v)) : v);
-export const floorResolution = (v) => (v ? { width: v.width ? floorResolutionValue(v.width) : v.width, height: v.height ? floorResolutionValue(v.height) : v.height } : v);
 
 export const ExportFrames = async (
   files = [],

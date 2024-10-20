@@ -68,7 +68,7 @@ const ProjectSettingsWindow = ({ t, onProjectSettingsChange = () => {}, onProjec
         {t('Project settings')}
       </Heading>
       <FormGroup label={t('Project title')} description={t('The title of your animation')}>
-        <Input control={control} register={register('title')} />
+        <Input placeholder={t('Title')} control={control} register={register('title')} />
       </FormGroup>
       <FormGroup label={t('Animation framerate')} description={t('The framerate used for your animation')}>
         <NumberInput style={{ marginLeft: 'var(--space-big)' }} min={1} max={60} tag={t('FPS')} register={register('fps')} />
