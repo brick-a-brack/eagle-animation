@@ -211,5 +211,11 @@
   "Reverse horizontally": "Odwróć poziomo",
   "Reverse the camera horizontally": "Odwróć kamerę poziomo",
   "Reverse vertically": "Odwróć pionowo",
-  "Reverse the camera vertically": "Odwróć kamerę pionowo"
+  "Reverse the camera vertically": "Odwróć kamerę pionowo",
+  "Title": "Tytuł",
+  "Play from the begining": "Odtwórz od początku",
+  "Always play the animation from the first frame": "Zawsze odtwarzaj animację od pierwszej klatki",
+  "Show live view when looped": "Pokazuj podgląd na żywo podczas pętli",
+  "Display live view when loop mode is active for playback": "Wyświetlaj widok na żywo, gdy tryb pętli jest aktywny podczas odtwarzania",
+  "Clone current frame": "Sklonuj bieżącą klatkę"
 }

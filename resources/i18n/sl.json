@@ -197,5 +197,11 @@
   "Permissions setup": "Postavljanje dozvola",
   "Eagle Animation requires camera and microphone permissions to work, if skipped, you will be able to grant access in the settings.": "Eagle Animation zahtijeva pristup kameri i mikrofonu za rad, ako preskočite, moći ćete dati pristup u postavkama.",
   "Let's go!": "Krenimo!",
-  "Skip setup": "Preskoči postavljanje"
+  "Skip setup": "Preskoči postavljanje",
+  "Title": "Naslov",
+  "Play from the begining": "Predvajaj od začetka",
+  "Always play the animation from the first frame": "Animacijo vedno predvajaj od prvega okvirja",
+  "Show live view when looped": "Prikaži v živo, ko je zanka aktivna",
+  "Display live view when loop mode is active for playback": "Prikaži kamero, ko je način zanke aktiven za predvajanje",
+  "Clone current frame": "Kloniraj trenutni okvir"
 }

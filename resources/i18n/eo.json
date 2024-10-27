@@ -210,5 +210,11 @@
   "Reverse horizontally": "Inversigi horizontale",
   "Reverse the camera horizontally": "Inversigi la kameron horizontale",
   "Reverse vertically": "Inversigi vertikale",
-  "Reverse the camera vertically": "Inversigi la kameron vertikale"
+  "Reverse the camera vertically": "Inversigi la kameron vertikale",
+  "Title": "Titolo",
+  "Play from the begining": "Ludi ekde la komenco",
+  "Always play the animation from the first frame": "Ĉiam ludi la animacion ekde la unua kadro",
+  "Show live view when looped": "Montri vivan vidon dum ciklo",
+  "Display live view when loop mode is active for playback": "Montri la kameran vidon kiam la ludreĝimo estas aktiva por rekursa legado",
+  "Clone current frame": "Kloni la nunan kadron"
 }

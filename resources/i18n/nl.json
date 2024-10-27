@@ -195,5 +195,11 @@
   "Permissions setup": "Instellen van toestemmingen",
   "Eagle Animation requires camera and microphone permissions to work, if skipped, you will be able to grant access in the settings.": "Eagle Animation vereist toegang tot de camera en microfoon om te werken, als dit wordt overgeslagen, kunt u later toegang verlenen in de instellingen.",
   "Let's go!": "Laten we beginnen!",
-  "Skip setup": "Doorgaan zonder instellingen"
+  "Skip setup": "Doorgaan zonder instellingen",
+  "Title": "Titel",
+  "Play from the begining": "Speel vanaf het begin",
+  "Always play the animation from the first frame": "Speel de animatie altijd af vanaf het eerste frame",
+  "Show live view when looped": "Toon live weergave tijdens loop",
+  "Display live view when loop mode is active for playback": "Toon live weergave wanneer loopmodus actief is voor afspelen",
+  "Clone current frame": "Kloon huidig frame"
 }
