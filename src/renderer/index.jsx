@@ -9,17 +9,21 @@ import App from './App';
 import { BUILD, POSTHOG_TOKEN } from './config';
 
 try {
-  posthog.init(POSTHOG_TOKEN, {
-    api_host: 'https://us.i.posthog.com',
-    person_profiles: 'always',
-    autocapture: false,
-    disable_session_recording: true,
-  });
+  if (POSTHOG_TOKEN) {
+    posthog.init(POSTHOG_TOKEN, {
+      api_host: 'https://us.i.posthog.com',
+      person_profiles: 'always',
+      autocapture: false,
+      disable_session_recording: true,
+    });
+  }
 } catch (err) { } // eslint-disable-line no-empty
 
 window.track = (eventName, data = {}) => {
   try {
-    posthog.capture(eventName, data);
+    if (POSTHOG_TOKEN) {
+      posthog.capture(eventName, data);
+    }
   } catch (err) { } // eslint-disable-line no-empty
 };
 
