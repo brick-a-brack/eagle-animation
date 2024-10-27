@@ -2,7 +2,7 @@ import pLimit from 'p-limit';
 import { v4 as uuidv4 } from 'uuid';
 
 const createWorker = () => {
-  return new Worker(new URL('../../webworker/worker.js', import.meta.url), {
+  return new Worker(new URL('../../webworker/Worker.js', import.meta.url), {
     type: 'module',
   });
 };
