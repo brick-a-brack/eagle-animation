@@ -176,6 +176,7 @@ const Animator = ({ t }) => {
 
     projectActions.moveFrame(track, frameId, beforeFrame);
     playerRef.current.showFrame(frameId);
+    window.track('frame_moved', { projectId: `${id}`, trackId: `${track}`, frameId: `${frameId}` });
   };
 
   const takePictures =
@@ -192,6 +193,9 @@ const Animator = ({ t }) => {
         const nbFramesToTake = (settings.AVERAGING_ENABLED ? Number(settings.AVERAGING_VALUE) : 1) || 1;
         try {
           const { type, buffer } = await cameraActions.takePicture(nbFramesToTake, settings.REVERSE_X, settings.REVERSE_Y);
+
+          window.track('frame_captured', { projectId: `${id}`, trackId: `${track}`, reverseX: settings.REVERSE_X, reverseY: settings.REVERSE_Y, nbFrames: nbFramesToTake });
+
           if (!isMuted && settings.SOUNDS) {
             const isAprilFoolsDay = new Date().getDate() === 1 && new Date().getMonth() === 3;
             playSound(isAprilFoolsDay ? soundEagle : soundShutter);
@@ -232,9 +236,11 @@ const Animator = ({ t }) => {
     TAKE_PICTURES_10: takePictures(10),
     LOOP: () => {
       setLoopStatus(!loopStatus);
+      window.track('animator_changed', { feature: 'loop', value: !loopStatus });
     },
     SHORT_PLAY: () => {
       setShortPlayStatus(!shortPlayStatus);
+      window.track('animator_changed', { feature: 'short_play', value: !shortPlayStatus });
     },
     CAMERA_SETTINGS: () => {
       setShowCameraSettings(!showCameraSettings);
@@ -249,6 +255,7 @@ const Animator = ({ t }) => {
       const newId = getPreviousFrameId(pictures, currentFrameId) !== currentFrameId ? getPreviousFrameId(pictures, currentFrameId) : getNextFrameId(pictures, currentFrameId);
       playerRef.current.showFrame(newId);
       projectActions.deleteFrame(track, currentFrameId);
+      window.track('frame_deleted', { projectId: `${id}`, trackId: `${track}`, frameId: `${currentFrameId}` });
     },
     BACK: () => {
       navigate('/');
@@ -270,18 +277,23 @@ const Animator = ({ t }) => {
     },
     ONION_LESS: () => {
       setOnionValue(Math.max(parseFloat(onionValue) - 0.1, 0));
+      window.track('animator_changed', { feature: 'onion', value: Math.max(parseFloat(onionValue) - 0.1, 0) });
     },
     ONION_MORE: () => {
       setOnionValue(Math.min(parseFloat(onionValue) + 0.1, 1));
+      window.track('animator_changed', { feature: 'onion', value: Math.min(parseFloat(onionValue) + 0.1, 1) });
     },
     ONION_CHANGE: (value) => {
       setOnionValue(value);
+      window.track('animator_changed', { feature: 'onion', value: value });
     },
     GRID: () => {
       setGridStatus(!gridStatus);
+      window.track('animator_changed', { feature: 'grid', value: !gridStatus });
     },
     DIFFERENCE: () => {
       setDifferenceStatus(!differenceStatus);
+      window.track('animator_changed', { feature: 'difference', value: !differenceStatus });
     },
     FPS_CHANGE: async (v) => {
       projectActions.changeFPS(track, v || '1');
@@ -304,22 +316,28 @@ const Animator = ({ t }) => {
     },
     HIDE_FRAME: async () => {
       projectActions.applyHiddenFrameStatus(track, currentFrameId, !currentFrame?.hidden);
+      window.track('frame_hidden', { projectId: `${id}`, trackId: `${track}`, frameId: `${currentFrameId}`, hidden: !currentFrame?.hidden });
     },
     DUPLICATE: async () => {
       projectActions.applyDuplicateFrameOffset(track, currentFrameId, 1);
+      window.track('frame_duplicated', { projectId: `${id}`, trackId: `${track}`, frameId: `${currentFrameId}`, offset: 1 });
     },
     CLONE: async () => {
       projectActions.cloneFrame(track, currentFrameId);
+      window.track('frame_cloned', { projectId: `${id}`, trackId: `${track}`, frameId: `${currentFrameId}` });
     },
     DEDUPLICATE: async () => {
       projectActions.applyDuplicateFrameOffset(track, currentFrameId, -1);
+      window.track('frame_duplicated', { projectId: `${id}`, trackId: `${track}`, frameId: `${currentFrameId}`, offset: -1 });
     },
     MUTE: () => {
       setIsMuted(!isMuted);
+      window.track('animator_changed', { feature: 'mute', value: !isMuted });
     },
     DELETE_PROJECT: async () => {
       await window.EA('DELETE_PROJECT', { project_id: id });
       navigate(`/`);
+      window.track('project_deleted', { projectId: id });
     },
     FPS_FOCUS: () => {
       setDisableKeyboardShortcuts(true);

@@ -38,14 +38,17 @@ const HomeView = ({ t }) => {
   const handleCreateProject = async (_, title) => {
     const project = await projectsActions.create(title || '');
     navigate(`/animator/${project.id}/0`);
+    window.track('project_created', { projectId: project.id });
   };
 
   const handleOpenProject = async (id) => {
     navigate(`/animator/${id}/0`);
+    window.track('project_opened', { projectId: id });
   };
 
   const handleRenameProject = async (id, title) => {
     projectsActions.rename(id, title || '');
+    window.track('project_renamed', { projectId: id });
   };
 
   const handleLink = () => {

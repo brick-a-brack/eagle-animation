@@ -199,15 +199,15 @@ const Export = ({ t }) => {
       data.mode === 'send'
         ? null
         : await window.EA('EXPORT_SELECT_PATH', {
-          type: data.mode === 'video' ? 'FILE' : 'FOLDER',
-          format: data.format,
-          translations: {
-            EXPORT_FRAMES: t('Export animation frames'),
-            EXPORT_VIDEO: t('Export as video'),
-            DEFAULT_FILE_NAME: t('video'),
-            EXT_NAME: t('Video file'),
-          },
-        });
+            type: data.mode === 'video' ? 'FILE' : 'FOLDER',
+            format: data.format,
+            translations: {
+              EXPORT_FRAMES: t('Export animation frames'),
+              EXPORT_VIDEO: t('Export as video'),
+              DEFAULT_FILE_NAME: t('video'),
+              EXT_NAME: t('Video file'),
+            },
+          });
 
     // Cancel on Electron, web version send '' as path
     if (data.mode !== 'send' && outputPath === null) {
@@ -224,21 +224,19 @@ const Export = ({ t }) => {
       });
     };
 
+    const exportSettings = {
+      duplicateFramesCopy: data.duplicateFramesCopy,
+      duplicateFramesAuto: data.mode === 'send' ? true : data.duplicateFramesAuto,
+      duplicateFramesAutoNumber: data.mode === 'send' ? Math.ceil(project?.scenes?.[Number(track)]?.framerate / 2) : data.duplicateFramesAutoNumber,
+      forceFileExtension: data.mode === 'frames' ? (data.framesFormat === 'original' ? undefined : data.framesFormat) : 'jpg',
+      resolution,
+    };
+
+    // Track export
+    window.track('project_exported', { projectId: project.id, ...data, ...exportSettings });
+
     // Compute all frames
-    const frames = await ExportFrames(
-      id,
-      Number(track),
-      files,
-      {
-        duplicateFramesCopy: data.duplicateFramesCopy,
-        duplicateFramesAuto: data.mode === 'send' ? true : data.duplicateFramesAuto,
-        duplicateFramesAutoNumber: data.mode === 'send' ? Math.ceil(project?.scenes?.[Number(track)]?.framerate / 2) : data.duplicateFramesAutoNumber,
-        forceFileExtension: data.mode === 'frames' ? (data.framesFormat === 'original' ? undefined : data.framesFormat) : 'jpg',
-        resolution,
-      },
-      (p) => setFrameRenderingProgress(p),
-      createBuffer
-    );
+    const frames = await ExportFrames(id, Number(track), files, exportSettings, (p) => setFrameRenderingProgress(p), createBuffer);
 
     // Save frames / video on the disk
     await window.EA('EXPORT', {

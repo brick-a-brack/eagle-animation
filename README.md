@@ -77,8 +77,10 @@ Some variables can be configured using a `.env` file, values with a "\*" are req
 
 ### Telemetry
 
-To improve the quality of **Eagle Animation**, runtime errors are automatically reported to developpers by using [Sentry SDK](https://sentry.io/). You can disable error reporting, just set
-`SENTRY_DSN` to `""` in `src/config.js` and rebuild the app.
+To improve the quality of **Eagle Animation**, runtime errors and application events are automatically reported to developpers by using [Sentry SDK](https://sentry.io/) and [PostHog](https://posthog.com/). You can disable the telemetry, just set
+`SENTRY_DSN` and `POSTHOG_TOKEN` to `""` in `src/config.js` and rebuild the app.
+
+We also track user behavior on the app to 
 
 ## Compatilibity
 

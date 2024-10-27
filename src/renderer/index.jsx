@@ -1,11 +1,27 @@
 import './i18n';
 
 import { Buffer } from 'buffer';
+import posthog from 'posthog-js';
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 
 import App from './App';
-import { BUILD } from './config';
+import { BUILD, POSTHOG_TOKEN } from './config';
+
+try {
+  posthog.init(POSTHOG_TOKEN, {
+    api_host: 'https://us.i.posthog.com',
+    person_profiles: 'always',
+    autocapture: false,
+    disable_session_recording: true,
+  });
+} catch (err) { } // eslint-disable-line no-empty
+
+window.track = (eventName, data = {}) => {
+  try {
+    posthog.capture(eventName, data);
+  } catch (err) { } // eslint-disable-line no-empty
+};
 
 globalThis.Buffer = Buffer;
 
@@ -27,7 +43,7 @@ window.EA = async (action, data) => {
   }
 };
 
-window.EAEvents = (name, callback = () => {}) => {
+window.EAEvents = (name, callback = () => { }) => {
   // IPC (Electron backend)
   if (typeof window.IPC !== 'undefined') {
     if (typeof callback !== 'undefined') {
