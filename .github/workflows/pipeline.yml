@@ -51,7 +51,9 @@ jobs:
 
       - name: Packaging Linux
         if: ${{ (matrix.versions.os == 'ubuntu-latest') && (matrix.versions.type == 'app') }}
-        run: npm run build:linux
+        run: |
+          apt update && apt install -y flatpak flatpak-builder 
+          npm run build:linux
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
