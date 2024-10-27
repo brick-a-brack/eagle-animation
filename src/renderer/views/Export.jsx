@@ -14,8 +14,9 @@ import NumberInput from '../components/NumberInput';
 import Select from '../components/Select';
 import Switch from '../components/Switch';
 import { ALLOWED_LETTERS } from '../config';
+import { ExportFrames } from '../core/Export';
 import { parseRatio } from '../core/ratio';
-import { ExportFrames, ExtractFramesResolutions } from '../core/WorkerExporter';
+import { GetFrameResolutions } from '../core/ResolutionsCache';
 import useAppCapabilities from '../hooks/useAppCapabilities';
 import useProject from '../hooks/useProject';
 import useSettings from '../hooks/useSettings';
@@ -92,15 +93,18 @@ const Export = ({ t }) => {
 
   const framesKey = JSON.stringify(project?.scenes?.[Number(track)]?.pictures);
   useEffect(() => {
-    ExtractFramesResolutions(project?.scenes?.[Number(track)]?.pictures)
-      .then(setResolutions)
-      .catch(() => setResolutions(null));
+    GetFrameResolutions(id, Number(track), project?.scenes?.[Number(track)]?.pictures)
+      .then((d) => {
+        setResolutions(d);
+      })
+      .catch((err) => {
+        console.error(err);
+        setResolutions(null);
+      });
   }, [framesKey]);
 
   useEffect(() => {
     (async () => {
-      
-      console.log('DEBUG', project?.scenes?.[Number(track)]?.pictures, resolutions, projectRatio)
       if (watch('mode') !== 'frames' || watch('matchAspectRatio')) {
         setBestResolution(getBestResolution(project?.scenes?.[Number(track)]?.pictures, resolutions, projectRatio));
       } else {
@@ -195,18 +199,35 @@ const Export = ({ t }) => {
       data.mode === 'send'
         ? null
         : await window.EA('EXPORT_SELECT_PATH', {
-            type: data.mode === 'video' ? 'FILE' : 'FOLDER',
-            format: data.format,
-            translations: {
-              EXPORT_FRAMES: t('Export animation frames'),
-              EXPORT_VIDEO: t('Export as video'),
-              DEFAULT_FILE_NAME: t('video'),
-              EXT_NAME: t('Video file'),
-            },
-          });
+          type: data.mode === 'video' ? 'FILE' : 'FOLDER',
+          format: data.format,
+          translations: {
+            EXPORT_FRAMES: t('Export animation frames'),
+            EXPORT_VIDEO: t('Export as video'),
+            DEFAULT_FILE_NAME: t('video'),
+            EXT_NAME: t('Video file'),
+          },
+        });
+
+    // Cancel on Electron, web version send '' as path
+    if (data.mode !== 'send' && outputPath === null) {
+      setIsInfosOpened(false);
+      setIsExporting(false);
+      return;
+    }
+
+    const createBuffer = async (bufferId, buffer) => {
+      await window.EA('EXPORT_BUFFER', {
+        project_id: id,
+        buffer_id: bufferId,
+        buffer,
+      });
+    };
 
     // Compute all frames
     const frames = await ExportFrames(
+      id,
+      Number(track),
       files,
       {
         duplicateFramesCopy: data.duplicateFramesCopy,
@@ -215,12 +236,13 @@ const Export = ({ t }) => {
         forceFileExtension: data.mode === 'frames' ? (data.framesFormat === 'original' ? undefined : data.framesFormat) : 'jpg',
         resolution,
       },
-      (p) => setFrameRenderingProgress(p)
+      (p) => setFrameRenderingProgress(p),
+      createBuffer
     );
 
     // Save frames / video on the disk
     await window.EA('EXPORT', {
-      frames,
+      frames: frames.map(({ mimeType, bufferId, ...e }) => ({ ...e, buffer_id: bufferId, mime_type: mimeType })),
       output_path: outputPath,
       mode: data.mode,
       format: data.format,

@@ -11,7 +11,6 @@ import { LS_PERMISSIONS } from '../config';
 import useAppVersion from '../hooks/useAppVersion';
 import useCamera from '../hooks/useCamera';
 import useProjects from '../hooks/useProjects';
-import LoadingPage from '../components/LoadingPage';
 
 const HomeView = ({ t }) => {
   const { version, latestVersion, actions: versionActions } = useAppVersion();
@@ -66,14 +65,16 @@ const HomeView = ({ t }) => {
     <>
       <Header action={handleLink} version={version} latestVersion={latestVersion} />
       <ActionsBar actions={['SETTINGS', 'SHORTCUTS']} position="RIGHT" onAction={handleAction} />
-      {projects !== null && <ProjectsGrid>
-        <ProjectCard placeholder={t('New project')} onClick={handleCreateProject} icon="ADD" />
-        {[...projects]
-          .sort((a, b) => b.project.updated - a.project.updated)
-          .map((e) => (
-            <ProjectCard key={e.id} id={e.id} title={e.project.title} picture={e.preview} nbFrames={e?.stats?.frames || 0} onClick={handleOpenProject} onTitleChange={handleRenameProject} />
-          ))}
-      </ProjectsGrid>}
+      {projects !== null && (
+        <ProjectsGrid>
+          <ProjectCard placeholder={t('New project')} onClick={handleCreateProject} icon="ADD" />
+          {[...projects]
+            .sort((a, b) => b.project.updated - a.project.updated)
+            .map((e) => (
+              <ProjectCard key={e.id} id={e.id} title={e.project.title} picture={e.preview} nbFrames={e?.stats?.frames || 0} onClick={handleOpenProject} onTitleChange={handleRenameProject} />
+            ))}
+        </ProjectsGrid>
+      )}
     </>
   );
 };

@@ -1,34 +1,29 @@
-import { existsSync } from 'node:fs';
-import { writeFile } from 'node:fs/promises';
-import { homedir } from 'node:os';
+import { copyFile } from 'node:fs/promises';
 
 import { shell, systemPreferences } from 'electron';
-import envPaths from 'env-paths';
 import { mkdirp } from 'mkdirp';
 import fetch from 'node-fetch';
 import { join } from 'path-browserify';
 
 import { getEncodingProfile } from '../common/ffmpeg';
-import { CONTRIBUTE_REPOSITORY, DIRECTORY_NAME } from '../config';
+import { CONTRIBUTE_REPOSITORY } from '../config';
 import { flushCamera, getCamera, getCameras } from './cameras';
+import { PROJECTS_PATH } from './config';
 import { uploadFile } from './core/api';
-import { exportProjectScene, getSyncList, saveSyncList } from './core/export';
+import { exportProjectScene, exportSaveTemporaryBuffer, getSyncList, saveSyncList } from './core/export';
 import { createProject, deleteProject, getProjectData, getProjectsList, projectSave, savePicture } from './core/projects';
 import { getSettings, saveSettings } from './core/settings';
 import { selectFile, selectFolder } from './core/utils';
 
-const OLD_PROJECTS_PATH = join(homedir(), DIRECTORY_NAME);
-const PROJECTS_PATH = existsSync(OLD_PROJECTS_PATH) ? OLD_PROJECTS_PATH : envPaths(DIRECTORY_NAME, { suffix: '' }).data;
-
 console.log(`💾 Eagle Animation files will be saved in the following folder: ${PROJECTS_PATH}`);
 
-const getPictureLink = (path, sceneIndex, filename) => `${path}/${sceneIndex}/${filename}`;
+const getPictureLink = (projectId, sceneIndex, filename) => `ea-data://${projectId}/${sceneIndex}/${filename}`;
 
 const getDefaultPreview = (data) => {
   for (let i = 0; i < (data?.project?.scenes?.length || 0); i++) {
     for (const picture of data?.project?.scenes?.[i]?.pictures || []) {
       if (!picture?.deleted) {
-        return getPictureLink(data._path, i, picture.filename);
+        return getPictureLink(data._id, i, picture.filename);
       }
     }
   }
@@ -43,13 +38,13 @@ const computeProject = (data) => {
     ...scene,
     pictures: scene.pictures.map((picture) => ({
       ...picture,
-      link: getPictureLink(copiedData._path, i, picture.filename),
+      link: getPictureLink(copiedData._id, i, picture.filename),
     })),
   }));
 
   let output = {
     ...copiedData,
-    id: data._path.replaceAll('\\', '/').split('/').pop(),
+    id: copiedData._id,
     preview,
     project: {
       ...copiedData.project,
@@ -118,7 +113,7 @@ const actions = {
     const picture = await savePicture(join(PROJECTS_PATH, project_id), track_id, extension, buffer);
     return {
       ...picture,
-      link: getPictureLink(data._path, track_id, picture.filename),
+      link: getPictureLink(data._id, track_id, picture.filename),
     };
   },
   OPEN_LINK: async (evt, { link }) => {
@@ -239,6 +234,9 @@ const actions = {
     }
     return null;
   },
+  EXPORT_BUFFER: async (evt, { project_id, buffer_id, buffer }) => {
+    await exportSaveTemporaryBuffer(join(PROJECTS_PATH, project_id), buffer_id, buffer);
+  },
   EXPORT: async (
     evt,
     {
@@ -258,8 +256,9 @@ const actions = {
   ) => {
     if (mode === 'frames') {
       if (output_path) {
+        const bufferDirectoryPath = join(join(PROJECTS_PATH, project_id), `/.tmp/`);
         for (const frame of frames) {
-          await writeFile(join(output_path, `frame-${frame.index.toString().padStart(6, '0')}.${frame.extension}`), frame.buffer);
+          await copyFile(join(bufferDirectoryPath, frame.buffer_id), join(output_path, `frame-${frame.index.toString().padStart(6, '0')}.${frame.extension}`));
         }
       }
       return true;

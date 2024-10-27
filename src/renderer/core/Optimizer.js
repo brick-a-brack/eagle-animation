@@ -1,9 +1,6 @@
 import Dexie from 'dexie';
-import pLimit from 'p-limit';
 
-import { ExportFrame } from './WorkerExporter';
-
-const limit = pLimit(100);
+import { ExportFrame } from './Worker';
 
 class BlobFramesDatabase extends Dexie {
   constructor() {
@@ -53,7 +50,7 @@ const optimizeFrame = async (projectId, trackId, frameId, type, link) => {
   }
 
   // Compress/Convert frame
-  const blob = await limit(() => ExportFrame(link, { width: infos.width, height: infos.height }, 'jpg', infos.mode));
+  const blob = await ExportFrame(link, { width: infos.width, height: infos.height }, 'jpg', infos.mode);
 
   // Save optimized frame
   await db.frames.add({
@@ -71,11 +68,11 @@ const optimizeFrame = async (projectId, trackId, frameId, type, link) => {
 
 let cachedOptimizePromises = {};
 
-const optimizeFrameShared = async (projectId, trackId, frameId, type, link) => {
+const CachedOptimizeFrame = async (projectId, trackId, frameId, type, link) => {
   if (!cachedOptimizePromises[`${projectId}_${trackId}_${frameId}_${type}_${link}`]) {
     cachedOptimizePromises[`${projectId}_${trackId}_${frameId}_${type}_${link}`] = optimizeFrame(projectId, trackId, frameId, type, link);
   }
   return cachedOptimizePromises[`${projectId}_${trackId}_${frameId}_${type}_${link}`];
 };
 
-export const OptimizeFrame = optimizeFrameShared;
+export const OptimizeFrame = CachedOptimizeFrame;

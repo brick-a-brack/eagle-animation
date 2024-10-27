@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { OptimizeFrame } from '../core/Optimizer';
+import { GetFrameResolution } from '../core/ResolutionsCache';
 
 function useProject(options) {
   const [projectData, setProjectData] = useState(null);
@@ -214,6 +215,17 @@ function useProject(options) {
             })();
           })();
         }
+
+        // RESOLUTION SUPPORT
+        if (typeof framesCache.current[`${options?.id}_${sceneId}_${frame.id}_resolution`] === 'undefined') {
+          framesCache.current[`${options?.id}_${sceneId}_${frame.id}_resolution`] = null;
+          (async () => {
+            framesCache.current[`${options?.id}_${sceneId}_${frame.id}_resolution`] = await (async () => {
+              const resolution = await GetFrameResolution(options?.id, sceneId, frame.id, frame.link);
+              return resolution || null;
+            })();
+          })();
+        }
       }
     }
   }, [JSON.stringify(projectData), projectClock]);
@@ -239,6 +251,12 @@ function useProject(options) {
         d.project.scenes[sceneId].pictures[frameIndex].preview = null;
         if (typeof framesCache.current[`${options?.id}_${sceneId}_${frame.id}_preview`] !== 'undefined') {
           d.project.scenes[sceneId].pictures[frameIndex].preview = framesCache.current[`${options?.id}_${sceneId}_${frame.id}_preview`] || null;
+        }
+
+        // RESOLUTION SUPPORT
+        d.project.scenes[sceneId].pictures[frameIndex].resolution = null;
+        if (typeof framesCache.current[`${options?.id}_${sceneId}_${frame.id}_resolution`] !== 'undefined') {
+          d.project.scenes[sceneId].pictures[frameIndex].resolution = framesCache.current[`${options?.id}_${sceneId}_${frame.id}_resolution`] || null;
         }
       }
     }

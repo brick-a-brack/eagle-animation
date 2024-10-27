@@ -1,12 +1,13 @@
-import { ExportFrame, ExportFrames, ExtractFramesResolutions } from './Exporter';
+import { ExportFrame, GetFrameResolution } from './Exporter';
 
 const availableFunctions = [
-  { id: 'ExportFrames', func: ExportFrames },
   { id: 'ExportFrame', func: ExportFrame },
-  { id: 'ExtractFramesResolutions', func: ExtractFramesResolutions },
+  { id: 'GetFrameResolution', func: GetFrameResolution },
 ];
 
-addEventListener('message', (e) => {
+console.log('🏗️ Worker ready, waiting jobs...');
+
+self.addEventListener('message', (e) => {
   const { event, id, name, args } = e.data || {};
   console.log('👷 Worker task', { event, id, name, args });
   if (event === 'LAUNCH') {

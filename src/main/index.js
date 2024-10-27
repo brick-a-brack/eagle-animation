@@ -1,12 +1,16 @@
 import { join } from 'node:path';
 
 import { electronApp, is, optimizer } from '@electron-toolkit/utils';
-import { app, BrowserWindow, ipcMain, shell } from 'electron';
+import { app, BrowserWindow, ipcMain, net, protocol, shell } from 'electron';
+const url = require('node:url');
 
 import icon from '../../resources/icon.png?asset';
 import actions from './actions';
+import { PROJECTS_PATH } from './config';
 
 let sendToRenderer = () => null;
+
+protocol.registerSchemesAsPrivileged([{ scheme: 'ea-data', privileges: { bypassCSP: true, standard: true, secure: true, supportFetchAPI: true } }]);
 
 function createWindow() {
   // Create the browser window.
@@ -60,6 +64,12 @@ app.whenReady().then(() => {
     optimizer.watchWindowShortcuts(window);
   });
 
+  protocol.handle('ea-data', (request) => {
+    const relativePath = request.url.slice('ea-data://'.length);
+    const diskPath = `${PROJECTS_PATH}/${relativePath}`;
+    return net.fetch(url.pathToFileURL(diskPath).toString());
+  });
+
   createWindow();
 
   app.on('activate', function () {
@@ -83,7 +93,6 @@ app.on('window-all-closed', () => {
 app.whenReady().then(() => {
   Object.keys(actions).forEach((name) => {
     ipcMain.handle(name, (evt, args) => {
-      console.log('📣 IPC', name, args || {});
       return actions[name](evt, args, sendToRenderer);
     });
   });
