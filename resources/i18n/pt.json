@@ -210,5 +210,11 @@
   "Reverse horizontally": "Inverter horizontalmente",
   "Reverse the camera horizontally": "Inverter a câmera horizontalmente",
   "Reverse vertically": "Inverter verticalmente",
-  "Reverse the camera vertically": "Inverter a câmera verticalmente"
+  "Reverse the camera vertically": "Inverter a câmera verticalmente",
+  "Title": "Título",
+  "Play from the begining": "Reproduzir desde o início",
+  "Always play the animation from the first frame": "Sempre reproduza a animação a partir do primeiro quadro",
+  "Show live view when looped": "Mostrar visualização ao vivo quando em loop",
+  "Display live view when loop mode is active for playback": "Exibir visualização ao vivo quando o modo de loop está ativo para reprodução",
+  "Clone current frame": "Clonar quadro atual"
 }

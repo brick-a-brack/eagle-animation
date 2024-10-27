@@ -16,6 +16,7 @@ const getPicturesKey = (pictures) => {
   for (let i = 0; i < pictures.length; i++) {
     delete data[i].thumbnail;
     delete data[i].preview;
+    delete data[i].resolution;
   }
   return JSON.stringify(data);
 };

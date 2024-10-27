@@ -196,5 +196,11 @@
   "Permissions setup": "Atļauju iestatīšana",
   "Eagle Animation requires camera and microphone permissions to work, if skipped, you will be able to grant access in the settings.": "Eagle Animation ir nepieciešama piekļuve kamerai un mikrofonam, lai darbotos. Ja izlaidīsit, vēlāk varēsiet piešķirt piekļuvi iestatījumos.",
   "Let's go!": "Sāksim!",
-  "Skip setup": "Turpināt bez iestatīšanas"
+  "Skip setup": "Turpināt bez iestatīšanas",
+  "Title": "Nosaukums",
+  "Play from the begining": "Atskaņot no sākuma",
+  "Always play the animation from the first frame": "Vienmēr atskaņot animāciju no pirmā kadra",
+  "Show live view when looped": "Rādīt tiešraides skatu, kad ir ieslēgts cikla režīms",
+  "Display live view when loop mode is active for playback": "Rādīt tiešraides skatu, kad atskaņošana notiek cikla režīmā",
+  "Clone current frame": "Klonēt pašreizējo kadrus"
 }

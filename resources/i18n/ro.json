@@ -196,5 +196,11 @@
   "Permissions setup": "Configurarea permisiunilor",
   "Eagle Animation requires camera and microphone permissions to work, if skipped, you will be able to grant access in the settings.": "Eagle Animation necesită permisiuni pentru cameră și microfon pentru a funcționa, dacă omiteți, veți putea acorda acces în setări.",
   "Let's go!": "Hai să începem!",
-  "Skip setup": "Continuă fără configurare"
+  "Skip setup": "Continuă fără configurare",
+  "Title": "Titlu",
+  "Play from the begining": "Redă de la început",
+  "Always play the animation from the first frame": "Redă întotdeauna animația de la prima imagine",
+  "Show live view when looped": "Afișează previzualizarea în timpul buclei",
+  "Display live view when loop mode is active for playback": "Afișează camera când modul de buclă este activ pentru redare",
+  "Clone current frame": "Clonează cadru curent"
 }

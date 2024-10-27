@@ -72,7 +72,7 @@ const SettingsForm = ({ settings = {}, onUpdate = () => {}, t }) => {
             <Switch register={register('PLAY_FROM_BEGINING')} />
           </div>
         </FormGroup>
-        <FormGroup label={t('Show live view when looped')} description={t('Always display live view when loop mode is active for playback')}>
+        <FormGroup label={t('Show live view when looped')} description={t('Display live view when loop mode is active for playback')}>
           <div>
             <Switch register={register('LOOP_SHOW_LIVE')} />
           </div>

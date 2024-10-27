@@ -210,5 +210,10 @@
   "Reverse the camera horizontally": "Retourner la caméra horizontalement",
   "Reverse vertically": "Retourner verticalement",
   "Reverse the camera vertically": "Retourner la caméra verticalement",
-  "Clone current frame": "Cloner l'image actuelle"
+  "Clone current frame": "Cloner l'image actuelle",
+  "Title": "Titre",
+  "Play from the begining": "Lire depuis le début",
+  "Always play the animation from the first frame": "Toujours lancer l'animation depuis la première photo",
+  "Show live view when looped": "Afficher l'aperçu pendant la boucle",
+  "Display live view when loop mode is active for playback": "Afficher la caméra quand la lecture est en boucle"
 }
