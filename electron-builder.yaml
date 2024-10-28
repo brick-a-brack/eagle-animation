@@ -36,7 +36,6 @@ mac:
 linux:
   artifactName: Eagle-Animation-${version}-linux.${ext}
   executableName: eagle-animation
-  packageName: eagle-animation
   category: Photography
   synopsis: EagleAnimation is an awesome, free and open-source animation software.
   description: EagleAnimation is an awesome, free and open-source animation software.
