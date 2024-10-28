@@ -210,5 +210,11 @@
   "Reverse horizontally": "Horizontal umkehren",
   "Reverse the camera horizontally": "Die Kamera horizontal umkehren",
   "Reverse vertically": "Vertikal umkehren",
-  "Reverse the camera vertically": "Die Kamera vertikal umkehren"
+  "Reverse the camera vertically": "Die Kamera vertikal umkehren",
+  "Title": "Titel",
+  "Play from the begining": "Vom Anfang abspielen",
+  "Always play the animation from the first frame": "Die Animation immer vom ersten Bild abspielen",
+  "Show live view when looped": "Live-Vorschau anzeigen, wenn in Schleife",
+  "Display live view when loop mode is active for playback": "Live-Ansicht anzeigen, wenn Wiedergabemodus für Schleifen aktiv ist",
+  "Clone current frame": "Aktuelles Bild klonen"
 }

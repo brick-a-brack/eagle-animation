@@ -210,5 +210,11 @@
   "Reverse horizontally": "Invertir horizontalmente",
   "Reverse the camera horizontally": "Invertir la cámara horizontalmente",
   "Reverse vertically": "Invertir verticalmente",
-  "Reverse the camera vertically": "Invertir la cámara verticalmente"
+  "Reverse the camera vertically": "Invertir la cámara verticalmente",
+  "Title": "Título",
+  "Play from the begining": "Reproducir desde el principio",
+  "Always play the animation from the first frame": "Siempre reproducir la animación desde el primer fotograma",
+  "Show live view when looped": "Mostrar vista en vivo cuando está en bucle",
+  "Display live view when loop mode is active for playback": "Mostrar la cámara cuando el modo de bucle está activo para la reproducción",
+  "Clone current frame": "Clonar el fotograma actual"
 }

@@ -5,6 +5,7 @@ import JSZip from 'jszip';
 
 import { getEncodingProfile, getFFmpegArgs, parseFFmpegLogs } from '../../common/ffmpeg';
 import { LS_SETTINGS } from '../config';
+import { createBuffer, flushBuffers, getBuffer } from './buffer';
 import { getFFmpeg } from './ffmpeg';
 import { createFrame, getFrameBlobUrl } from './frames';
 import { createProject, deleteProject, getAllProjects, getProject, saveProject } from './projects';
@@ -184,7 +185,10 @@ export const Actions = {
 
     return capabilities;
   },
-  EXPORT_SELECT_PATH: async () => null,
+  EXPORT_SELECT_PATH: async () => '',
+  EXPORT_BUFFER: async (evt, { buffer_id, buffer }) => {
+    await createBuffer(buffer_id, buffer);
+  },
   EXPORT: async (evt, { project_id, track_id, mode = 'video', format = 'h264', frames = [], custom_output_framerate = false, custom_output_framerate_number = 10 }) => {
     const trackId = Number(track_id);
     const project = await getProject(project_id);
@@ -193,7 +197,8 @@ export const Actions = {
       const zip = new JSZip();
       for (let i = 0; i < frames.length; i++) {
         const frame = frames[i];
-        zip.file(`frame-${frame.index.toString().padStart(6, '0')}.${frame.extension}`, frame.buffer);
+        const buffer = await getBuffer(frame.buffer_id);
+        zip.file(`frame-${frame.index.toString().padStart(6, '0')}.${frame.extension}`, buffer);
       }
       zip.generateAsync({ type: 'blob' }).then((content) => {
         saveAs(content, 'frames.zip');
@@ -210,7 +215,8 @@ export const Actions = {
       const ffmpeg = await getFFmpeg(handleData);
 
       for (const frame of frames) {
-        await ffmpeg.writeFile(`frame-${frame.index.toString().padStart(6, '0')}.${frame.extension}`, await fetchFile(new Blob([frame.buffer])));
+        const buffer = await getBuffer(frame.buffer_id);
+        await ffmpeg.writeFile(`frame-${frame.index.toString().padStart(6, '0')}.${frame.extension}`, await fetchFile(new Blob([buffer])));
       }
 
       const profile = getEncodingProfile(format);
@@ -228,6 +234,7 @@ export const Actions = {
       saveAs(new Blob([data.buffer], { type: 'application/octet-stream' }), output);
     }
 
+    await flushBuffers();
     return true;
   },
 };

@@ -72,6 +72,11 @@ const SettingsForm = ({ settings = {}, onUpdate = () => {}, t }) => {
             <Switch register={register('PLAY_FROM_BEGINING')} />
           </div>
         </FormGroup>
+        <FormGroup label={t('Show live view when looped')} description={t('Display live view when loop mode is active for playback')}>
+          <div>
+            <Switch register={register('LOOP_SHOW_LIVE')} />
+          </div>
+        </FormGroup>
         <Heading h={1}>{t('Capture')}</Heading>
         <FormGroup label={t('Sound effects')} description={t('Play sound effects when you take or remove a frame')}>
           <div>

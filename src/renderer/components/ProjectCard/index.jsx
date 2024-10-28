@@ -11,7 +11,7 @@ import * as style from './style.module.css';
 
 let renameEvents = {};
 
-const ProjectCard = ({ id = '', placeholder = '', title = '', picture = '', onClick = null, onTitleChange = null, nbFrames = 0, icon = 'EDIT', t }) => {
+const ProjectCard = ({ id = '', placeholder = '', title = '', picture = '', onClick = null, onTitleChange = null, nbFrames = null, icon = 'EDIT', t }) => {
   const ref = useRef(null);
 
   const handleClick = () => {
@@ -36,7 +36,7 @@ const ProjectCard = ({ id = '', placeholder = '', title = '', picture = '', onCl
   return (
     <div className={style.box}>
       <div className={style.banner}>{picture && <img alt="" src={picture} loading="lazy" />}</div>
-      <Tag tag={`${nbFrames || 0}`} icon={faImages} position="TOP-RIGHT" />
+      {nbFrames !== null && <Tag tag={`${nbFrames || 0}`} icon={faImages} position="TOP-RIGHT" />}
       <div role="button" tabIndex={0} className={style.bannerhover} onClick={handleClick}>
         {icon === 'ADD' && <IconAdd />}
         {icon === 'EDIT' && <IconEdit />}

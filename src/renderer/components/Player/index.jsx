@@ -76,7 +76,7 @@ class Player extends Component {
 
         let newFrameIndex = false;
 
-        if ((this.state.frameIndex === false || !filteredFrames.length) && !force && !startOnLiveView && !this.props.loopStatus) {
+        if ((this.state.frameIndex === false || !filteredFrames.length) && !force && !this.props.loopStatus) {
           return false;
         } else if (filteredFrames.length && (force || (this.state.frameIndex === false && this.props.loopStatus))) {
           newFrameIndex = this.props.shortPlayStatus && this.props.shortPlayFrames > 0 && filteredFrames.length > this.props.shortPlayFrames ? filteredFrames.length - this.props.shortPlayFrames : 0;
@@ -84,6 +84,11 @@ class Player extends Component {
           newFrameIndex = false;
         } else {
           newFrameIndex = this.state.frameIndex + 1;
+        }
+
+        // Set to first frame if the loopShowLive option is enabled
+        if (newFrameIndex === false && filteredFrames.length && !this.props.loopShowLive && this.props.loopStatus) {
+          newFrameIndex = this.props.shortPlayStatus && this.props.shortPlayFrames > 0 && filteredFrames.length > this.props.shortPlayFrames ? filteredFrames.length - this.props.shortPlayFrames : 0;
         }
 
         const frame = (newFrameIndex === false ? filteredFrames[filteredFrames.length - 1] : filteredFrames[newFrameIndex]) || false;
@@ -94,7 +99,7 @@ class Player extends Component {
       };
 
       this.props.onPlayingStatusChange(true);
-      exec(playFromBegining);
+      exec(playFromBegining || startOnLiveView);
 
       this.clock = setInterval(() => {
         if (!exec()) {

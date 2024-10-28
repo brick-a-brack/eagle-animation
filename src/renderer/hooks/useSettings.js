@@ -4,6 +4,7 @@ import { currentLanguage, setLanguage } from '../i18n';
 
 const DEFAULT_SETTINGS = {
   PLAY_FROM_BEGINING: false,
+  LOOP_SHOW_LIVE: true,
   CAMERA_ID: null,
   FORCE_QUALITY: false,
   CAPTURE_FRAMES: 1,

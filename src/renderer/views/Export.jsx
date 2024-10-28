@@ -3,17 +3,20 @@ import { useForm } from 'react-hook-form';
 import { withTranslation } from 'react-i18next';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 
+import { floorResolution, floorResolutionValue, getBestResolution } from '../../common/resolution';
 import ActionCard from '../components/ActionCard';
 import ActionsBar from '../components/ActionsBar';
 import FormGroup from '../components/FormGroup';
 import FormLayout from '../components/FormLayout';
 import LoadingOverlay from '../components/LoadingOverlay';
+import LoadingPage from '../components/LoadingPage';
 import NumberInput from '../components/NumberInput';
 import Select from '../components/Select';
 import Switch from '../components/Switch';
 import { ALLOWED_LETTERS } from '../config';
-import { ExportFrames, floorResolution, floorResolutionValue, GetBestResolution } from '../core/Exporter';
+import { ExportFrames } from '../core/Export';
 import { parseRatio } from '../core/ratio';
+import { GetFrameResolutions } from '../core/ResolutionsCache';
 import useAppCapabilities from '../hooks/useAppCapabilities';
 import useProject from '../hooks/useProject';
 import useSettings from '../hooks/useSettings';
@@ -36,6 +39,7 @@ const Export = ({ t }) => {
   const [isInfosOpened, setIsInfosOpened] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
   const [publicCode, setPublicCode] = useState(null);
+  const [resolutions, setResolutions] = useState(null);
   const [frameRenderingProgress, setFrameRenderingProgress] = useState(0);
   const [videoRenderingProgress, setVideoRenderingProgress] = useState(0);
   const [bestResolution, setBestResolution] = useState(null);
@@ -87,15 +91,27 @@ const Export = ({ t }) => {
     { value: 'webp', label: t('WEBP (.webp)') },
   ];
 
+  const framesKey = JSON.stringify(project?.scenes?.[Number(track)]?.pictures);
+  useEffect(() => {
+    GetFrameResolutions(id, Number(track), project?.scenes?.[Number(track)]?.pictures)
+      .then((d) => {
+        setResolutions(d);
+      })
+      .catch((err) => {
+        console.error(err);
+        setResolutions(null);
+      });
+  }, [framesKey]);
+
   useEffect(() => {
     (async () => {
       if (watch('mode') !== 'frames' || watch('matchAspectRatio')) {
-        setBestResolution(await GetBestResolution(project?.scenes?.[Number(track)]?.pictures, projectRatio));
+        setBestResolution(getBestResolution(project?.scenes?.[Number(track)]?.pictures, resolutions, projectRatio));
       } else {
-        setBestResolution(await GetBestResolution(project?.scenes?.[Number(track)]?.pictures));
+        setBestResolution(getBestResolution(project?.scenes?.[Number(track)]?.pictures, resolutions));
       }
     })();
-  }, [JSON.stringify(project?.scenes?.[Number(track)]?.pictures), projectRatio, watch('matchAspectRatio'), watch('mode')]);
+  }, [framesKey, projectRatio, watch('matchAspectRatio'), watch('mode'), resolutions]);
 
   useEffect(() => {
     window.EAEvents('FFMPEG_PROGRESS', (evt, args) => {
@@ -123,15 +139,20 @@ const Export = ({ t }) => {
     })();
   }, [appCapabilities]);
 
-  if (!project || !settings) {
-    return null;
-  }
-
-  const progress = watch('mode') === 'frames' ? Math.min(frameRenderingProgress, 1) : Math.min(frameRenderingProgress / 2, 0.5) + Math.min(videoRenderingProgress / 2, 0.5);
-
   const handleBack = async () => {
     navigate(searchParams.get('back') || '/');
   };
+
+  if (!project || !settings || !bestResolution) {
+    return (
+      <>
+        <ActionsBar actions={['BACK']} onAction={handleBack} />
+        <LoadingPage show={true} />
+      </>
+    );
+  }
+
+  const progress = watch('mode') === 'frames' ? Math.min(frameRenderingProgress, 1) : Math.min(frameRenderingProgress / 2, 0.5) + Math.min(videoRenderingProgress / 2, 0.5);
 
   const handleExport = async (data) => {
     const files = project.scenes[Number(track)].pictures;
@@ -152,7 +173,7 @@ const Export = ({ t }) => {
       if (projectRatio) {
         resolution = { width: Number(data.videoResolution) * projectRatio, height: Number(data.videoResolution) };
       } else {
-        const maxResolution = await GetBestResolution(files);
+        const maxResolution = getBestResolution(files, resolutions);
         resolution = { width: (Number(data.videoResolution) * maxResolution.width) / maxResolution.height, height: Number(data.videoResolution) };
       }
     }
@@ -188,22 +209,38 @@ const Export = ({ t }) => {
             },
           });
 
+    // Cancel on Electron, web version send '' as path
+    if (data.mode !== 'send' && outputPath === null) {
+      setIsInfosOpened(false);
+      setIsExporting(false);
+      return;
+    }
+
+    const createBuffer = async (bufferId, buffer) => {
+      await window.EA('EXPORT_BUFFER', {
+        project_id: id,
+        buffer_id: bufferId,
+        buffer,
+      });
+    };
+
+    const exportSettings = {
+      duplicateFramesCopy: data.duplicateFramesCopy,
+      duplicateFramesAuto: data.mode === 'send' ? true : data.duplicateFramesAuto,
+      duplicateFramesAutoNumber: data.mode === 'send' ? Math.ceil(project?.scenes?.[Number(track)]?.framerate / 2) : data.duplicateFramesAutoNumber,
+      forceFileExtension: data.mode === 'frames' ? (data.framesFormat === 'original' ? undefined : data.framesFormat) : 'jpg',
+      resolution,
+    };
+
+    // Track export
+    window.track('project_exported', { projectId: project.id, ...data, ...exportSettings });
+
     // Compute all frames
-    const frames = await ExportFrames(
-      files,
-      {
-        duplicateFramesCopy: data.duplicateFramesCopy,
-        duplicateFramesAuto: data.mode === 'send' ? true : data.duplicateFramesAuto,
-        duplicateFramesAutoNumber: data.mode === 'send' ? Math.ceil(project?.scenes?.[Number(track)]?.framerate / 2) : data.duplicateFramesAutoNumber,
-        forceFileExtension: data.mode === 'frames' ? (data.framesFormat === 'original' ? undefined : data.framesFormat) : 'jpg',
-        resolution,
-      },
-      (p) => setFrameRenderingProgress(p)
-    );
+    const frames = await ExportFrames(id, Number(track), files, exportSettings, (p) => setFrameRenderingProgress(p), createBuffer);
 
     // Save frames / video on the disk
     await window.EA('EXPORT', {
-      frames,
+      frames: frames.map(({ mimeType, bufferId, ...e }) => ({ ...e, buffer_id: bufferId, mime_type: mimeType })),
       output_path: outputPath,
       mode: data.mode,
       format: data.format,
@@ -227,6 +264,7 @@ const Export = ({ t }) => {
   return (
     <>
       <ActionsBar actions={['BACK']} onAction={handleBack} />
+      <LoadingPage show={!settings} />
       {settings && (
         <form id="export">
           <FormLayout title={t('Export')}>

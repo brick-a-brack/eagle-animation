@@ -195,5 +195,11 @@
   "Permissions setup": "Opsætning af tilladelser",
   "Eagle Animation requires camera and microphone permissions to work, if skipped, you will be able to grant access in the settings.": "Eagle Animation kræver adgang til kamera og mikrofon for at fungere. Hvis du springer over, vil du kunne give adgang i indstillingerne senere.",
   "Let's go!": "Lad os komme i gang!",
-  "Skip setup": "Spring opsætning over"
+  "Skip setup": "Spring opsætning over",
+  "Title": "Titel",
+  "Play from the begining": "Afspil fra begyndelsen",
+  "Always play the animation from the first frame": "Afspil altid animationen fra den første ramme",
+  "Show live view when looped": "Vis livevisning, når der loopes",
+  "Display live view when loop mode is active for playback": "Vis livevisning, når loop-tilstand er aktiv for afspilning",
+  "Clone current frame": "Klon nuværende ramme"
 }

@@ -196,5 +196,11 @@
   "Permissions setup": "Настройка разрешений",
   "Eagle Animation requires camera and microphone permissions to work, if skipped, you will be able to grant access in the settings.": "Eagle Animation требует доступа к камере и микрофону для работы. Если вы пропустите этот шаг, вы сможете предоставить доступ позже в настройках.",
   "Let's go!": "Поехали!",
-  "Skip setup": "Пропустить настройку"
+  "Skip setup": "Пропустить настройку",
+  "Title": "Заголовок",
+  "Play from the begining": "Воспроизвести с начала",
+  "Always play the animation from the first frame": "Всегда воспроизводить анимацию с первого кадра",
+  "Show live view when looped": "Показывать прямой эфир при циклическом воспроизведении",
+  "Display live view when loop mode is active for playback": "Отображать прямой эфир, когда активен режим циклического воспроизведения",
+  "Clone current frame": "Клонировать текущий кадр"
 }

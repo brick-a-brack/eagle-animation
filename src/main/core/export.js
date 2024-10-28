@@ -1,4 +1,4 @@
-import { readFile, writeFile } from 'node:fs/promises';
+import { copyFile, readFile, writeFile } from 'node:fs/promises';
 import { format, join } from 'node:path';
 
 import { mkdirp } from 'mkdirp';
@@ -9,12 +9,19 @@ import { getFFmpegArgs, parseFFmpegLogs } from '../../common/ffmpeg';
 import { ffmpeg } from './ffmpeg';
 import { getProjectData } from './projects';
 
+export const exportSaveTemporaryBuffer = async (projectPath, bufferId, buffer) => {
+  const directoryPath = join(projectPath, `/.tmp/`);
+  await mkdirp(directoryPath);
+  await writeFile(join(directoryPath, bufferId), buffer);
+};
+
 export const exportProjectScene = async (projectPath, scene, frames, filePath, format, opts = {}, onProgress = () => {}) => {
   const project = await getProjectData(projectPath);
   const directoryPath = join(projectPath, `/.tmp-${uuidv4()}/`);
+  const bufferDirectoryPath = join(projectPath, `/.tmp/`);
   await mkdirp(directoryPath);
   for (const frame of frames) {
-    await writeFile(join(directoryPath, `frame-${frame.index.toString().padStart(6, '0')}.${frame.extension}`), frame.buffer);
+    await copyFile(join(bufferDirectoryPath, frame.buffer_id), join(directoryPath, `frame-${frame.index.toString().padStart(6, '0')}.${frame.extension}`));
   }
 
   const fps = opts?.framerate || project.project.scenes[scene].framerate;
@@ -25,6 +32,7 @@ export const exportProjectScene = async (projectPath, scene, frames, filePath, f
   };
   await ffmpeg(args, directoryPath, handleData);
   await rimraf(directoryPath);
+  await rimraf(bufferDirectoryPath);
 };
 
 // Sync list
