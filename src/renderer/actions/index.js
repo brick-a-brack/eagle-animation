@@ -1,4 +1,4 @@
-import { isFirefox } from '@braintree/browser-detection';
+import isFirefox from '@braintree/browser-detection/is-firefox';
 import { fetchFile } from '@ffmpeg/util';
 import { saveAs } from 'file-saver';
 import JSZip from 'jszip';
