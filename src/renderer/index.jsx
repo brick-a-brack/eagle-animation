@@ -17,14 +17,14 @@ try {
       disable_session_recording: true,
     });
   }
-} catch (err) { } // eslint-disable-line no-empty
+} catch (err) {} // eslint-disable-line no-empty
 
 window.track = (eventName, data = {}) => {
   try {
     if (POSTHOG_TOKEN) {
       posthog.capture(eventName, data);
     }
-  } catch (err) { } // eslint-disable-line no-empty
+  } catch (err) {} // eslint-disable-line no-empty
 };
 
 globalThis.Buffer = Buffer;
@@ -47,7 +47,7 @@ window.EA = async (action, data) => {
   }
 };
 
-window.EAEvents = (name, callback = () => { }) => {
+window.EAEvents = (name, callback = () => {}) => {
   // IPC (Electron backend)
   if (typeof window.IPC !== 'undefined') {
     if (typeof callback !== 'undefined') {

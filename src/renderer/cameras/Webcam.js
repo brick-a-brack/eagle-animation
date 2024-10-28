@@ -1,4 +1,4 @@
-import { isFirefox } from '@braintree/browser-detection';
+import isFirefox from '@braintree/browser-detection/is-firefox';
 
 class Webcam {
   constructor(deviceId = null) {

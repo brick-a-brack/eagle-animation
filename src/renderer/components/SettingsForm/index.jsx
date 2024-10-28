@@ -1,4 +1,5 @@
-import { isFirefox, isSafari } from '@braintree/browser-detection';
+import isFirefox from '@braintree/browser-detection/is-firefox';
+import isSafari from '@braintree/browser-detection/is-safari';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { withTranslation } from 'react-i18next';
