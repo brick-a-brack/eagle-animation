@@ -44,3 +44,4 @@ linux:
     - rpm
     - tar.gz
     - AppImage
+    - flatpak

@@ -49,6 +49,13 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Installing Linux bundling dependencies
+        if: ${{ (matrix.versions.os == 'ubuntu-latest') && (matrix.versions.type == 'app') }}
+        uses: awalsh128/cache-apt-pkgs-action@latest
+        with:
+          packages: flatpak flatpak-builder rpm
+          version: 1.0
+  
       - name: Packaging Linux
         if: ${{ (matrix.versions.os == 'ubuntu-latest') && (matrix.versions.type == 'app') }}
         run: npm run build:linux
