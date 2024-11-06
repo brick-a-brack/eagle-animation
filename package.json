@@ -62,6 +62,7 @@
     "node-fetch": "^2.6.8",
     "p-limit": "^6.1.0",
     "path-browserify": "^1.0.1",
+    "peerjs": "^1.5.4",
     "postcss-media-minmax": "^5.0.0",
     "posthog-js": "^1.176.0",
     "prop-types": "^15.8.1",

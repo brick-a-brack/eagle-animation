@@ -1,18 +1,23 @@
 import { Camera as NativeProxyCamera, CameraBrowser as NativeProxyBrowser } from './NativeProxy';
+import { Camera as RemoteCamera, CameraBrowser as RemoteCameraBrowser } from './RemoteCamera';
 import { Camera as WebcamCamera, CameraBrowser as WebcamCameraBrowser } from './Webcam';
 
 const Cameras = [
-  { browser: WebcamCameraBrowser, item: WebcamCamera },
-  { browser: NativeProxyBrowser, item: NativeProxyCamera },
+  { browser: WebcamCameraBrowser, item: WebcamCamera, remote: false }, // TODO: Move in browser ?
+  { browser: NativeProxyBrowser, item: NativeProxyCamera, remote: false },
+  { browser: RemoteCameraBrowser, item: RemoteCamera, remote: true },
 ];
 
 let cachedCameras = {};
 let cachedAvailableCameras = [];
 
-export const getCameras = async () => {
+export const getCameras = async (includesRemote = true) => {
   const availableCameras = [];
 
   for (const camType of Cameras) {
+    if (camType.remote && !includesRemote) {
+      continue;
+    }
     const cameras = (await camType?.browser?.getCameras()) || [];
     for (const camera of cameras) {
       availableCameras.push({

@@ -63,12 +63,18 @@ const HomeView = ({ t }) => {
     if (action === 'SHORTCUTS') {
       navigate('/shortcuts?back=/');
     }
+    if (action === 'REMOTE') {
+      navigate('/remote?back=/');
+    }
+    if (action === 'KEYPAD') {
+      navigate('/keypad?back=/');
+    }
   };
 
   return (
     <>
       <Header action={handleLink} version={version} latestVersion={latestVersion} />
-      <ActionsBar actions={['SETTINGS', 'SHORTCUTS']} position="RIGHT" onAction={handleAction} />
+      <ActionsBar actions={['SETTINGS', 'SHORTCUTS', 'REMOTE', 'KEYPAD']} position="RIGHT" onAction={handleAction} />
       {projects !== null && (
         <ProjectsGrid>
           <ProjectCard placeholder={t('New project')} onClick={handleCreateProject} icon="ADD" />
