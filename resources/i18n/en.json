@@ -215,5 +215,11 @@
   "Play from the begining": "Play from the begining",
   "Always play the animation from the first frame": "Always play the animation from the first frame",
   "Show live view when looped": "Show live view when looped",
-  "Display live view when loop mode is active for playback": "Display live view when loop mode is active for playback"
+  "Display live view when loop mode is active for playback": "Display live view when loop mode is active for playback",
+  "Recommended frames exceeded": "Recommended frames exceeded",
+  "Recommended duration exceeded": "Recommended duration exceeded",
+  "Recommended number of frames": "Recommended number of frames",
+  "Number of frames allowed before displaying a warning message": "Number of frames allowed before displaying a warning message",
+  "Recommended activity duration": "Recommended activity duration",
+  "Duration in minutes on the animator page before displaying a warning message": "Duration in minutes on the animator page before displaying a warning message"
 }
