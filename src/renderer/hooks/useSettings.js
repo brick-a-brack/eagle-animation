@@ -21,6 +21,8 @@ const DEFAULT_SETTINGS = {
   SOUNDS: true,
   REVERSE_X: false,
   REVERSE_Y: false,
+  LIMIT_NUMBER_OF_FRAMES: 0,
+  LIMIT_ACTIVITY_DURATION: 0,
 };
 
 function useSettings() {

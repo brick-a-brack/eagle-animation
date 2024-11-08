@@ -123,14 +123,22 @@ const SettingsForm = ({ settings = {}, onUpdate = () => {}, t }) => {
             <NumberInput register={register('GRID_COLUMNS')} min={1} max={12} />
           </FormGroup>
         )}
+
+        <Heading h={1}>{t('Stop motion workshops')}</Heading>
         {appCapabilities.includes('BACKGROUND_SYNC') && (
           <>
-            <Heading h={1}>{t('Stop motion workshops')}</Heading>
             <FormGroup label={t('API key to send videos')} description={t('Brick à Brack allows partners to easily export/send videos, contact us for more informations')}>
               <Input control={control} register={register('EVENT_KEY')} />
             </FormGroup>
           </>
         )}
+        <FormGroup label={t('Recommended number of frames')} description={t('Number of frames allowed before displaying a warning message')}>
+          <NumberInput register={register('LIMIT_NUMBER_OF_FRAMES')} min={0} />
+        </FormGroup>
+
+        <FormGroup label={t('Recommended activity duration')} description={t('Duration in minutes on the animator page before displaying a warning message')}>
+          <NumberInput register={register('LIMIT_ACTIVITY_DURATION')} min={0} />
+        </FormGroup>
       </FormLayout>
     </form>
   );
