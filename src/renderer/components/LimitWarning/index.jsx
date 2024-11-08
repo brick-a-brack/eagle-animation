@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { withTranslation } from 'react-i18next';
 
-import * as style from './Style.module.css';
+import * as style from './style.module.css';
 
 const LimitWarning = ({ nbFrames = null, nbFramesLimit = 0, startedAt = null, activityDuration = 0, t }) => {
   const [currentTime, setCurrentTime] = useState(new Date().getTime() / 1000);
