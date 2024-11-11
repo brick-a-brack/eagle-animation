@@ -191,7 +191,7 @@ const Animator = ({ t }) => {
         setIsTakingPicture(true);
       });
 
-      setStartedAt(new Date().getTime() / 1000);
+      setStartedAt(oldValue => oldValue ? oldValue : new Date().getTime() / 1000);
 
       for (let i = 0; i < (Number(nbPicturesToTake !== null ? nbPicturesToTake : settings.CAPTURE_FRAMES) || 1); i++) {
         const nbFramesToTake = (settings.AVERAGING_ENABLED ? Number(settings.AVERAGING_VALUE) : 1) || 1;

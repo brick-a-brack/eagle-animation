@@ -16,6 +16,7 @@ body {
   --font-size-6: 1rem;
   --font-size-7: 0.9rem;
   --font-size-8: 0.8rem;
+  --font-size-9: 0.7rem;
   --line-size-0: calc(var(--font-size-0) * 1.5);
   --line-size-1: calc(var(--font-size-1) * 1.5);
   --line-size-2: calc(var(--font-size-2) * 1.5);
@@ -25,6 +26,7 @@ body {
   --line-size-6: calc(var(--font-size-6) * 1.5);
   --line-size-7: calc(var(--font-size-7) * 1.5);
   --line-size-8: calc(var(--font-size-8) * 1.5);
+  --line-size-9: calc(var(--font-size-9) * 1.5);
   --font: "Open Sans";
   --input-height: 30px;
   --color-primary: #486ee5;
