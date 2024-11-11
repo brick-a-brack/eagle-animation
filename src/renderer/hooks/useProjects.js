@@ -1,4 +1,23 @@
 import { useCallback, useEffect, useState } from 'react';
+import { OptimizeFrame } from '../core/Optimizer';
+
+const getDefaultFrame = (data) => {
+  for (let i = 0; i < (data?.project?.scenes?.length || 0); i++) {
+    for (const picture of data?.project?.scenes?.[i]?.pictures || []) {
+      if (!picture?.deleted && !picture?.hidden) {
+        return { projectId: data?.id, sceneId: i, picture };
+      }
+    }
+  }
+  for (let i = 0; i < (data?.project?.scenes?.length || 0); i++) {
+    for (const picture of data?.project?.scenes?.[i]?.pictures || []) {
+      if (!picture?.deleted) {
+        return { projectId: data?.id, sceneId: i, picture };
+      }
+    }
+  }
+  return null;
+};
 
 // Use loop for performance issues
 const countFrames = (project) => {
@@ -15,6 +34,7 @@ const countFrames = (project) => {
 
 function useProjects(options) {
   const [projectsData, setProjectsData] = useState(null);
+  const [previewUrls, setPreviewUrls] = useState([]);
 
   // Initial load
   useEffect(() => {
@@ -31,6 +51,24 @@ function useProjects(options) {
       setProjectsData(data);
     });
   });
+
+  useEffect(() => {
+    if (!projectsData) {
+      return;
+    }
+    Promise.all(
+      projectsData.map(async (project) => {
+        const defaultFrame = await getDefaultFrame(project);
+        if (!defaultFrame?.picture) {
+          return null;
+        }
+        const optimizedFrame = await OptimizeFrame(defaultFrame.projectId, defaultFrame.sceneId, defaultFrame.picture.id, 'thumbnail', defaultFrame.picture.link);
+        return optimizedFrame;
+      })
+    ).then((links) => {
+      setPreviewUrls(links);
+    });
+  }, [projectsData]);
 
   // Action rename
   const actionRename = useCallback(async (projectId, title = '') => {
@@ -57,7 +95,7 @@ function useProjects(options) {
   });
 
   return {
-    projects: projectsData?.map((e) => ({ ...(e || {}), stats: { frames: countFrames(e.project) } })) || null,
+    projects: projectsData?.map((e, i) => ({ ...(e || {}), stats: { frames: countFrames(e.project) }, preview: previewUrls[i] || null })) || null,
     actions: {
       refresh: actionRefresh,
       create: actionCreate,

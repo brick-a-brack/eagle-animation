@@ -28,20 +28,8 @@ export const sendEvent = (name, data) => {
   }
 };
 
-const getDefaultPreview = async (data) => {
-  for (let i = 0; i < (data?.project?.scenes?.length || 0); i++) {
-    for (const picture of data?.project?.scenes?.[i]?.pictures || []) {
-      if (!picture.deleted) {
-        return getFrameBlobUrl(picture.filename?.split('.')?.[0]);
-      }
-    }
-  }
-  return null;
-};
-
 const computeProject = async (data, bindPictureLink = true) => {
   const copiedData = structuredClone(data);
-  let preview = await getDefaultPreview(copiedData);
   const scenes = await Promise.all(
     copiedData?.project?.scenes?.map(async (scene) => {
       return {
@@ -58,7 +46,6 @@ const computeProject = async (data, bindPictureLink = true) => {
 
   let output = {
     id: copiedData.id,
-    preview,
     project: {
       ...copiedData?.project,
       scenes,
