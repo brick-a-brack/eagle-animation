@@ -55,7 +55,7 @@ The logo was created by Nishant Shukla and sound effects were obtained from [Zap
 ## Build and configuration
  
 Some variables can be configured using a `.env` file, values with a "\*" are required.
-
+ 
 | **Name**         | **Description**                                                                                         | **Example**                                |
 | ---------------- | ------------------------------------------------------------------------------------------------------- | ------------------------------------------ |
 | VITE_PUBLIC_URL  | The full url of the assets server, must be ended by a slash "/". If it is not defined, we will use "/". | `https://app.eagle-animation.com/`         |
