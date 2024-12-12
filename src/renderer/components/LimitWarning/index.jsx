@@ -22,7 +22,7 @@ const LimitWarning = ({ nbFrames = null, nbFramesLimit = 0, startedAt = null, ac
       </div>
     );
   }
-  console.log(currentTime, startedAt, activityDuration);
+  
   if (activityDuration && startedAt && currentTime - startedAt > Number(activityDuration) * 60) {
     return (
       <div className={style.overlay}>
