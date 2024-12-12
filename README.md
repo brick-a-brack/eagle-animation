@@ -53,7 +53,7 @@ Feel free to make pull-requests, help us to translate the software or report iss
 The logo was created by Nishant Shukla and sound effects were obtained from [Zapsplat.com](https://zapsplat.com/).
 
 ## Build and configuration
-
+ 
 Some variables can be configured using a `.env` file, values with a "\*" are required.
 
 | **Name**         | **Description**                                                                                         | **Example**                                |
