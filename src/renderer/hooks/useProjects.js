@@ -62,7 +62,7 @@ function useProjects(options) {
         if (!defaultFrame?.picture) {
           return null;
         }
-        const optimizedFrame = await OptimizeFrame(defaultFrame.projectId, defaultFrame.sceneId, defaultFrame.picture.id, 'thumbnail', defaultFrame.picture.link);
+        const optimizedFrame = await OptimizeFrame(defaultFrame.projectId, defaultFrame.sceneId, defaultFrame.picture.id, 'preview', defaultFrame.picture.link);
         return optimizedFrame;
       })
     ).then((links) => {
