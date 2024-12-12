@@ -11,6 +11,7 @@ import { createFrame, getFrameBlobUrl } from './frames';
 import { createProject, deleteProject, getAllProjects, getProject, saveProject } from './projects';
 
 let events = [];
+let currentDirectory = null;
 
 export const addEventListener = (name, callback) => {
   events.push([name, callback]);
@@ -172,7 +173,18 @@ export const Actions = {
 
     return capabilities;
   },
-  EXPORT_SELECT_PATH: async () => '',
+  EXPORT_SELECT_PATH: async () => {
+    try {
+      if ('showDirectoryPicker' in self) {
+        const dirHandle = await window.showDirectoryPicker();
+        currentDirectory = await dirHandle.getDirectoryHandle('frames', {
+          create: true,
+        });
+      }
+    } catch (err) {
+      currentDirectory = null;
+    }
+  },
   EXPORT_BUFFER: async (evt, { buffer_id, buffer }) => {
     await createBuffer(buffer_id, buffer);
   },
@@ -181,15 +193,29 @@ export const Actions = {
     const project = await getProject(project_id);
 
     if (mode === 'frames') {
-      const zip = new JSZip();
-      for (let i = 0; i < frames.length; i++) {
-        const frame = frames[i];
-        const buffer = await getBuffer(frame.buffer_id);
-        zip.file(`frame-${frame.index.toString().padStart(6, '0')}.${frame.extension}`, buffer);
+      // Use FileSystem API (Chromium only)
+      if (currentDirectory) {
+        for (let i = 0; i < frames.length; i++) {
+          const frame = frames[i];
+          const buffer = await getBuffer(frame.buffer_id);
+          const fileHandle = await currentDirectory.getFileHandle(`frame-${frame.index.toString().padStart(6, '0')}.${frame.extension}`, { create: true });
+          const writable = await fileHandle.createWritable();
+          await writable.write(buffer);
+          await writable.close();
+        }
+        currentDirectory = null;
+      } else {
+        // Fallback on regular ZIP
+        const zip = new JSZip();
+        for (let i = 0; i < frames.length; i++) {
+          const frame = frames[i];
+          const buffer = await getBuffer(frame.buffer_id);
+          zip.file(`frame-${frame.index.toString().padStart(6, '0')}.${frame.extension}`, buffer);
+        }
+        zip.generateAsync({ type: 'blob' }).then((content) => {
+          saveAs(content, 'frames.zip');
+        });
       }
-      zip.generateAsync({ type: 'blob' }).then((content) => {
-        saveAs(content, 'frames.zip');
-      });
     }
 
     if (mode === 'video') {
