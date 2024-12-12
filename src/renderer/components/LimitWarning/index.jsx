@@ -23,7 +23,7 @@ const LimitWarning = ({ nbFrames = null, nbFramesLimit = 0, startedAt = null, ac
     );
   }
   
-  if (activityDuration && startedAt && currentTime - startedAt > Number(activityDuration) * 60) {
+  if (activityDuration > 0 && startedAt > 0 && currentTime - startedAt > Number(activityDuration) * 60) {
     return (
       <div className={style.overlay}>
         <div className={style.notch}>{t('Recommended duration exceeded')}</div>
