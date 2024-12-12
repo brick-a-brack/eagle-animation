@@ -4,9 +4,11 @@
 
 ![Eagle Animation in use by Théo Aron](docs/imgs/img_2.png)
 
-**EagleAnimation** is an awesome, free and open-source stop motion animation software. It is available for Windows, macOS, Linux and also works with any web browser. It's a great alternative to _Stop Motion Studio_, _Dragon Frame_ and _Boats Animator_.
+**EagleAnimation** is an awesome, free and open-source stop motion animation software. It is available for Windows, macOS, Linux and also works with any web browser. It's a great alternative to _Stop
+Motion Studio_, _Dragon Frame_ and _Boats Animator_.
 
-👉 _This project is supported by Brick à Brack, the non-profit organization that owns [Brickfilms.com](https://brickfilms.com/) - The biggest brickfilming community, you can join us, it's free and without ads!_ 🎥
+👉 _This project is supported by Brick à Brack, the non-profit organization that owns [Brickfilms.com](https://brickfilms.com/) - The biggest brickfilming community, you can join us, it's free and
+without ads!_ 🎥
 
 - ✨ **Canon DSLR cameras support** - Use and configure your Canon DSLR camera directly.
 - ❤️ **Friendly timeline** - Instantly preview your animation, duplicate and reorganize frames as you want.
@@ -28,11 +30,13 @@
 
 ### How to fix: "Eagle Animation" is damaged and can't be opened. You should move it to Trash.
 
-This error occurs because Eagle Animation files are not signed. You can fix the issue by following these instructions: [https://www.youtube.com/watch?v=ceGovao817g](https://www.youtube.com/watch?v=ceGovao817g).
+This error occurs because Eagle Animation files are not signed. You can fix the issue by following these instructions:
+[https://www.youtube.com/watch?v=ceGovao817g](https://www.youtube.com/watch?v=ceGovao817g).
 
 ### What languages does Eagle Animation support?
 
-Eagle Animation is available in English, French, German, Spanish, Italian, Portuguese, Polish, Esperanto, Bulgarian, Czech, Danish, Greek, Croatian, Latvian, Hungarian, Dutch, Romanian, Slovak, Slovenian, Finnish, Swedish and Russian.
+Eagle Animation is available in English, French, German, Spanish, Italian, Portuguese, Polish, Esperanto, Bulgarian, Czech, Danish, Greek, Croatian, Latvian, Hungarian, Dutch, Romanian, Slovak,
+Slovenian, Finnish, Swedish and Russian.
 
 ### Is Eagle Animation compatible with my camera?
 
@@ -49,9 +53,9 @@ Feel free to make pull-requests, help us to translate the software or report iss
 The logo was created by Nishant Shukla and sound effects were obtained from [Zapsplat.com](https://zapsplat.com/).
 
 ## Build and configuration
-
+ 
 Some variables can be configured using a `.env` file, values with a "\*" are required.
-
+ 
 | **Name**         | **Description**                                                                                         | **Example**                                |
 | ---------------- | ------------------------------------------------------------------------------------------------------- | ------------------------------------------ |
 | VITE_PUBLIC_URL  | The full url of the assets server, must be ended by a slash "/". If it is not defined, we will use "/". | `https://app.eagle-animation.com/`         |
@@ -77,10 +81,10 @@ Some variables can be configured using a `.env` file, values with a "\*" are req
 
 ### Telemetry
 
-To improve the quality of **Eagle Animation**, runtime errors and application events are automatically reported to developpers by using [Sentry SDK](https://sentry.io/) and [PostHog](https://posthog.com/). You can disable the telemetry, just set
-`SENTRY_DSN` and `POSTHOG_TOKEN` to `""` in `src/config.js` and rebuild the app.
+To improve the quality of **Eagle Animation**, runtime errors and application events are automatically reported to developpers by using [Sentry SDK](https://sentry.io/) and
+[PostHog](https://posthog.com/). You can disable the telemetry, just set `SENTRY_DSN` and `POSTHOG_TOKEN` to `""` in `src/config.js` and rebuild the app.
 
-We also track user behavior on the app to 
+We also track user behavior on the app to
 
 ## Compatilibity
 

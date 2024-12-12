@@ -19,21 +19,8 @@ console.log(`💾 Eagle Animation files will be saved in the following folder: $
 
 const getPictureLink = (projectId, sceneIndex, filename) => `ea-data://${projectId}/${sceneIndex}/${filename}`;
 
-const getDefaultPreview = (data) => {
-  for (let i = 0; i < (data?.project?.scenes?.length || 0); i++) {
-    for (const picture of data?.project?.scenes?.[i]?.pictures || []) {
-      if (!picture?.deleted) {
-        return getPictureLink(data._id, i, picture.filename);
-      }
-    }
-  }
-  return null;
-};
-
 const computeProject = (data) => {
   const copiedData = structuredClone(data);
-
-  let preview = getDefaultPreview(copiedData);
   const scenes = copiedData.project.scenes.map((scene, i) => ({
     ...scene,
     pictures: scene.pictures.map((picture) => ({
@@ -45,7 +32,6 @@ const computeProject = (data) => {
   let output = {
     ...copiedData,
     id: copiedData._id,
-    preview,
     project: {
       ...copiedData.project,
       scenes,

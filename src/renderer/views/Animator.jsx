@@ -12,6 +12,7 @@ import ActionsBar from '../components/ActionsBar';
 import CameraSettingsWindow from '../components/CameraSettingsWindow';
 import ControlBar from '../components/ControlBar';
 import KeyboardHandler from '../components/KeyboardHandler';
+import LimitWarning from '../components/LimitWarning';
 import Player from '../components/Player';
 import ProjectSettingsWindow from '../components/ProjectSettingsWindow';
 import Timeline from '../components/Timeline';
@@ -82,6 +83,7 @@ const Animator = ({ t }) => {
   const navigate = useNavigate();
   const playerRef = useRef(null);
 
+  const [startedAt, setStartedAt] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const { settings, actions: settingsActions } = useSettings();
   const { appCapabilities } = useAppCapabilities();
@@ -188,6 +190,8 @@ const Animator = ({ t }) => {
       flushSync(() => {
         setIsTakingPicture(true);
       });
+
+      setStartedAt(oldValue => oldValue ? oldValue : new Date().getTime() / 1000);
 
       for (let i = 0; i < (Number(nbPicturesToTake !== null ? nbPicturesToTake : settings.CAPTURE_FRAMES) || 1); i++) {
         const nbFramesToTake = (settings.AVERAGING_ENABLED ? Number(settings.AVERAGING_VALUE) : 1) || 1;
@@ -463,6 +467,7 @@ const Animator = ({ t }) => {
           onProjectDelete={() => handleAction('DELETE_PROJECT')}
         />
       </Window>
+      <LimitWarning nbFrames={pictures.length} nbFramesLimit={settings?.LIMIT_NUMBER_OF_FRAMES} startedAt={startedAt} activityDuration={settings?.LIMIT_ACTIVITY_DURATION} />
     </>
   );
 };

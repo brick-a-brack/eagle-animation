@@ -8,7 +8,7 @@ const createWorker = () => {
 };
 
 const NB_WEB_WORKERS = 10;
-const WEB_WORKER_GC_TASKS = 15;
+const WEB_WORKER_GC_TASKS = 10;
 
 // Workers states
 let SharedWorkerNext = 0;

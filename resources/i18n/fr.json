@@ -215,5 +215,11 @@
   "Play from the begining": "Lire depuis le début",
   "Always play the animation from the first frame": "Toujours lancer l'animation depuis la première photo",
   "Show live view when looped": "Afficher l'aperçu pendant la boucle",
-  "Display live view when loop mode is active for playback": "Afficher la caméra quand la lecture est en boucle"
+  "Display live view when loop mode is active for playback": "Afficher la caméra quand la lecture est en boucle",
+  "Recommended frames exceeded": "Nombre de photos dépassé",
+  "Recommended duration exceeded": "Durée recommandée dépassée",
+  "Recommended number of frames": "Nombre de photos recommandé",
+  "Number of frames allowed before displaying a warning message": "Nombre de photos à partir duquel afficher un message d'alerte",
+  "Recommended activity duration": "Durée recommandée pour l'activité",
+  "Duration in minutes on the animator page before displaying a warning message": "Durée en minutes à partir duquel afficher un message d'alerte"
 }
