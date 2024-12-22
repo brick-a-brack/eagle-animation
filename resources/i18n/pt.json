@@ -216,5 +216,13 @@
   "Always play the animation from the first frame": "Sempre reproduza a animação a partir do primeiro quadro",
   "Show live view when looped": "Mostrar visualização ao vivo quando em loop",
   "Display live view when loop mode is active for playback": "Exibir visualização ao vivo quando o modo de loop está ativo para reprodução",
-  "Clone current frame": "Clonar quadro atual"
+  "Clone current frame": "Clonar quadro atual",
+  "Recommended frames exceeded": "Número de fotos excedido",
+  "Recommended duration exceeded": "Duração recomendada excedida",
+  "Recommended number of frames": "Número recomendado de fotos",
+  "Number of frames allowed before displaying a warning message": "Número de fotos permitidas antes de exibir uma mensagem de alerta",
+  "Recommended activity duration": "Duração recomendada para a atividade",
+  "Duration in minutes on the animator page before displaying a warning message": "Duração em minutos na página do animador antes de exibir uma mensagem de alerta",
+  "ZIP": "ZIP",
+  "Export frames in a ZIP file": "Exportar quadros em um arquivo ZIP"
 }

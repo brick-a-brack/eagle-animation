@@ -216,5 +216,13 @@
   "Always play the animation from the first frame": "Siempre reproducir la animación desde el primer fotograma",
   "Show live view when looped": "Mostrar vista en vivo cuando está en bucle",
   "Display live view when loop mode is active for playback": "Mostrar la cámara cuando el modo de bucle está activo para la reproducción",
-  "Clone current frame": "Clonar el fotograma actual"
+  "Clone current frame": "Clonar el fotograma actual",
+  "Recommended frames exceeded": "Número de fotos excedido",
+  "Recommended duration exceeded": "Duración recomendada excedida",
+  "Recommended number of frames": "Número de fotos recomendado",
+  "Number of frames allowed before displaying a warning message": "Número de fotos permitidas antes de mostrar un mensaje de advertencia",
+  "Recommended activity duration": "Duración recomendada para la actividad",
+  "Duration in minutes on the animator page before displaying a warning message": "Duración en minutos en la página del animador antes de mostrar un mensaje de advertencia",
+  "ZIP": "ZIP",
+  "Export frames in a ZIP file": "Exportar fotogramas en un archivo ZIP"
 }

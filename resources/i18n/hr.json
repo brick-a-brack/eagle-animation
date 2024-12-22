@@ -202,5 +202,13 @@
   "Always play the animation from the first frame": "Uvijek reproduciraj animaciju od prvog kadra",
   "Show live view when looped": "Prikaži uživo pregled tijekom petlje",
   "Display live view when loop mode is active for playback": "Prikaži uživo pregled kada je aktiviran način petlje za reprodukciju",
-  "Clone current frame": "Kloniraj trenutni kadar"
+  "Clone current frame": "Kloniraj trenutni kadar",
+  "Recommended frames exceeded": "Preporučeni broj sličica premašen",
+  "Recommended duration exceeded": "Premašeno preporučeno trajanje",
+  "Recommended number of frames": "Preporučeni broj sličica",
+  "Number of frames allowed before displaying a warning message": "Broj sličica dozvoljen prije prikazivanja poruke upozorenja",
+  "Recommended activity duration": "Preporučeno trajanje aktivnosti",
+  "Duration in minutes on the animator page before displaying a warning message": "Trajanje u minutama na stranici animatora prije prikazivanja poruke upozorenja",
+  "ZIP": "ZIP",
+  "Export frames in a ZIP file": "Izvoz sličica u ZIP datoteku"
 }

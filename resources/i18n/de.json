@@ -216,5 +216,13 @@
   "Always play the animation from the first frame": "Die Animation immer vom ersten Bild abspielen",
   "Show live view when looped": "Live-Vorschau anzeigen, wenn in Schleife",
   "Display live view when loop mode is active for playback": "Live-Ansicht anzeigen, wenn Wiedergabemodus für Schleifen aktiv ist",
-  "Clone current frame": "Aktuelles Bild klonen"
+  "Clone current frame": "Aktuelles Bild klonen",
+  "Recommended frames exceeded": "Empfohlene Anzahl an Bildern überschritten",
+  "Recommended duration exceeded": "Empfohlene Dauer überschritten",
+  "Recommended number of frames": "Empfohlene Anzahl an Bildern",
+  "Number of frames allowed before displaying a warning message": "Anzahl der Bilder, nach denen eine Warnmeldung angezeigt wird",
+  "Recommended activity duration": "Empfohlene Aktivitätsdauer",
+  "Duration in minutes on the animator page before displaying a warning message": "Dauer in Minuten auf der Animatorenseite, bevor eine Warnmeldung angezeigt wird",
+  "ZIP": "ZIP",
+  "Export frames in a ZIP file": "Bilder in einer ZIP-Datei exportieren"
 }

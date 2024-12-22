@@ -201,5 +201,13 @@
   "Always play the animation from the first frame": "Toista animaatio aina ensimmäisestä ruudusta",
   "Show live view when looped": "Näytä live-näkymä silmukassa",
   "Display live view when loop mode is active for playback": "Näytä live-näkymä, kun toistotila on aktiivinen silmukassa",
-  "Clone current frame": "Kloonaa nykyinen ruutu"
+  "Clone current frame": "Kloonaa nykyinen ruutu",
+  "Recommended frames exceeded": "Suositeltu kuvien määrä ylitetty",
+  "Recommended duration exceeded": "Suositeltu kesto ylitetty",
+  "Recommended number of frames": "Suositeltu kuvien määrä",
+  "Number of frames allowed before displaying a warning message": "Kuvien määrä, jonka jälkeen varoitusviesti näytetään",
+  "Recommended activity duration": "Suositeltu toiminnan kesto",
+  "Duration in minutes on the animator page before displaying a warning message": "Aika minuutteina animaattorisivulla ennen varoitusviestin näyttämistä",
+  "ZIP": "ZIP",
+  "Export frames in a ZIP file": "Vie kuvat ZIP-tiedostoon"
 }
