@@ -221,5 +221,7 @@
   "Recommended number of frames": "Recommended number of frames",
   "Number of frames allowed before displaying a warning message": "Number of frames allowed before displaying a warning message",
   "Recommended activity duration": "Recommended activity duration",
-  "Duration in minutes on the animator page before displaying a warning message": "Duration in minutes on the animator page before displaying a warning message"
+  "Duration in minutes on the animator page before displaying a warning message": "Duration in minutes on the animator page before displaying a warning message",
+  "ZIP": "ZIP",
+  "Export frames in a ZIP file": "Export frames in a ZIP file"
 }

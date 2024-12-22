@@ -217,5 +217,13 @@
   "Always play the animation from the first frame": "Zawsze odtwarzaj animację od pierwszej klatki",
   "Show live view when looped": "Pokazuj podgląd na żywo podczas pętli",
   "Display live view when loop mode is active for playback": "Wyświetlaj widok na żywo, gdy tryb pętli jest aktywny podczas odtwarzania",
-  "Clone current frame": "Sklonuj bieżącą klatkę"
+  "Clone current frame": "Sklonuj bieżącą klatkę",
+  "Recommended frames exceeded": "Przekroczono zalecaną liczbę klatek",
+  "Recommended duration exceeded": "Przekroczono zalecany czas trwania",
+  "Recommended number of frames": "Zalecana liczba klatek",
+  "Number of frames allowed before displaying a warning message": "Liczba klatek, po której wyświetlany jest komunikat ostrzegawczy",
+  "Recommended activity duration": "Zalecany czas trwania aktywności",
+  "Duration in minutes on the animator page before displaying a warning message": "Czas w minutach na stronie animatora, po którym wyświetlany jest komunikat ostrzegawczy",
+  "ZIP": "ZIP",
+  "Export frames in a ZIP file": "Eksportuj klatki do pliku ZIP"
 }

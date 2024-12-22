@@ -202,5 +202,13 @@
   "Always play the animation from the first frame": "Vždy prehrať animáciu od prvého snímku",
   "Show live view when looped": "Zobraziť živý náhľad počas slučky",
   "Display live view when loop mode is active for playback": "Zobraziť živý náhľad, keď je režim slučky aktívny pri prehrávaní",
-  "Clone current frame": "Klonovať aktuálny snímok"
+  "Clone current frame": "Klonovať aktuálny snímok",
+  "Recommended frames exceeded": "Prekročený odporúčaný počet snímok",
+  "Recommended duration exceeded": "Prekročená odporúčaná doba trvania",
+  "Recommended number of frames": "Odporúčaný počet snímok",
+  "Number of frames allowed before displaying a warning message": "Počet snímok povolených pred zobrazením varovnej správy",
+  "Recommended activity duration": "Odporúčaná doba trvania aktivity",
+  "Duration in minutes on the animator page before displaying a warning message": "Doba v minútach na stránke animátora pred zobrazením varovnej správy",
+  "ZIP": "ZIP",
+  "Export frames in a ZIP file": "Exportovať snímky do súboru ZIP"
 }

@@ -221,5 +221,7 @@
   "Recommended number of frames": "Nombre de photos recommandé",
   "Number of frames allowed before displaying a warning message": "Nombre de photos à partir duquel afficher un message d'alerte",
   "Recommended activity duration": "Durée recommandée pour l'activité",
-  "Duration in minutes on the animator page before displaying a warning message": "Durée en minutes à partir duquel afficher un message d'alerte"
+  "Duration in minutes on the animator page before displaying a warning message": "Durée en minutes à partir duquel afficher un message d'alerte",
+  "ZIP": "ZIP",
+  "Export frames in a ZIP file": "Exporter les images dans un fichier ZIP"
 }

@@ -201,5 +201,13 @@
   "Always play the animation from the first frame": "Mindig indítsa el az animációt az első képkockától",
   "Show live view when looped": "Élő nézet megjelenítése ismétlés közben",
   "Display live view when loop mode is active for playback": "Kamera megjelenítése, amikor a lejátszás ciklikus módban van",
-  "Clone current frame": "Aktuális képkocka klónozása"
+  "Clone current frame": "Aktuális képkocka klónozása",
+  "Recommended frames exceeded": "Ajánlott képkockák száma túllépve",
+  "Recommended duration exceeded": "Ajánlott időtartam túllépve",
+  "Recommended number of frames": "Ajánlott képkockák száma",
+  "Number of frames allowed before displaying a warning message": "A képkockák száma, amely után figyelmeztető üzenet jelenik meg",
+  "Recommended activity duration": "Ajánlott tevékenység időtartama",
+  "Duration in minutes on the animator page before displaying a warning message": "Az animátor oldalon eltöltött percek száma, mielőtt figyelmeztető üzenet jelenik meg",
+  "ZIP": "ZIP",
+  "Export frames in a ZIP file": "Képkockák exportálása ZIP fájlba"
 }

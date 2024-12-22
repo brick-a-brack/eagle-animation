@@ -164,7 +164,7 @@ export const Actions = {
     return null;
   },
   APP_CAPABILITIES: async () => {
-    const capabilities = ['EXPORT_VIDEO', 'EXPORT_VIDEO_H264', 'EXPORT_VIDEO_VP8', 'EXPORT_VIDEO_PRORES', 'EXPORT_FRAMES'];
+    const capabilities = ['EXPORT_VIDEO', 'EXPORT_VIDEO_H264', 'EXPORT_VIDEO_VP8', 'EXPORT_VIDEO_PRORES', 'EXPORT_FRAMES', 'EXPORT_FRAMES_ZIP'];
 
     // Firefox don't support photo mode
     if (!isFirefox()) {
@@ -173,38 +173,34 @@ export const Actions = {
 
     return capabilities;
   },
-  EXPORT_SELECT_PATH: async () => {
-    try {
-      if ('showDirectoryPicker' in self) {
-        const dirHandle = await window.showDirectoryPicker();
-        currentDirectory = await dirHandle.getDirectoryHandle('frames', {
-          create: true,
-        });
+  EXPORT_SELECT_PATH: async (evt, { compress_as_zip = false }) => {
+    currentDirectory = null;
+    if (!compress_as_zip) {
+      try {
+        if ('showDirectoryPicker' in self) {
+          const dirHandle = await window.showDirectoryPicker();
+          currentDirectory = await dirHandle.getDirectoryHandle('frames', {
+            create: true,
+          });
+          return currentDirectory ? true : null;
+        }
+      } catch (err) {
+        currentDirectory = false;
+        return null;
       }
-    } catch (err) {
-      currentDirectory = null;
     }
+    return true;
   },
   EXPORT_BUFFER: async (evt, { buffer_id, buffer }) => {
     await createBuffer(buffer_id, buffer);
   },
-  EXPORT: async (evt, { project_id, track_id, mode = 'video', format = 'h264', frames = [], custom_output_framerate = false, custom_output_framerate_number = 10 }) => {
+  EXPORT: async (evt, { project_id, track_id, mode = 'video', format = 'h264', frames = [], custom_output_framerate = false, compress_as_zip = false, custom_output_framerate_number = 10 }) => {
     const trackId = Number(track_id);
     const project = await getProject(project_id);
 
+    // Frames export
     if (mode === 'frames') {
-      // Use FileSystem API (Chromium only)
-      if (currentDirectory) {
-        for (let i = 0; i < frames.length; i++) {
-          const frame = frames[i];
-          const buffer = await getBuffer(frame.buffer_id);
-          const fileHandle = await currentDirectory.getFileHandle(`frame-${frame.index.toString().padStart(6, '0')}.${frame.extension}`, { create: true });
-          const writable = await fileHandle.createWritable();
-          await writable.write(buffer);
-          await writable.close();
-        }
-        currentDirectory = null;
-      } else {
+      if (compress_as_zip) {
         // Fallback on regular ZIP
         const zip = new JSZip();
         for (let i = 0; i < frames.length; i++) {
@@ -215,6 +211,29 @@ export const Actions = {
         zip.generateAsync({ type: 'blob' }).then((content) => {
           saveAs(content, 'frames.zip');
         });
+      } else if (currentDirectory !== null) {
+        // Use FileSystem API (Chromium only)
+        if (currentDirectory !== false) {
+          for (let i = 0; i < frames.length; i++) {
+            const frame = frames[i];
+            const buffer = await getBuffer(frame.buffer_id);
+            const fileHandle = await currentDirectory.getFileHandle(`frame-${frame.index.toString().padStart(6, '0')}.${frame.extension}`, { create: true });
+            const writable = await fileHandle.createWritable();
+            await writable.write(buffer);
+            await writable.close();
+          }
+        }
+        currentDirectory = null;
+      } else {
+        let blob = null;
+        for (let i = 0; i < frames.length; i++) {
+          const frame = frames[i];
+          const buffer = await getBuffer(frame.buffer_id);
+          const filename = `frame-${frame.index.toString().padStart(6, '0')}.${frame.extension}`;
+          blob = new Blob([buffer], { type: `image/${frame?.extension?.replace('jpg', 'jpeg') || 'jpeg'}` });
+          saveAs(blob, filename);
+          blob = null;
+        }
       }
     }
 

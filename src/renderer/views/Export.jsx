@@ -62,6 +62,7 @@ const Export = ({ t }) => {
       customOutputFramerate: false,
       customOutputFramerateNumber: 60,
       matchAspectRatio: true,
+      compressAsZip: false
     },
   });
 
@@ -199,17 +200,18 @@ const Export = ({ t }) => {
       data.mode === 'send'
         ? null
         : await window.EA('EXPORT_SELECT_PATH', {
-            type: data.mode === 'video' ? 'FILE' : 'FOLDER',
-            format: data.format,
-            translations: {
-              EXPORT_FRAMES: t('Export animation frames'),
-              EXPORT_VIDEO: t('Export as video'),
-              DEFAULT_FILE_NAME: t('video'),
-              EXT_NAME: t('Video file'),
-            },
-          });
+          type: data.mode === 'video' ? 'FILE' : 'FOLDER',
+          format: data.format,
+          translations: {
+            EXPORT_FRAMES: t('Export animation frames'),
+            EXPORT_VIDEO: t('Export as video'),
+            DEFAULT_FILE_NAME: t('video'),
+            EXT_NAME: t('Video file'),
+          },
+          compress_as_zip: data.mode === 'frames' ? (data.compressAsZip && appCapabilities.includes('EXPORT_FRAMES_ZIP')) : false,
+        });
 
-    // Cancel on Electron, web version send '' as path
+    // Cancel if result is null, (dialog closed)
     if (data.mode !== 'send' && outputPath === null) {
       setIsInfosOpened(false);
       setIsExporting(false);
@@ -252,6 +254,7 @@ const Export = ({ t }) => {
       track_id: track,
       event_key: settings.EVENT_KEY,
       public_code: data.mode === 'send' ? newCode : undefined,
+      compress_as_zip: data.mode === 'frames' ? (data.compressAsZip && appCapabilities.includes('EXPORT_FRAMES_ZIP')) : false,
     });
 
     setIsExporting(false);
@@ -339,6 +342,12 @@ const Export = ({ t }) => {
                 <div>
                   <Switch register={register('duplicateFramesCopy')} />
                 </div>
+              </FormGroup>
+            )}
+
+            {['frames'].includes(watch('mode')) && appCapabilities.includes('EXPORT_FRAMES_ZIP') && (
+              <FormGroup label={t('ZIP')} description={t('Export frames in a ZIP file')}>
+                <Switch register={register('compressAsZip')} />
               </FormGroup>
             )}
 

@@ -201,5 +201,13 @@
   "Always play the animation from the first frame": "Speel de animatie altijd af vanaf het eerste frame",
   "Show live view when looped": "Toon live weergave tijdens loop",
   "Display live view when loop mode is active for playback": "Toon live weergave wanneer loopmodus actief is voor afspelen",
-  "Clone current frame": "Kloon huidig frame"
+  "Clone current frame": "Kloon huidig frame",
+  "Recommended frames exceeded": "Aanbevolen aantal frames overschreden",
+  "Recommended duration exceeded": "Aanbevolen duur overschreden",
+  "Recommended number of frames": "Aanbevolen aantal frames",
+  "Number of frames allowed before displaying a warning message": "Aantal frames toegestaan voordat een waarschuwingsbericht wordt weergegeven",
+  "Recommended activity duration": "Aanbevolen duur voor de activiteit",
+  "Duration in minutes on the animator page before displaying a warning message": "Duur in minuten op de animatorpagina voordat een waarschuwingsbericht wordt weergegeven",
+  "ZIP": "ZIP",
+  "Export frames in a ZIP file": "Frames exporteren in een ZIP-bestand"
 }

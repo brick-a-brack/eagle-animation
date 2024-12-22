@@ -202,5 +202,13 @@
   "Always play the animation from the first frame": "Vienmēr atskaņot animāciju no pirmā kadra",
   "Show live view when looped": "Rādīt tiešraides skatu, kad ir ieslēgts cikla režīms",
   "Display live view when loop mode is active for playback": "Rādīt tiešraides skatu, kad atskaņošana notiek cikla režīmā",
-  "Clone current frame": "Klonēt pašreizējo kadrus"
+  "Clone current frame": "Klonēt pašreizējo kadrus",
+  "Recommended frames exceeded": "Ieteicamo kadru skaits pārsniegts",
+  "Recommended duration exceeded": "Ieteicamais ilgums pārsniegts",
+  "Recommended number of frames": "Ieteicamais kadru skaits",
+  "Number of frames allowed before displaying a warning message": "Kadru skaits, pēc kura parādīt brīdinājuma ziņojumu",
+  "Recommended activity duration": "Ieteicamais aktivitātes ilgums",
+  "Duration in minutes on the animator page before displaying a warning message": "Laiks minūtēs animātora lapā, pirms parādīt brīdinājuma ziņojumu",
+  "ZIP": "ZIP",
+  "Export frames in a ZIP file": "Eksportēt kadrus ZIP failā"
 }

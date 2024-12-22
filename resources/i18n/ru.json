@@ -202,5 +202,13 @@
   "Always play the animation from the first frame": "Всегда воспроизводить анимацию с первого кадра",
   "Show live view when looped": "Показывать прямой эфир при циклическом воспроизведении",
   "Display live view when loop mode is active for playback": "Отображать прямой эфир, когда активен режим циклического воспроизведения",
-  "Clone current frame": "Клонировать текущий кадр"
+  "Clone current frame": "Клонировать текущий кадр",
+  "Recommended frames exceeded": "Превышено рекомендуемое количество кадров",
+  "Recommended duration exceeded": "Превышена рекомендуемая продолжительность",
+  "Recommended number of frames": "Рекомендуемое количество кадров",
+  "Number of frames allowed before displaying a warning message": "Количество кадров, после которого отображается предупреждающее сообщение",
+  "Recommended activity duration": "Рекомендуемая продолжительность активности",
+  "Duration in minutes on the animator page before displaying a warning message": "Продолжительность в минутах на странице аниматора перед отображением предупреждающего сообщения",
+  "ZIP": "ZIP",
+  "Export frames in a ZIP file": "Экспорт кадров в ZIP-файл"
 }
