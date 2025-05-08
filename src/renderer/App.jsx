@@ -5,7 +5,6 @@ import { WindowProvider } from './contexts/WindowContext';
 import AnimatorView from './views/Animator';
 import ExportView from './views/Export';
 import HomeView from './views/Home';
-import PermissionsView from './views/Permissions';
 import SettingsView from './views/Settings';
 import ShortcutsView from './views/Shortcuts';
 
@@ -17,7 +16,6 @@ const App = () => (
           <Route exact path="/" element={<HomeView />} />
           <Route exact path="/settings" element={<SettingsView />} />
           <Route exact path="/shortcuts" element={<ShortcutsView />} />
-          <Route exact path="/permissions" element={<PermissionsView />} />
           <Route exact path="/animator/:id/:track" element={<AnimatorView />} />
           <Route exact path="/export/:id/:track" element={<ExportView />} />
           <Route path="*" element={<>404</>} />

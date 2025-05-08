@@ -62,48 +62,6 @@ const computeProject = async (data, bindPictureLink = true) => {
 let dedupProms = {};
 
 export const Actions = {
-  GET_MEDIA_PERMISSIONS: async () => {
-    if (isFirefox()) {
-      dedupProms.testCamera =
-        dedupProms.testCamera ||
-        navigator.mediaDevices
-          .getUserMedia({ video: true })
-          .then(() => true)
-          .catch(() => false);
-
-      dedupProms.testMicrophone =
-        dedupProms.testMicrophone ||
-        navigator.mediaDevices
-          .getUserMedia({ audio: true })
-          .then(() => true)
-          .catch(() => false);
-
-      const [firefoxCameraPermission, firefoxMicrophonePermission] = await Promise.all([dedupProms.testCamera, dedupProms.testMicrophone]);
-      return {
-        camera: firefoxCameraPermission ? 'granted' : 'denied',
-        microphone: firefoxMicrophonePermission ? 'granted' : 'denied',
-      };
-    } else {
-      const [cameraPermission, microphonePermission] = await Promise.all([
-        navigator.permissions.query({ name: 'camera' }).catch(() => null),
-        navigator.permissions.query({ name: 'microphone' }).catch(() => null),
-      ]);
-      return {
-        camera: cameraPermission?.state === 'granted' ? 'granted' : 'denied',
-        microphone: microphonePermission?.state === 'granted' ? 'granted' : 'denied',
-      };
-    }
-  },
-  ASK_MEDIA_PERMISSION: async (evt, { mediaType }) => {
-    const permission = await navigator.mediaDevices
-      .getUserMedia({
-        ...(mediaType === 'camera' ? { video: true } : {}),
-        ...(mediaType === 'microphone' ? { audio: true } : {}),
-      })
-      .then(() => true)
-      .catch(() => false);
-    return permission;
-  },
   GET_LAST_VERSION: async () => {
     return { version: null }; // Web version is always up-to-date, ignore update detection
   },

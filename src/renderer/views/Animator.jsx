@@ -137,7 +137,7 @@ const Animator = ({ t }) => {
   useEffect(() => {
     (async () => {
       if (settings) {
-        await cameraActions.setCamera(settings?.CAMERA_ID);
+        await cameraActions.setCamera(settings?.CAMERA_ID || null);
       }
     })();
   }, [settings?.CAMERA_ID]);
@@ -166,6 +166,7 @@ const Animator = ({ t }) => {
 
   const handleSettingsChange = async (values) => {
     settingsActions.setSettings(values);
+    await cameraActions.setCamera(values?.CAMERA_ID || null);
   };
 
   const handleFrameMove = async (e) => {
@@ -183,41 +184,41 @@ const Animator = ({ t }) => {
 
   const takePictures =
     (nbPicturesToTake = null) =>
-    async () => {
-      if (isTakingPicture || !currentCamera) {
-        return;
-      }
-      flushSync(() => {
-        setIsTakingPicture(true);
-      });
-
-      setStartedAt(oldValue => oldValue ? oldValue : new Date().getTime() / 1000);
-
-      for (let i = 0; i < (Number(nbPicturesToTake !== null ? nbPicturesToTake : settings.CAPTURE_FRAMES) || 1); i++) {
-        const nbFramesToTake = (settings.AVERAGING_ENABLED ? Number(settings.AVERAGING_VALUE) : 1) || 1;
-        try {
-          const { type, buffer } = await cameraActions.takePicture(nbFramesToTake, settings.REVERSE_X, settings.REVERSE_Y);
-
-          window.track('frame_captured', { projectId: `${id}`, trackId: `${track}`, reverseX: settings.REVERSE_X, reverseY: settings.REVERSE_Y, nbFrames: nbFramesToTake });
-
-          if (!isMuted && settings.SOUNDS) {
-            const isAprilFoolsDay = new Date().getDate() === 1 && new Date().getMonth() === 3;
-            playSound(isAprilFoolsDay ? soundEagle : soundShutter);
-          }
-
-          await projectActions.addFrame(track, Buffer.from(buffer), type?.includes('png') ? 'png' : 'jpg', isPlaying ? false : currentFrameId);
-        } catch (err) {
-          if (!isMuted && settings.SOUNDS) {
-            playSound(soundError);
-          }
-          console.error('Failed to take a picture', err);
+      async () => {
+        if (isTakingPicture || !currentCamera) {
+          return;
         }
-      }
+        flushSync(() => {
+          setIsTakingPicture(true);
+        });
 
-      flushSync(() => {
-        setIsTakingPicture(false);
-      });
-    };
+        setStartedAt(oldValue => oldValue ? oldValue : new Date().getTime() / 1000);
+
+        for (let i = 0; i < (Number(nbPicturesToTake !== null ? nbPicturesToTake : settings.CAPTURE_FRAMES) || 1); i++) {
+          const nbFramesToTake = (settings.AVERAGING_ENABLED ? Number(settings.AVERAGING_VALUE) : 1) || 1;
+          try {
+            const { type, buffer } = await cameraActions.takePicture(nbFramesToTake, settings.REVERSE_X, settings.REVERSE_Y);
+
+            window.track('frame_captured', { projectId: `${id}`, trackId: `${track}`, reverseX: settings.REVERSE_X, reverseY: settings.REVERSE_Y, nbFrames: nbFramesToTake });
+
+            if (!isMuted && settings.SOUNDS) {
+              const isAprilFoolsDay = new Date().getDate() === 1 && new Date().getMonth() === 3;
+              playSound(isAprilFoolsDay ? soundEagle : soundShutter);
+            }
+
+            await projectActions.addFrame(track, Buffer.from(buffer), type?.includes('png') ? 'png' : 'jpg', isPlaying ? false : currentFrameId);
+          } catch (err) {
+            if (!isMuted && settings.SOUNDS) {
+              playSound(soundError);
+            }
+            console.error('Failed to take a picture', err);
+          }
+        }
+
+        flushSync(() => {
+          setIsTakingPicture(false);
+        });
+      };
 
   const actionsEvents = {
     PLAY: () => {
@@ -314,7 +315,7 @@ const Animator = ({ t }) => {
     PROJECT_SETTINGS: () => {
       setShowProjectSettings((v) => !v);
     },
-    MORE: () => {},
+    MORE: () => { },
     EXPORT: () => {
       navigate(`/export/${id}/${track}?back=/animator/${id}/${track}`);
     },

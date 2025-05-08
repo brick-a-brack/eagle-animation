@@ -47,25 +47,6 @@ const computeProject = (data) => {
 };
 
 const actions = {
-  GET_MEDIA_PERMISSIONS: async () => {
-    if (typeof systemPreferences.getMediaAccessStatus === 'function') {
-      const [camera, microphone] = await Promise.all([systemPreferences.getMediaAccessStatus('camera'), systemPreferences.getMediaAccessStatus('microphone')]);
-      return {
-        camera,
-        microphone,
-      };
-    }
-    return {
-      camera: 'granted',
-      microphone: 'granted',
-    };
-  },
-  ASK_MEDIA_PERMISSION: async (evt, { mediaType }) => {
-    if (typeof systemPreferences.askForMediaAccess === 'function') {
-      return systemPreferences.askForMediaAccess(mediaType);
-    }
-    return true;
-  },
   GET_LAST_VERSION: async () => {
     if (CONTRIBUTE_REPOSITORY) {
       const res = await fetch(`https://raw.githubusercontent.com/${CONTRIBUTE_REPOSITORY}/master/package.json`).then((res) => res.json());
