@@ -75,7 +75,6 @@ function useCamera(options = {}) {
 
   // Action set camera
   const actionSetCamera = useCallback(async (cameraId) => {
-    console.log('ASK CAMERA FOR', cameraId);
     const cameras = await getCameras();
     const deviceId = cameras.find((e) => e.id === cameraId)?.id || cameras?.[0]?.id || null;
     if (deviceId !== currentCameraId) {
@@ -105,7 +104,6 @@ function useCamera(options = {}) {
       }
     }
 
-    console.log('Camera set', deviceId);
     // Force refresh devices list, to handle permission issues on specific browsers
     getCameras().then((cameras) => setDevices(cameras.map(applyCameraLabel)));
   });
