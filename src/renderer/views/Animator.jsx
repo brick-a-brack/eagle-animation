@@ -4,6 +4,7 @@ import { withTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import soundDelete from '~/resources/sounds/delete.mp3';
+import soundDeleteConfirm from '~/resources/sounds/deleteConfirm.mp3';
 import soundEagle from '~/resources/sounds/eagle.mp3';
 import soundError from '~/resources/sounds/error.mp3';
 import soundShutter from '~/resources/sounds/shutter.mp3';
@@ -56,6 +57,9 @@ const getPreviousFrameId = (list, frameId) => {
   return frames[frameIndex - 1].id;
 };
 
+// Get last frame id
+const getLastFrameId = (list) => getPreviousFrameId(list, false);
+
 // Get next frame id
 const getNextFrameId = (list, frameId) => {
   const frames = list.filter((pict) => !pict.deleted);
@@ -99,6 +103,7 @@ const Animator = ({ t }) => {
   const [onionValue, setOnionValue] = useState(1);
   const [gridStatus, setGridStatus] = useState(false);
   const [currentFrameId, setCurrentFrameId] = useState(false);
+  const [deleteOnLiveViewConfirmation, setDeleteOnLiveViewConfirmation] = useState(false);
   const [disableKeyboardShortcuts, setDisableKeyboardShortcuts] = useState(false);
 
   const { project, actions: projectActions } = useProject({ id });
@@ -122,6 +127,11 @@ const Animator = ({ t }) => {
       },
     },
   });
+
+  // Disable frame deletion confirmation if we change the current frame
+  useEffect(() => {
+    setDeleteOnLiveViewConfirmation(false);
+  }, [currentFrameId]);
 
   // Sync framerate when project change
   useEffect(() => {
@@ -251,16 +261,38 @@ const Animator = ({ t }) => {
       setShowCameraSettings(!showCameraSettings);
     },
     DELETE_FRAME: async () => {
+      let frameIdToDelete = currentFrameId;
+      let newId = false;
+
+      // If we are on the live view
       if (currentFrameId === false) {
-        return;
+        if (!deleteOnLiveViewConfirmation) {
+          setDeleteOnLiveViewConfirmation(true);
+
+          // Play sound
+          if (!isMuted && settings.SOUNDS) {
+            playSound(soundDeleteConfirm);
+          }
+
+          // Break here, don't delete
+          return;
+        }
+
+        frameIdToDelete = getLastFrameId(pictures);
+        setDeleteOnLiveViewConfirmation(false);
+      } else {
+        newId = getPreviousFrameId(pictures, frameIdToDelete) !== frameIdToDelete ? getPreviousFrameId(pictures, frameIdToDelete) : getNextFrameId(pictures, frameIdToDelete);
       }
+
+      // Play sound
       if (!isMuted && settings.SOUNDS) {
         playSound(soundDelete);
       }
-      const newId = getPreviousFrameId(pictures, currentFrameId) !== currentFrameId ? getPreviousFrameId(pictures, currentFrameId) : getNextFrameId(pictures, currentFrameId);
+
+      // Show right frame and execute deletion
       playerRef.current.showFrame(newId);
-      projectActions.deleteFrame(track, currentFrameId);
-      window.track('frame_deleted', { projectId: `${id}`, trackId: `${track}`, frameId: `${currentFrameId}` });
+      projectActions.deleteFrame(track, frameIdToDelete);
+      window.track('frame_deleted', { projectId: `${id}`, trackId: `${track}`, frameId: `${frameIdToDelete}` });
     },
     BACK: () => {
       navigate('/');
