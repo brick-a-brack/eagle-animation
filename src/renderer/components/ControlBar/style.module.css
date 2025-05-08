@@ -60,6 +60,6 @@
 }
 
 .sliderDisabled {
-  opacity: 0.2;
-  cursor:not-allowed
+  cursor:not-allowed;
+  opacity: 0.2
 }

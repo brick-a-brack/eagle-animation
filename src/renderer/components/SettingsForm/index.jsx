@@ -1,12 +1,9 @@
-import isFirefox from '@braintree/browser-detection/is-firefox';
-import isSafari from '@braintree/browser-detection/is-safari';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { withTranslation } from 'react-i18next';
 
 import { LANGUAGES } from '../../config';
 import useAppCapabilities from '../../hooks/useAppCapabilities';
-
 import CustomSlider from '../CustomSlider';
 import FormGroup from '../FormGroup';
 import FormLayout from '../FormLayout';

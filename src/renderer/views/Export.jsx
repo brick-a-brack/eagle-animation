@@ -62,7 +62,7 @@ const Export = ({ t }) => {
       customOutputFramerate: false,
       customOutputFramerateNumber: 60,
       matchAspectRatio: true,
-      compressAsZip: false
+      compressAsZip: false,
     },
   });
 
@@ -200,16 +200,16 @@ const Export = ({ t }) => {
       data.mode === 'send'
         ? null
         : await window.EA('EXPORT_SELECT_PATH', {
-          type: data.mode === 'video' ? 'FILE' : 'FOLDER',
-          format: data.format,
-          translations: {
-            EXPORT_FRAMES: t('Export animation frames'),
-            EXPORT_VIDEO: t('Export as video'),
-            DEFAULT_FILE_NAME: t('video'),
-            EXT_NAME: t('Video file'),
-          },
-          compress_as_zip: data.mode === 'frames' ? (data.compressAsZip && appCapabilities.includes('EXPORT_FRAMES_ZIP')) : false,
-        });
+            type: data.mode === 'video' ? 'FILE' : 'FOLDER',
+            format: data.format,
+            translations: {
+              EXPORT_FRAMES: t('Export animation frames'),
+              EXPORT_VIDEO: t('Export as video'),
+              DEFAULT_FILE_NAME: t('video'),
+              EXT_NAME: t('Video file'),
+            },
+            compress_as_zip: data.mode === 'frames' ? data.compressAsZip && appCapabilities.includes('EXPORT_FRAMES_ZIP') : false,
+          });
 
     // Cancel if result is null, (dialog closed)
     if (data.mode !== 'send' && outputPath === null) {
@@ -254,7 +254,7 @@ const Export = ({ t }) => {
       track_id: track,
       event_key: settings.EVENT_KEY,
       public_code: data.mode === 'send' ? newCode : undefined,
-      compress_as_zip: data.mode === 'frames' ? (data.compressAsZip && appCapabilities.includes('EXPORT_FRAMES_ZIP')) : false,
+      compress_as_zip: data.mode === 'frames' ? data.compressAsZip && appCapabilities.includes('EXPORT_FRAMES_ZIP') : false,
     });
 
     setIsExporting(false);

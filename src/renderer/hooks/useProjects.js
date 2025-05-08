@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
+
 import { OptimizeFrame } from '../core/Optimizer';
 
 const getDefaultFrame = (data) => {

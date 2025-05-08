@@ -59,8 +59,6 @@ const computeProject = async (data, bindPictureLink = true) => {
   return output;
 };
 
-let dedupProms = {};
-
 export const Actions = {
   GET_LAST_VERSION: async () => {
     return { version: null }; // Web version is always up-to-date, ignore update detection

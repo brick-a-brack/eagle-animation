@@ -1,6 +1,6 @@
 import { copyFile } from 'node:fs/promises';
 
-import { shell, systemPreferences } from 'electron';
+import { shell } from 'electron';
 import { mkdirp } from 'mkdirp';
 import fetch from 'node-fetch';
 import { join } from 'path-browserify';
