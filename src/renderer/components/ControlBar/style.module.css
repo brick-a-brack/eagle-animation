@@ -56,4 +56,10 @@
   margin-left: 22px;
   margin-right: 22px;
   min-width: 75px;
+  transition: opacity 0.2s ease-in-out;
+}
+
+.sliderDisabled {
+  opacity: 0.2;
+  cursor:not-allowed
 }

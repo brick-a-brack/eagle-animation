@@ -80,8 +80,8 @@ const ControlBar = ({
           <Button title={gridStatus ? t('Disable grid') : t('Enable grid')} selected={gridStatus} onClick={handleAction('GRID')} size="mini" icon={faFrame} />
         )}
 
-        <div className={style.slider} id="onion" data-tooltip-content={t('Onion blending')}>
-          <CustomSlider step={0.01} min={0} max={1} value={onionValue} onChange={(value) => handleAction('ONION_CHANGE', value)()} />
+        <div className={`${style.slider} ${differenceStatus ? style.sliderDisabled : ''}`} id="onion" data-tooltip-content={t('Onion blending')}>
+          <CustomSlider step={0.01} min={0} max={1} value={onionValue} onChange={differenceStatus ? () => {} : (value) => handleAction('ONION_CHANGE', value)()} />
         </div>
         <Button style={{ marginLeft: 'var(--space-big)' }} title={t('Camera settings')} selected={showCameraSettings} onClick={handleAction('CAMERA_SETTINGS')} size="mini" icon={faCameraSettings} />
       </div>
