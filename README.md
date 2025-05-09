@@ -63,7 +63,7 @@ Some variables can be configured using a `.env` file, values with a "\*" are req
 
 ### Build process
 
-- Run `npm i --force` to install dependencies (`--force` is required because we use an old dependency).
+- Run `npm i --legacy-peer-deps` to install dependencies (`--legacy-peer-deps` is required because we use an old dependency).
 - Update `src/config.js` file if needed.
 - Run `npm run build:win`, `npm run build:linux`, `npm run build:mac` and `npm run build:web` to build release files.
 
@@ -75,7 +75,7 @@ Some variables can be configured using a `.env` file, values with a "\*" are req
 
 ### Development mode
 
-- Run `npm i --force` to install dependencies.
+- Run `npm i --legacy-peer-deps` to install dependencies.
 - Run `npm run start:electron` to launch the application in dev mode.
 - Run `npm run start:web` to launch the web app in dev mode.
 
