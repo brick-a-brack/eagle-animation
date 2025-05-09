@@ -19,3 +19,7 @@
 .select:focus {
     background-color: var(--color-theme-light);
 }
+
+.select option:disabled {
+    color: #ccc;
+}
