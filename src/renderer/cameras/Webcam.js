@@ -356,6 +356,9 @@ class Webcam {
 
     await this.initPreview();
 
+    imageDOM.width = 0;
+    imageDOM.height = 0;
+
     if (typeof onBinded === 'function') {
       onBinded();
     }
