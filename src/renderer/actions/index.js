@@ -1,10 +1,10 @@
-import isFirefox from '@braintree/browser-detection/is-firefox';
 import { fetchFile } from '@ffmpeg/util';
 import { saveAs } from 'file-saver';
 import JSZip from 'jszip';
 
 import { getEncodingProfile, getFFmpegArgs, parseFFmpegLogs } from '../../common/ffmpeg';
 import { LS_SETTINGS } from '../config';
+import { isBlink } from '../utils';
 import { createBuffer, flushBuffers, getBuffer } from './buffer';
 import { getFFmpeg } from './ffmpeg';
 import { createFrame, getFrameBlobUrl } from './frames';
@@ -122,8 +122,8 @@ export const Actions = {
   APP_CAPABILITIES: async () => {
     const capabilities = ['EXPORT_VIDEO', 'EXPORT_VIDEO_H264', 'EXPORT_VIDEO_VP8', 'EXPORT_VIDEO_PRORES', 'EXPORT_FRAMES', 'EXPORT_FRAMES_ZIP'];
 
-    // Firefox don't support photo mode
-    if (!isFirefox()) {
+    // Chromium based browsers support photo mode
+    if (isBlink()) {
       capabilities.push('LOW_FRAMERATE_QUALITY_IMPROVEMENT');
     }
 
