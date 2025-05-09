@@ -22,6 +22,40 @@ import Switch from '../Switch';
 
 import * as style from './style.module.css';
 
+const groupDevices = (devices, t) => {
+  const output = [];
+
+  const categories = {
+    'WEB-WEBCAM': t('Webcams'),
+    'NATIVE-EDSDK': t('EDSDK'),
+    'WEB-GPHOTO2': t('WebUSB'),
+  };
+
+  // Categories
+  Object.keys(categories).forEach((key) => {
+    const tmpDevices = devices.filter((e) => e?.value?.startsWith(key));
+    if (tmpDevices.length > 0) {
+      output.push({
+        id: key,
+        label: categories[key],
+        values: tmpDevices,
+      });
+    }
+  });
+
+  // Other
+  const tmpDevices = devices.filter((e) => !Object.keys(categories).some((tag) => e?.value?.startsWith(tag)));
+  if (tmpDevices.length > 0) {
+    output.push({
+      id: 'OTHER',
+      label: t('Other'),
+      values: tmpDevices,
+    });
+  }
+
+  return output;
+};
+
 const CameraSettingsWindow = ({
   t,
   cameraCapabilities,
@@ -103,7 +137,16 @@ const CameraSettingsWindow = ({
         {selectedCategory.id === 'CAMERAS' && (
           <>
             <FormGroup label={t('Camera')} description={t('The camera device to use to take frames')}>
-              <Select options={[{ value: '', label: t('Choose a camera') }, ...devices.map((e) => ({ value: e.id, label: e.label }))]} register={register('CAMERA_ID')} />
+              <Select
+                options={[
+                  { value: '', label: t('Choose a camera'), disabled: true },
+                  ...groupDevices(
+                    devices.map((e) => ({ value: e.id, label: e.label })),
+                    t
+                  ),
+                ]}
+                register={register('CAMERA_ID')}
+              />
               <Action title={t('Refresh camera list')} className={style.refreshIcon} action={() => onDevicesListRefresh()}>
                 <FontAwesomeIcon icon={faRotate} />
               </Action>
@@ -130,7 +173,7 @@ const CameraSettingsWindow = ({
                 </div>
               )}
             </FormGroup>
-            {appCapabilities.includes('LOW_FRAMERATE_QUALITY_IMPROVEMENT') && (
+            {appCapabilities.includes('LOW_FRAMERATE_QUALITY_IMPROVEMENT') && watch('CAMERA_ID')?.startsWith('WEB-WEBCAM') && (
               <FormGroup
                 label={t('Improve quality by reducing preview framerate')}
                 description={t('Some cameras can take better quality pictures by reducing the framerate of the preview (Restart required)')}
