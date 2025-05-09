@@ -21,11 +21,9 @@ export const DEFAULT_FPS = 12;
 // Github link
 export const CONTRIBUTE_REPOSITORY = 'brick-a-brack/eagle-animation';
 
-// Sentry DSN
-export const SENTRY_DSN = 'https://750d3c23387f46b8922dee52580eb607@sentry.io/1458572';
-
-// PostHog key
+// PostHog key and host
 export const POSTHOG_TOKEN = 'phc_O3iGVN7CHMOlI7IyKsYG22I0NrGQ1ETrFzQY8sEpKYL';
+export const POSTHOG_HOST = 'https://us.i.posthog.com';
 
 // Languages
 export const LANGUAGES = [

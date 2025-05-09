@@ -16,11 +16,10 @@
 }
 
 .error {
-    color: #486ee5;
+    color: #fff;
     font-family: 'Open Sans', sans-serif;
     font-size: 50px;
     font-weight: 600;
-    letter-spacing: 3px;
     line-height: 50px;
     margin-top: 0;
     position: relative;
@@ -29,6 +28,7 @@
 }
 
 h1.error {
+    letter-spacing: 2px;
     text-overflow: ellipsis;
     text-transform: uppercase;
     white-space: nowrap;
@@ -44,16 +44,9 @@ h2.error {
 
 .actions {
     color : #fff;
-    display: block;
+    display: flex;
     font-family: 'Open Sans', sans-serif;
+    justify-content: center;
     margin-top: 50px;
-    user-select:none;
-}
-
-.button {
-    color : #fff;
-    cursor:pointer;
-    font-family: 'Open Sans', sans-serif;
-    text-decoration:underline;
     user-select:none;
 }
