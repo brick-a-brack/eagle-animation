@@ -11,7 +11,7 @@ const CustomSliderSelect = ({ options = [], value, onChange = () => {}, ...rest 
       {...rest}
       step={1}
       min={0}
-      max={options.length}
+      max={options.length - 1}
       value={currentValue >= 0 ? currentValue : 0}
       style={{ maxWidth: '300px' }}
       styles={{
