@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useLayoutEffect } from 'react';
 import { withTranslation } from 'react-i18next';
 
 import IconDone from './assets/done.svg?jsx';
@@ -7,7 +7,7 @@ import IconQuit from './assets/quit.svg?jsx';
 import * as style from './style.module.css';
 
 const LoadingOverlay = ({ t, publicCode = null, onCancel = null, isExporting = false, progress = 0 }) => {
-  useEffect(() => {
+  useLayoutEffect(() => {
     document.body.style.overflow = 'hidden';
     return () => {
       document.body.style.overflow = '';
