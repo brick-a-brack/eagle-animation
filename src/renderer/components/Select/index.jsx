@@ -1,12 +1,12 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 
 import * as style from './style.module.css';
 
-const Select = ({ register = {}, options = [], ...rest }) => {
+const Select = ({ register = {}, options = [], isDisabled = false, ...rest }) => {
   return (
-    <select className={style.select} {...rest} {...register}>
-      {options.map((o) => (
-        <>
+    <select className={`${style.select} ${isDisabled && style.isDisabled}`} {...rest} {...register}>
+      {options.map((o, i) => (
+        <Fragment key={o.id || o.value || i}>
           {o.values && (
             <optgroup label={o.label} id={o.id}>
               {o.values.map((v) => (
@@ -21,7 +21,7 @@ const Select = ({ register = {}, options = [], ...rest }) => {
               {o.label}
             </option>
           )}
-        </>
+        </Fragment>
       ))}
     </select>
   );

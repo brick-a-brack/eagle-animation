@@ -16,7 +16,7 @@ function useCamera(options = {}) {
   const [devices, setDevices] = useState(null);
   const [currentCameraId, setCurrentCameraId] = useState(null);
   const [batteryStatus, setBatteryStatus] = useState(null);
-  const [currentCamera, setCurrentCamera] = useState(null);
+  const [currentCamera, setCurrentCamera] = useState(undefined);
   const [isReady, setIsReady] = useState(false);
   const [cameraCapabilities, setCameraCapabilities] = useState([]);
   const domRefs = useRef(null);
@@ -24,6 +24,11 @@ function useCamera(options = {}) {
     ...(typeof options?.eventsHandlers?.connect === 'function' ? [['connect', options?.eventsHandlers?.connect]] : []),
     ...(typeof options?.eventsHandlers?.disconnect === 'function' ? [['disconnect', options?.eventsHandlers?.disconnect]] : []),
   ]);
+
+  // Load cameras list at setup
+  useEffect(() => {
+    getCameras().then((cameras) => setDevices(cameras.map(applyCameraLabel)));
+  }, []);
 
   // Battery refresh
   useEffect(() => {
@@ -137,24 +142,32 @@ function useCamera(options = {}) {
     eventsRefs.current = eventsRefs.current.filter((e) => e[0] !== name || e[1] !== callback);
   });
 
-  // Action set capability
-  const actionSetCapability = useCallback(async (id, value) => {
-    clearTimeout(capabilitiesIntervals.current[id]);
-    capabilitiesIntervals.current[id] = setTimeout(async () => {
-      await currentCamera.applyCapability(id, value);
-      capabilitiesIntervals.current[id] = null;
-      currentCamera.getCapabilities().then((realState) => {
-        setCameraCapabilities((oldState) => {
-          return realState.map((e) => {
-            return oldState.find((item) => item.id === e.id) || e;
-          });
-        });
-      });
-    }, 50);
+  // Update camera capabilities
+  useEffect(() => {
+    const interval = setInterval(async () => {
+      if (currentCamera) {
+        let updated = false;
+        for (const id of Object.keys(capabilitiesIntervals.current || {})) {
+          if (capabilitiesIntervals.current[id] === null) {
+            continue;
+          }
+          await currentCamera.applyCapability(id, capabilitiesIntervals.current[id]);
+          capabilitiesIntervals.current[id] = null;
+          updated = true;
+        }
+        if (updated || Object.keys(capabilitiesIntervals.current || {}).reduce((acc, e) => acc || capabilitiesIntervals.current[e] !== null, false)) {
+          const newState = await currentCamera.getCapabilities();
+          setCameraCapabilities((oldState) => newState.map((e) => ({ ...e, value: oldState.find((f) => f.id === e.id)?.value })));
+        }
+      }
+    }, 100);
+    return () => clearInterval(interval);
+  }, [currentCamera]);
 
-    currentCamera.getCapabilities().then(() => {
-      setCameraCapabilities((oldState) => oldState.map((e) => (e.id === id ? { ...e, id, value } : e)));
-    });
+  // Action set capability
+  const actionSetCapability = useCallback((id, value) => {
+    capabilitiesIntervals.current[id] = value;
+    setCameraCapabilities((oldState) => oldState.map((e) => (e.id === id ? { ...e, value } : e)));
   });
 
   return {

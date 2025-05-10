@@ -16,15 +16,13 @@ export default defineConfig({
   build: {
     cssTarget: ['chrome100'],
     sourcemap: true,
-    /*rollupOptions: {
-        input: {
-            main: resolve(__dirname, 'src/renderer/index.html'),
-        },
-    },*/
     outDir: resolve(__dirname, 'out/web/'),
   },
+  worker: {
+    format: 'es',
+  },
   optimizeDeps: {
-    exclude: ["@ffmpeg/ffmpeg", "@ffmpeg/util"],
+    exclude: ["@ffmpeg/ffmpeg", "@ffmpeg/util", "web-gphoto2"],
   },
   resolve: {
     alias: {
@@ -58,6 +56,10 @@ export default defineConfig({
         },
         {
           src: normalizePath(resolve(__dirname, 'node_modules/@ffmpeg/core/dist/esm/*')),
+          dest: '.',
+        },
+        {
+          src: normalizePath(resolve(__dirname, 'node_modules/web-gphoto2/build/*')),
           dest: '.',
         },
       ],

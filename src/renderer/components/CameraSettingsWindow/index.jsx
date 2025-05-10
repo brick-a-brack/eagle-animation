@@ -197,11 +197,15 @@ const CameraSettingsWindow = ({
                   description={t('[{{min}}, {{max}}] • {{value}}', { min: Math.round(cap.min), max: Math.round(cap.max), value: Math.round(cap.value) })}
                 >
                   <Slider
+                    isDisabled={cap.isDisabled}
                     min={cap.min}
                     max={cap.max}
                     value={cap.value}
                     step={cap.step}
                     onChange={(value) => {
+                      if (cap.isDisabled) {
+                        return;
+                      }
                       onCapabilityChange(cap.id, value);
                     }}
                   />
@@ -212,13 +216,13 @@ const CameraSettingsWindow = ({
               return (
                 <FormGroup key={cap.id} label={capsTranslations[cap.id] || cap.id}>
                   <Switch
+                    isDisabled={cap.isDisabled}
                     checked={cap.value === true}
                     onChange={() => {
-                      if (cap.value === true) {
-                        onCapabilityChange(cap.id, false);
-                      } else {
-                        onCapabilityChange(cap.id, true);
+                      if (cap.isDisabled) {
+                        return;
                       }
+                      onCapabilityChange(cap.id, cap.value !== true);
                     }}
                   />
                 </FormGroup>
@@ -228,9 +232,13 @@ const CameraSettingsWindow = ({
               return (
                 <FormGroup key={cap.id} label={capsTranslations[cap.id] || cap.id}>
                   <Select
+                    isDisabled={cap.isDisabled}
                     options={cap.values.map((e) => ({ ...e, label: selectOptionsTranslations[e.label] || e.label }))}
                     value={cap.value}
                     onChange={(evt) => {
+                      if (cap.isDisabled) {
+                        return;
+                      }
                       onCapabilityChange(cap.id, evt.target.value);
                     }}
                   />
@@ -250,9 +258,13 @@ const CameraSettingsWindow = ({
                   })}
                 >
                   <SliderSelect
+                    isDisabled={cap.isDisabled}
                     options={cap.values.map((e) => ({ ...e, label: selectOptionsTranslations[e.label] || e.label }))}
                     value={cap.value}
                     onChange={(evt) => {
+                      if (cap.isDisabled) {
+                        return;
+                      }
                       onCapabilityChange(cap.id, evt.value);
                     }}
                   />

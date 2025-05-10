@@ -10,7 +10,7 @@ Motion Studio_, _Dragon Frame_ and _Boats Animator_.
 👉 _This project is supported by Brick à Brack, the non-profit organization that owns [Brickfilms.com](https://brickfilms.com/) - The biggest brickfilming community, you can join us, it's free and
 without ads!_ 🎥
 
-- ✨ **Canon DSLR cameras support** - Use and configure your Canon DSLR camera directly.
+- ✨ **DSLR cameras support** - Use and configure your DSLR camera directly.
 - ❤️ **Friendly timeline** - Instantly preview your animation, duplicate and reorganize frames as you want.
 - 😎 **The highest quality** - Use all the power of your camera and animate with the best quality possible!
 - 💡 **Animator tools** - Thanks to onion skin, grid tools and difference mode, animating has never been so easy.
@@ -23,7 +23,7 @@ without ads!_ 🎥
 
 - 🚀 Downloads are available on the [Github releases page](https://github.com/brick-a-brack/eagle-animation/releases).
 - ☁️ Try it directly in your browser using [the Web hosted version](https://app.eagle-animation.com/).
-- 🐛 You can report issues on the [Github issues tracker](https://github.com/brick-a-brack/eagle-animation/issues).
+- 🐛 You can report issues on the [Github issue tracker](https://github.com/brick-a-brack/eagle-animation/issues).
 - 🧑‍⚖️ The source code is published under [GPLv3](http://www.gnu.org/licenses/gpl.html).
 
 ## F.A.Q. (Frequently Asked Questions)
@@ -53,9 +53,8 @@ Feel free to make pull-requests, help us to translate the software or report iss
 The logo was created by Nishant Shukla and sound effects were obtained from [Zapsplat.com](https://zapsplat.com/).
 
 ## Build and configuration
- 
 Some variables can be configured using a `.env` file, values with a "\*" are required.
- 
+
 | **Name**         | **Description**                                                                                         | **Example**                                |
 | ---------------- | ------------------------------------------------------------------------------------------------------- | ------------------------------------------ |
 | VITE_PUBLIC_URL  | The full url of the assets server, must be ended by a slash "/". If it is not defined, we will use "/". | `https://app.eagle-animation.com/`         |
@@ -81,8 +80,7 @@ Some variables can be configured using a `.env` file, values with a "\*" are req
 
 ### Telemetry
 
-To improve the quality of **Eagle Animation**, runtime errors and application events are automatically reported to developpers by using [Sentry SDK](https://sentry.io/) and
-[PostHog](https://posthog.com/). You can disable the telemetry, just set `SENTRY_DSN` and `POSTHOG_TOKEN` to `""` in `src/config.js` and rebuild the app.
+To improve the quality of **Eagle Animation**, runtime errors and application events are automatically reported to developpers using [PostHog](https://posthog.com/). You can disable the telemetry, just set `POSTHOG_TOKEN` to `""` in `src/config.js` and rebuild the app.
 
 We also track user behavior on the app to
 
@@ -90,12 +88,48 @@ We also track user behavior on the app to
 
 Some features are device-dependent or platform-limited. Here's a summary table.
 
-| Feature                                           | Windows | MacOS | Linux | Web (Chrome / Edge) | Web (Firefox) | Web (Safari) |
-| ------------------------------------------------- | ------- | ----- | ----- | ------------------- | ------------- | ------------ |
-| Use webcam to take photos                         | ✅      | ✅    | ✅    | ✅                  | ✅            | ✅           |
-| Export captured frames                            | ✅      | ✅    | ✅    | ✅                  | ✅            | ✅           |
-| Video export                                      | ✅      | ✅    | ✅    | ✅                  | ✅            | ✅           |
-| Improve quality by reducing the preview framerate | ✅      | ✅    | ✅    | ✅                  | ❌            | ❓           |
-| Control webcam settings                           | ✅      | ✅    | ✅    | ✅                  | ❌            | ❓           |
-| Workshop features                                 | ✅      | ✅    | ✅    | ❌                  | ❌            | ❌           |
-| Use Canon camera to take photos                   | ✅      | ❌    | ❌    | ❌                  | ❌            | ❌           |
+| Feature                   | Downloadable app | Web (Chrome¹) | Web (Firefox) | Web (Safari) |
+| ------------------------- | ---------------- | ------------- | ------------- | ------------ |
+| Take photos (Webcam)      | 🟢               | 🟢            | 🟡²           | 🟡²          |
+| Control settings (Webcam) | 🟡³              | 🟡³           | 🔴            | 🔴           |
+| Take photos (DSLR)        | 🟡⁴              | 🟡⁵           | 🔴            | 🔴           |
+| Export frames             | 🟢               | 🟢            | 🟢            | 🟢           |
+| Export video              | 🟢               | 🟢            | 🟢            | 🟢           |
+| Workshop features         | 🟢               | 🔴            | 🔴            | 🔴           |
+
+1. Including Chromium based browsers (Edge, Brave, Opera, Arc, etc...).
+2. The quality of webcam photos is poorer on Firefox and Safari.
+3. Webcam settings are only supported on Windows.
+4. Only on Windows and with Canon cameras.
+5. Using WebUSB, can require advanced configuration on Windows.
+
+## Camera support and DSLR implementation
+
+Camera implementation varies based on devices and browser engine, Eagle Animation uses various libraries to support cameras.
+
+### Webcam
+
+All versions of the app support webcams. On the downloadable version and when using Chromium-based browsers, the app uses the Web ImageCapture API to take photos, which results in better photo
+quality.
+
+| Platform | Downloadable app | Web (Chrome) | Web (Firefox) | Web (Safari) |
+| -------- | ---------------- | ------------ | ------------- | ------------ |
+| Windows  | ImageCapture     | ImageCapture | Fallback      | Fallback     |
+| Linux    | ImageCapture     | ImageCapture | Fallback      | Fallback     |
+| Mac      | ImageCapture     | ImageCapture | Fallback      | Fallback     |
+
+- [ImageCapture](https://www.w3.org/TR/image-capture/)
+- Fallback: Use canvas to extract frame from live preview
+
+### DSLR
+
+DSLR support depends on the platform and the specific implementation. Refer to the details below to check if your camera is supported.
+
+| Platform | Downloadable app | Web (Chrome)        | Web (Firefox) | Web (Safari) |
+| -------- | ---------------- | ------------------- | ------------- | ------------ |
+| Windows  | EDSDK            | libgphoto2 (WebUSB) | 🔴            | 🔴           |
+| Linux    | 🔴               | libgphoto2 (WebUSB) | 🔴            | 🔴           |
+| Mac      | 🔴               | libgphoto2 (WebUSB) | 🔴            | 🔴           |
+
+- [EDSDK](https://developercommunity.usa.canon.com/resource/1744392420000/CDC_EDSDK_Compat_List)
+- [libgphoto2](http://www.gphoto.org/proj/libgphoto2/support.php)

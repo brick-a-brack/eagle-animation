@@ -13,7 +13,7 @@
 }
 
 .containerImg {
-  background: rgba(0, 0, 0, 0);
+  background: rgb(0 0 0 / 0%);
   cursor: pointer;
   display: inline-block;
   height: 80px;
@@ -26,7 +26,7 @@
 }
 
 .img {
-  background: rgba(0, 0, 0, 0);
+  background: rgb(0 0 0 / 0%);
   cursor: pointer;
   display: inline-block;
   height: 80px;

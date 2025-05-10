@@ -12,6 +12,7 @@ export default defineConfig({
       rollupOptions: {
         external: ['@brick-a-brack/napi-canon-cameras'],
       },
+      sourcemap: true,
     },
     plugins: [externalizeDepsPlugin()],
   },

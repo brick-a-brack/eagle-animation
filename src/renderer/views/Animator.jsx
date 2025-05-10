@@ -14,6 +14,7 @@ import CameraSettingsWindow from '../components/CameraSettingsWindow';
 import ControlBar from '../components/ControlBar';
 import KeyboardHandler from '../components/KeyboardHandler';
 import LimitWarning from '../components/LimitWarning';
+import LoadingPage from '../components/LoadingPage';
 import Player from '../components/Player';
 import ProjectSettingsWindow from '../components/ProjectSettingsWindow';
 import Timeline from '../components/Timeline';
@@ -143,18 +144,20 @@ const Animator = ({ t }) => {
     setRatio(project?.scenes?.[track]?.ratio ? parseRatio(project?.scenes?.[track]?.ratio) : null);
   }, [project?.scenes?.[track]?.ratio]);
 
-  // Select previously selected camera
+  // Select default camera
   useEffect(() => {
-    (async () => {
-      if (settings) {
-        await cameraActions.setCamera(settings?.CAMERA_ID || null);
-      }
-    })();
+    if (settings && settings?.CAMERA_ID) {
+      cameraActions.setCamera(settings?.CAMERA_ID || null);
+    }
   }, [settings?.CAMERA_ID]);
 
   // Shortcut if informations are not ready
   if (!project || !settings || !devices) {
-    return null;
+    return (
+      <>
+        <LoadingPage show={true} />
+      </>
+    );
   }
 
   // ---- RUNTIME LOGIC
@@ -176,7 +179,6 @@ const Animator = ({ t }) => {
 
   const handleSettingsChange = async (values) => {
     settingsActions.setSettings(values);
-    await cameraActions.setCamera(values?.CAMERA_ID || null);
   };
 
   const handleFrameMove = async (e) => {
@@ -413,6 +415,7 @@ const Animator = ({ t }) => {
 
   return (
     <>
+      <LoadingPage show={false} />
       <Player
         t={t}
         ref={playerRef}

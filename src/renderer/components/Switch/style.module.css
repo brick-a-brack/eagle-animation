@@ -39,3 +39,8 @@ input:focus + .slider {
 input:checked + .slider::before {
   transform: translateX(19px);
 }
+
+.isDisabled {
+  cursor: not-allowed;
+    opacity: 0.2;
+}

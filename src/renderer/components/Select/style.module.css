@@ -23,3 +23,8 @@
 .select option:disabled {
     color: #ccc;
 }
+
+.isDisabled {
+    cursor: not-allowed;
+    opacity: 0.2;
+}

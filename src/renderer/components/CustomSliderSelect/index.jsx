@@ -2,7 +2,7 @@ import Slider from 'rc-slider';
 
 import 'rc-slider/assets/index.css';
 
-const CustomSliderSelect = ({ options = [], value, onChange = () => {}, ...rest }) => {
+const CustomSliderSelect = ({ options = [], value, onChange = () => {}, isDisabled = false, ...rest }) => {
   const currentValue = options.findIndex((option) => option.value === value);
 
   return (
@@ -13,7 +13,7 @@ const CustomSliderSelect = ({ options = [], value, onChange = () => {}, ...rest 
       min={0}
       max={options.length - 1}
       value={currentValue >= 0 ? currentValue : 0}
-      style={{ maxWidth: '300px' }}
+      style={{ maxWidth: '300px', ...(isDisabled ? { cursor: 'not-allowed', opacity: '0.2' } : {}) }}
       styles={{
         track: {
           backgroundColor: '#7f8186',
@@ -33,6 +33,7 @@ const CustomSliderSelect = ({ options = [], value, onChange = () => {}, ...rest 
           borderColor: 'rgba(0,0,0,0)',
           opacity: '1',
           transform: 'none',
+          ...(isDisabled ? { cursor: 'not-allowed' } : {}),
         },
       }}
       onChange={(v) => onChange(options[v])}

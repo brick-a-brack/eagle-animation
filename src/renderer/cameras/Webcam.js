@@ -10,7 +10,7 @@ class Webcam {
   }
 
   get id() {
-    return this?.context?.id || null;
+    return this?.deviceId || null;
   }
 
   initPreview() {
@@ -122,8 +122,15 @@ class Webcam {
 
     const toApply = [
       {
-        [cap]: parsedValue,
         ...(cap === 'focusMode' ? { focusDistance: settings.focusDistance } : {}),
+        ...(cap === 'focusDistance' ? { focusMode: settings.focusMode } : {}),
+        ...(cap === 'exposureTime'
+          ? {
+              exposureMode: settings.exposureMode,
+              exposureCompensation: settings.exposureCompensation,
+            }
+          : {}),
+        //...(cap === 'exposureCompensation' ? { exposureCompensation: settings.exposureCompensation } : {}),
         ...(cap === 'exposureMode'
           ? {
               ...(capabilities.exposureCompensation ? { exposureCompensation: settings.exposureCompensation } : {}),
@@ -142,6 +149,7 @@ class Webcam {
               ...(capabilities.tilt ? { tilt: settings.tilt } : {}),
             }
           : {}),
+        [cap]: parsedValue,
       },
     ];
 
@@ -176,7 +184,7 @@ class Webcam {
           ]
         : []),
 
-      ...(capabilities.focusDistance && settings.focusMode === 'manual'
+      ...(capabilities.focusDistance
         ? [
             {
               id: 'FOCUS_DISTANCE',
@@ -184,6 +192,7 @@ class Webcam {
               ...capabilities.focusDistance,
               value: settings.focusDistance,
               canReset: true,
+              isDisabled: settings.focusMode !== 'manual',
             },
           ]
         : []),
@@ -247,7 +256,7 @@ class Webcam {
           ]
         : []),
 
-      ...(capabilities.colorTemperature && settings.whiteBalanceMode === 'manual'
+      ...(capabilities.colorTemperature
         ? [
             {
               id: 'COLOR_TEMPERATURE',
@@ -255,6 +264,7 @@ class Webcam {
               ...capabilities.colorTemperature,
               value: settings.colorTemperature,
               canReset: true,
+              isDisabled: settings.whiteBalanceMode !== 'manual',
             },
           ]
         : []),
@@ -270,7 +280,7 @@ class Webcam {
           ]
         : []),
 
-      ...(capabilities.exposureCompensation && settings.exposureMode === 'manual'
+      ...(capabilities.exposureCompensation
         ? [
             {
               id: 'EXPOSURE_COMPENSATION',
@@ -278,11 +288,12 @@ class Webcam {
               ...capabilities.exposureCompensation,
               value: settings.exposureCompensation,
               canReset: true,
+              isDisabled: settings.exposureMode !== 'manual',
             },
           ]
         : []),
 
-      ...(capabilities.iso && settings.exposureMode === 'manual'
+      ...(capabilities.iso
         ? [
             {
               id: 'ISO',
@@ -290,11 +301,12 @@ class Webcam {
               ...capabilities.iso,
               value: settings.iso,
               canReset: true,
+              isDisabled: settings.exposureMode !== 'manual',
             },
           ]
         : []),
 
-      ...(capabilities.exposureTime && settings.exposureMode === 'manual'
+      ...(capabilities.exposureTime
         ? [
             {
               id: 'EXPOSURE_TIME',
@@ -302,6 +314,7 @@ class Webcam {
               ...capabilities.exposureTime,
               value: settings.exposureTime,
               canReset: true,
+              isDisabled: settings.exposureMode !== 'manual',
             },
           ]
         : []),
@@ -318,7 +331,7 @@ class Webcam {
           ]
         : []),
 
-      ...(capabilities.zoom && capabilities.tilt && settings.zoom > capabilities?.zoom?.min
+      ...(capabilities.zoom && capabilities.tilt
         ? [
             {
               id: 'ZOOM_POSITION_Y',
@@ -326,11 +339,12 @@ class Webcam {
               ...capabilities.tilt,
               value: settings.tilt,
               canReset: true,
+              isDisabled: settings.zoom === capabilities?.zoom?.min,
             },
           ]
         : []),
 
-      ...(capabilities.zoom && capabilities.pan && settings.zoom > capabilities?.zoom?.min
+      ...(capabilities.zoom && capabilities.pan
         ? [
             {
               id: 'ZOOM_POSITION_X',
@@ -338,6 +352,7 @@ class Webcam {
               ...capabilities.pan,
               value: settings.pan,
               canReset: true,
+              isDisabled: settings.zoom === capabilities?.zoom?.min,
             },
           ]
         : []),
