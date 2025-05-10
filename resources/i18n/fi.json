@@ -209,5 +209,15 @@
   "Recommended activity duration": "Suositeltu toiminnan kesto",
   "Duration in minutes on the animator page before displaying a warning message": "Aika minuutteina animaattorisivulla ennen varoitusviestin näyttämistä",
   "ZIP": "ZIP",
-  "Export frames in a ZIP file": "Vie kuvat ZIP-tiedostoon"
+  "Export frames in a ZIP file": "Vie kuvat ZIP-tiedostoon",
+  "Webcams": "Web-kamerat",
+  "EDSDK": "EDSDK",
+  "WebUSB": "WebUSB",
+  "Take a picture": "Ota kuva",
+  "Fullscreen": "Koko näytön tila",
+  "Exit fullscreen": "Poistu koko näytön tilasta",
+  "Current / Number of frames": "Nykyinen / Kuvien määrä",
+  "Captured → Exportable frames": "Tallennetut → Vientikelpoiset kuvat",
+  "Animation duration": "Animaation kesto",
+  "Untitled project": "Nimeämätön projekti"
 }

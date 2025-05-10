@@ -1,13 +1,13 @@
+import Container from '@components/Container';
+import CustomErrorBoundary from '@components/CustomErrorBoundary';
+import AnimatorView from '@views/Animator';
+import ExportView from '@views/Export';
+import HomeView from '@views/Home';
+import SettingsView from '@views/Settings';
+import ShortcutsView from '@views/Shortcuts';
 import { MemoryRouter as Router, Route, Routes } from 'react-router-dom';
 
-import Container from './components/Container';
-import CustomErrorBoundary from './components/CustomErrorBoundary';
 import { WindowProvider } from './contexts/WindowContext';
-import AnimatorView from './views/Animator';
-import ExportView from './views/Export';
-import HomeView from './views/Home';
-import SettingsView from './views/Settings';
-import ShortcutsView from './views/Shortcuts';
 
 const App = () => (
   <CustomErrorBoundary>

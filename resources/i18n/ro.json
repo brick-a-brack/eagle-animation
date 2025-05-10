@@ -210,5 +210,15 @@
   "Recommended activity duration": "Durata recomandată pentru activitate",
   "Duration in minutes on the animator page before displaying a warning message": "Durata în minute pe pagina animatorului înainte de a afișa un mesaj de avertizare",
   "ZIP": "ZIP",
-  "Export frames in a ZIP file": "Exportă cadrele într-un fișier ZIP"
+  "Export frames in a ZIP file": "Exportă cadrele într-un fișier ZIP",
+  "Webcams": "Webcams",
+  "EDSDK": "EDSDK",
+  "WebUSB": "WebUSB",
+  "Take a picture": "Fă o fotografie",
+  "Fullscreen": "Ecran complet",
+  "Exit fullscreen": "Ieși din ecran complet",
+  "Current / Number of frames": "Curent / Număr de cadre",
+  "Captured → Exportable frames": "Capturate → Cadre exportabile",
+  "Animation duration": "Durata animației",
+  "Untitled project": "Proiect fără titlu"
 }

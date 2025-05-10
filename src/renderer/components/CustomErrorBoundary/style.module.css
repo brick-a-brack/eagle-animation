@@ -1,5 +1,5 @@
 .container {
-    background: #2f3136;
+    background: #0e1928;
     height: 100vh;
     width: 100%;
 }
@@ -16,7 +16,7 @@
 }
 
 .error {
-    color: #fff;
+    color: var(--color-white);
     font-family: 'Open Sans', sans-serif;
     font-size: 50px;
     font-weight: 600;
@@ -43,7 +43,7 @@ h2.error {
 }
 
 .actions {
-    color : #fff;
+    color : var(--color-white);
     display: flex;
     font-family: 'Open Sans', sans-serif;
     justify-content: center;

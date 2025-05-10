@@ -20,9 +20,20 @@ export default defineConfig({
     plugins: [externalizeDepsPlugin()],
   },
   renderer: {
+    worker: {
+      format: 'es',
+    },
     resolve: {
       alias: {
         '~': resolve(__dirname),
+        '@components': resolve(__dirname, 'src/renderer/components/'),
+        '@core': resolve(__dirname, 'src/renderer/core/'),
+        '@views': resolve(__dirname, 'src/renderer/views/'),
+        '@icons': resolve(__dirname, 'src/renderer/icons/'),
+        '@hooks': resolve(__dirname, 'src/renderer/hooks/'),
+        '@config-web': resolve(__dirname, 'src/renderer/config.js'),
+        '@i18n': resolve(__dirname, 'src/renderer/i18n.js'),
+        '@common': resolve(__dirname, 'src/common/'),
       },
     },
     plugins: [

@@ -1,8 +1,6 @@
 import { useLayoutEffect } from 'react';
 import { withTranslation } from 'react-i18next';
-import { TooltipProvider } from 'react-tooltip';
 
-import 'react-tooltip/dist/react-tooltip.css';
 import * as style from './style.module.css';
 
 const Container = ({ children, t }) => {
@@ -10,11 +8,7 @@ const Container = ({ children, t }) => {
     document.title = t('Eagle Animation by Brick à Brack') + ' (Brickfilms.com)';
   });
 
-  return (
-    <TooltipProvider>
-      <div className={style.container}>{children}</div>
-    </TooltipProvider>
-  );
+  return <div className={style.container}>{children}</div>;
 };
 
 export default withTranslation()(Container);

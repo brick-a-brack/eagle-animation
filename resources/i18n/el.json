@@ -209,5 +209,15 @@
   "Recommended activity duration": "Προτεινόμενη διάρκεια δραστηριότητας",
   "Duration in minutes on the animator page before displaying a warning message": "Διάρκεια σε λεπτά στη σελίδα του animator πριν εμφανιστεί μήνυμα προειδοποίησης",
   "ZIP": "ZIP",
-  "Export frames in a ZIP file": "Εξαγωγή καρέ σε αρχείο ZIP"
+  "Export frames in a ZIP file": "Εξαγωγή καρέ σε αρχείο ZIP",
+  "Webcams": "Webcams",
+  "EDSDK": "EDSDK",
+  "WebUSB": "WebUSB",
+  "Take a picture": "Βγάλτε μια φωτογραφία",
+  "Fullscreen": "Πλήρης οθόνη",
+  "Exit fullscreen": "Έξοδος από την πλήρη οθόνη",
+  "Current / Number of frames": "Τρέχουσα / Αριθμός καρέ",
+  "Captured → Exportable frames": "Καταγεγραμμένες → Εξαγώγιμα καρέ",
+  "Animation duration": "Διάρκεια της ανίμεσης",
+  "Untitled project": "Άτιτλο έργο"
 }

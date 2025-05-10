@@ -211,5 +211,15 @@
   "Recommended activity duration": "Priporočena trajanje aktivnosti",
   "Duration in minutes on the animator page before displaying a warning message": "Trajanje v minutah na strani animatorja, preden se prikaže opozorilno sporočilo",
   "ZIP": "ZIP",
-  "Export frames in a ZIP file": "Izvozi slike v ZIP datoteko"
+  "Export frames in a ZIP file": "Izvozi slike v ZIP datoteko",
+  "Webcams": "Spletne kamere",
+  "EDSDK": "EDSDK",
+  "WebUSB": "WebUSB",
+  "Take a picture": "Posnemi sliko",
+  "Fullscreen": "Celozaslonski način",
+  "Exit fullscreen": "Zapusti celozaslonski način",
+  "Current / Number of frames": "Trenutno / Število okvirjev",
+  "Captured → Exportable frames": "Posneto → Izvozljivi okvirji",
+  "Animation duration": "Trajanje animacije",
+  "Untitled project": "Projekt brez naslova"
 }

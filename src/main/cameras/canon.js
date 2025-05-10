@@ -98,14 +98,6 @@ class CanonCamera {
     this.capabilities = tmpCapabilities;
   }
 
-  async batteryStatus() {
-    const Battery = this.capabilities.find((c) => c.label === 'BatteryLevel') || null;
-    if (!Battery) {
-      return null;
-    }
-    return Battery?.value < 0 || Battery?.value > 100 ? 'AC' : Number(Battery?.value);
-  }
-
   async disconnect() {
     clearInterval(this.liveModeClock);
     if (this.canonCamera.getProperty(CameraProperty.ID.Evf_Mode).available) {

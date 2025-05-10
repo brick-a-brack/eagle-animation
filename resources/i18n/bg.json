@@ -209,5 +209,15 @@
   "Recommended activity duration": "Препоръчителна продължителност на активността",
   "Duration in minutes on the animator page before displaying a warning message": "Продължителност в минути на страницата на аниматора преди показване на предупредително съобщение",
   "ZIP": "ZIP",
-  "Export frames in a ZIP file": "Експортиране на кадри в ZIP файл"
+  "Export frames in a ZIP file": "Експортиране на кадри в ZIP файл",
+  "Webcams": "Уеб камери",
+  "EDSDK": "EDSDK",
+  "WebUSB": "WebUSB",
+  "Take a picture": "Снимайте снимка",
+  "Fullscreen": "На цял екран",
+  "Exit fullscreen": "Изход от режим на цял екран",
+  "Current / Number of frames": "Текущ / Брой кадри",
+  "Captured → Exportable frames": "Записани → Експортируеми кадри",
+  "Animation duration": "Продължителност на анимацията",
+  "Untitled project": "Проект без заглавие"
 }

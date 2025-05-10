@@ -1,14 +1,3 @@
-.overlay {
-    border: 2px solid var(--color-alert);
-    box-sizing: border-box;
-    height: 100%;
-    left: 0;
-    pointer-events: none;
-    position: fixed;
-    top:0;
-    width: 100%;
-}
-
 .notch {
     background: var(--color-alert);
     border-bottom-left-radius: var(--border-radius-medium);
@@ -20,6 +9,8 @@
     line-height: 8px;
     padding: var(--space-small) var(--space-medium);
     position: fixed;
-    top: 0;
+    top: 62px;
     transform: translateX(-50%);
+    user-select: none;
+    z-index: 9999;
 }

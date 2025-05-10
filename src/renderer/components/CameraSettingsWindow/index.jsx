@@ -1,24 +1,23 @@
+import Action from '@components/Action';
+import ActionCard from '@components/ActionCard';
+import Slider from '@components/CustomSlider';
+import SliderSelect from '@components/CustomSliderSelect';
+import FormGroup from '@components/FormGroup';
+import IconTabs from '@components/IconTabs';
+import NumberInput from '@components/NumberInput';
+import Select from '@components/Select';
+import Switch from '@components/Switch';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import faAperture from '@icons/faAperture';
+import faCamera from '@icons/faCamera';
+import faDroplet from '@icons/faDroplet';
+import faFaceViewfinder from '@icons/faFaceViewfinder';
+import faLightbulbOn from '@icons/faLightbulbOn';
+import faMagnifyingGlass from '@icons/faMagnifyingGlass';
+import faRotate from '@icons/faRotate';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { withTranslation } from 'react-i18next';
-
-import faAperture from '../../icons/faAperture';
-import faCamera from '../../icons/faCamera';
-import faDroplet from '../../icons/faDroplet';
-import faFaceViewfinder from '../../icons/faFaceViewfinder';
-import faLightbulbOn from '../../icons/faLightbulbOn';
-import faMagnifyingGlass from '../../icons/faMagnifyingGlass';
-import faRotate from '../../icons/faRotate';
-import Action from '../Action';
-import ActionCard from '../ActionCard';
-import Slider from '../CustomSlider';
-import SliderSelect from '../CustomSliderSelect';
-import FormGroup from '../FormGroup';
-import IconTabs from '../IconTabs';
-import NumberInput from '../NumberInput';
-import Select from '../Select';
-import Switch from '../Switch';
 
 import * as style from './style.module.css';
 
@@ -147,7 +146,7 @@ const CameraSettingsWindow = ({
                 ]}
                 register={register('CAMERA_ID')}
               />
-              <Action title={t('Refresh camera list')} className={style.refreshIcon} action={() => onDevicesListRefresh()}>
+              <Action title={t('Refresh camera list')} className={style.refreshIcon} onClick={() => onDevicesListRefresh()}>
                 <FontAwesomeIcon icon={faRotate} />
               </Action>
             </FormGroup>
@@ -276,7 +275,7 @@ const CameraSettingsWindow = ({
 
         {selectedCategory.id === 'CAMERAS' && cameraCapabilities.some((cap) => cap.canReset) && (
           <FormGroup label={t('Reset camera settings')} description={t('Reset the current camera settings, all values will be reset to default')}>
-            <ActionCard title={t('Reset settings')} action={() => onCapabilitiesReset()} sizeAuto secondary />
+            <ActionCard title={t('Reset settings')} onClick={() => onCapabilitiesReset()} sizeAuto secondary />
           </FormGroup>
         )}
       </div>

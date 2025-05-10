@@ -17,7 +17,7 @@
 }
 
 .loading svg {
-    color: #fff;
+    color: var(--color-white);
     height: 42px;
     width: 42px;
 }

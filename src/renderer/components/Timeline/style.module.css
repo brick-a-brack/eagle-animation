@@ -1,13 +1,10 @@
 .container {
   /* Height img + scollbar */
-  background-color: #484b51;
-  bottom: 0;
+  background: linear-gradient(0deg,var(--color-theme-light) 0%, var(--color-theme-dark) 100%);
   box-sizing: border-box;
-  max-height: 97px;
   overflow: scroll hidden;
   padding-left: 2px;
   padding-right: 2px;
-  position: absolute;
   white-space: nowrap;
   width: 100%;
 }
@@ -17,12 +14,13 @@
   cursor: pointer;
   display: inline-block;
   height: 80px;
-  margin-left: 2px;
-  margin-right: 2px;
   min-width: 80px;
   overflow: hidden;
+  padding-left: 2px;
+  padding-right: 2px;
   position: relative;
   user-select: none;
+  vertical-align: bottom;
 }
 
 .img {
@@ -52,7 +50,7 @@
 
 .title {
   background-color: var(--color-primary);
-  color: #fff;
+  color: var(--color-white);
   font-size: 13px;
   font-weight: 600;
   height: 25px;
@@ -63,7 +61,7 @@
   text-align: center;
   user-select: none;
   vertical-align: middle;
-  width: 100%;
+  width: calc(100% - 4px);
 }
 
 .selected .title {
@@ -77,9 +75,10 @@
 }
 
 .icon {
-  color: rgb(255 255 255 / 50%);
+  color: var(--color-white);
   height: 24px;
   left: 50%;
+  opacity:0.5;
   pointer-events: none;
   position: absolute;
   top: 50%;
@@ -99,7 +98,7 @@
   background-clip: padding-box;
   background-color: var(--color-primary);
   border: 3px solid transparent;
-  border-radius: 8px;
+  border-radius: var(--border-radius-small);
   cursor: pointer;
   min-height: 50px;
 }
@@ -112,7 +111,7 @@
   background-color: var(--color-primary);
   border-top-right-radius: var(--border-radius-small);
   bottom: 0;
-  color: rgb(255 255 255);
+  color: var(--color-white);
   height: 14px;
   left: 0;
   padding: var(--space-tiny) var(--space-small);
@@ -124,7 +123,7 @@
   background-color: var(--color-primary);
   border-top-left-radius: var(--border-radius-small);
   bottom: 0;
-  color: rgb(255 255 255);
+  color: var(--color-white);
   font-size: var(--font-size-7);
   height: 14px;
   line-height: 14px;

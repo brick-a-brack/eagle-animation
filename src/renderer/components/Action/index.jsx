@@ -2,8 +2,8 @@ import { Link as ReactLink } from 'react-router-dom';
 
 import * as style from './style.module.css';
 
-const Action = ({ action = false, target = '_blank', className = '', ...props }) => {
-  const dest = action;
+const Action = ({ onClick = false, target = '_blank', className = '', ...props }) => {
+  const dest = onClick;
   const actionType = dest && typeof dest;
 
   if (actionType === 'function') {

@@ -10,14 +10,14 @@ const CustomSlider = ({ step, min, max, value, isDisabled = false, onChange = ()
     min={min}
     max={max}
     value={value}
-    style={{ maxWidth: '300px', ...(isDisabled ? { cursor: 'not-allowed', opacity: '0.2' } : {}) }}
+    style={{ maxWidth: '300px', padding: '0', height: '10px', ...(isDisabled ? { cursor: 'not-allowed', opacity: '0.2' } : {}) }}
     styles={{
       track: {
-        backgroundColor: '#7f8186',
+        backgroundColor: 'var(--color-theme-light)',
         height: '10px',
       },
       rail: {
-        backgroundColor: '#7f8186',
+        backgroundColor: 'var(--color-theme-light)',
         height: '10px',
       },
       handle: {

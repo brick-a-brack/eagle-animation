@@ -2,9 +2,9 @@ import { fetchFile } from '@ffmpeg/util';
 import { saveAs } from 'file-saver';
 import JSZip from 'jszip';
 
-import { getEncodingProfile, getFFmpegArgs, parseFFmpegLogs } from '../../common/ffmpeg';
-import { LS_SETTINGS } from '../config';
-import { isBlink } from '../utils';
+import { getEncodingProfile, getFFmpegArgs, parseFFmpegLogs } from '@common/ffmpeg';
+import { LS_SETTINGS } from '@config-web';
+import { isBlink } from '@common/isBlink';
 import { createBuffer, flushBuffers, getBuffer } from './buffer';
 import { getFFmpeg } from './ffmpeg';
 import { createFrame, getFrameBlobUrl } from './frames';

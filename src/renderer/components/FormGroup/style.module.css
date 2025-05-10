@@ -22,7 +22,7 @@
 }
 
 .label {
-  color: #fff;
+  color: var(--color-white);
   display: block;
   font-size: var(--font-size-6);
   font-weight: 500;
@@ -31,7 +31,7 @@
 }
 
 .description {
-  color: var(--color-theme-light);
+  color: var(--color-theme-extra-light);
   display: block;
   font-size: var(--font-size-8);
   line-height: var(--line-size-8);

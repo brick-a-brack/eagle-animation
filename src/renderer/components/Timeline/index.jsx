@@ -2,12 +2,11 @@ import { DndContext, MouseSensor, TouchSensor, useSensor, useSensors } from '@dn
 import { horizontalListSortingStrategy, SortableContext, useSortable } from '@dnd-kit/sortable';
 import { CSS as DNDCSS } from '@dnd-kit/utilities';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import faEyeSlash from '@icons/faEyeSlash';
+import faForwardFast from '@icons/faForwardFast';
 import animateScrollTo from 'animated-scroll-to';
 import { useLayoutEffect, useRef } from 'react';
 import { withTranslation } from 'react-i18next';
-
-import faEyeSlash from '../../icons/faEyeSlash';
-import faForwardFast from '../../icons/faForwardFast';
 
 import * as style from './style.module.css';
 
@@ -104,7 +103,7 @@ const Timeline = ({ onSelect, onMove, select = false, pictures = [], playing = f
         }
       }}
     >
-      <aside className={`${style.container} ${playing && style.isPlaying}`} ref={ref}>
+      <aside className={`${style.container}`} ref={ref}>
         <SortableContext items={pictures} strategy={horizontalListSortingStrategy}>
           {pictures
             .filter((e) => !e.deleted)
@@ -120,16 +119,13 @@ const Timeline = ({ onSelect, onMove, select = false, pictures = [], playing = f
               />
             ))}
         </SortableContext>
-        <span className={`${style.containerImg} ${style.camera} ${select === false ? style.selected : ''}`}>
-          <span
-            id="timeline-frame-live"
-            className={style.img}
-            role="button"
-            tabIndex={0}
-            onClick={() => {
-              onSelect(false);
-            }}
-          />
+        <span
+          className={`${style.containerImg} ${style.camera} ${select === false ? style.selected : ''}`}
+          onClick={() => {
+            onSelect(false);
+          }}
+        >
+          <span id="timeline-frame-live" className={style.img} role="button" tabIndex={0} />
           <span className={style.title}>{t('Live')}</span>
         </span>
       </aside>

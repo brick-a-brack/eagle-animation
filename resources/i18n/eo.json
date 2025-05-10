@@ -224,5 +224,15 @@
   "Recommended activity duration": "Rekomendita daŭro de la aktiveco",
   "Duration in minutes on the animator page before displaying a warning message": "Daŭro en minutoj sur la animatora paĝo antaŭ ol montri averto-mesaĝon",
   "ZIP": "ZIP",
-  "Export frames in a ZIP file": "Eksporti kadrojn en ZIP-dosieron"
+  "Export frames in a ZIP file": "Eksporti kadrojn en ZIP-dosieron",
+  "Webcams": "Retkameriloj",
+  "EDSDK": "EDSDK",
+  "WebUSB": "WebUSB",
+  "Take a picture": "Preni foton",
+  "Fullscreen": "Plenekrana",
+  "Exit fullscreen": "Eliri el plenekrano",
+  "Current / Number of frames": "Aktuala / Nombro de kadroj",
+  "Captured → Exportable frames": "Kaptitaj → Eksporteblaj kadroj",
+  "Animation duration": "Daŭro de la animacio",
+  "Untitled project": "Projekto sen titolo"
 }

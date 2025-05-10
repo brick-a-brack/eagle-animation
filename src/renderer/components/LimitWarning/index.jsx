@@ -16,19 +16,11 @@ const LimitWarning = ({ nbFrames = null, nbFramesLimit = 0, startedAt = null, ac
   }, [setCurrentTime]);
 
   if (nbFrames >= nbFramesLimit && nbFramesLimit > 0) {
-    return (
-      <div className={style.overlay}>
-        <div className={style.notch}>{t('Recommended frames exceeded')}</div>
-      </div>
-    );
+    return <div className={style.notch}>{t('Recommended frames exceeded')}</div>;
   }
 
   if (activityDuration > 0 && startedAt > 0 && currentTime - startedAt > Number(activityDuration) * 60) {
-    return (
-      <div className={style.overlay}>
-        <div className={style.notch}>{t('Recommended duration exceeded')}</div>
-      </div>
-    );
+    return <div className={style.notch}>{t('Recommended duration exceeded')}</div>;
   }
 };
 

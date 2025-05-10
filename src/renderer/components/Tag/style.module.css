@@ -2,7 +2,7 @@
   align-items: center;
   background: rgb(27 27 27 / 70%);
   border-radius: var(--border-radius-small);
-  color: #fff;
+  color: var(--color-white);
   display: flex;
   font-size: var(--font-size-7);
   font-weight: 700;

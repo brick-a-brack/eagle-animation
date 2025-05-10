@@ -17,7 +17,7 @@
 }
 
 .slider::before {
-  background-color: white;
+  background-color: var(--color-white);
   border-radius: 50%;
   bottom: 4px;
   content: "";

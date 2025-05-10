@@ -1,8 +1,8 @@
+import Tag from '@components/Tag';
+import faImages from '@icons/faImages';
 import { useRef } from 'react';
 import { withTranslation } from 'react-i18next';
 
-import faImages from '../../icons/faImages';
-import Tag from '../Tag';
 import IconAdd from './assets/add.svg?jsx';
 import IconEdit from './assets/edit.svg?jsx';
 import IconOpen from './assets/open.svg?jsx';
@@ -43,7 +43,7 @@ const ProjectCard = ({ id = '', placeholder = '', title = '', picture = '', onCl
         {icon === 'OPEN' && <IconOpen />}
       </div>
       <div className={style.title}>
-        <input placeholder={placeholder || t('Untitled')} ref={ref} defaultValue={title || ''} onChange={handleRename} />
+        <input maxLength={25} placeholder={placeholder || t('Untitled')} ref={ref} defaultValue={title || ''} onChange={handleRename} />
       </div>
     </div>
   );

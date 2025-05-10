@@ -1,0 +1,26 @@
+.version {
+    cursor: pointer;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    left: 6px;
+    letter-spacing: 3px;
+    line-height: 14px;
+    margin-top: 0;
+    position: absolute;
+    top: 6px;
+    user-select: none;
+}
+
+.update span {
+    color: var(--color-alert);
+}
+
+.version span {
+    color: var(--color-white);
+    display: block;
+}
+
+.version span span {
+    display: block;
+}

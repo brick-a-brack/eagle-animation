@@ -1,18 +1,18 @@
+import CustomSlider from '@components/CustomSlider';
+import FormGroup from '@components/FormGroup';
+import FormLayout from '@components/FormLayout';
+import GridIcon from '@components/GridIcon';
+import Heading from '@components/Heading';
+import Input from '@components/Input';
+import NumberInput from '@components/NumberInput';
+import Select from '@components/Select';
+import Switch from '@components/Switch';
+import useAppCapabilities from '@hooks/useAppCapabilities';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { withTranslation } from 'react-i18next';
 
-import { LANGUAGES } from '../../config';
-import useAppCapabilities from '../../hooks/useAppCapabilities';
-import CustomSlider from '../CustomSlider';
-import FormGroup from '../FormGroup';
-import FormLayout from '../FormLayout';
-import GridIcon from '../GridIcon';
-import Heading from '../Heading';
-import Input from '../Input';
-import NumberInput from '../NumberInput';
-import Select from '../Select';
-import Switch from '../Switch';
+import { LANGUAGES } from '@config-web';
 
 const SettingsForm = ({ settings = {}, onUpdate = () => {}, t }) => {
   const { appCapabilities } = useAppCapabilities();
@@ -33,7 +33,7 @@ const SettingsForm = ({ settings = {}, onUpdate = () => {}, t }) => {
 
   return (
     <form id="settings">
-      <FormLayout title={t('Settings')}>
+      <FormLayout>
         <Heading h={1}>{t('Interface')}</Heading>
         <FormGroup label={t('Language')} description={t('The application language to use')}>
           <Select options={LNGS_OPTIONS} control={control} register={register('LANGUAGE')} />

@@ -1,7 +1,6 @@
+import { OptimizeFrame } from '@core/Optimizer';
+import { GetFrameResolution } from '@core/ResolutionsCache';
 import { useCallback, useEffect, useRef, useState } from 'react';
-
-import { OptimizeFrame } from '../core/Optimizer';
-import { GetFrameResolution } from '../core/ResolutionsCache';
 
 function useProject(options) {
   const [projectData, setProjectData] = useState(null);

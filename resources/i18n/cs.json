@@ -210,5 +210,15 @@
   "Recommended activity duration": "Doporučená doba trvání aktivity",
   "Duration in minutes on the animator page before displaying a warning message": "Doba v minutách na stránce animátora před zobrazením varovné zprávy",
   "ZIP": "ZIP",
-  "Export frames in a ZIP file": "Exportovat snímky do souboru ZIP"
+  "Export frames in a ZIP file": "Exportovat snímky do souboru ZIP",
+  "Webcams": "Webkamery",
+  "EDSDK": "EDSDK",
+  "WebUSB": "WebUSB",
+  "Take a picture": "Pořídit fotografii",
+  "Fullscreen": "Celá obrazovka",
+  "Exit fullscreen": "Opustit celou obrazovku",
+  "Current / Number of frames": "Aktuální / Počet snímků",
+  "Captured → Exportable frames": "Zachycené → Exportovatelné snímky",
+  "Animation duration": "Doba trvání animace",
+  "Untitled project": "Projekt bez názvu"
 }

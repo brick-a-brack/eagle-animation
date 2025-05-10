@@ -128,13 +128,6 @@ const actions = {
       });
     }
   },
-  GET_BATTERY_STATUS_NATIVE_CAMERA: async (evt, { camera_id }) => {
-    const camera = await getCamera(camera_id);
-    if (camera) {
-      return camera.batteryStatus();
-    }
-    return null;
-  },
   DISCONNECT_NATIVE_CAMERA: async (evt, { camera_id }) => {
     const camera = await getCamera(camera_id);
     if (camera) {

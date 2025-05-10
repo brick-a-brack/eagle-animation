@@ -1,9 +1,9 @@
 .select {
     background: var(--color-theme-medium);
     border: 0;
-    border-radius: 8px;
+    border-radius: var(--border-radius-small);
     box-sizing: border-box;
-    color: #fff;
+    color: var(--color-white);
     display: inline-block;
     font-size: var(--font-size-6);
     height: 26px;
@@ -21,7 +21,7 @@
 }
 
 .select option:disabled {
-    color: #ccc;
+    color: var(--color-white);
 }
 
 .isDisabled {

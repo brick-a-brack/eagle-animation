@@ -1,7 +1,6 @@
+import Heading from '@components/Heading';
 import { Fragment } from 'react';
 import { withTranslation } from 'react-i18next';
-
-import Heading from '../Heading';
 
 import * as style from './style.module.css';
 

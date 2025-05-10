@@ -1,3 +1,20 @@
+import CameraSettingsWindow from '@components/CameraSettingsWindow';
+import ControlBar from '@components/ControlBar';
+import HeaderBar from '@components/HeaderBar';
+import KeyboardHandler from '@components/KeyboardHandler';
+import LimitWarning from '@components/LimitWarning';
+import LoadingPage from '@components/LoadingPage';
+import PageLayout from '@components/PageLayout';
+import Player from '@components/Player';
+import ProjectSettingsWindow from '@components/ProjectSettingsWindow';
+import ProjectTitle from '@components/ProjectTitle';
+import Timeline from '@components/Timeline';
+import Window from '@components/Window';
+import { parseRatio } from '@core/ratio';
+import useAppCapabilities from '@hooks/useAppCapabilities';
+import useCamera from '@hooks/useCamera';
+import useProject from '@hooks/useProject';
+import useSettings from '@hooks/useSettings';
 import { useEffect, useRef, useState } from 'react';
 import { flushSync } from 'react-dom';
 import { withTranslation } from 'react-i18next';
@@ -8,22 +25,6 @@ import soundDeleteConfirm from '~/resources/sounds/deleteConfirm.mp3';
 import soundEagle from '~/resources/sounds/eagle.mp3';
 import soundError from '~/resources/sounds/error.mp3';
 import soundShutter from '~/resources/sounds/shutter.mp3';
-
-import ActionsBar from '../components/ActionsBar';
-import CameraSettingsWindow from '../components/CameraSettingsWindow';
-import ControlBar from '../components/ControlBar';
-import KeyboardHandler from '../components/KeyboardHandler';
-import LimitWarning from '../components/LimitWarning';
-import LoadingPage from '../components/LoadingPage';
-import Player from '../components/Player';
-import ProjectSettingsWindow from '../components/ProjectSettingsWindow';
-import Timeline from '../components/Timeline';
-import Window from '../components/Window';
-import { parseRatio } from '../core/ratio';
-import useAppCapabilities from '../hooks/useAppCapabilities';
-import useCamera from '../hooks/useCamera';
-import useProject from '../hooks/useProject';
-import useSettings from '../hooks/useSettings';
 
 // Play sound
 const playSound = (src, timeout = 2000) => {
@@ -95,7 +96,6 @@ const Animator = ({ t }) => {
   const [showCameraSettings, setShowCameraSettings] = useState(false);
   const [showProjectSettings, setShowProjectSettings] = useState(false);
   const [isTakingPicture, setIsTakingPicture] = useState(false);
-  const [isMuted, setIsMuted] = useState(false);
   const [loopStatus, setLoopStatus] = useState(false);
   const [shortPlayStatus, setShortPlayStatus] = useState(false);
   const [differenceStatus, setDifferenceStatus] = useState(false);
@@ -115,7 +115,6 @@ const Animator = ({ t }) => {
     currentCameraCapabilities,
     currentCamera,
     currentCameraId,
-    batteryStatus,
     actions: cameraActions,
   } = useCamera({
     forceMaxQuality: !!settings?.FORCE_QUALITY,
@@ -164,6 +163,7 @@ const Animator = ({ t }) => {
   const pictures = project.scenes[track].pictures.filter((e) => !e.deleted);
   const framePosition = currentFrameId === false ? false : pictures.findIndex((p) => p.id === currentFrameId) + 1 || 1;
   const currentFrame = currentFrameId === false ? false : pictures.find((p) => p.id === currentFrameId) || false;
+  const totalAnimationFrames = pictures.reduce((acc, e) => acc + (!e.deleted && !e.hidden ? e.length || 1 : 0), 0);
 
   const handleAction = (action, args = null) => {
     if (actionsEvents[action]) {
@@ -213,14 +213,14 @@ const Animator = ({ t }) => {
 
           window.track('frame_captured', { projectId: `${id}`, trackId: `${track}`, reverseX: settings.REVERSE_X, reverseY: settings.REVERSE_Y, nbFrames: nbFramesToTake });
 
-          if (!isMuted && settings.SOUNDS) {
+          if (settings.SOUNDS) {
             const isAprilFoolsDay = new Date().getDate() === 1 && new Date().getMonth() === 3;
             playSound(isAprilFoolsDay ? soundEagle : soundShutter);
           }
 
           await projectActions.addFrame(track, Buffer.from(buffer), type?.includes('png') ? 'png' : 'jpg', isPlaying ? false : currentFrameId);
         } catch (err) {
-          if (!isMuted && settings.SOUNDS) {
+          if (settings.SOUNDS) {
             playSound(soundError);
           }
           console.error('Failed to take a picture', err);
@@ -260,6 +260,7 @@ const Animator = ({ t }) => {
       window.track('animator_changed', { feature: 'short_play', value: !shortPlayStatus });
     },
     CAMERA_SETTINGS: () => {
+      playerRef.current.showFrame(false);
       setShowCameraSettings(!showCameraSettings);
     },
     DELETE_FRAME: async () => {
@@ -272,7 +273,7 @@ const Animator = ({ t }) => {
           setDeleteOnLiveViewConfirmation(true);
 
           // Play sound
-          if (!isMuted && settings.SOUNDS) {
+          if (settings.SOUNDS) {
             playSound(soundDeleteConfirm);
           }
 
@@ -287,7 +288,7 @@ const Animator = ({ t }) => {
       }
 
       // Play sound
-      if (!isMuted && settings.SOUNDS) {
+      if (settings.SOUNDS) {
         playSound(soundDelete);
       }
 
@@ -370,8 +371,9 @@ const Animator = ({ t }) => {
       window.track('frame_duplicated', { projectId: `${id}`, trackId: `${track}`, frameId: `${currentFrameId}`, offset: -1 });
     },
     MUTE: () => {
-      setIsMuted(!isMuted);
-      window.track('animator_changed', { feature: 'mute', value: !isMuted });
+      const newValue = !settings.SOUNDS;
+      settingsActions.setSettings({ SOUNDS: newValue });
+      window.track('animator_changed', { feature: 'mute', value: newValue });
     },
     DELETE_PROJECT: async () => {
       await window.EA('DELETE_PROJECT', { project_id: id });
@@ -416,71 +418,76 @@ const Animator = ({ t }) => {
   return (
     <>
       <LoadingPage show={false} />
-      <Player
-        t={t}
-        ref={playerRef}
-        isCameraReady={isCameraReady}
-        onInit={handlePlayerInit}
-        onFrameChange={setCurrentFrameId}
-        onPlayingStatusChange={setIsPlaying}
-        pictures={pictures}
-        onionValue={onionValue}
-        showGrid={gridStatus}
-        blendMode={differenceStatus}
-        shortPlayStatus={shortPlayStatus}
-        shortPlayFrames={Number(settings.SHORT_PLAY) || 1}
-        loopStatus={loopStatus}
-        cameraId={currentCameraId}
-        cameraCapabilities={currentCameraCapabilities}
-        fps={fps}
-        batteryStatus={batteryStatus}
-        gridModes={settings.GRID_MODES}
-        gridOpacity={parseFloat(settings.GRID_OPACITY)}
-        gridColumns={Number(settings.GRID_COLUMNS)}
-        gridLines={Number(settings.GRID_LINES)}
-        ratioLayerOpacity={settings.RATIO_OPACITY}
-        loopShowLive={settings.LOOP_SHOW_LIVE}
-        videoRatio={ratio?.value || null}
-        reverseX={settings.REVERSE_X}
-        reverseY={settings.REVERSE_Y}
-      />
-      <ActionsBar actions={['BACK']} position="LEFT" onAction={handleAction} />
-      <ActionsBar
-        actions={[
-          'SETTINGS',
-          ...(pictures?.length > 0 && (appCapabilities.includes('EXPORT_VIDEO') || appCapabilities.includes('EXPORT_FRAMES') || appCapabilities.includes('BACKGROUND_SYNC')) ? ['EXPORT'] : []),
-          'PROJECT_SETTINGS',
-        ]}
-        position="RIGHT"
-        onAction={handleAction}
-      />
-      <ControlBar
-        onAction={handleAction}
-        showCameraSettings={showCameraSettings}
-        gridModes={settings.GRID_MODES}
-        gridStatus={gridStatus}
-        differenceStatus={differenceStatus}
-        onionValue={onionValue}
-        isPlaying={isPlaying}
-        isCameraReady={!!currentCamera}
-        isTakingPicture={isTakingPicture}
-        shortPlayStatus={shortPlayStatus}
-        loopStatus={loopStatus}
-        fps={fps}
-        canDeduplicate={currentFrame.length > 1}
-        framePosition={framePosition}
-        frameQuantity={pictures.length}
-        isCurrentFrameHidden={!!currentFrame.hidden}
-      />
-      <Timeline
-        pictures={pictures}
-        onSelect={handleSelectFrame}
-        onMove={handleFrameMove}
-        select={currentFrameId}
-        playing={isPlaying}
-        shortPlayStatus={shortPlayStatus}
-        shortPlayFrames={Number(settings.SHORT_PLAY) || 1}
-      />
+      <PageLayout>
+        <HeaderBar
+          leftActions={['BACK']}
+          rightActions={[
+            ...(pictures?.length > 0 && (appCapabilities.includes('EXPORT_VIDEO') || appCapabilities.includes('EXPORT_FRAMES') || appCapabilities.includes('BACKGROUND_SYNC')) ? ['EXPORT'] : []),
+            'SETTINGS',
+          ]}
+          onAction={handleAction}
+        >
+          <ProjectTitle title={project?.title} onTitleChange={(title) => projectActions.rename(title || '')} onEdit={() => handleAction('PROJECT_SETTINGS')} />
+        </HeaderBar>
+        <Player
+          t={t}
+          ref={playerRef}
+          isCameraReady={isCameraReady}
+          onInit={handlePlayerInit}
+          onFrameChange={setCurrentFrameId}
+          onPlayingStatusChange={setIsPlaying}
+          pictures={pictures}
+          onionValue={onionValue}
+          showGrid={gridStatus}
+          blendMode={differenceStatus}
+          shortPlayStatus={shortPlayStatus}
+          shortPlayFrames={Number(settings.SHORT_PLAY) || 1}
+          loopStatus={loopStatus}
+          cameraId={currentCameraId}
+          cameraCapabilities={currentCameraCapabilities}
+          fps={fps}
+          gridModes={settings.GRID_MODES}
+          gridOpacity={parseFloat(settings.GRID_OPACITY)}
+          gridColumns={Number(settings.GRID_COLUMNS)}
+          gridLines={Number(settings.GRID_LINES)}
+          ratioLayerOpacity={settings.RATIO_OPACITY}
+          loopShowLive={settings.LOOP_SHOW_LIVE}
+          videoRatio={ratio?.value || null}
+          reverseX={settings.REVERSE_X}
+          reverseY={settings.REVERSE_Y}
+        />
+        <div>
+          <LimitWarning nbFrames={pictures.length} nbFramesLimit={settings?.LIMIT_NUMBER_OF_FRAMES} startedAt={startedAt} activityDuration={settings?.LIMIT_ACTIVITY_DURATION} />
+          <ControlBar
+            onAction={handleAction}
+            showCameraSettings={showCameraSettings}
+            gridModes={settings.GRID_MODES}
+            gridStatus={gridStatus}
+            differenceStatus={differenceStatus}
+            onionValue={onionValue}
+            isPlaying={isPlaying}
+            isCameraReady={!!currentCamera}
+            isTakingPicture={isTakingPicture}
+            shortPlayStatus={shortPlayStatus}
+            loopStatus={loopStatus}
+            fps={fps}
+            canDeduplicate={currentFrame.length > 1}
+            framePosition={framePosition}
+            frameQuantity={pictures.length}
+            isCurrentFrameHidden={!!currentFrame.hidden}
+            totalAnimationFrames={totalAnimationFrames}
+          />
+          <Timeline
+            pictures={pictures}
+            onSelect={handleSelectFrame}
+            onMove={handleFrameMove}
+            select={currentFrameId}
+            playing={isPlaying}
+            shortPlayStatus={shortPlayStatus}
+            shortPlayFrames={Number(settings.SHORT_PLAY) || 1}
+          />
+        </div>
+      </PageLayout>
       {!showCameraSettings && !showProjectSettings && <KeyboardHandler onAction={handleAction} disabled={disableKeyboardShortcuts} />}
       <Window isOpened={showCameraSettings} onClose={() => setShowCameraSettings(false)}>
         <CameraSettingsWindow
@@ -503,7 +510,6 @@ const Animator = ({ t }) => {
           onProjectDelete={() => handleAction('DELETE_PROJECT')}
         />
       </Window>
-      <LimitWarning nbFrames={pictures.length} nbFramesLimit={settings?.LIMIT_NUMBER_OF_FRAMES} startedAt={startedAt} activityDuration={settings?.LIMIT_ACTIVITY_DURATION} />
     </>
   );
 };

@@ -209,5 +209,15 @@
   "Recommended activity duration": "Ajánlott tevékenység időtartama",
   "Duration in minutes on the animator page before displaying a warning message": "Az animátor oldalon eltöltött percek száma, mielőtt figyelmeztető üzenet jelenik meg",
   "ZIP": "ZIP",
-  "Export frames in a ZIP file": "Képkockák exportálása ZIP fájlba"
+  "Export frames in a ZIP file": "Képkockák exportálása ZIP fájlba",
+  "Webcams": "Webkamerák",
+  "EDSDK": "EDSDK",
+  "WebUSB": "WebUSB",
+  "Take a picture": "Fénykép készítése",
+  "Fullscreen": "Teljes képernyő",
+  "Exit fullscreen": "Kilépés a teljes képernyőből",
+  "Current / Number of frames": "Aktuális / Képkockák száma",
+  "Captured → Exportable frames": "Rögzített → Exportálható képkockák",
+  "Animation duration": "Animáció időtartama",
+  "Untitled project": "Cím nélküli projekt"
 }
