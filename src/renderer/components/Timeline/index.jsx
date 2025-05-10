@@ -42,7 +42,6 @@ const SortableItem = ({ img, isShortPlayBegining = false, playing = false, selec
       className={`${style.containerImg} ${selected ? style.selected : ''} ${!playing && style.containerImgHover} ${img.hidden ? style.isHidden : ''}`}
     >
       <span className={style.img}>
-        <div className={style.skeleton} />
         {img.thumbnail && <img alt="" className={style.imgcontent} src={img.thumbnail} loading="lazy" />}
       </span>
       {img.hidden && <FontAwesomeIcon className={style.icon} icon={faEyeSlash} />}
