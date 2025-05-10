@@ -1,0 +1,31 @@
+.headerBar {
+    align-items: center;
+    background: var(--color-theme-extra-dark);
+    box-sizing: border-box;
+    display: flex;
+    height: 62px;
+    justify-content: space-between;
+    min-height: 62px;
+    padding: 0 5px;
+    text-align: center;
+    width: 100%;
+    z-index: 2;
+}
+
+.withBorder {
+    border-bottom: 3px solid var(--color-primary);
+}
+
+.title {
+    color: var(--color-white);
+    font-size: var(--font-size-3);
+    font-weight: 600;
+    line-height: var(--line-size-3);
+    user-select: none;
+}
+
+.center {
+    left: 50%;
+    position: absolute;
+    transform: translateX(-50%);
+}

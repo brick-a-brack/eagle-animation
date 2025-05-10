@@ -1,5 +1,5 @@
+import { OptimizeFrame } from '@core/Optimizer';
 import { useCallback, useEffect, useState } from 'react';
-import { OptimizeFrame } from '../core/Optimizer';
 
 const getDefaultFrame = (data) => {
   for (let i = 0; i < (data?.project?.scenes?.length || 0); i++) {

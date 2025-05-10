@@ -6,12 +6,12 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 
 import App from './App';
-import { BUILD, POSTHOG_TOKEN } from './config';
+import { BUILD, POSTHOG_HOST, POSTHOG_TOKEN } from './config';
 
 try {
   if (POSTHOG_TOKEN) {
     posthog.init(POSTHOG_TOKEN, {
-      api_host: 'https://us.i.posthog.com',
+      api_host: POSTHOG_HOST,
       person_profiles: 'always',
       autocapture: false,
       disable_session_recording: true,
@@ -23,6 +23,14 @@ window.track = (eventName, data = {}) => {
   try {
     if (POSTHOG_TOKEN) {
       posthog.capture(eventName, data);
+    }
+  } catch (err) {} // eslint-disable-line no-empty
+};
+
+window.trackException = (error) => {
+  try {
+    if (POSTHOG_TOKEN) {
+      posthog.captureException(error);
     }
   } catch (err) {} // eslint-disable-line no-empty
 };

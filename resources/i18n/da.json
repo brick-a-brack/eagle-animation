@@ -209,5 +209,15 @@
   "Recommended activity duration": "Anbefalet aktivitetsvarighed",
   "Duration in minutes on the animator page before displaying a warning message": "Varighed i minutter på animator-siden før visning af en advarselsmeddelelse",
   "ZIP": "ZIP",
-  "Export frames in a ZIP file": "Eksporter billeder i en ZIP-fil"
+  "Export frames in a ZIP file": "Eksporter billeder i en ZIP-fil",
+  "Webcams": "Webcams",
+  "EDSDK": "EDSDK",
+  "WebUSB": "WebUSB",
+  "Take a picture": "Tag et billede",
+  "Fullscreen": "Fuld skærm",
+  "Exit fullscreen": "Afslut fuld skærm",
+  "Current / Number of frames": "Aktuel / Antal billeder",
+  "Captured → Exportable frames": "Fanget → Eksporterbare billeder",
+  "Animation duration": "Animationsvarighed",
+  "Untitled project": "Projekt uden titel"
 }

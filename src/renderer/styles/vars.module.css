@@ -30,10 +30,14 @@ body {
   --font: "Open Sans";
   --input-height: 30px;
   --color-primary: #486ee5;
-  --color-success: #48e548;
-  --color-alert: #e54848;
-  --color-warning: #e59248;
-  --color-theme-light: hsl(223deg 4% 45% / 100%);
-  --color-theme-medium: #5f6166;
-  --color-theme-dark: #2f3136;
+  --color-success: #5bdb4d;
+  --color-alert:  #e24949;
+  --color-warning: #d6aa50;
+  --color-info: #c34ddb;
+  --color-white: #ccd2e2;
+  --color-theme-extra-light: #488bc1;
+  --color-theme-light: #203b5b;
+  --color-theme-medium: #162742;
+  --color-theme-dark: #0e1928;
+  --color-theme-extra-dark: #0b1321;
 }

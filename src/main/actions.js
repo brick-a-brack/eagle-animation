@@ -1,6 +1,6 @@
 import { copyFile } from 'node:fs/promises';
 
-import { shell, systemPreferences } from 'electron';
+import { shell } from 'electron';
 import { mkdirp } from 'mkdirp';
 import fetch from 'node-fetch';
 import { join } from 'path-browserify';
@@ -47,25 +47,6 @@ const computeProject = (data) => {
 };
 
 const actions = {
-  GET_MEDIA_PERMISSIONS: async () => {
-    if (typeof systemPreferences.getMediaAccessStatus === 'function') {
-      const [camera, microphone] = await Promise.all([systemPreferences.getMediaAccessStatus('camera'), systemPreferences.getMediaAccessStatus('microphone')]);
-      return {
-        camera,
-        microphone,
-      };
-    }
-    return {
-      camera: 'granted',
-      microphone: 'granted',
-    };
-  },
-  ASK_MEDIA_PERMISSION: async (evt, { mediaType }) => {
-    if (typeof systemPreferences.askForMediaAccess === 'function') {
-      return systemPreferences.askForMediaAccess(mediaType);
-    }
-    return true;
-  },
   GET_LAST_VERSION: async () => {
     if (CONTRIBUTE_REPOSITORY) {
       const res = await fetch(`https://raw.githubusercontent.com/${CONTRIBUTE_REPOSITORY}/master/package.json`).then((res) => res.json());
@@ -146,13 +127,6 @@ const actions = {
         sendToRenderer('LIVE_VIEW_DATA', { camera_id, data });
       });
     }
-  },
-  GET_BATTERY_STATUS_NATIVE_CAMERA: async (evt, { camera_id }) => {
-    const camera = await getCamera(camera_id);
-    if (camera) {
-      return camera.batteryStatus();
-    }
-    return null;
   },
   DISCONNECT_NATIVE_CAMERA: async (evt, { camera_id }) => {
     const camera = await getCamera(camera_id);

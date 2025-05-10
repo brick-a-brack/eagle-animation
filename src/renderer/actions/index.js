@@ -1,10 +1,10 @@
-import isFirefox from '@braintree/browser-detection/is-firefox';
 import { fetchFile } from '@ffmpeg/util';
 import { saveAs } from 'file-saver';
 import JSZip from 'jszip';
 
-import { getEncodingProfile, getFFmpegArgs, parseFFmpegLogs } from '../../common/ffmpeg';
-import { LS_SETTINGS } from '../config';
+import { getEncodingProfile, getFFmpegArgs, parseFFmpegLogs } from '@common/ffmpeg';
+import { LS_SETTINGS } from '@config-web';
+import { isBlink } from '@common/isBlink';
 import { createBuffer, flushBuffers, getBuffer } from './buffer';
 import { getFFmpeg } from './ffmpeg';
 import { createFrame, getFrameBlobUrl } from './frames';
@@ -59,51 +59,7 @@ const computeProject = async (data, bindPictureLink = true) => {
   return output;
 };
 
-let dedupProms = {};
-
 export const Actions = {
-  GET_MEDIA_PERMISSIONS: async () => {
-    if (isFirefox()) {
-      dedupProms.testCamera =
-        dedupProms.testCamera ||
-        navigator.mediaDevices
-          .getUserMedia({ video: true })
-          .then(() => true)
-          .catch(() => false);
-
-      dedupProms.testMicrophone =
-        dedupProms.testMicrophone ||
-        navigator.mediaDevices
-          .getUserMedia({ audio: true })
-          .then(() => true)
-          .catch(() => false);
-
-      const [firefoxCameraPermission, firefoxMicrophonePermission] = await Promise.all([dedupProms.testCamera, dedupProms.testMicrophone]);
-      return {
-        camera: firefoxCameraPermission ? 'granted' : 'denied',
-        microphone: firefoxMicrophonePermission ? 'granted' : 'denied',
-      };
-    } else {
-      const [cameraPermission, microphonePermission] = await Promise.all([
-        navigator.permissions.query({ name: 'camera' }).catch(() => null),
-        navigator.permissions.query({ name: 'microphone' }).catch(() => null),
-      ]);
-      return {
-        camera: cameraPermission?.state === 'granted' ? 'granted' : 'denied',
-        microphone: microphonePermission?.state === 'granted' ? 'granted' : 'denied',
-      };
-    }
-  },
-  ASK_MEDIA_PERMISSION: async (evt, { mediaType }) => {
-    const permission = await navigator.mediaDevices
-      .getUserMedia({
-        ...(mediaType === 'camera' ? { video: true } : {}),
-        ...(mediaType === 'microphone' ? { audio: true } : {}),
-      })
-      .then(() => true)
-      .catch(() => false);
-    return permission;
-  },
   GET_LAST_VERSION: async () => {
     return { version: null }; // Web version is always up-to-date, ignore update detection
   },
@@ -166,8 +122,8 @@ export const Actions = {
   APP_CAPABILITIES: async () => {
     const capabilities = ['EXPORT_VIDEO', 'EXPORT_VIDEO_H264', 'EXPORT_VIDEO_VP8', 'EXPORT_VIDEO_PRORES', 'EXPORT_FRAMES', 'EXPORT_FRAMES_ZIP'];
 
-    // Firefox don't support photo mode
-    if (!isFirefox()) {
+    // Chromium based browsers support photo mode
+    if (isBlink()) {
       capabilities.push('LOW_FRAMERATE_QUALITY_IMPROVEMENT');
     }
 

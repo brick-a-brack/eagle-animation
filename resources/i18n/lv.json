@@ -210,5 +210,15 @@
   "Recommended activity duration": "Ieteicamais aktivitātes ilgums",
   "Duration in minutes on the animator page before displaying a warning message": "Laiks minūtēs animātora lapā, pirms parādīt brīdinājuma ziņojumu",
   "ZIP": "ZIP",
-  "Export frames in a ZIP file": "Eksportēt kadrus ZIP failā"
+  "Export frames in a ZIP file": "Eksportēt kadrus ZIP failā",
+  "Webcams": "Webkameras",
+  "EDSDK": "EDSDK",
+  "WebUSB": "WebUSB",
+  "Take a picture": "Uzņemt fotogrāfiju",
+  "Fullscreen": "Pilnekrāna režīms",
+  "Exit fullscreen": "Iziet no pilnekrāna režīma",
+  "Current / Number of frames": "Pašreizējais / Fotogrāfiju skaits",
+  "Captured → Exportable frames": "Uzņemtas → Eksportējamas kadri",
+  "Animation duration": "Animācijas ilgums",
+  "Untitled project": "Projekts bez nosaukuma"
 }

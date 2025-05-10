@@ -1,15 +1,15 @@
 .loading {
-    width: 100%;
+    align-items: center;
+    display: flex;
     height: 100%;
+    justify-content: center;
+    left: 0;
+    opacity: 0;
+    pointer-events: none;
     position: fixed;
     top: 0;
-    left: 0;
-    pointer-events: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0;
     transition: opacity .3s ease-in-out;
+    width: 100%;
 }
 
 .show {
@@ -17,7 +17,7 @@
 }
 
 .loading svg {
-    width: 42px;
+    color: var(--color-white);
     height: 42px;
-    color: #fff;
+    width: 42px;
 }

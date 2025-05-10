@@ -224,5 +224,15 @@
   "Recommended activity duration": "Duração recomendada para a atividade",
   "Duration in minutes on the animator page before displaying a warning message": "Duração em minutos na página do animador antes de exibir uma mensagem de alerta",
   "ZIP": "ZIP",
-  "Export frames in a ZIP file": "Exportar quadros em um arquivo ZIP"
+  "Export frames in a ZIP file": "Exportar quadros em um arquivo ZIP",
+  "Webcams": "Webcams",
+  "EDSDK": "EDSDK",
+  "WebUSB": "WebUSB",
+  "Take a picture": "Tirar uma foto",
+  "Fullscreen": "Tela cheia",
+  "Exit fullscreen": "Sair da tela cheia",
+  "Current / Number of frames": "Atual / Número de quadros",
+  "Captured → Exportable frames": "Capturadas → Quadros exportáveis",
+  "Animation duration": "Duração da animação",
+  "Untitled project": "Projeto sem título"
 }

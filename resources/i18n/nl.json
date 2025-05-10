@@ -209,5 +209,15 @@
   "Recommended activity duration": "Aanbevolen duur voor de activiteit",
   "Duration in minutes on the animator page before displaying a warning message": "Duur in minuten op de animatorpagina voordat een waarschuwingsbericht wordt weergegeven",
   "ZIP": "ZIP",
-  "Export frames in a ZIP file": "Frames exporteren in een ZIP-bestand"
+  "Export frames in a ZIP file": "Frames exporteren in een ZIP-bestand",
+  "Webcams": "Webcams",
+  "EDSDK": "EDSDK",
+  "WebUSB": "WebUSB",
+  "Take a picture": "Maak een foto",
+  "Fullscreen": "Volledig scherm",
+  "Exit fullscreen": "Verlaat volledig scherm",
+  "Current / Number of frames": "Huidige / Aantal frames",
+  "Captured → Exportable frames": "Vastgelegd → Exporteerbare frames",
+  "Animation duration": "Duur van de animatie",
+  "Untitled project": "Project zonder titel"
 }

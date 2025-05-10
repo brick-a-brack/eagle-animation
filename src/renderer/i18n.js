@@ -50,6 +50,7 @@ export const currentLanguage = () => parseLanguageValue(localStorage.getItem(LS_
 
 export const setLanguage = async (value) => {
   const newValue = parseLanguageValue(value);
+  document.documentElement.setAttribute('lang', newValue);
   localStorage.setItem(LS_LANGUAGE, newValue);
   return i18n.changeLanguage(newValue);
 };

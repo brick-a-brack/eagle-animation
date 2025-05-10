@@ -1,15 +1,13 @@
   .box {
-      background-color: #484c52;
-      border-radius: 8px;
-      box-shadow: 0 2px 2px 0 rgb(0 0 0 / 14%),
-          0 3px 1px -2px rgb(0 0 0 / 12%), 0 1px 5px 0 rgb(0 0 0 / 20%);
-      color: #fff;
+      background-color: var(--color-theme-medium);
+      border-radius: var(--border-radius-small);
+      color: var(--color-white);
       display: inline-block;
       height: 220px;
       margin: 20px;
       overflow: hidden;
-      width: 300px;
       position: relative;
+      width: 300px;
   }
 
   .banner {
@@ -37,7 +35,7 @@
 
   .bannerhover svg {
       display: inline-block;
-      fill: #aaabad;
+      fill: var(--color-white);
       height: 50px;
       transform: scale(0.7);
       transition: transform 0.4s ease-in-out;
@@ -71,7 +69,7 @@
   .title input {
       background: transparent;
       border: none;
-      color: #aaabad;
+      color: var(--color-white);
       font-family: 'Open Sans', sans-serif;
       font-size: 24px;
       font-weight: 300;
@@ -80,4 +78,8 @@
       outline: none;
       padding: 0.5em;
       width: calc(100% - 1em);
+  }
+
+  .title input:disabled {
+    color: var(--color-white);
   }
