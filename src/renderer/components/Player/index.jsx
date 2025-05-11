@@ -3,8 +3,6 @@ import { isEqual } from 'lodash';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 
-import BatteryIndicator from '../BatteryIndicator';
-
 import * as style from './style.module.css';
 
 const PLAYER_USABLE_FRAME_PROPERTY = 'preview'; // 'link' for original, 'preview' for 720p preview, 'thumbnail' for 80p preview
@@ -50,11 +48,11 @@ class Player extends Component {
       let heightElem = 0;
 
       if (this.getRatio() >= parentRatio) {
-        widthElem = parentSize.width - 8;
-        heightElem = (1 / this.getRatio()) * (parentSize.width - 8);
+        widthElem = parentSize.width;
+        heightElem = (1 / this.getRatio()) * parentSize.width;
       } else {
-        heightElem = parentSize.height - 8;
-        widthElem = this.getRatio() * (parentSize.height - 8);
+        heightElem = parentSize.height - 6;
+        widthElem = this.getRatio() * (parentSize.height - 6); // Border should be added here
       }
       this.setState({ width: widthElem, height: heightElem, ready: true });
     };
@@ -68,7 +66,9 @@ class Player extends Component {
 
     this.computeFrames();
 
-    this.play = () => {
+    this.play = (playFromBegining = false) => {
+      const startOnLiveView = this.state.frameIndex === false;
+
       const exec = (force = false) => {
         const filteredFrames = this.frames.filter((e) => !e.hidden);
 
@@ -77,11 +77,16 @@ class Player extends Component {
         if ((this.state.frameIndex === false || !filteredFrames.length) && !force && !this.props.loopStatus) {
           return false;
         } else if (filteredFrames.length && (force || (this.state.frameIndex === false && this.props.loopStatus))) {
-          newFrameIndex = this.props.shortPlayStatus && filteredFrames.length > this.props.shortPlayFrames ? filteredFrames.length - this.props.shortPlayFrames - 1 : 0;
+          newFrameIndex = this.props.shortPlayStatus && this.props.shortPlayFrames > 0 && filteredFrames.length > this.props.shortPlayFrames ? filteredFrames.length - this.props.shortPlayFrames : 0;
         } else if (this.state.frameIndex >= filteredFrames.length - 1) {
           newFrameIndex = false;
         } else {
           newFrameIndex = this.state.frameIndex + 1;
+        }
+
+        // Set to first frame if the loopShowLive option is enabled
+        if (newFrameIndex === false && filteredFrames.length && !this.props.loopShowLive && this.props.loopStatus) {
+          newFrameIndex = this.props.shortPlayStatus && this.props.shortPlayFrames > 0 && filteredFrames.length > this.props.shortPlayFrames ? filteredFrames.length - this.props.shortPlayFrames : 0;
         }
 
         const frame = (newFrameIndex === false ? filteredFrames[filteredFrames.length - 1] : filteredFrames[newFrameIndex]) || false;
@@ -92,7 +97,7 @@ class Player extends Component {
       };
 
       this.props.onPlayingStatusChange(true);
-      exec(true); // Reset frame position at the launch
+      exec(playFromBegining || startOnLiveView);
 
       this.clock = setInterval(() => {
         if (!exec()) {
@@ -284,7 +289,7 @@ class Player extends Component {
   drawFrame(src = false) {
     const ctx = this.dom.picture.current.getContext('2d', { alpha: false });
     if (src === false) {
-      ctx.fillStyle = '#000000';
+      ctx.fillStyle = 'rgba(0,0,0,0)';
       ctx.fillRect(0, 0, this.getSize().width, this.getSize().height);
       return;
     }
@@ -327,7 +332,7 @@ class Player extends Component {
   }
 
   render() {
-    const { showGrid, onionValue, blendMode, isCameraReady, t, batteryStatus, ratioLayerOpacity, reverseX, reverseY } = this.props;
+    const { showGrid, onionValue, blendMode, isCameraReady, t, ratioLayerOpacity, reverseX, reverseY } = this.props;
     const { width, height, ready, frameIndex } = this.state;
 
     const borders = resizeToFit('contain', { width: this.getVideoRatio(), height: 1 }, { width: this.getSize().width, height: this.getSize().height });
@@ -356,8 +361,6 @@ class Player extends Component {
           {this.getVideoRatio() !== null && borderTopBottom > 0 && <div className={style.borderBottom} style={{ height: `${borderTopBottom * 100}%`, opacity: ratioLayerOpacity || 1 }} />}
 
           <canvas ref={this.dom.grid} className={style.layout} style={{ opacity: isCameraReady && showGrid && frameIndex === false ? 1 : 0 }} />
-
-          {isCameraReady && frameIndex === false && batteryStatus !== null && <BatteryIndicator value={batteryStatus} />}
 
           {!isCameraReady && frameIndex === false && <span className={style.loader} />}
           {!isCameraReady && frameIndex === false && <div className={style.info}>{t('If your camera does not load, try changing it in the camera settings')}</div>}

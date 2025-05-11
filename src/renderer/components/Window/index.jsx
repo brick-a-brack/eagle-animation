@@ -1,9 +1,8 @@
 //import { faXmark } from '@fortawesome/pro-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import faXmark from '@icons/faXmark';
 import PropTypes from 'prop-types';
 import { useLayoutEffect, useRef } from 'react';
-
-import faXmark from '../../icons/faXmark';
 
 import * as style from './style.module.css';
 

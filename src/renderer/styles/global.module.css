@@ -63,7 +63,7 @@
 
 html,
 body {
-  background: #2f3136;
+  background: #0e1928;
   margin: 0;
 }
 
@@ -82,7 +82,7 @@ body::-webkit-scrollbar-thumb {
   background-clip: padding-box;
   background-color: var(--color-primary);
   border: 3px solid transparent;
-  border-radius: 8px;
+  border-radius: var(--border-radius-small);
   cursor: pointer;
   min-height: 50px;
 }

@@ -1,12 +1,11 @@
 .container {
   align-items: center;
-  bottom: 100px;
+  background: var(--color-theme-dark);
   display: flex;
   gap: var(--space-big);
+  height:62px;
   justify-content: center;
-  margin-bottom: 30px;
-  margin-top: 30px;
-  position: fixed;
+  overflow: hidden;
   text-align: center;
   width: 100%;
 }
@@ -25,35 +24,16 @@
   justify-content: flex-start;
 }
 
-.progress {
-  align-items: center;
-  color: #ddd;
-  display: flex;
-  flex-flow: row;
-  font-family: "Open Sans", sans-serif;
-  font-size: 20px;
-  justify-content: center;
-  line-height: 20px;
-  margin-right: 16px;
-  min-width: 115px;
-  text-transform: uppercase;
-  user-select: none;
-  vertical-align: middle;
-}
-
-.separator {
-  display:block;
-  margin-left: var(--space-small);
-  margin-right: var(--space-small);
-}
-
-.live {
-  color: var(--color-alert);
-}
 
 .slider {
   display: inline-block;
   margin-left: 22px;
   margin-right: 22px;
   min-width: 75px;
+  transition: opacity 0.2s ease-in-out;
+}
+
+.sliderDisabled {
+  cursor:not-allowed;
+  opacity: 0.2
 }

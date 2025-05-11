@@ -1,0 +1,23 @@
+.loading {
+    align-items: center;
+    display: flex;
+    height: 100%;
+    justify-content: center;
+    left: 0;
+    opacity: 0;
+    pointer-events: none;
+    position: fixed;
+    top: 0;
+    transition: opacity .3s ease-in-out;
+    width: 100%;
+}
+
+.show {
+    opacity: 1;
+}
+
+.loading svg {
+    color: var(--color-white);
+    height: 42px;
+    width: 42px;
+}

@@ -1,26 +1,59 @@
+import Action from '@components/Action';
+import ActionCard from '@components/ActionCard';
+import Slider from '@components/CustomSlider';
+import SliderSelect from '@components/CustomSliderSelect';
+import FormGroup from '@components/FormGroup';
+import IconTabs from '@components/IconTabs';
+import NumberInput from '@components/NumberInput';
+import Select from '@components/Select';
+import Switch from '@components/Switch';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import faAperture from '@icons/faAperture';
+import faCamera from '@icons/faCamera';
+import faDroplet from '@icons/faDroplet';
+import faFaceViewfinder from '@icons/faFaceViewfinder';
+import faLightbulbOn from '@icons/faLightbulbOn';
+import faMagnifyingGlass from '@icons/faMagnifyingGlass';
+import faRotate from '@icons/faRotate';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { withTranslation } from 'react-i18next';
 
-import faAperture from '../../icons/faAperture';
-import faCamera from '../../icons/faCamera';
-import faDroplet from '../../icons/faDroplet';
-import faFaceViewfinder from '../../icons/faFaceViewfinder';
-import faLightbulbOn from '../../icons/faLightbulbOn';
-import faMagnifyingGlass from '../../icons/faMagnifyingGlass';
-import faRotate from '../../icons/faRotate';
-import Action from '../Action';
-import ActionCard from '../ActionCard';
-import Slider from '../CustomSlider';
-import SliderSelect from '../CustomSliderSelect';
-import FormGroup from '../FormGroup';
-import IconTabs from '../IconTabs';
-import NumberInput from '../NumberInput';
-import Select from '../Select';
-import Switch from '../Switch';
-
 import * as style from './style.module.css';
+
+const groupDevices = (devices, t) => {
+  const output = [];
+
+  const categories = {
+    'WEB-WEBCAM': t('Webcams'),
+    'NATIVE-EDSDK': t('EDSDK'),
+    'WEB-GPHOTO2': t('WebUSB'),
+  };
+
+  // Categories
+  Object.keys(categories).forEach((key) => {
+    const tmpDevices = devices.filter((e) => e?.value?.startsWith(key));
+    if (tmpDevices.length > 0) {
+      output.push({
+        id: key,
+        label: categories[key],
+        values: tmpDevices,
+      });
+    }
+  });
+
+  // Other
+  const tmpDevices = devices.filter((e) => !Object.keys(categories).some((tag) => e?.value?.startsWith(tag)));
+  if (tmpDevices.length > 0) {
+    output.push({
+      id: 'OTHER',
+      label: t('Other'),
+      values: tmpDevices,
+    });
+  }
+
+  return output;
+};
 
 const CameraSettingsWindow = ({
   t,
@@ -103,8 +136,17 @@ const CameraSettingsWindow = ({
         {selectedCategory.id === 'CAMERAS' && (
           <>
             <FormGroup label={t('Camera')} description={t('The camera device to use to take frames')}>
-              <Select options={[{ value: '', label: t('Choose a camera') }, ...devices.map((e) => ({ value: e.id, label: e.label }))]} register={register('CAMERA_ID')} />
-              <Action title={t('Refresh camera list')} className={style.refreshIcon} action={() => onDevicesListRefresh()}>
+              <Select
+                options={[
+                  { value: '', label: t('Choose a camera'), disabled: true },
+                  ...groupDevices(
+                    devices.map((e) => ({ value: e.id, label: e.label })),
+                    t
+                  ),
+                ]}
+                register={register('CAMERA_ID')}
+              />
+              <Action title={t('Refresh camera list')} className={style.refreshIcon} onClick={() => onDevicesListRefresh()}>
                 <FontAwesomeIcon icon={faRotate} />
               </Action>
             </FormGroup>
@@ -130,7 +172,7 @@ const CameraSettingsWindow = ({
                 </div>
               )}
             </FormGroup>
-            {appCapabilities.includes('LOW_FRAMERATE_QUALITY_IMPROVEMENT') && (
+            {appCapabilities.includes('LOW_FRAMERATE_QUALITY_IMPROVEMENT') && watch('CAMERA_ID')?.startsWith('WEB-WEBCAM') && (
               <FormGroup
                 label={t('Improve quality by reducing preview framerate')}
                 description={t('Some cameras can take better quality pictures by reducing the framerate of the preview (Restart required)')}
@@ -154,11 +196,15 @@ const CameraSettingsWindow = ({
                   description={t('[{{min}}, {{max}}] • {{value}}', { min: Math.round(cap.min), max: Math.round(cap.max), value: Math.round(cap.value) })}
                 >
                   <Slider
+                    isDisabled={cap.isDisabled}
                     min={cap.min}
                     max={cap.max}
                     value={cap.value}
                     step={cap.step}
                     onChange={(value) => {
+                      if (cap.isDisabled) {
+                        return;
+                      }
                       onCapabilityChange(cap.id, value);
                     }}
                   />
@@ -169,13 +215,13 @@ const CameraSettingsWindow = ({
               return (
                 <FormGroup key={cap.id} label={capsTranslations[cap.id] || cap.id}>
                   <Switch
+                    isDisabled={cap.isDisabled}
                     checked={cap.value === true}
                     onChange={() => {
-                      if (cap.value === true) {
-                        onCapabilityChange(cap.id, false);
-                      } else {
-                        onCapabilityChange(cap.id, true);
+                      if (cap.isDisabled) {
+                        return;
                       }
+                      onCapabilityChange(cap.id, cap.value !== true);
                     }}
                   />
                 </FormGroup>
@@ -185,9 +231,13 @@ const CameraSettingsWindow = ({
               return (
                 <FormGroup key={cap.id} label={capsTranslations[cap.id] || cap.id}>
                   <Select
+                    isDisabled={cap.isDisabled}
                     options={cap.values.map((e) => ({ ...e, label: selectOptionsTranslations[e.label] || e.label }))}
                     value={cap.value}
                     onChange={(evt) => {
+                      if (cap.isDisabled) {
+                        return;
+                      }
                       onCapabilityChange(cap.id, evt.target.value);
                     }}
                   />
@@ -207,9 +257,13 @@ const CameraSettingsWindow = ({
                   })}
                 >
                   <SliderSelect
+                    isDisabled={cap.isDisabled}
                     options={cap.values.map((e) => ({ ...e, label: selectOptionsTranslations[e.label] || e.label }))}
                     value={cap.value}
                     onChange={(evt) => {
+                      if (cap.isDisabled) {
+                        return;
+                      }
                       onCapabilityChange(cap.id, evt.value);
                     }}
                   />
@@ -221,7 +275,7 @@ const CameraSettingsWindow = ({
 
         {selectedCategory.id === 'CAMERAS' && cameraCapabilities.some((cap) => cap.canReset) && (
           <FormGroup label={t('Reset camera settings')} description={t('Reset the current camera settings, all values will be reset to default')}>
-            <ActionCard title={t('Reset settings')} action={() => onCapabilitiesReset()} sizeAuto secondary />
+            <ActionCard title={t('Reset settings')} onClick={() => onCapabilitiesReset()} sizeAuto secondary />
           </FormGroup>
         )}
       </div>

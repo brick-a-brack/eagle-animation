@@ -1,16 +1,17 @@
 .field {
-    background: var(--color-theme-light);
-    border: solid 3px var(--color-theme-medium);
+    background: var(--color-theme-medium);
+    border: solid 3px var(--color-theme-light);
     border-radius: var(--border-radius-medium);
     cursor: pointer;
     height: 36px;
     margin-right: var(--space-medium);
     padding: 3px;
+    user-select: none;
     width: 36px;
 }
 
 .field img {
-    fill: #fff;
+    fill: var(--color-white);
     height: 100%;
     min-width: 100%;
 }

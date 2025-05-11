@@ -1,28 +1,26 @@
 .container {
     background: rgb(0 0 0);
-    border: solid var(--color-primary) 4px;
-    border-radius: 8px;
     margin: auto;
     overflow: hidden;
     position: relative;
 }
 
-.live .container {
-    border: solid var(--color-alert) 4px;
-}
-
 .playerContainer {
+    background: #000;
+    border-bottom: solid var(--color-primary) 3px;
+    border-top: solid var(--color-primary) 3px;
     display: flex;
     flex-direction: row;
-    height: calc(100vh - 250px);
-    left: 50%;
-    max-width: 1330px;
+    height: 100%;
     overflow: hidden;
-    position: fixed;
-    top: 25px;
-    transform: translateX(-50%);
-    width: calc(100% - 150px);
+    width: 100%;
 }
+
+.live.playerContainer {
+    border-bottom: solid var(--color-alert) 3px;
+    border-top: solid var(--color-alert) 3px;
+}
+
 
 .layout {
     height: 100%;
@@ -57,56 +55,13 @@
 
 .info {
     bottom: 5%;
-    color: #fff;
+    color: var(--color-white);
     font-size: var(--font-size-5);
     left: 5%;
     position: absolute;
     text-align: center;
     user-select: none;
     width: 90%;
-}
-
-.settings {
-    background: rgb(0 0 0 / 80%);
-    box-sizing: border-box;
-    height: 100%;
-    max-width: 400px;
-    overflow-y: scroll;
-    padding: var(--space-medium) var(--space-big);
-    position: absolute;
-    right: 0;
-    transform: translateX(101%);
-    transition: transform .5s ease-in-out;
-    width: 100%;
-}
-
-.settingsTitle {
-    text-align: center;
-}
-
-.settingsReset {
-    margin: auto;
-}
-
-.settings.open {
-    transform: translateX(0%);
-}
-
-.settings::-webkit-scrollbar {
-    width: 15px;
-}
-
-.settings::-webkit-scrollbar-thumb {
-    background-clip: padding-box;
-    background-color: var(--color-primary);
-    border: 3px solid transparent;
-    border-radius: 8px;
-    cursor: pointer;
-    min-height: 50px;
-}
-
-.settings::-webkit-scrollbar-track {
-    background-color: rgb(0 0 0 / 0%);
 }
 
 .layoutVideoFrame {
@@ -117,8 +72,6 @@
     transform: translateX(-50%);
     width: 100%;
 }
-
-
 
 .borderLeft,
 .borderRight,

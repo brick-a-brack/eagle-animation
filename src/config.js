@@ -8,7 +8,6 @@ export const VERSION = json.version;
 export const LS_PREFIX = 'ea_';
 export const LS_LANGUAGE = `${LS_PREFIX}language`;
 export const LS_SETTINGS = `${LS_PREFIX}settings`;
-export const LS_PERMISSIONS = `${LS_PREFIX}permissions`;
 
 // Eagle Animation files
 export const DIRECTORY_NAME = 'EagleAnimation';
@@ -22,8 +21,9 @@ export const DEFAULT_FPS = 12;
 // Github link
 export const CONTRIBUTE_REPOSITORY = 'brick-a-brack/eagle-animation';
 
-// Sentry DSN
-export const SENTRY_DSN = 'https://750d3c23387f46b8922dee52580eb607@sentry.io/1458572';
+// PostHog key and host
+export const POSTHOG_TOKEN = 'phc_O3iGVN7CHMOlI7IyKsYG22I0NrGQ1ETrFzQY8sEpKYL';
+export const POSTHOG_HOST = 'https://us.i.posthog.com';
 
 // Languages
 export const LANGUAGES = [

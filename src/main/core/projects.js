@@ -33,7 +33,8 @@ export const getProjectData = async (path) => {
   const file = format({ dir: path, base: PROJECT_FILE });
   const data = await readFile(file, 'utf8');
   const project = JSON.parse(data);
-  return { project, _path: path, _file: file };
+  const id = path.replaceAll('\\', '/').split('/').pop();
+  return { project, _path: path, _file: file, _id: id };
 };
 
 // List all projects in a directory
@@ -122,19 +123,17 @@ const createImageFile = async (projectPath, scene, ext, data) => {
   }
   await writeFile(filePath, data);
   return {
-    id,
     filename: `${id}.${ext}`,
     scene,
     path: filePath,
   };
 };
 
-// Create pictur object
+// Create picture object
 export const savePicture = async (projectPath, track, ext, buffer) => {
   const trackId = Number(track);
   const file = await createImageFile(projectPath, trackId, ext, buffer);
   return {
-    id: file.id,
     filename: file.filename,
     deleted: false,
     length: 1,

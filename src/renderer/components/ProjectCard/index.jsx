@@ -1,4 +1,7 @@
+import Tag from '@components/Tag';
+import faImages from '@icons/faImages';
 import { useRef } from 'react';
+import { withTranslation } from 'react-i18next';
 
 import IconAdd from './assets/add.svg?jsx';
 import IconEdit from './assets/edit.svg?jsx';
@@ -8,7 +11,7 @@ import * as style from './style.module.css';
 
 let renameEvents = {};
 
-const ProjectCard = ({ id = '', placeholder = '', title = '', picture = '', onClick = null, onTitleChange = null, icon = 'EDIT' }) => {
+const ProjectCard = ({ id = '', placeholder = '', title = '', picture = '', onClick = null, onTitleChange = null, nbFrames = null, icon = 'EDIT', t }) => {
   const ref = useRef(null);
 
   const handleClick = () => {
@@ -33,16 +36,17 @@ const ProjectCard = ({ id = '', placeholder = '', title = '', picture = '', onCl
   return (
     <div className={style.box}>
       <div className={style.banner}>{picture && <img alt="" src={picture} loading="lazy" />}</div>
+      {nbFrames !== null && <Tag tag={`${nbFrames || 0}`} icon={faImages} position="TOP-RIGHT" />}
       <div role="button" tabIndex={0} className={style.bannerhover} onClick={handleClick}>
         {icon === 'ADD' && <IconAdd />}
         {icon === 'EDIT' && <IconEdit />}
         {icon === 'OPEN' && <IconOpen />}
       </div>
       <div className={style.title}>
-        <input placeholder={placeholder} ref={ref} defaultValue={title || ''} onChange={handleRename} />
+        <input maxLength={25} placeholder={placeholder || t('Untitled')} ref={ref} defaultValue={title || ''} onChange={handleRename} />
       </div>
     </div>
   );
 };
 
-export default ProjectCard;
+export default withTranslation()(ProjectCard);

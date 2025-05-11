@@ -16,19 +16,25 @@ export default defineConfig({
   build: {
     cssTarget: ['chrome100'],
     sourcemap: true,
-    /*rollupOptions: {
-        input: {
-            main: resolve(__dirname, 'src/renderer/index.html'),
-        },
-    },*/
     outDir: resolve(__dirname, 'out/web/'),
   },
+  worker: {
+    format: 'es',
+  },
   optimizeDeps: {
-    exclude: ["@ffmpeg/ffmpeg", "@ffmpeg/util"],
+    exclude: ["@ffmpeg/ffmpeg", "@ffmpeg/util", "web-gphoto2"],
   },
   resolve: {
     alias: {
       '~': resolve(__dirname),
+      '@components': resolve(__dirname, 'src/renderer/components/'),
+      '@core': resolve(__dirname, 'src/renderer/core/'),
+      '@views': resolve(__dirname, 'src/renderer/views/'),
+      '@icons': resolve(__dirname, 'src/renderer/icons/'),
+      '@hooks': resolve(__dirname, 'src/renderer/hooks/'),
+      '@config-web': resolve(__dirname, 'src/renderer/config.js'),
+      '@i18n': resolve(__dirname, 'src/renderer/i18n.js'),
+      '@common': resolve(__dirname, 'src/common/'),
     },
   },
   css: {
@@ -58,6 +64,10 @@ export default defineConfig({
         },
         {
           src: normalizePath(resolve(__dirname, 'node_modules/@ffmpeg/core/dist/esm/*')),
+          dest: '.',
+        },
+        {
+          src: normalizePath(resolve(__dirname, 'node_modules/web-gphoto2/build/*')),
           dest: '.',
         },
       ],

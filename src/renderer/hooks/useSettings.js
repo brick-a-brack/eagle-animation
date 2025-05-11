@@ -1,8 +1,10 @@
 import { useCallback, useEffect, useState } from 'react';
 
-import { currentLanguage, setLanguage } from '../i18n';
+import { currentLanguage, setLanguage } from '@i18n';
 
 const DEFAULT_SETTINGS = {
+  PLAY_FROM_BEGINING: false,
+  LOOP_SHOW_LIVE: true,
   CAMERA_ID: null,
   FORCE_QUALITY: false,
   CAPTURE_FRAMES: 1,
@@ -19,6 +21,8 @@ const DEFAULT_SETTINGS = {
   SOUNDS: true,
   REVERSE_X: false,
   REVERSE_Y: false,
+  LIMIT_NUMBER_OF_FRAMES: 0,
+  LIMIT_ACTIVITY_DURATION: 0,
 };
 
 function useSettings() {

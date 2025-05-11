@@ -1,0 +1,16 @@
+.notch {
+    background: var(--color-alert);
+    border-bottom-left-radius: var(--border-radius-medium);
+    border-bottom-right-radius: var(--border-radius-medium);
+    color: #fff;
+    font-size: var(--font-size-9);
+    height: 8px;
+    left: 50%;
+    line-height: 8px;
+    padding: var(--space-small) var(--space-medium);
+    position: fixed;
+    top: 62px;
+    transform: translateX(-50%);
+    user-select: none;
+    z-index: 9999;
+}

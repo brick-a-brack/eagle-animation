@@ -1,14 +1,13 @@
+import ActionCard from '@components/ActionCard';
+import FormGroup from '@components/FormGroup';
+import Heading from '@components/Heading';
+import Input from '@components/Input';
+import NumberInput from '@components/NumberInput';
+import Select from '@components/Select';
+import { parseRatio } from '@core/ratio';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { withTranslation } from 'react-i18next';
-
-import { parseRatio } from '../../core/ratio';
-import ActionCard from '../ActionCard';
-import FormGroup from '../FormGroup';
-import Heading from '../Heading';
-import Input from '../Input';
-import NumberInput from '../NumberInput';
-import Select from '../Select';
 
 import * as style from './style.module.css';
 
@@ -68,7 +67,7 @@ const ProjectSettingsWindow = ({ t, onProjectSettingsChange = () => {}, onProjec
         {t('Project settings')}
       </Heading>
       <FormGroup label={t('Project title')} description={t('The title of your animation')}>
-        <Input control={control} register={register('title')} />
+        <Input maxLength={25} placeholder={t('Title')} control={control} register={register('title')} />
       </FormGroup>
       <FormGroup label={t('Animation framerate')} description={t('The framerate used for your animation')}>
         <NumberInput style={{ marginLeft: 'var(--space-big)' }} min={1} max={60} tag={t('FPS')} register={register('fps')} />
@@ -84,7 +83,7 @@ const ProjectSettingsWindow = ({ t, onProjectSettingsChange = () => {}, onProjec
         )}
       </FormGroup>
       <FormGroup label={t('Delete')} description={t('Delete the project and all photos taken')}>
-        <ActionCard action={onProjectDelete} title={t('Delete')} sizeAuto secondary />
+        <ActionCard onClick={onProjectDelete} title={t('Delete')} sizeAuto secondary />
       </FormGroup>
     </div>
   );
