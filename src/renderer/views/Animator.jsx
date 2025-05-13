@@ -4,6 +4,7 @@ import HeaderBar from '@components/HeaderBar';
 import KeyboardHandler from '@components/KeyboardHandler';
 import LimitWarning from '@components/LimitWarning';
 import LoadingPage from '@components/LoadingPage';
+import MaskingWindow from '@components/MaskingWindow';
 import PageLayout from '@components/PageLayout';
 import Player from '@components/Player';
 import ProjectSettingsWindow from '@components/ProjectSettingsWindow';
@@ -107,6 +108,7 @@ const Animator = ({ t }) => {
   const [currentFrameId, setCurrentFrameId] = useState(false);
   const [deleteOnLiveViewConfirmation, setDeleteOnLiveViewConfirmation] = useState(false);
   const [disableKeyboardShortcuts, setDisableKeyboardShortcuts] = useState(false);
+  const [maskingEditorStatus, setMaskingEditorStatus] = useState(false);
 
   const { project, actions: projectActions } = useProject({ id });
 
@@ -393,6 +395,9 @@ const Animator = ({ t }) => {
         return values?.[values?.indexOf(previousState) + 1] || values?.[0];
       });
     },
+    MASKING_EDITOR: () => {
+      setMaskingEditorStatus(true);
+    }
   };
 
   const handlePlayerInit = (videoDOM = null, imageDOM = null) => {
@@ -517,6 +522,9 @@ const Animator = ({ t }) => {
           onProjectSettingsChange={handleProjectSettingsChange}
           onProjectDelete={() => handleAction('DELETE_PROJECT')}
         />
+      </Window>
+      <Window isOpened={maskingEditorStatus} onClose={() => setMaskingEditorStatus(false)} isFullScreen={true}>
+        <MaskingWindow />
       </Window>
     </>
   );

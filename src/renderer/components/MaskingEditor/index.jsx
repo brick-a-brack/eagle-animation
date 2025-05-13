@@ -1,10 +1,10 @@
-/*
 import resizeToFit from 'intrinsic-scale';
 import { isEqual } from 'lodash';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 
 import * as style from './style.module.css';
+import { output } from 'i18next-scanner.config';
 
 const drawArea = (ctx, x, y, width, height) => {
   ctx.fillRect(x, y, width, 1);
@@ -18,41 +18,38 @@ class MaskingEditor extends Component {
     super(props);
 
     this.dom = {
-        preview: React.createRef(),
-        alpha: React.createRef(),
+      alpha: React.createRef(),
+      output: React.createRef(),
     };
 
-    this.stop = () => {
-      
-        
+    this.images = {
+      foreground: null,
+      background: null,
     };
-
   }
 
-  componentDidMount() {
-   
-    
+  componentDidMount(props) {
+
+
   }
 
   componentDidUpdate(prevProps) {
-    
-    
+
   }
 
   componentWillUnmount() {
-   
-    
+
   }
 
-  const computeFrame = (canvasDom, background, foreground, alpha) => {
+  _computeFrame(canvasDom, background, foreground, alpha) {
 
-let backgroundLayer = background;
+    let backgroundLayer = background;
     if (!(background instanceof HTMLCanvasElement)) {
 
     }
 
 
-    
+
 
     const ctx = this.dom.picture.current.getContext('2d', { alpha: false });
     if (src === false) {
@@ -64,35 +61,6 @@ let backgroundLayer = background;
 
   }
 
-  drawGrid() {
-    const color = `rgba(255,255,255, ${this.props.gridOpacity}`;
-
-    const { width, height } = this.getSize();
-    const ctx = this.dom.grid.current.getContext('2d');
-    ctx.fillStyle = color;
-
-    if (this.props.gridModes?.includes('GRID')) {
-      for (let i = 0; i < this.props.gridColumns; i++) {
-        ctx.fillRect(Math.round((width * (i + 1)) / this.props.gridColumns), 0, 1, height);
-      }
-      for (let i = 0; i < this.props.gridLines; i++) {
-        ctx.fillRect(0, Math.round((height * (i + 1)) / this.props.gridLines), width, 1);
-      }
-    }
-
-    if (this.props.gridModes?.includes('CENTER')) {
-      const size = Math.round((20 / 1080) * height);
-      ctx.fillRect((width - size) / 2, (height - 2) / 2, size, 2);
-      ctx.fillRect((width - 2) / 2, (height - size) / 2, 2, size);
-    }
-
-    if (this.props.gridModes?.includes('MARGINS')) {
-      // 90% and 80%
-      drawArea(ctx, 0.05 * width, 0.05 * height, 0.9 * width, 0.9 * height);
-      drawArea(ctx, 0.1 * width, 0.1 * height, 0.8 * width, 0.8 * height);
-      // drawArea(ctx, 0.035 * width, 0.035 * height, 0.93 * width, 0.93 * height);
-    }
-  }
 
   drawFrame(src = false) {
     const ctx = this.dom.picture.current.getContext('2d', { alpha: false });
@@ -140,20 +108,20 @@ let backgroundLayer = background;
   }
 
   render() {
-    const { showGrid, onionValue, blendMode, isCameraReady, t, batteryStatus, ratioLayerOpacity, reverseX, reverseY } = this.props;
-
+    const {t } = this.props;
+    
     return (
       <div className={`${style.playerContainer}`}>
-          <canvas
-            ref={this.dom.preview}
-            className={style.layout}
-          />
-          <canvas
-            ref={this.dom.alpha}
-            className={style.layout}
-          />
-          <button>GOMME</button>
-          <button>ANTI-GOMME</button>
+        <canvas
+          ref={this.dom.alpha}
+          className={style.layout}
+        />
+        <canvas
+          ref={this.dom.output}
+          className={style.layout}
+        />
+        <button>GOMME</button>
+        <button>ANTI-GOMME</button>
       </div>
     );
   }
@@ -166,4 +134,3 @@ Player.propTypes = {
 };
 
 export default Player;
-*/

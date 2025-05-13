@@ -22,6 +22,7 @@ import { useForm } from 'react-hook-form';
 import { withTranslation } from 'react-i18next';
 
 import * as style from './style.module.css';
+import faPen from '@icons/faPen';
 
 const MASKING_MODES = {
   DISABLED: (t) => t('Disabled'),
@@ -83,6 +84,7 @@ const ControlBar = ({
         {!isPlaying && framePosition !== false && canDeduplicate && <Button title={t('Deduplicate frame')} onClick={handleAction('DEDUPLICATE')} icon={faImageCircleMinus} />}
         {!isPlaying && framePosition !== false && <Button title={t('Duplicate frame')} onClick={handleAction('DUPLICATE')} icon={faImageCirclePlus} />}
         {!isPlaying && framePosition !== false && <Button title={t('Remove frame')} onClick={handleAction('DELETE_FRAME')} icon={faImageSlash} />}
+        {!isPlaying && framePosition !== false && <Button title={t('Open masking editor')} onClick={handleAction('MASKING_EDITOR')} icon={faPen} />}
 
         <Button style={{ marginLeft: 'var(--space-big)' }} title={t('Difference')} selected={differenceStatus} onClick={handleAction('DIFFERENCE')} icon={faDiamondHalfStroke} />
         {(gridModes.includes('GRID') || gridModes.includes('CENTER') || gridModes.includes('MARGINS')) && (
