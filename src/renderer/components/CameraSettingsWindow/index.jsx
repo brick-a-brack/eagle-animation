@@ -172,7 +172,7 @@ const CameraSettingsWindow = ({
                 </div>
               )}
             </FormGroup>
-            {appCapabilities.includes('LOW_FRAMERATE_QUALITY_IMPROVEMENT') && watch('CAMERA_ID')?.startsWith('WEB-WEBCAM') && (
+            {appCapabilities.includes('LOW_FRAMERATE_QUALITY_IMPROVEMENT') && `${watch('CAMERA_ID') || ''}`?.startsWith('WEB-WEBCAM') && (
               <FormGroup
                 label={t('Improve quality by reducing preview framerate')}
                 description={t('Some cameras can take better quality pictures by reducing the framerate of the preview (Restart required)')}
