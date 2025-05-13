@@ -1,3 +1,4 @@
+import 'source-map-support/register';
 import { join } from 'node:path';
 
 import { electronApp, is, optimizer } from '@electron-toolkit/utils';

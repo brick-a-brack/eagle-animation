@@ -75,6 +75,7 @@
     "react-select": "^5.10.1",
     "react-tooltip": "^5.28.1",
     "rimraf": "^6.0.1",
+    "source-map-support": "^0.5.21",
     "uuid": "^11.1.0",
     "web-gphoto2": "^0.4.1"
   },
