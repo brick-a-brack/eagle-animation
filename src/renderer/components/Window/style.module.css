@@ -26,6 +26,11 @@
     transform: translate(0%, 101%);
     transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
     width: 100%;
+    box-sizing: border-box;
+}
+
+.window.fullscreen {
+  min-height: 100vh;
 }
 
 .content {
