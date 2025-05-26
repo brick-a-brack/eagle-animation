@@ -22,6 +22,7 @@ import { withTranslation } from 'react-i18next';
 import * as style from './style.module.css';
 import faEraserCirclePlus from '@icons/faEraserCirclePlus';
 import faEraserCircleMinus from '@icons/faEraserCircleMinus';
+import MaskingEditor from '@components/MaskingEditor';
 
 
 const MaskingWindow = ({
@@ -39,6 +40,7 @@ const MaskingWindow = ({
       <IconTabs tabs={categories} onClick={(e) => setSelectedTab(e.id)} />
       <div className={style.actions}>
         
+        <MaskingEditor />
     HERE
 
       </div>
