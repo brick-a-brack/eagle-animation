@@ -1,5 +1,8 @@
+import ActionCard from '@components/ActionCard';
+import useProjects from '@hooks/useProjects';
 import { useLayoutEffect } from 'react';
 import { withTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 
 import IconDone from './assets/done.svg?jsx';
 import IconQuit from './assets/quit.svg?jsx';
@@ -7,6 +10,17 @@ import IconQuit from './assets/quit.svg?jsx';
 import * as style from './style.module.css';
 
 const ExportOverlay = ({ t, publicCode = null, onCancel = null, isExporting = false, progress = 0 }) => {
+  const { actions: projectsActions } = useProjects();
+  const navigate = useNavigate();
+
+  const handleCreateProject = async () => {
+    console.log('create project');
+    const title = t('New project');
+    const project = await projectsActions.create(title);
+    navigate(`/animator/${project.id}/0`);
+    window.track('project_created', { projectId: project.id });
+  };
+
   useLayoutEffect(() => {
     document.body.style.overflow = 'hidden';
     return () => {
@@ -30,6 +44,8 @@ const ExportOverlay = ({ t, publicCode = null, onCancel = null, isExporting = fa
       {!isExporting && (
         <div className={style.done}>
           <IconDone />
+
+          {publicCode && <ActionCard className={style.codeValue} onClick={handleCreateProject} title={t('Create new project')} />}
         </div>
       )}
       {publicCode && (
