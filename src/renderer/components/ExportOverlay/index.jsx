@@ -35,19 +35,6 @@ const ExportOverlay = ({ t, publicCode = null, onCancel = null, isExporting = fa
           <IconQuit />
         </div>
       )}
-      {isExporting && (
-        <>
-          <span className={style.loader} />
-          <div className={style.progress}>{Math.min(100, Math.max(0, Math.round(progress * 100)))}%</div>
-        </>
-      )}
-      {!isExporting && (
-        <div className={style.done}>
-          <IconDone />
-
-          {publicCode && <ActionCard className={style.codeValue} onClick={handleCreateProject} title={t('Create new project')} />}
-        </div>
-      )}
       {publicCode && (
         <div className={style.code}>
           {t("You'll be able to get your film using this code:")}
@@ -57,6 +44,20 @@ const ExportOverlay = ({ t, publicCode = null, onCancel = null, isExporting = fa
               .reduce((acc, e, i) => acc + (i && i % 2 === 0 ? ' ' : '') + e, '')
               .trim()}
           </div>
+        </div>
+      )}
+      {isExporting && (
+        <div className={`${style.progressContainer} ${!publicCode && style.progressContainerCenter}`}>
+          <span className={style.loader} />
+          <div className={style.progress}>{Math.min(100, Math.max(0, Math.round(progress * 100)))}%</div>
+        </div>
+      )}
+      {!isExporting && (
+        <div className={style.doneContainer}>
+          <div className={style.done}>
+            <IconDone />
+          </div>
+          {publicCode && <ActionCard onClick={handleCreateProject} title={t('Create new project')} />}
         </div>
       )}
       {isExporting && <div className={style.info}>{t('Export will take a while, please be patient')}</div>}
