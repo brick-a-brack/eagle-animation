@@ -46,17 +46,17 @@ const ExportOverlay = ({ t, publicCode = null, onCancel = null, isExporting = fa
         </div>
       )}
       {isExporting && (
-        <div className={`${style.progressContainer} ${!publicCode && style.progressContainerCenter}`}>
+        <div className={`${style.progressContainer} ${!publicCode && style.containerCenter}`}>
           <span className={style.loader} />
           <div className={style.progress}>{Math.min(100, Math.max(0, Math.round(progress * 100)))}%</div>
         </div>
       )}
       {!isExporting && (
-        <div className={style.doneContainer}>
+        <div className={`${style.doneContainer} ${!publicCode && style.containerCenter}`}>
           <div className={style.done}>
             <IconDone />
           </div>
-          {publicCode && <ActionCard onClick={handleCreateProject} title={t('Create new project')} />}
+          {publicCode && <ActionCard onClick={handleCreateProject} title={t('Create new project')} sizeAuto />}
         </div>
       )}
       {isExporting && <div className={style.info}>{t('Export will take a while, please be patient')}</div>}
