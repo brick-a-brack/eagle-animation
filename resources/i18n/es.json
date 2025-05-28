@@ -22,6 +22,7 @@
   "Update available": "Actualización disponible",
   "Untitled": "Sin título",
   "New project": "Nuevo proyecto",
+  "Create new project": "Crear nuevo proyecto",
   "Stop": "Detener",
   "{{label}}": "{{label}}",
   "Capture": "Captura",
@@ -234,5 +235,6 @@
   "Current / Number of frames": "Actual / Número de fotogramas",
   "Captured → Exportable frames": "Capturadas → Fotogramas exportables",
   "Animation duration": "Duración de la animación",
-  "Untitled project": "Proyecto sin título"
+  "Untitled project": "Proyecto sin título",
+  "Create new project": "Crear nuevo proyecto"
 }
