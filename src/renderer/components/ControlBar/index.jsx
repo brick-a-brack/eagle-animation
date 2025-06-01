@@ -13,6 +13,7 @@ import faImageCirclePlus from '@icons/faImageCirclePlus';
 import faImageEye from '@icons/faImageEye';
 import faImageEyeSlash from '@icons/faImageEyeSlash';
 import faImageSlash from '@icons/faImageSlash';
+import faEraser from '@icons/faEraser';
 import faPlay from '@icons/faPlay';
 import faSliders from '@icons/faSliders';
 import faStop from '@icons/faStop';
@@ -21,6 +22,13 @@ import { useForm } from 'react-hook-form';
 import { withTranslation } from 'react-i18next';
 
 import * as style from './style.module.css';
+import faPen from '@icons/faPen';
+
+const MASKING_MODES = {
+  DISABLED: (t) => t('Disabled'),
+  UNIQUE: (t) => t('Unique'),
+  CONTINUOUS: (t) => t('Continuous'),
+};
 
 const ControlBar = ({
   gridStatus = false,
@@ -31,6 +39,7 @@ const ControlBar = ({
   isCameraReady = false,
   shortPlayStatus = false,
   loopStatus = false,
+  maskingMode = 'DISABLED',
   fps = 12,
   framePosition = false,
   frameQuantity = 0,
@@ -75,6 +84,7 @@ const ControlBar = ({
         {!isPlaying && framePosition !== false && canDeduplicate && <Button title={t('Deduplicate frame')} onClick={handleAction('DEDUPLICATE')} icon={faImageCircleMinus} />}
         {!isPlaying && framePosition !== false && <Button title={t('Duplicate frame')} onClick={handleAction('DUPLICATE')} icon={faImageCirclePlus} />}
         {!isPlaying && framePosition !== false && <Button title={t('Remove frame')} onClick={handleAction('DELETE_FRAME')} icon={faImageSlash} />}
+        {!isPlaying && framePosition !== false && <Button title={t('Open masking editor')} onClick={handleAction('MASKING_EDITOR')} icon={faPen} />}
 
         <Button style={{ marginLeft: 'var(--space-big)' }} title={t('Difference')} selected={differenceStatus} onClick={handleAction('DIFFERENCE')} icon={faDiamondHalfStroke} />
         {(gridModes.includes('GRID') || gridModes.includes('CENTER') || gridModes.includes('MARGINS')) && (
@@ -82,8 +92,15 @@ const ControlBar = ({
         )}
 
         <div className={`${style.slider} ${differenceStatus ? style.sliderDisabled : ''}`} id="onion" data-tooltip-content={t('Onion blending')}>
-          <CustomSlider step={0.01} min={0} max={1} value={onionValue} onChange={differenceStatus ? () => {} : (value) => handleAction('ONION_CHANGE', value)()} />
+          <CustomSlider step={0.01} min={0} max={1} value={onionValue} onChange={differenceStatus ? () => { } : (value) => handleAction('ONION_CHANGE', value)()} />
         </div>
+        <Button
+          title={t('Masking mode ({{status}})', { status: (MASKING_MODES[maskingMode] || MASKING_MODES.DISABLED)(t) })}
+          selected={maskingMode !== 'DISABLED'}
+          onClick={handleAction('TOOGLE_MASKING_MODE')}
+          size="mini"
+          icon={faEraser}
+        />
         <Button style={{ marginLeft: 'var(--space-big)' }} title={t('Camera settings')} selected={showCameraSettings} onClick={handleAction('CAMERA_SETTINGS')} icon={faSliders} />
       </div>
       <Button disabled={isTakingPicture || !isCameraReady} onClick={handleAction('TAKE_PICTURE')} color="primary" icon={faCamera} title={t('Take a picture')} />
