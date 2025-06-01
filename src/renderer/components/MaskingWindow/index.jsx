@@ -23,27 +23,38 @@ import * as style from './style.module.css';
 import faEraserCirclePlus from '@icons/faEraserCirclePlus';
 import faEraserCircleMinus from '@icons/faEraserCircleMinus';
 import MaskingEditor from '@components/MaskingEditor';
+import CustomSlider from '@components/CustomSlider';
+import faEye from '@icons/faEye';
 
 
 const MaskingWindow = ({
   t,
 }) => {
-  const [selectedTab, setSelectedTab] = useState(null);
+  const [selectedTab, setSelectedTab] = useState('REMOVE');
+  const [brushSize, setBrushSize] = useState(50);
 
   const categories = [
-    { id: 'REMOVE', icon: faEraserCirclePlus, title: t('Remove foreground')},
-    { id: 'RESTORE', icon: faEraserCircleMinus, title: t('Restore foreground')},
+    { id: 'REMOVE', icon: faEraserCircleMinus, title: t('Remove foreground') },
+    { id: 'RESTORE', icon: faEraserCirclePlus, title: t('Restore foreground') },
+    { id: 'PREVIEW', icon: faEye, title: t('Preview') },
   ].map((e, i) => ({ ...e, selected: selectedTab === e.id || (i === 0 && selectedTab === null) }));
-   
+
+  const backgroundLayer = '/background.jpg';
+  const foregroundLayer = '/foreground.jpg';
+  const transparentLayer = '/alpha.png';
+
   return (
     <>
       <IconTabs tabs={categories} onClick={(e) => setSelectedTab(e.id)} />
-      <div className={style.actions}>
-        
-        <MaskingEditor />
-    HERE
-
-      </div>
+      <br />
+      <CustomSlider step={1} min={10} max={90} value={brushSize} onChange={setBrushSize} />
+      <MaskingEditor
+        brushSize={brushSize}
+        backgroundLayer={backgroundLayer}
+        foregroundLayer={foregroundLayer}
+        transparentLayer={null}
+        mode={selectedTab}
+      />
     </>
   );
 };
