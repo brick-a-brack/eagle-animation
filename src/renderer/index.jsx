@@ -8,6 +8,13 @@ import { createRoot } from 'react-dom/client';
 import App from './App';
 import { BUILD, POSTHOG_HOST, POSTHOG_TOKEN } from './config';
 
+// Catch alt key to avoid to open menu
+window.addEventListener("keydown", (e) => {
+  if (e.altKey) {
+    e.preventDefault();
+  }
+});
+
 try {
   if (POSTHOG_TOKEN) {
     posthog.init(POSTHOG_TOKEN, {
@@ -17,14 +24,14 @@ try {
       disable_session_recording: true,
     });
   }
-} catch (err) {} // eslint-disable-line no-empty
+} catch (err) { } // eslint-disable-line no-empty
 
 window.track = (eventName, data = {}) => {
   try {
     if (POSTHOG_TOKEN) {
       posthog.capture(eventName, data);
     }
-  } catch (err) {} // eslint-disable-line no-empty
+  } catch (err) { } // eslint-disable-line no-empty
 };
 
 window.trackException = (error) => {
@@ -32,7 +39,7 @@ window.trackException = (error) => {
     if (POSTHOG_TOKEN) {
       posthog.captureException(error);
     }
-  } catch (err) {} // eslint-disable-line no-empty
+  } catch (err) { } // eslint-disable-line no-empty
 };
 
 globalThis.Buffer = Buffer;
@@ -55,7 +62,7 @@ window.EA = async (action, data) => {
   }
 };
 
-window.EAEvents = (name, callback = () => {}) => {
+window.EAEvents = (name, callback = () => { }) => {
   // IPC (Electron backend)
   if (typeof window.IPC !== 'undefined') {
     if (typeof callback !== 'undefined') {
