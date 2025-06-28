@@ -87,7 +87,7 @@
     "electron": "^37.1.0",
     "electron-builder": "24.13.3",
     "electron-vite": "^4.0.0-beta.0",
-    "eslint": "^8.57.0",
+    "eslint": "^9.30.0",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-simple-import-sort": "^12.1.1",
     "globals": "^16.2.0",
