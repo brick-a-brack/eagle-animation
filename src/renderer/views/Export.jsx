@@ -1,3 +1,4 @@
+import { floorResolution, floorResolutionValue, getBestResolution } from '@common/resolution';
 import ActionCard from '@components/ActionCard';
 import ExportOverlay from '@components/ExportOverlay';
 import FormGroup from '@components/FormGroup';
@@ -9,6 +10,7 @@ import PageContent from '@components/PageContent';
 import PageLayout from '@components/PageLayout';
 import Select from '@components/Select';
 import Switch from '@components/Switch';
+import { ALLOWED_LETTERS } from '@config-web';
 import { ExportFrames } from '@core/Export';
 import { parseRatio } from '@core/ratio';
 import { GetFrameResolutions } from '@core/ResolutionsCache';
@@ -19,9 +21,6 @@ import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { withTranslation } from 'react-i18next';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
-
-import { floorResolution, floorResolutionValue, getBestResolution } from '@common/resolution';
-import { ALLOWED_LETTERS } from '@config-web';
 
 const generateCustomUuid = (length) => {
   const array = new Uint32Array(length);
@@ -205,16 +204,16 @@ const Export = ({ t }) => {
       data.mode === 'send'
         ? null
         : await window.EA('EXPORT_SELECT_PATH', {
-          type: data.mode === 'video' ? 'FILE' : 'FOLDER',
-          format: data.format,
-          translations: {
-            EXPORT_FRAMES: t('Export animation frames'),
-            EXPORT_VIDEO: t('Export as video'),
-            DEFAULT_FILE_NAME: t('video'),
-            EXT_NAME: t('Video file'),
-          },
-          compress_as_zip: data.mode === 'frames' ? data.compressAsZip && appCapabilities.includes('EXPORT_FRAMES_ZIP') : false,
-        });
+            type: data.mode === 'video' ? 'FILE' : 'FOLDER',
+            format: data.format,
+            translations: {
+              EXPORT_FRAMES: t('Export animation frames'),
+              EXPORT_VIDEO: t('Export as video'),
+              DEFAULT_FILE_NAME: t('video'),
+              EXT_NAME: t('Video file'),
+            },
+            compress_as_zip: data.mode === 'frames' ? data.compressAsZip && appCapabilities.includes('EXPORT_FRAMES_ZIP') : false,
+          });
 
     // Cancel if result is null, (dialog closed)
     if (data.mode !== 'send' && outputPath === null) {

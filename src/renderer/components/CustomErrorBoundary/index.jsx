@@ -1,15 +1,15 @@
 import ActionCard from '@components/ActionCard';
+import { BUILD } from '@config-web';
+import useAppVersion from '@hooks/useAppVersion';
 import PropTypes from 'prop-types';
 import { Component } from 'react';
 import { withTranslation } from 'react-i18next';
 
 import * as style from './style.module.css';
-import useAppVersion from '@hooks/useAppVersion';
-import { BUILD } from '@config-web';
 
 const ReportButton = withTranslation()(({ t }) => {
-  const { actions } = useAppVersion()
-  return <ActionCard title={t('Report on Github')} onClick={() => actions?.openReportErrorPage()} sizeAuto secondary />
+  const { actions } = useAppVersion();
+  return <ActionCard title={t('Report on Github')} onClick={() => actions?.openReportErrorPage()} sizeAuto secondary />;
 });
 
 class CustomErrorBoundary extends Component {

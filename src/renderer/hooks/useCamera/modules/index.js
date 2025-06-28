@@ -1,8 +1,9 @@
+import { isBlink } from '@common/isBlink';
 import { DEVICE } from '@config-web';
+
 import { Camera as NativeProxyCamera, CameraBrowser as NativeProxyBrowser } from './NativeProxy';
 import { Camera as WebcamCamera, CameraBrowser as WebcamCameraBrowser } from './Webcam';
 import { Camera as WebGPhoto2Camera, CameraBrowser as WebGPhoto2CameraBrowser } from './WebGPhoto2';
-import { isBlink } from '@common/isBlink';
 
 const Cameras = [
   { browser: WebcamCameraBrowser, item: WebcamCamera },

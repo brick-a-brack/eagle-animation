@@ -1,6 +1,5 @@
-import { useCallback, useEffect, useState } from 'react';
-
 import { CONTRIBUTE_REPOSITORY, VERSION } from '@config-web';
+import { useCallback, useEffect, useState } from 'react';
 
 function useAppVersion() {
   const [latestVersion, setLatestVersion] = useState(null);
