@@ -1,3 +1,4 @@
+import { floorResolution, floorResolutionValue, getBestResolution } from '@common/resolution';
 import ActionCard from '@components/ActionCard';
 import ExportOverlay from '@components/ExportOverlay';
 import FormGroup from '@components/FormGroup';
@@ -9,6 +10,7 @@ import PageContent from '@components/PageContent';
 import PageLayout from '@components/PageLayout';
 import Select from '@components/Select';
 import Switch from '@components/Switch';
+import { ALLOWED_LETTERS } from '@config-web';
 import { ExportFrames } from '@core/Export';
 import { parseRatio } from '@core/ratio';
 import { GetFrameResolutions } from '@core/ResolutionsCache';
@@ -19,9 +21,6 @@ import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { withTranslation } from 'react-i18next';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
-
-import { floorResolution, floorResolutionValue, getBestResolution } from '@common/resolution';
-import { ALLOWED_LETTERS } from '@config-web';
 
 const generateCustomUuid = (length) => {
   const array = new Uint32Array(length);
@@ -192,9 +191,9 @@ const Export = ({ t }) => {
     setVideoRenderingProgress(0);
 
     const newCode = data.mode === 'send' ? await generateCustomUuid(8) : null;
+    setPublicCode(newCode);
 
     if (data.mode === 'send') {
-      setPublicCode(newCode);
       if (!project.title) {
         projectActions.rename(newCode);
       }

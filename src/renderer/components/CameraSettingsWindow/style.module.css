@@ -25,3 +25,8 @@
 .refreshIcon svg {
     vertical-align: middle;
 }
+
+
+.refreshIcon:hover {
+    background: var(--color-theme-light);
+}

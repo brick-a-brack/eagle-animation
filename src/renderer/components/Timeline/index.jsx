@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import faEyeSlash from '@icons/faEyeSlash';
 import faForwardFast from '@icons/faForwardFast';
 import animateScrollTo from 'animated-scroll-to';
-import { useLayoutEffect, useRef } from 'react';
+import { useEffect, useLayoutEffect, useRef } from 'react';
 import { withTranslation } from 'react-i18next';
 
 import * as style from './style.module.css';
@@ -65,6 +65,17 @@ const Timeline = ({ onSelect, onMove, select = false, pictures = [], playing = f
       },
     })
   );
+
+  useEffect(() => {
+    const callback = function (e) {
+      const activeElement = window.document.activeElement;
+      if (ref.current && (ref.current.contains(activeElement) || activeElement === ref.current) && ['ArrowLeft', 'ArrowRight'].includes(e.code)) {
+        e.preventDefault();
+      }
+    };
+    window.addEventListener('keydown', callback, false);
+    return () => window.removeEventListener('keydown', callback, false);
+  });
 
   useLayoutEffect(() => {
     const key = select === false ? '#timeline-frame-live' : `#timeline-frame-${select}`;

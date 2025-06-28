@@ -1,6 +1,5 @@
-import { useCallback, useEffect, useState } from 'react';
-
 import { currentLanguage, setLanguage } from '@i18n';
+import { useCallback, useEffect, useState } from 'react';
 
 const DEFAULT_SETTINGS = {
   PLAY_FROM_BEGINING: false,

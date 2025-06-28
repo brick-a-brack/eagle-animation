@@ -220,5 +220,8 @@
   "Current / Number of frames": "Текущее / Количество кадров",
   "Captured → Exportable frames": "Захвачено → Экспортируемые кадры",
   "Animation duration": "Длительность анимации",
-  "Untitled project": "Проект без названия"
+  "Untitled project": "Проект без названия",
+  "Report on Github": "Сообщить на Github",
+  "Build: {{id}}": "Сборка: {{id}}",
+  "Create new project": "Создать новый проект"
 }

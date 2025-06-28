@@ -219,5 +219,8 @@
   "Current / Number of frames": "Nykyinen / Kuvien määrä",
   "Captured → Exportable frames": "Tallennetut → Vientikelpoiset kuvat",
   "Animation duration": "Animaation kesto",
-  "Untitled project": "Nimeämätön projekti"
+  "Untitled project": "Nimeämätön projekti",
+  "Report on Github": "Ilmoita Githubissa",
+  "Build: {{id}}": "Rakenna: {{id}}",
+  "Create new project": "Luo uusi projekti"
 }

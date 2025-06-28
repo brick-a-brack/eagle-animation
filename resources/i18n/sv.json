@@ -219,5 +219,8 @@
   "Current / Number of frames": "Aktuell / Antal bilder",
   "Captured → Exportable frames": "Fångade → Exporterbara bilder",
   "Animation duration": "Animationens varaktighet",
-  "Untitled project": "Projekt utan titel"
+  "Untitled project": "Projekt utan titel",
+  "Report on Github": "Rapportera på Github",
+  "Build: {{id}}": "Bygga: {{id}}",
+  "Create new project": "Skapa nytt projekt"
 }

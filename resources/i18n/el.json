@@ -219,5 +219,8 @@
   "Current / Number of frames": "Τρέχουσα / Αριθμός καρέ",
   "Captured → Exportable frames": "Καταγεγραμμένες → Εξαγώγιμα καρέ",
   "Animation duration": "Διάρκεια της ανίμεσης",
-  "Untitled project": "Άτιτλο έργο"
+  "Untitled project": "Άτιτλο έργο",
+  "Report on Github": "Αναφορά στο Github",
+  "Build: {{id}}": "Δόμηση: {{id}}",
+  "Create new project": "Δημιουργία νέου έργου"
 }

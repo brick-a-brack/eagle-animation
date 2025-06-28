@@ -8,6 +8,13 @@ import { createRoot } from 'react-dom/client';
 import App from './App';
 import { BUILD, POSTHOG_HOST, POSTHOG_TOKEN } from './config';
 
+// Catch alt key to avoid to open menu
+window.addEventListener('keydown', (e) => {
+  if (e.altKey) {
+    e.preventDefault();
+  }
+});
+
 try {
   if (POSTHOG_TOKEN) {
     posthog.init(POSTHOG_TOKEN, {

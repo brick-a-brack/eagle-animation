@@ -1,8 +1,14 @@
 .background {
+    align-items: center;
     background: rgb(0 0 0 / 95%);
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
     height: 100vh;
+    justify-content: space-between;
     left: 0;
     overflow: hidden;
+    padding: calc(var(--space-huge) * 2);
     position: fixed;
     top: 0;
     width: 100%;
@@ -11,22 +17,11 @@
 
 .info,
 .code {
-    bottom: 5%;
     color: var(--color-white);
     font-size: var(--font-size-4);
-    left: 5%;
-    position: absolute;
     text-align: center;
     user-select: none;
     width: 90%;
-}
-
-.info {
-    bottom: 5%;
-}
-
-.code {
-    top: 5%;
 }
 
 .codeValue {
@@ -36,21 +31,36 @@
     margin-top: calc( 2 * var(--space-big));
 }
 
+.containerCenter {
+    margin: auto;
+}
+
+.progressContainer {
+    display: flex;
+    flex-direction: column;
+}
+
 .progress {
     color: var(--color-white);
     font-size: var(--font-size-4);
-    position: absolute;
+    margin-top: calc(24px + var(--space-huge));
     text-align: center;
-    top: calc(50% + 24px + var(--space-huge));
-    width:100%;
+    width: 100%;
+}
+
+.doneContainer {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-huge);
+    justify-content: center;
+    width: 100%;
 }
 
 .done {
     fill: var(--color-primary);
     height: 90px;
-    left: calc(50% - 45px);
-    position: absolute;
-    top: calc(50% - 45px);
+    margin: auto;
     width: 90px;
 }
 
@@ -58,9 +68,6 @@
     animation: 1s linear infinite rotate;
     background: var(--color-primary);
     height: 48px;
-    left: calc(50% - 24px);
-    position: absolute;
-    top: calc(50% - 24px);
     width: 48px;
 }
 
