@@ -220,5 +220,8 @@
   "Current / Number of frames": "Aktuální / Počet snímků",
   "Captured → Exportable frames": "Zachycené → Exportovatelné snímky",
   "Animation duration": "Doba trvání animace",
-  "Untitled project": "Projekt bez názvu"
+  "Untitled project": "Projekt bez názvu",
+  "Report on Github": "Nahlásit na Githubu",
+  "Build: {{id}}": "Sestavení: {{id}}",
+  "Create new project": "Vytvořit nový projekt"
 }

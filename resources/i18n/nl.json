@@ -219,5 +219,8 @@
   "Current / Number of frames": "Huidige / Aantal frames",
   "Captured → Exportable frames": "Vastgelegd → Exporteerbare frames",
   "Animation duration": "Duur van de animatie",
-  "Untitled project": "Project zonder titel"
+  "Untitled project": "Project zonder titel",
+  "Report on Github": "Melden op Github",
+  "Build: {{id}}": "Bouwen: {{id}}",
+  "Create new project": "Creëer een nieuw project"
 }

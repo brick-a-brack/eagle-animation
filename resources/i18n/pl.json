@@ -235,5 +235,8 @@
   "Current / Number of frames": "Aktualna / Liczba klatek",
   "Captured → Exportable frames": "Zarejestrowane → Eksportowalne klatki",
   "Animation duration": "Czas trwania animacji",
-  "Untitled project": "Projekt bez tytułu"
+  "Untitled project": "Projekt bez tytułu",
+  "Report on Github": "Zgłoś na Githubie",
+  "Build: {{id}}": "Build: {{id}}",
+  "Create new project": "Utwórz nowy projekt"
 }

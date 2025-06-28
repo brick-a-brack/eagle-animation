@@ -233,5 +233,8 @@
   "Current / Number of frames": "Actuelle / Nombre de photos",
   "Captured → Exportable frames": "Enregistrées → Images exportables",
   "Animation duration": "Durée de l'animation",
-  "Untitled project": "Projet sans titre"
+  "Untitled project": "Projet sans titre",
+  "Report on Github": "Signaler sur Github",
+  "Build: {{id}}": "Build: {{id}}",
+  "Create new project": "Créer un nouveau projet"
 }

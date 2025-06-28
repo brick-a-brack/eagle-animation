@@ -220,5 +220,8 @@
   "Current / Number of frames": "Trenutna / Broj slika",
   "Captured → Exportable frames": "Snimljeno → Izvozive slike",
   "Animation duration": "Trajanje animacije",
-  "Untitled project": "Projekt bez naslova"
+  "Untitled project": "Projekt bez naslova",
+  "Report on Github": "Prijavi na Githubu",
+  "Build: {{id}}": "Izgradnja: {{id}}",
+  "Create new project": "Kreiraj novi projekt"
 }
