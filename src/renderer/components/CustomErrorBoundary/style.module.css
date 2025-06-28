@@ -38,40 +38,40 @@ h1.error {
 h2.error {
     font-size: 20px;
     line-height: 20px;
+    margin-bottom: var(--space-big);
     text-transform: none;
     white-space: normal;
-    margin-bottom: var(--space-big);
 }
 
 .actions {
     color: var(--color-white);
     display: flex;
     font-family: 'Open Sans', sans-serif;
+    gap: var(--space-medium);
     justify-content: center;
     margin-top: 50px;
-    user-select: none;
-    gap: var(--space-medium)
+    user-select: none
 }
 
 .stack,
 .version {
-    overflow: auto;
     background: var(--color-theme-light);
     border-radius: var(--border-radius-medium);
-    padding: var(--space-medium);
-    text-align: left;
     box-sizing: border-box;
     color: var(--color-white);
+    overflow: auto;
+    padding: var(--space-medium);
+    text-align: left;
 }
 
 .version {
     background: var(--color-theme-light);
     border-radius: var(--border-radius-medium);
-    padding: var(--space-medium);
-    display: inline-block;
-    margin: auto;
     box-sizing: border-box;
     color: var(--color-white);
+    display: inline-block;
+    margin: auto;
+    padding: var(--space-medium);
 }
 
 .stack::-webkit-scrollbar {
