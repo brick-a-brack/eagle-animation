@@ -17,9 +17,15 @@ export default defineConfig({
     plugins: [externalizeDepsPlugin()],
   },
   preload: {
+    build: {
+      sourcemap: true,
+    },
     plugins: [externalizeDepsPlugin()],
   },
   renderer: {
+    build: {
+      sourcemap: true,
+    },
     worker: {
       format: 'es',
     },

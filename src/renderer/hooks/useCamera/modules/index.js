@@ -2,11 +2,12 @@ import { DEVICE } from '@config-web';
 import { Camera as NativeProxyCamera, CameraBrowser as NativeProxyBrowser } from './NativeProxy';
 import { Camera as WebcamCamera, CameraBrowser as WebcamCameraBrowser } from './Webcam';
 import { Camera as WebGPhoto2Camera, CameraBrowser as WebGPhoto2CameraBrowser } from './WebGPhoto2';
+import { isBlink } from '@common/isBlink';
 
 const Cameras = [
   { browser: WebcamCameraBrowser, item: WebcamCamera },
   ...(DEVICE === 'ELECTRON' ? [{ browser: NativeProxyBrowser, item: NativeProxyCamera }] : []),
-  ...(DEVICE === 'WEB' ? [{ browser: WebGPhoto2CameraBrowser, item: WebGPhoto2Camera }] : []),
+  ...(DEVICE === 'WEB' && isBlink() ? [{ browser: WebGPhoto2CameraBrowser, item: WebGPhoto2Camera }] : []),
 ];
 
 let cachedCameras = {};
