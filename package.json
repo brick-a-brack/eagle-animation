@@ -59,7 +59,7 @@
     "jszip": "^3.10.1",
     "lodash": "^4.17.21",
     "mkdirp": "^3.0.1",
-    "node-fetch": "^2.6.8",
+    "node-fetch": "^3.3.2",
     "p-limit": "^6.2.0",
     "path-browserify": "^1.0.1",
     "postcss-media-minmax": "^5.0.0",
