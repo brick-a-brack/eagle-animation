@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import faPen from '@icons/faPen';
+import faSlidersUp from '@icons/faSlidersUp';
 import { withTranslation } from 'react-i18next';
 
 import * as style from './style.module.css';
@@ -22,7 +22,7 @@ const ProjectTitle = ({ title = '', onTitleChange = () => {}, onEdit = () => {},
         }}
       />
       <div className={style.action} onClick={onEdit}>
-        <FontAwesomeIcon icon={faPen} />
+        <FontAwesomeIcon icon={faSlidersUp} />
       </div>
     </div>
   );
