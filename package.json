@@ -50,7 +50,7 @@
     "animated-scroll-to": "^2.3.2",
     "compare-versions": "^6.1.1",
     "dexie": "^4.0.11",
-    "env-paths": "^2.2.1",
+    "env-paths": "^3.0.0",
     "ffmpeg-static": "^5.2.0",
     "file-saver": "^2.0.5",
     "i18next-browser-languagedetector": "^8.2.0",
