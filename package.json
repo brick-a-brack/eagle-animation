@@ -69,7 +69,7 @@
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-hook-form": "^7.59.0",
-    "react-i18next": "^15.5.3",
+    "react-i18next": "^15.6.0",
     "react-keyboard-event-handler": "^1.5.4",
     "react-router-dom": "^7.6.3",
     "react-select": "^5.10.1",
