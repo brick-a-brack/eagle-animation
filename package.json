@@ -80,7 +80,7 @@
     "web-gphoto2": "^0.4.1"
   },
   "devDependencies": {
-    "@electron-toolkit/eslint-config": "^1.0.2",
+    "@electron-toolkit/eslint-config": "^2.1.0",
     "@electron-toolkit/eslint-config-prettier": "^2.0.0",
     "@vitejs/plugin-react": "^4.6.0",
     "buffer": "^6.0.3",
