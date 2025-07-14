@@ -72,7 +72,7 @@
     "react-i18next": "^15.6.0",
     "react-keyboard-event-handler": "^1.5.4",
     "react-router-dom": "^7.6.3",
-    "react-select": "^5.10.1",
+    "react-select": "^5.10.2",
     "react-tooltip": "^5.29.1",
     "rimraf": "^6.0.1",
     "source-map-support": "^0.5.21",
