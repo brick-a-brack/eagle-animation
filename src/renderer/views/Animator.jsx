@@ -4,6 +4,7 @@ import HeaderBar from '@components/HeaderBar';
 import KeyboardHandler from '@components/KeyboardHandler';
 import LimitWarning from '@components/LimitWarning';
 import LoadingPage from '@components/LoadingPage';
+import MaskingWindow from '@components/MaskingWindow';
 import PageLayout from '@components/PageLayout';
 import Player from '@components/Player';
 import ProjectSettingsWindow from '@components/ProjectSettingsWindow';
@@ -94,6 +95,7 @@ const Animator = ({ t }) => {
   const { settings, actions: settingsActions } = useSettings();
   const { appCapabilities } = useAppCapabilities();
   const [showCameraSettings, setShowCameraSettings] = useState(false);
+  const [maskingMode, setMaskingMode] = useState('DISABLED');
   const [showProjectSettings, setShowProjectSettings] = useState(false);
   const [isTakingPicture, setIsTakingPicture] = useState(false);
   const [loopStatus, setLoopStatus] = useState(false);
@@ -106,6 +108,7 @@ const Animator = ({ t }) => {
   const [currentFrameId, setCurrentFrameId] = useState(false);
   const [deleteOnLiveViewConfirmation, setDeleteOnLiveViewConfirmation] = useState(false);
   const [disableKeyboardShortcuts, setDisableKeyboardShortcuts] = useState(false);
+  const [maskingEditorStatus, setMaskingEditorStatus] = useState(false);
 
   const { project, actions: projectActions } = useProject({ id });
 
@@ -386,6 +389,15 @@ const Animator = ({ t }) => {
     FPS_BLUR: () => {
       setDisableKeyboardShortcuts(false);
     },
+    TOOGLE_MASKING_MODE: () => {
+      setMaskingMode((previousState) => {
+        const values = ['DISABLED', 'UNIQUE', 'CONTINUOUS'];
+        return values?.[values?.indexOf(previousState) + 1] || values?.[0];
+      });
+    },
+    MASKING_EDITOR: () => {
+      setMaskingEditorStatus(true);
+    }
   };
 
   const handlePlayerInit = (videoDOM = null, imageDOM = null) => {
@@ -476,6 +488,7 @@ const Animator = ({ t }) => {
             frameQuantity={pictures.length}
             isCurrentFrameHidden={!!currentFrame.hidden}
             totalAnimationFrames={totalAnimationFrames}
+            maskingMode={maskingMode}
           />
           <Timeline
             pictures={pictures}
@@ -509,6 +522,9 @@ const Animator = ({ t }) => {
           onProjectSettingsChange={handleProjectSettingsChange}
           onProjectDelete={() => handleAction('DELETE_PROJECT')}
         />
+      </Window>
+      <Window isOpened={maskingEditorStatus} onClose={() => setMaskingEditorStatus(false)} isFullScreen={true}>
+        <MaskingWindow />
       </Window>
     </>
   );
