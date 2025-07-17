@@ -104,7 +104,7 @@
     "vite": "^7.0.4",
     "vite-plugin-static-copy": "^3.1.1",
     "vite-plugin-svgr": "^4.3.0",
-    "vite-plugin-top-level-await": "^1.5.0"
+    "vite-plugin-top-level-await": "^1.6.0"
   },
   "optionalDependencies": {
     "@brick-a-brack/napi-canon-cameras": "0.1.5"
