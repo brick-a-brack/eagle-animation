@@ -63,7 +63,7 @@
     "p-limit": "^6.2.0",
     "path-browserify": "^1.0.1",
     "postcss-media-minmax": "^5.0.0",
-    "posthog-js": "^1.257.2",
+    "posthog-js": "^1.258.2",
     "prop-types": "^15.8.1",
     "rc-slider": "^11.1.8",
     "react": "^19.1.0",
