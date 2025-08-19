@@ -6,7 +6,7 @@ import { useLayoutEffect, useRef } from 'react';
 
 import * as style from './style.module.css';
 
-const Window = ({ children, onClose = () => {}, isOpened = false }) => {
+const Window = ({ children, onClose = () => {}, isOpened = false, isFullScreen = false }) => {
   const ref = useRef();
   const mouseDownTarget = useRef();
 
@@ -29,7 +29,7 @@ const Window = ({ children, onClose = () => {}, isOpened = false }) => {
         mouseDownTarget.current = event.target;
       }}
     >
-      <div className={style.window} ref={ref}>
+      <div className={`${style.window} ${isFullScreen ? style.fullscreen : ''}`} ref={ref}>
         <div>
           <div className={style.close} onClick={onClose}>
             <FontAwesomeIcon icon={faXmark} />
