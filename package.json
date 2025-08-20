@@ -49,7 +49,7 @@
     "@fortawesome/react-fontawesome": "^0.2.3",
     "animated-scroll-to": "^2.3.2",
     "compare-versions": "^6.1.1",
-    "dexie": "^4.0.11",
+    "dexie": "^4.2.0",
     "env-paths": "^2.2.1",
     "ffmpeg-static": "^5.2.0",
     "file-saver": "^2.0.5",
