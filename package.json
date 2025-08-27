@@ -46,7 +46,7 @@
     "@ffmpeg/ffmpeg": "^0.12.15",
     "@ffmpeg/util": "^0.12.2",
     "@fortawesome/fontawesome-svg-core": "^7.0.0",
-    "@fortawesome/react-fontawesome": "^3.0.0",
+    "@fortawesome/react-fontawesome": "^3.0.1",
     "animated-scroll-to": "^2.3.2",
     "compare-versions": "^6.1.1",
     "dexie": "^4.2.0",
