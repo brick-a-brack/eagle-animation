@@ -86,7 +86,7 @@
     "buffer": "^6.0.3",
     "electron": "^38.1.2",
     "electron-builder": "24.13.3",
-    "electron-vite": "^4.0.0",
+    "electron-vite": "^4.0.1",
     "eslint": "8.57.0",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-simple-import-sort": "^12.1.1",
