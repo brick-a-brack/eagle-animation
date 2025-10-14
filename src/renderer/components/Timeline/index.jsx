@@ -77,6 +77,8 @@ const Timeline = ({ onSelect, onMove, select = false, pictures = [], playing = f
     return () => window.removeEventListener('keydown', callback, false);
   });
 
+  const picturesKey = getPicturesKey(pictures);
+
   useLayoutEffect(() => {
     const key = select === false ? '#timeline-frame-live' : `#timeline-frame-${select}`;
     if (document.querySelector(key)) {
@@ -90,7 +92,7 @@ const Timeline = ({ onSelect, onMove, select = false, pictures = [], playing = f
         horizontalOffset: (-window.innerWidth + document.querySelector(key).getBoundingClientRect().width) / 2,
       });
     }
-  }, [select, getPicturesKey(pictures), playing]);
+  }, [select, picturesKey, playing]);
 
   const getIndex = (id) => pictures.findIndex((e) => `${e.id}` === `${id}`);
 
