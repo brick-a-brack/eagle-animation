@@ -44,7 +44,7 @@ function useSettings() {
       ...DEFAULT_SETTINGS,
       ...definedSettings,
     });
-  });
+  }, []);
 
   // Set action
   const actionSetSettings = useCallback(async (newSettings) => {
@@ -66,7 +66,7 @@ function useSettings() {
 
     setSettings(computedNewSettings);
     await window.EA('SAVE_SETTINGS', { settings: computedNewSettings });
-  });
+  }, []);
 
   return {
     settings,
