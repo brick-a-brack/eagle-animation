@@ -7,9 +7,9 @@ const defaultState = { component: null, props: {} };
 export const WindowContext = createContext({
   component: null,
   actions: {
-    open() { },
-    loading() { },
-    close() { },
+    open() {},
+    loading() {},
+    close() {},
   },
 });
 
@@ -54,7 +54,7 @@ export const WindowProvider = ({ children }) => {
         setOpenState(false);
       }
     })();
-  }, [pathname]);
+  }, [pathname, openState]);
 
   return (
     <WindowContext.Provider value={{ isOpened: openState, component: state.component, props: state.props, actions }}>
