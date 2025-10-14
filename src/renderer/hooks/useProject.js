@@ -12,7 +12,7 @@ function useProject(options) {
     window.EA('GET_PROJECT', { project_id: options.id }).then((data) => {
       setProjectData(data);
     });
-  }, [options.id]);
+  }, [options?.id]);
 
   // Project preview clock
   useEffect(() => {
@@ -33,9 +33,9 @@ function useProject(options) {
           delete d.project.scenes[trackIndex].pictures[pictureIndex].link;
         }
       }
-      window.EA('SAVE_PROJECT', { project_id: options.id, data: d });
+      window.EA('SAVE_PROJECT', { project_id: options?.id, data: d });
     }
-  }, [JSON.stringify(projectData)]);
+  }, [projectData, options?.id]);
 
   // Action change FPS
   const actionChangeFPS = useCallback(async (trackId, fps = 1) => {
@@ -49,7 +49,7 @@ function useProject(options) {
         return d;
       });
     }
-  });
+  }, []);
 
   // Action change ratio
   const actionChangeRatio = useCallback(async (trackId, ratio = null) => {
@@ -61,7 +61,7 @@ function useProject(options) {
       }
       return d;
     });
-  });
+  }, []);
 
   // Action unhideFrame
   const actionApplyHiddenFrameStatus = useCallback(async (trackId, frameId, isHidden = false) => {
@@ -73,7 +73,7 @@ function useProject(options) {
       }
       return d;
     });
-  });
+  }, []);
 
   // Action apply duplicate frame offset
   const actionApplyDuplicateFrameOffset = useCallback(async (trackId, frameId, offset = 0) => {
@@ -92,7 +92,7 @@ function useProject(options) {
       }
       return d;
     });
-  });
+  }, []);
 
   // Action clone frame
   const actionCloneFrame = useCallback(async (trackId, frameId) => {
@@ -111,7 +111,7 @@ function useProject(options) {
       }
       return d;
     });
-  });
+  }, []);
 
   // Action delete frame
   const actionDeleteFrame = useCallback(async (trackId, frameId) => {
@@ -123,7 +123,7 @@ function useProject(options) {
       }
       return d;
     });
-  });
+  }, []);
 
   // Action rename
   const actionRename = useCallback(async (title) => {
@@ -132,7 +132,7 @@ function useProject(options) {
       d.project.title = title || '';
       return d;
     });
-  });
+  }, []);
 
   // Action delete frame
   const actionMoveFrame = useCallback(async (trackId, frameId, beforeFrameId = false) => {
@@ -156,32 +156,35 @@ function useProject(options) {
       }
       return d;
     });
-  });
+  }, []);
 
   // Action add frame
-  const actionAddFrame = useCallback(async (trackId, buffer, extension = 'jpg', beforeFrameId = false) => {
-    const sceneId = Number(trackId);
-    const addedPicture = await window.EA('SAVE_PICTURE', {
-      project_id: options?.id,
-      track_id: sceneId,
-      buffer,
-      extension: ['png', 'jpg', 'webp'].includes(extension?.toLowerCase()) ? extension?.toLowerCase() : 'jpg',
-    });
+  const actionAddFrame = useCallback(
+    async (trackId, buffer, extension = 'jpg', beforeFrameId = false) => {
+      const sceneId = Number(trackId);
+      const addedPicture = await window.EA('SAVE_PICTURE', {
+        project_id: options?.id,
+        track_id: sceneId,
+        buffer,
+        extension: ['png', 'jpg', 'webp'].includes(extension?.toLowerCase()) ? extension?.toLowerCase() : 'jpg',
+      });
 
-    setProjectData((oldData) => {
-      let d = structuredClone(oldData);
-      if (d.project.scenes[sceneId]) {
-        const newId = Math.max(0, ...d.project.scenes[sceneId].pictures.map((e) => e.id)) + 1;
-        const index = beforeFrameId === false ? -1 : d.project.scenes[sceneId].pictures.findIndex((f) => `${f.id}` === `${beforeFrameId}`);
-        if (index >= 0) {
-          d.project.scenes[sceneId].pictures = [...d.project.scenes[sceneId].pictures.slice(0, index), { ...addedPicture, id: newId }, ...d.project.scenes[sceneId].pictures.slice(index)];
-        } else {
-          d.project.scenes[sceneId].pictures = [...d.project.scenes[sceneId].pictures, { ...addedPicture, id: newId }];
+      setProjectData((oldData) => {
+        let d = structuredClone(oldData);
+        if (d.project.scenes[sceneId]) {
+          const newId = Math.max(0, ...d.project.scenes[sceneId].pictures.map((e) => e.id)) + 1;
+          const index = beforeFrameId === false ? -1 : d.project.scenes[sceneId].pictures.findIndex((f) => `${f.id}` === `${beforeFrameId}`);
+          if (index >= 0) {
+            d.project.scenes[sceneId].pictures = [...d.project.scenes[sceneId].pictures.slice(0, index), { ...addedPicture, id: newId }, ...d.project.scenes[sceneId].pictures.slice(index)];
+          } else {
+            d.project.scenes[sceneId].pictures = [...d.project.scenes[sceneId].pictures, { ...addedPicture, id: newId }];
+          }
         }
-      }
-      return d;
-    });
-  });
+        return d;
+      });
+    },
+    [options?.id]
+  );
 
   // Load image and compute previews
   useEffect(() => {
@@ -227,7 +230,7 @@ function useProject(options) {
         }
       }
     }
-  }, [JSON.stringify(projectData), projectClock]);
+  }, [projectData, projectClock, options?.id]);
 
   const bindPreviewPictures = (pData) => {
     if (!pData?.project) {
