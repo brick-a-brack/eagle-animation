@@ -43,71 +43,80 @@ function useCamera(options = {}) {
         console.error(e);
       }
     }
-  });
+  }, []);
 
   // Action refresh devices list
   const actionRefreshDevices = useCallback(() => {
     getCameras().then((cameras) => setDevices(cameras.map(applyCameraLabel)));
-  });
+  }, []);
 
   // Action to set DOM refs
-  const actionSetDomRefs = useCallback(async ({ videoDOM, imageDOM }) => {
-    if (!domRefs.current) {
-      domRefs.current = {};
-    }
-    domRefs.current.videoDOM = videoDOM;
-    domRefs.current.imageDOM = imageDOM;
-    if (currentCamera) {
-      await currentCamera.connect({ videoDOM: domRefs.current.videoDOM, imageDOM: domRefs.current.imageDOM }, options, () => {
-        getCameras().then((cameras) => setDevices(cameras.map(applyCameraLabel)));
-      });
-      flushCanvas(domRefs.current.imageDOM);
-      triggerEvent('connect');
-      currentCamera.getCapabilities().then(setCameraCapabilities);
-    }
-  });
+  const actionSetDomRefs = useCallback(
+    async ({ videoDOM, imageDOM }) => {
+      if (!domRefs.current) {
+        domRefs.current = {};
+      }
+      domRefs.current.videoDOM = videoDOM;
+      domRefs.current.imageDOM = imageDOM;
+      if (currentCamera) {
+        await currentCamera.connect({ videoDOM: domRefs.current.videoDOM, imageDOM: domRefs.current.imageDOM }, options, () => {
+          getCameras().then((cameras) => setDevices(cameras.map(applyCameraLabel)));
+        });
+        flushCanvas(domRefs.current.imageDOM);
+        triggerEvent('connect');
+        currentCamera.getCapabilities().then(setCameraCapabilities);
+      }
+    },
+    [currentCamera, options, triggerEvent]
+  );
 
   // Action set camera
-  const actionSetCamera = useCallback(async (cameraId) => {
-    const cameras = await getCameras();
-    const deviceId = cameras.find((e) => e.id === cameraId)?.id || cameras?.[0]?.id || null;
-    if (deviceId !== currentCameraId) {
-      if (currentCamera) {
-        setCurrentCameraId(null);
-        setCurrentCamera(null);
-        currentCamera?.disconnect();
-        triggerEvent('disconnect');
-        flushCanvas(domRefs.current.imageDOM);
-      }
-      if (deviceId) {
-        setCurrentCameraId(deviceId);
-        const camera = getCamera(deviceId);
-        if (domRefs?.current?.videoDOM && domRefs?.current?.imageDOM) {
-          await camera?.connect({ videoDOM: domRefs?.current?.videoDOM, imageDOM: domRefs?.current?.imageDOM }, options, () => {
-            getCameras().then((cameras) => setDevices(cameras.map(applyCameraLabel)));
-          });
-          triggerEvent('connect');
+  const actionSetCamera = useCallback(
+    async (cameraId) => {
+      const cameras = await getCameras();
+      const deviceId = cameras.find((e) => e.id === cameraId)?.id || cameras?.[0]?.id || null;
+      if (deviceId !== currentCameraId) {
+        if (currentCamera) {
+          setCurrentCameraId(null);
+          setCurrentCamera(null);
+          currentCamera?.disconnect();
+          triggerEvent('disconnect');
+          flushCanvas(domRefs.current.imageDOM);
         }
-        setCurrentCamera(camera);
-        camera?.getCapabilities().then(setCameraCapabilities);
-      } else {
-        setCurrentCameraId(null);
-        setCurrentCamera(null);
-        setCameraCapabilities([]);
+        if (deviceId) {
+          setCurrentCameraId(deviceId);
+          const camera = getCamera(deviceId);
+          if (domRefs?.current?.videoDOM && domRefs?.current?.imageDOM) {
+            await camera?.connect({ videoDOM: domRefs?.current?.videoDOM, imageDOM: domRefs?.current?.imageDOM }, options, () => {
+              getCameras().then((cameras) => setDevices(cameras.map(applyCameraLabel)));
+            });
+            triggerEvent('connect');
+          }
+          setCurrentCamera(camera);
+          camera?.getCapabilities().then(setCameraCapabilities);
+        } else {
+          setCurrentCameraId(null);
+          setCurrentCamera(null);
+          setCameraCapabilities([]);
+        }
       }
-    }
 
-    // Force refresh devices list, to handle permission issues on specific browsers
-    getCameras().then((cameras) => setDevices(cameras.map(applyCameraLabel)));
-  });
+      // Force refresh devices list, to handle permission issues on specific browsers
+      getCameras().then((cameras) => setDevices(cameras.map(applyCameraLabel)));
+    },
+    [currentCameraId, currentCamera, options, triggerEvent]
+  );
 
   // Action take picture
-  const actionTakePicture = useCallback(async (nbFramesToTake = 1, reverseX = false, reverseY = false) => {
-    if (currentCamera) {
-      return takePicture(currentCamera, nbFramesToTake, reverseX, reverseY);
-    }
-    return null;
-  });
+  const actionTakePicture = useCallback(
+    async (nbFramesToTake = 1, reverseX = false, reverseY = false) => {
+      if (currentCamera) {
+        return takePicture(currentCamera, nbFramesToTake, reverseX, reverseY);
+      }
+      return null;
+    },
+    [currentCamera]
+  );
 
   // Reset capabilities
   const actionCapabilitesReset = useCallback(async () => {
@@ -118,17 +127,17 @@ function useCamera(options = {}) {
         currentCamera.getCapabilities().then(setCameraCapabilities);
       }
     }, 0);
-  });
+  }, [currentCamera]);
 
   // Add event listener
   const actionAddEventListener = useCallback(async (name, callback) => {
     eventsRefs.current.push([name, callback]);
-  });
+  }, []);
 
   // Remove event listener
   const actionRemoveEventListener = useCallback(async (name, callback) => {
     eventsRefs.current = eventsRefs.current.filter((e) => e[0] !== name || e[1] !== callback);
-  });
+  }, []);
 
   // Update camera capabilities
   useEffect(() => {
@@ -156,7 +165,7 @@ function useCamera(options = {}) {
   const actionSetCapability = useCallback((id, value) => {
     capabilitiesIntervals.current[id] = value;
     setCameraCapabilities((oldState) => oldState.map((e) => (e.id === id ? { ...e, value } : e)));
-  });
+  }, []);
 
   return {
     isCameraReady: isReady,
