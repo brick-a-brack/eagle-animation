@@ -7,9 +7,9 @@ const defaultState = { component: null, props: {} };
 export const WindowContext = createContext({
   component: null,
   actions: {
-    open() {},
-    loading() {},
-    close() {},
+    open() { },
+    loading() { },
+    close() { },
   },
 });
 
@@ -49,7 +49,11 @@ export const WindowProvider = ({ children }) => {
   );
 
   useEffect(() => {
-    if (openState) setOpenState(false);
+    (() => {
+      if (openState) {
+        setOpenState(false);
+      }
+    })();
   }, [pathname]);
 
   return (
