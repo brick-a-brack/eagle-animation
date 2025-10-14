@@ -50,7 +50,7 @@ function useProjects(options) {
     window.EA('GET_PROJECTS').then((data) => {
       setProjectsData(data);
     });
-  });
+  }, []);
 
   useEffect(() => {
     if (!projectsData) {
@@ -85,14 +85,17 @@ function useProjects(options) {
     let d = await window.EA('GET_PROJECT', { project_id: projectId });
     d.project.title = title || '';
     window.EA('SAVE_PROJECT', { project_id: projectId, data: d });
-  });
+  }, []);
 
   // Action create
-  const actionCreate = useCallback(async (title = '') => {
-    const project = await window.EA('NEW_PROJECT', { title });
-    actionRefresh();
-    return project;
-  });
+  const actionCreate = useCallback(
+    async (title = '') => {
+      const project = await window.EA('NEW_PROJECT', { title });
+      actionRefresh();
+      return project;
+    },
+    [actionRefresh]
+  );
 
   return {
     projects: projectsData?.map((e, i) => ({ ...(e || {}), stats: { frames: countFrames(e.project) }, preview: previewUrls[i] || null })) || null,
