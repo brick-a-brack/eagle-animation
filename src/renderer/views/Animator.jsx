@@ -130,25 +130,31 @@ const Animator = ({ t }) => {
 
   // Disable frame deletion confirmation if we change the current frame
   useEffect(() => {
-    setDeleteOnLiveViewConfirmation(false);
+    (() => {
+      setDeleteOnLiveViewConfirmation(false);
+    })();
   }, [currentFrameId]);
 
   // Sync framerate when project change
   useEffect(() => {
-    setFps(project?.scenes?.[track]?.framerate);
-  }, [project?.scenes?.[track]?.framerate]);
+    (() => {
+      setFps(project?.scenes?.[track]?.framerate);
+    })();
+  }, [project?.scenes, track]);
 
   // Sync ratio when project change
   useEffect(() => {
-    setRatio(project?.scenes?.[track]?.ratio ? parseRatio(project?.scenes?.[track]?.ratio) : null);
-  }, [project?.scenes?.[track]?.ratio]);
+    (() => {
+      setRatio(project?.scenes?.[track]?.ratio ? parseRatio(project?.scenes?.[track]?.ratio) : null);
+    })();
+  }, [project?.scenes, track]);
 
   // Select default camera
   useEffect(() => {
     if (settings && settings?.CAMERA_ID) {
       cameraActions.setCamera(settings?.CAMERA_ID || null);
     }
-  }, [settings?.CAMERA_ID]);
+  }, [settings?.CAMERA_ID, cameraActions, settings]);
 
   // Shortcut if informations are not ready
   if (!project || !settings || !devices) {
