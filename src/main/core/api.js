@@ -97,5 +97,3 @@ export const uploadFile = async (apiKey, code, fileExtension, filePath) => {
 
   return res;
 };
-
-uploadFile('00000000-0000-0000-0000-000000000000', '00000000', 'mp4', 'C:\\Users\\mbaco\\EagleAnimation\\.sync\\D328X2UO.mp4');
