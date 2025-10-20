@@ -236,5 +236,7 @@
   "Untitled project": "Untitled project",
   "Report on Github": "Report on Github",
   "Build: {{id}}": "Build: {{id}}",
-  "Create new project": "Create new project"
+  "Create new project": "Create new project",
+  "Take {{count}} picture_one": "Take {{count}} picture",
+  "Take {{count}} picture_other": "Take {{count}} pictures"
 }

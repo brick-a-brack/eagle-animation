@@ -223,5 +223,9 @@
   "Untitled project": "Проект без названия",
   "Report on Github": "Сообщить на Github",
   "Build: {{id}}": "Сборка: {{id}}",
-  "Create new project": "Создать новый проект"
+  "Create new project": "Создать новый проект",
+  "Take {{count}} picture_one": "Сделать {{count}} фотографию",
+  "Take {{count}} picture_few": "Сделать {{count}} фотографий",
+  "Take {{count}} picture_many": "Сделать {{count}} фотографий",
+  "Take {{count}} picture_other": "Сделать {{count}} фотографий"
 }

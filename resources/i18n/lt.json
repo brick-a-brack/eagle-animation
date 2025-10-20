@@ -242,5 +242,9 @@
   "Enter your name to begin": "Įvesk vardą pradėjimui",
   "Please enter your name": "Įveskite vardą",
   "Add ending text": "Pridėti autoriaus vardą",
-  "Shows name of the project at the end of the video.": "Rodo projekto pavadinimą vaizo įrašo gale."
+  "Shows name of the project at the end of the video.": "Rodo projekto pavadinimą vaizo įrašo gale.",
+  "Take {{count}} picture_one": "Imk {{count}} nuotrauką",
+  "Take {{count}} picture_few": "Imk {{count}} nuotraukas",
+  "Take {{count}} picture_many": "Imk {{count}} nuotraukas",
+  "Take {{count}} picture_other": "Imk {{count}} nuotraukas"
 }

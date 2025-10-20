@@ -222,5 +222,7 @@
   "Untitled project": "Projekt uden titel",
   "Report on Github": "Rapporter på Github",
   "Build: {{id}}": "Byg: {{id}}",
-  "Create new project": "Opret nyt projekt"
+  "Create new project": "Opret nyt projekt",
+  "Take {{count}} picture_one": "Tag {{count}} billede",
+  "Take {{count}} picture_other": "Tag {{count}} billeder"
 }

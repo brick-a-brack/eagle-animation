@@ -222,5 +222,7 @@
   "Untitled project": "Project zonder titel",
   "Report on Github": "Melden op Github",
   "Build: {{id}}": "Bouwen: {{id}}",
-  "Create new project": "Creëer een nieuw project"
+  "Create new project": "Creëer een nieuw project",
+  "Take {{count}} picture_one": "Neem {{count}} foto",
+  "Take {{count}} picture_other": "Neem {{count}} foto's"
 }

@@ -223,5 +223,8 @@
   "Untitled project": "Projekt bez naslova",
   "Report on Github": "Prijavi na Githubu",
   "Build: {{id}}": "Izgradnja: {{id}}",
-  "Create new project": "Kreiraj novi projekt"
+  "Create new project": "Kreiraj novi projekt",
+  "Take {{count}} picture_one": "Napravi {{count}} fotografiju",
+  "Take {{count}} picture_few": "Napravi {{count}} fotografije",
+  "Take {{count}} picture_other": "Napravi {{count}} fotografije"
 }
