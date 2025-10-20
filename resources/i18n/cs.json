@@ -223,5 +223,9 @@
   "Untitled project": "Projekt bez názvu",
   "Report on Github": "Nahlásit na Githubu",
   "Build: {{id}}": "Sestavení: {{id}}",
-  "Create new project": "Vytvořit nový projekt"
+  "Create new project": "Vytvořit nový projekt",
+  "Take {{count}} picture_one": "Vyfotit {{count}} fotku",
+  "Take {{count}} picture_few": "Vyfotit {{count}} fotky",
+  "Take {{count}} picture_many": "Vyfotit {{count}} fotky",
+  "Take {{count}} picture_other": "Vyfotit {{count}} fotky"
 }

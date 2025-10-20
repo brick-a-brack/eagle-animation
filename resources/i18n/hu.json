@@ -222,5 +222,7 @@
   "Untitled project": "Cím nélküli projekt",
   "Report on Github": "Jelentés a Githubon",
   "Build: {{id}}": "Build: {{id}}",
-  "Create new project": "Új projekt létrehozása"
+  "Create new project": "Új projekt létrehozása",
+  "Take {{count}} picture_one": "Készíts {{count}} fényképet",
+  "Take {{count}} picture_other": "Készíts {{count}} fényképet"
 }

@@ -223,5 +223,8 @@
   "Untitled project": "Projekts bez nosaukuma",
   "Report on Github": "Ziņot Github",
   "Build: {{id}}": "Būvēt: {{id}}",
-  "Create new project": "Izveidot jaunu projektu"
+  "Create new project": "Izveidot jaunu projektu",
+  "Take {{count}} picture_zero": "Uzņemt {{count}} foto",
+  "Take {{count}} picture_one": "Uzņemt {{count}} foto",
+  "Take {{count}} picture_other": "Uzņemt {{count}} fotogrāfijas"
 }

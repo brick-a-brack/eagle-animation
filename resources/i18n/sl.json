@@ -224,5 +224,9 @@
   "Untitled project": "Projekt brez naslova",
   "Report on Github": "Prijavi na Github",
   "Build: {{id}}": "Gradnja: {{id}}",
-  "Create new project": "Ustvari nov projekt"
+  "Create new project": "Ustvari nov projekt",
+  "Take {{count}} picture_one": "Vzemi {{count}} sliko",
+  "Take {{count}} picture_two": "Vzemi {{count}} slike",
+  "Take {{count}} picture_few": "Vzemi {{count}} slike",
+  "Take {{count}} picture_other": "Vzemi {{count}} slike"
 }

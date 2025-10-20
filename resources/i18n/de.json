@@ -237,5 +237,7 @@
   "Untitled project": "Unbenanntes Projekt",
   "Report on Github": "Auf Github melden",
   "Build: {{id}}": "Build: {{id}}",
-  "Create new project": "Ein neues Projekt erstellen"
+  "Create new project": "Ein neues Projekt erstellen",
+  "Take {{count}} picture_one": "{{count}} Foto aufnehmen",
+  "Take {{count}} picture_other": "{{count}} Fotos aufnehmen"
 }
