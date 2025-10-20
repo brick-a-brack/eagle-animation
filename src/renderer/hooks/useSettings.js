@@ -22,6 +22,7 @@ const DEFAULT_SETTINGS = {
   REVERSE_Y: false,
   LIMIT_NUMBER_OF_FRAMES: 0,
   LIMIT_ACTIVITY_DURATION: 0,
+  EVENT_API: 'https://api.brickfilms.com/eagle-animation/',
 };
 
 function useSettings() {

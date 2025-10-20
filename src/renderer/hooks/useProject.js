@@ -1,5 +1,6 @@
+import { getBestResolution } from '@common/resolution';
 import { OptimizeFrame } from '@core/Optimizer';
-import { GetFrameResolution } from '@core/ResolutionsCache';
+import { GetFrameResolution, GetFrameResolutions } from '@core/ResolutionsCache';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 function useProject(options) {
@@ -267,6 +268,8 @@ function useProject(options) {
 
   return {
     project: bindPreviewPictures(projectData)?.project || null,
+    bestResolutions: projectData?.project?.scenes?.map((scene, index)  => (getBestResolution(scene?.pictures, resolutions)) ),
+    bestResolutionsWithAspectRatio: projectData?.project?.scenes?.map((scene, index)  => (getBestResolution(scene?.pictures, resolutions, projectRatio)) ),
     actions: {
       changeFPS: actionChangeFPS,
       changeRatio: actionChangeRatio,

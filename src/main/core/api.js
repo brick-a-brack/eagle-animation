@@ -1,5 +1,7 @@
-import { readFile, stat } from 'node:fs/promises';
+import fs from 'node:fs';
+import path from 'node:path';
 
+import FormData from 'form-data';
 import fetch from 'node-fetch';
 
 import { APP_NAME, PARTNER_API, VERSION } from '../config';
@@ -16,130 +18,84 @@ const wait = (delay) => new Promise((resolve) => setTimeout(resolve, delay));
 
 const retry = async (callback, options = {}) => {
   const { retries, delay, onError = () => {} } = options;
-
-  return callback().catch((err) => {
-    onError(err);
-    if (retries > 0) {
-      return wait(delay).then(() => retry(callback, { ...options, retries: retries - 1 }));
+  for (let attempt = 1; attempt <= retries; attempt++) {
+    try {
+      const result = await callback();
+      return result;
+    } catch (err) {
+      onError(err);
+      if (attempt === retries) {
+        throw err;
+      }
     }
-    throw err;
+    await wait(delay * attempt);
+  }
+};
+
+const getFormLength = (form) => {
+  return new Promise((resolve) => {
+    form.getLength((err, length) => {
+      if (err) {
+        return resolve(null);
+      }
+      return resolve(length);
+    });
   });
 };
 
-export const startUploading = async (key, publicCode, fileExtension, fileSize) => {
-  const response = await retry(
-    () =>
-      fetch(`${PARTNER_API}graphql`, {
-        method: 'POST',
-        headers: {
-          'apollographql-client-name': APP_NAME,
-          'apollographql-client-version': VERSION,
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-        body: JSON.stringify({
-          query: `mutation ($input: CreateEventVideoInput!) {
-                        createEventVideo(input: $input) {
-                    upload {
-                      id
-                      parts {
-                        number
-                        url
-                      }
-                      chunkSize
-                    }
-                  }
-                }`,
-          variables: {
-            input: {
-              key,
-              publicCode,
-              fileExtension,
-              fileSize,
-            },
-          },
-        }),
-      }),
-    {
-      delay: 2000,
-      retries: RETRIES,
-    }
-  );
+export const uploadFile = async (apiKey, code, fileExtension, filePath) => {
+  // Prepare form data
+  const form = new FormData();
+  form.append('mode', 'code');
+  form.append('code', code);
+  form.append('fileExtension', fileExtension);
+  form.append('file', fs.createReadStream(filePath), { filename: path.basename(filePath) });
 
-  const json = await response.json();
-  const { data, errors } = json;
-  if (!data?.createEventVideo?.upload || errors?.length > 0) {
-    throw new Error(errors?.[0]?.message || 'Unknown error');
+  // Prepare headers
+  const formHeaders = form.getHeaders();
+  formHeaders['Authorization'] = `Bearer ${apiKey.trim()}`;
+  formHeaders['X-App-Name'] = APP_NAME;
+  formHeaders['X-App-Version'] = VERSION;
+
+  // Try to set Content-Length if available (optional but helpful for some servers)
+  const length = await getFormLength(form);
+  if (length != null) {
+    formHeaders['Content-Length'] = String(length);
   }
 
-  return data?.createEventVideo?.upload || null;
-};
+  // Send HTTP call with retry
+  const res = await retry(
+    async () => {
+      const r = await fetch(`${PARTNER_API}eagle-animation/task`, {
+        method: 'PUT',
+        headers: formHeaders,
+        body: form,
+      });
 
-export const finishUpload = async (session, parts) => {
-  const response = await retry(
-    () =>
-      fetch(`${PARTNER_API}graphql`, {
-        method: 'POST',
-        headers: {
-          'apollographql-client-name': APP_NAME,
-          'apollographql-client-version': VERSION,
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-        body: JSON.stringify({
-          query: `mutation ($input: FinishUploadInput!) {
-                  finishUpload(input: $input) {
-                    upload {
-                      id
-                      url
-                      path
-                    }
-                  }
-                }`,
-          variables: {
-            input: {
-              uploadId: session.id,
-              parts,
-            },
-          },
-        }),
-      }),
-    {
-      delay: 2000,
-      retries: RETRIES,
-    }
-  );
-
-  const { data, errors } = await response.json();
-  if (errors && errors.length > 0) {
-    throw new Error(errors[0].message);
-  }
-
-  return data.finishUpload.upload;
-};
-
-export const uploadFile = async (apiKey, publicCode, fileExtension, filePath) => {
-  const file = await readFile(filePath);
-  const { size: fileSize } = await stat(filePath);
-  const session = await startUploading(apiKey, publicCode, fileExtension, fileSize);
-
-  let etags = [];
-
-  for (const currentPart of session.parts) {
-    const res = await retry(
-      () =>
-        fetch(currentPart.url, {
-          method: 'PUT',
-          body: file.slice((currentPart.number - 1) * session.chunkSize, (currentPart.number - 1) * session.chunkSize + session.chunkSize),
-        }),
-      {
-        retries: RETRIES,
-        delay: 2000,
+      // Error handling
+      if (!r.ok) {
+        const text = await r.text().catch(() => '');
+        const err = new Error(`Upload failed: ${r.status} ${r.statusText}${text ? ' - ' + text : ''}`);
+        err.status = r.status;
+        err.statusText = r.statusText;
+        err.body = text;
+        throw err;
       }
-    );
 
-    etags.push({ number: currentPart.number, etag: res.headers?.get('ETag')?.replaceAll('"', '') });
-  }
+      // Return JSON or raw text based on content response type
+      const ct = r.headers.get('content-type') || '';
+      if (ct.includes('application/json')) {
+        return r.json();
+      }
+      return r.text();
+    },
+    {
+      retries: RETRIES,
+      delay: 2000,
+    }
+  );
 
-  await finishUpload(session, etags);
+  return res;
 };
+
+uploadFile('00000000-0000-0000-0000-000000000000', '00000000', 'mp4', 'C:\\Users\\mbaco\\EagleAnimation\\.sync\\D328X2UO.mp4');
