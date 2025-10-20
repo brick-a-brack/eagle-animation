@@ -222,5 +222,7 @@
   "Untitled project": "Nimeämätön projekti",
   "Report on Github": "Ilmoita Githubissa",
   "Build: {{id}}": "Rakenna: {{id}}",
-  "Create new project": "Luo uusi projekti"
+  "Create new project": "Luo uusi projekti",
+  "Take {{count}} picture_one": "Ota {{count}} kuva",
+  "Take {{count}} picture_other": "Ota {{count}} kuvaa"
 }

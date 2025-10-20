@@ -222,5 +222,7 @@
   "Untitled project": "Άτιτλο έργο",
   "Report on Github": "Αναφορά στο Github",
   "Build: {{id}}": "Δόμηση: {{id}}",
-  "Create new project": "Δημιουργία νέου έργου"
+  "Create new project": "Δημιουργία νέου έργου",
+  "Take {{count}} picture_one": "Πάρε {{count}} φωτογραφία",
+  "Take {{count}} picture_other": "Πάρε {{count}} φωτογραφίες"
 }

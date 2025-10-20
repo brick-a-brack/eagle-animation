@@ -84,6 +84,10 @@ export const LANGUAGES = [
     label: 'Latviešu valoda',
   },
   {
+    value: 'lt',
+    label: 'Lietuvių',
+  },
+  {
     value: 'hu',
     label: 'Magyar',
   },
@@ -118,7 +122,7 @@ export const LANGUAGES = [
 ];
 
 // Allowed languages
-export const ALLOWED_LANGUAGES = ['en', 'fr', 'de', 'es', 'it', 'pt', 'pl', 'eo', 'bg', 'cs', 'da', 'el', 'hr', 'lv', 'hu', 'nl', 'ro', 'sk', 'sl', 'fi', 'sv', 'ru'];
+export const ALLOWED_LANGUAGES = ['en', 'fr', 'de', 'es', 'it', 'pt', 'pl', 'eo', 'bg', 'cs', 'da', 'el', 'hr', 'lv', 'lt', 'hu', 'nl', 'ro', 'sk', 'sl', 'fi', 'sv', 'ru'];
 export const DEFAULT_LANGUAGE = 'en';
 
 // Partner API url

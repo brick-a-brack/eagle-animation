@@ -223,5 +223,8 @@
   "Untitled project": "Proiect fără titlu",
   "Report on Github": "Raportează pe Github",
   "Build: {{id}}": "Construcție: {{id}}",
-  "Create new project": "Creează un proiect nou"
+  "Create new project": "Creează un proiect nou",
+  "Take {{count}} picture_one": "Fă o {{count}} fotografie",
+  "Take {{count}} picture_few": "Fă {{count}} fotografii",
+  "Take {{count}} picture_other": "Fă {{count}} fotografii"
 }

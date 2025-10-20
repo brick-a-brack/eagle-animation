@@ -237,5 +237,7 @@
   "Untitled project": "Projekto sen titolo",
   "Report on Github": "Raporti en Github",
   "Build: {{id}}": "Konstruaĵo: {{id}}",
-  "Create new project": "Krei novan projekton"
+  "Create new project": "Krei novan projekton",
+  "Take {{count}} picture_one": "Preni {{count}} foton",
+  "Take {{count}} picture_other": "Preni {{count}} fotojn"
 }
