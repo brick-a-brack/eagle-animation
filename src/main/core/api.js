@@ -43,7 +43,7 @@ const getFormLength = (form) => {
   });
 };
 
-export const uploadFile = async (apiKey, code, fileExtension, filePath) => {
+export const uploadFile = async (endpoint, apiKey, code, fileExtension, filePath) => {
   // Prepare form data
   const form = new FormData();
   form.append('mode', 'code');
@@ -66,7 +66,7 @@ export const uploadFile = async (apiKey, code, fileExtension, filePath) => {
   // Send HTTP call with retry
   const res = await retry(
     async () => {
-      const r = await fetch(`${PARTNER_API}eagle-animation/task`, {
+      const r = await fetch(endpoint, {
         method: 'PUT',
         headers: formHeaders,
         body: form,

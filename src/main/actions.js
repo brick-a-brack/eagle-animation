@@ -148,7 +148,7 @@ const actions = {
       try {
         if (!syncElement.isUploaded) {
           console.log(`☁️ Sync start ${syncElement.publicCode} (${syncElement.apiKey})`);
-          await uploadFile(syncElement.apiKey, syncElement.publicCode, syncElement.fileExtension, join(PROJECTS_PATH, '/.sync/', syncElement.fileName));
+          await uploadFile(syncElement.endpoint, syncElement.apiKey, syncElement.publicCode, syncElement.fileExtension, join(PROJECTS_PATH, '/.sync/', syncElement.fileName));
           syncList[i].isUploaded = true;
           await saveSyncList(PROJECTS_PATH, syncList);
           console.log(`✅ Sync finished ${syncElement.publicCode} (${syncElement.apiKey})`);
@@ -157,6 +157,10 @@ const actions = {
         console.log(`❌ Sync failed ${syncElement.publicCode} (${syncElement.apiKey})`, err);
       }
     }
+  },
+  GET_SYNC_LIST: async () => {
+    let syncList = await getSyncList(PROJECTS_PATH);
+    return syncList;
   },
   APP_CAPABILITIES: async () => {
     const capabilities = [
@@ -211,6 +215,7 @@ const actions = {
       public_code = 'default',
       event_key = '',
       framerate = 10,
+      endpoint = null,
     },
     sendToRenderer
   ) => {
@@ -246,7 +251,7 @@ const actions = {
       (progress) => sendToRenderer('FFMPEG_PROGRESS', { progress })
     );
 
-    if (mode === 'send') {
+    if (mode === 'send' && endpoint) {
       const syncList = await getSyncList(PROJECTS_PATH);
       await saveSyncList(PROJECTS_PATH, [
         ...syncList,
@@ -256,6 +261,7 @@ const actions = {
           fileName: `${public_code}.${profile.extension}`,
           fileExtension: profile.extension,
           isUploaded: false,
+          endpoint,
         },
       ]);
 

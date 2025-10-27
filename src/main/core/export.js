@@ -41,7 +41,7 @@ export const getSyncList = async (path) => {
     const file = format({ dir: path, base: 'sync.json' });
     const data = await readFile(file, 'utf8');
     const sync = JSON.parse(data);
-    return [...sync];
+    return [...sync].map(e => ({ ...e, endpoint: e.endpoint || 'https://api.brickfilms.com/eagle-animation' }));
   } catch (e) {
     return [];
   }

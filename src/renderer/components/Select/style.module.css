@@ -11,8 +11,10 @@
     margin: 0;
     max-width: 300px;
     overflow: hidden;
-    padding:0 var(--space-small);
+    padding: 0 var(--space-small);
     width: 100%;
+    max-width: 250px;
+    ;
 }
 
 .select:hover,

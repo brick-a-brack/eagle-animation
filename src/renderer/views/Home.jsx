@@ -9,6 +9,7 @@ import VersionUpdater from '@components/VersionUpdater';
 import useAppVersion from '@hooks/useAppVersion';
 import useFullscreen from '@hooks/useFullscreen';
 import useProjects from '@hooks/useProjects';
+import useSettings from '@hooks/useSettings';
 import { useEffect } from 'react';
 import { withTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
@@ -16,6 +17,7 @@ import { useNavigate } from 'react-router-dom';
 const HomeView = ({ t }) => {
   const { version, latestVersion, actions: versionActions } = useAppVersion();
   const { projects, actions: projectsActions } = useProjects();
+  const { settings } = useSettings();
   const navigate = useNavigate();
   const { isFullscreen, enterFullscreen, exitFullscreen } = useFullscreen();
 
@@ -51,6 +53,9 @@ const HomeView = ({ t }) => {
     if (action === 'SHORTCUTS') {
       navigate('/shortcuts?back=/');
     }
+    if (action === 'SYNC_LIST') {
+      navigate('/sync-list?back=/');
+    }
     if (action === 'ENTER_FULLSCREEN') {
       enterFullscreen();
     }
@@ -63,7 +68,12 @@ const HomeView = ({ t }) => {
     <PageLayout>
       <HeaderBar
         leftChildren={<VersionUpdater onClick={handleLink} version={version} latestVersion={latestVersion} onLink={handleLink} />}
-        rightActions={[...(!isIos() ? [isFullscreen ? 'EXIT_FULLSCREEN' : 'ENTER_FULLSCREEN'] : []), 'SHORTCUTS', 'SETTINGS']}
+        rightActions={[
+          ...(settings?.EVENT_KEY && settings?.EVENT_API ? ['SYNC_LIST'] : []),
+          ...(!isIos() ? [isFullscreen ? 'EXIT_FULLSCREEN' : 'ENTER_FULLSCREEN'] : []),
+          'SHORTCUTS',
+          'SETTINGS'
+        ]}
         onAction={handleAction}
         withBorder
       >

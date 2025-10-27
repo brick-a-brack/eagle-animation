@@ -13,7 +13,7 @@ import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { withTranslation } from 'react-i18next';
 
-const SettingsForm = ({ settings = {}, onUpdate = () => {}, t }) => {
+const SettingsForm = ({ settings = {}, onUpdate = () => { }, t }) => {
   const { appCapabilities } = useAppCapabilities();
   const form = useForm({
     mode: 'all',
@@ -100,7 +100,10 @@ const SettingsForm = ({ settings = {}, onUpdate = () => {}, t }) => {
         <Heading h={1}>{t('Stop motion workshops')}</Heading>
         {appCapabilities.includes('BACKGROUND_SYNC') && (
           <>
-            <FormGroup label={t('API key to send videos')} description={t('Brick à Brack allows partners to easily export/send videos, contact us for more informations')}>
+            <FormGroup label={t('Partner API endpoint')} description={t('The URL of the API to use for workshop mode')}>
+              <Input control={control} register={register('EVENT_API')} />
+            </FormGroup>
+            <FormGroup label={t('Partner API key')} description={t('The authentification key of the API for workshop mode')}>
               <Input control={control} register={register('EVENT_KEY')} />
             </FormGroup>
           </>

@@ -119,6 +119,9 @@ export const Actions = {
   SYNC: async () => {
     return null;
   },
+  GET_SYNC_LIST: async () => {
+    return [];
+  },
   APP_CAPABILITIES: async () => {
     const capabilities = ['EXPORT_VIDEO', 'EXPORT_VIDEO_H264', 'EXPORT_VIDEO_VP8', 'EXPORT_VIDEO_PRORES', 'EXPORT_FRAMES', 'EXPORT_FRAMES_ZIP'];
 
@@ -150,7 +153,10 @@ export const Actions = {
   EXPORT_BUFFER: async (evt, { buffer_id, buffer }) => {
     await createBuffer(buffer_id, buffer);
   },
-  EXPORT: async (evt, { project_id, track_id, mode = 'video', format = 'h264', frames = [], custom_output_framerate = false, compress_as_zip = false, custom_output_framerate_number = 10 }) => {
+  EXPORT: async (
+    evt,
+    { project_id, track_id, mode = 'video', format = 'h264', frames = [], custom_output_framerate = false, compress_as_zip = false, custom_output_framerate_number = 10, endpoint = null }
+  ) => {
     const trackId = Number(track_id);
     const project = await getProject(project_id);
 
