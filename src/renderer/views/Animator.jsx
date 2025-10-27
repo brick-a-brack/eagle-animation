@@ -151,10 +151,10 @@ const Animator = ({ t }) => {
 
   // Select default camera
   useEffect(() => {
-    if (settings && settings?.CAMERA_ID) {
+    if (settings?.CAMERA_ID) {
       cameraActions.setCamera(settings?.CAMERA_ID || null);
     }
-  }, [settings?.CAMERA_ID, cameraActions, settings]);
+  }, [settings?.CAMERA_ID]);
 
   // Shortcut if informations are not ready
   if (!project || !settings || !devices) {
