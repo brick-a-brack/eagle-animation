@@ -63,7 +63,7 @@ function useProject(options) {
     });
   }, []);
 
-  // Action unhideFrame
+  // Action unhide frame
   const actionApplyHiddenFrameStatus = useCallback(async (trackId, frameId, isHidden = false) => {
     const sceneId = Number(trackId);
     setProjectData((oldData) => {
