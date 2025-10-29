@@ -146,7 +146,7 @@ const actions = {
     for (let i = 0; i < syncList.length; i++) {
       const syncElement = syncList[i];
       try {
-        if (!syncElement.isUploaded || i === syncList.length - 1) {
+        if (!syncElement.isUploaded) {
           console.log(`☁️ Sync start ${syncElement.publicCode} (${syncElement.apiKey})`);
           await uploadFile({
             sendMethod: syncElement.sendMethod,
@@ -167,7 +167,7 @@ const actions = {
     }
   },
   GET_SYNC_LIST: async () => {
-    let syncList = await getSyncList(PROJECTS_PATH);
+    const syncList = await getSyncList(PROJECTS_PATH);
     return syncList;
   },
   APP_CAPABILITIES: async () => {
