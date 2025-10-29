@@ -21,13 +21,15 @@ const SyncListView = ({ t }) => {
         ...[...items].reverse().filter(item => item.isUploaded === true),
     ];
 
-    console.log(items);
-
     return (<>
         <LoadingPage show={!items} />
         <PageLayout>
             <HeaderBar leftActions={['BACK']} onAction={handleBack} title={t('Sync list')} withBorder />
-            <PageContent>{orderedItems.map(item => <SyncItem key={item.filename} {...item} />)}</PageContent>
+            <PageContent>
+                <div style={{ padding: '20px' }}>
+                    {orderedItems.map(item => <SyncItem key={item.filename} {...item} />)}
+                </div>
+            </PageContent>
         </PageLayout>
     </>);
 };

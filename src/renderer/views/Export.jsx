@@ -137,7 +137,7 @@ const Export = ({ t }) => {
 
   useEffect(() => {
     (async () => {
-      const bestMode = appCapabilities.includes('EXPORT_VIDEO') ? 'video' : appCapabilities.includes('EXPORT_FRAMES') ? 'frames' : appCapabilities.includes('BACKGROUND_SYNC') ? 'send' : 'none';
+      const bestMode = appCapabilities.includes('EXPORT_VIDEO') ? 'video' : appCapabilities.includes('EXPORT_FRAMES') ? 'frames' : (appCapabilities.includes('BACKGROUND_SYNC') && settings?.EVENT_MODE_ENABLED) ? 'send' : 'none';
       if (
         (watch('mode') === 'video' && !appCapabilities.includes('EXPORT_VIDEO')) ||
         (watch('mode') === 'frames' && !appCapabilities.includes('EXPORT_FRAMES')) ||
@@ -199,9 +199,9 @@ const Export = ({ t }) => {
     setVideoRenderingProgress(0);
 
     const newCode = data.mode === 'send' ? await generateCustomUuid(8) : null;
-    setPublicCode(newCode);
 
-    if (data.mode === 'send') {
+    if (data.mode === 'send' && data.sendMethod === 'code') {
+      setPublicCode(newCode);
       if (!project.title) {
         projectActions.rename(newCode);
       }
@@ -264,10 +264,12 @@ const Export = ({ t }) => {
       custom_output_framerate_number: data.customOutputFramerateNumber,
       project_id: id,
       track_id: track,
-      event_key: settings.EVENT_KEY,
-      public_code: data.mode === 'send' ? newCode : undefined,
       compress_as_zip: data.mode === 'frames' ? data.compressAsZip && appCapabilities.includes('EXPORT_FRAMES_ZIP') : false,
       endpoint: settings.EVENT_API,
+      send_method: data.sendMethod,
+      email: data.mode === 'send' && data.sendMethod === 'email' ? data.email : '',
+      public_code: data.mode === 'send' && data.sendMethod === 'code' ? newCode : '',
+      event_key: settings.EVENT_KEY,
     });
 
     setIsExporting(false);
@@ -291,7 +293,7 @@ const Export = ({ t }) => {
                   {appCapabilities.includes('EXPORT_FRAMES') && (
                     <ActionCard icon="FRAMES" title={t('Export animation frames')} onClick={handleModeChange('frames')} selected={watch('mode') === 'frames'} />
                   )}
-                  {appCapabilities.includes('BACKGROUND_SYNC') && settings.EVENT_KEY && settings.EVENT_API && (
+                  {appCapabilities.includes('BACKGROUND_SYNC') && settings.EVENT_MODE_ENABLED && settings.EVENT_API && (
                     <ActionCard icon="SEND" title={t('Upload the video')} onClick={handleModeChange('send')} selected={watch('mode') === 'send'} />
                   )}
                 </div>
@@ -388,7 +390,8 @@ const Export = ({ t }) => {
       </PageLayout>
       {isInfosOpened && (
         <ExportOverlay
-          publicCode={publicCode}
+          showNewProjectButton={watch('mode') === 'send'}
+          publicCode={watch('sendMethod') === 'code' ? publicCode : null}
           isExporting={isExporting}
           progress={progress}
           onCancel={() => {

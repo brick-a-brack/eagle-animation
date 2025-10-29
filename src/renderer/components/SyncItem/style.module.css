@@ -6,11 +6,10 @@
     display: flex;
     gap: var(--space-medium);
     padding: var(--space-medium);
-    transition: border-color 0.2s ease-in-out, opacity 0.2s ease-in-out;
     padding: var(--space-big) 1% var(--space-big) 1%;
     width: 98%;
     max-width: 1100px;
-    margin: var(--space-medium) auto ;
+    margin: 20px auto ;
     box-sizing: border-box;
 }
 
@@ -84,6 +83,7 @@
     align-items: center;
     display: flex;
     min-width: 100px;
+    user-select: none;
 }
 
 .statusUploaded,

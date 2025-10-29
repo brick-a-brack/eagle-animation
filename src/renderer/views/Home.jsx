@@ -69,7 +69,7 @@ const HomeView = ({ t }) => {
       <HeaderBar
         leftChildren={<VersionUpdater onClick={handleLink} version={version} latestVersion={latestVersion} onLink={handleLink} />}
         rightActions={[
-          ...(settings?.EVENT_KEY && settings?.EVENT_API ? ['SYNC_LIST'] : []),
+          ...(settings?.EVENT_MODE_ENABLED && settings?.EVENT_API ? ['SYNC_LIST'] : []),
           ...(!isIos() ? [isFullscreen ? 'EXIT_FULLSCREEN' : 'ENTER_FULLSCREEN'] : []),
           'SHORTCUTS',
           'SETTINGS'

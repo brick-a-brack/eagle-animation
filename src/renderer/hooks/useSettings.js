@@ -1,3 +1,4 @@
+import { PARTNER_API } from '@config-web';
 import { currentLanguage, setLanguage } from '@i18n';
 import { useCallback, useEffect, useState } from 'react';
 
@@ -16,13 +17,14 @@ const DEFAULT_SETTINGS = {
   GRID_MODES: ['GRID'], // GRID | CENTER | MARGINS
   GRID_LINES: 3,
   GRID_COLUMNS: 3,
-  EVENT_KEY: '',
   SOUNDS: true,
   REVERSE_X: false,
   REVERSE_Y: false,
   LIMIT_NUMBER_OF_FRAMES: 0,
   LIMIT_ACTIVITY_DURATION: 0,
-  EVENT_API: 'https://api.brickfilms.com/eagle-animation',
+  EVENT_MODE_ENABLED: false,
+  EVENT_KEY: '',
+  EVENT_API: PARTNER_API,
 };
 
 function useSettings() {
