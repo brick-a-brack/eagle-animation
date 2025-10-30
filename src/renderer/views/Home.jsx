@@ -64,6 +64,7 @@ const HomeView = ({ t }) => {
     }
   };
 
+  console.log(projects);
   return (
     <PageLayout>
       <HeaderBar
