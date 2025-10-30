@@ -140,14 +140,14 @@ const Animator = ({ t }) => {
     (() => {
       setFps(project?.scenes?.[track]?.framerate);
     })();
-  }, [project?.scenes, track]);
+  }, [project?.scenes?.[track]?.framerate]);
 
   // Sync ratio when project change
   useEffect(() => {
     (() => {
       setRatio(project?.scenes?.[track]?.ratio ? parseRatio(project?.scenes?.[track]?.ratio) : null);
     })();
-  }, [project?.scenes, track]);
+  }, [project?.scenes?.[track]?.ratio]);
 
   // Select default camera
   useEffect(() => {
@@ -428,7 +428,7 @@ const Animator = ({ t }) => {
         <HeaderBar
           leftActions={['BACK']}
           rightActions={[
-            ...(pictures?.length > 0 && (appCapabilities.includes('EXPORT_VIDEO') || appCapabilities.includes('EXPORT_FRAMES') || appCapabilities.includes('BACKGROUND_SYNC')) ? ['EXPORT'] : []),
+            ...(pictures?.length > 0 && (appCapabilities.includes('EXPORT_VIDEO') || appCapabilities.includes('EXPORT_FRAMES') || (appCapabilities.includes('BACKGROUND_SYNC') && settings?.EVENT_MODE_ENABLED)) ? ['EXPORT'] : []),
             'SETTINGS',
           ]}
           onAction={handleAction}
