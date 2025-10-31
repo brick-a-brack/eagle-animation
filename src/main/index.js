@@ -1,10 +1,10 @@
 import 'source-map-support/register';
 
 import { join } from 'node:path';
+import url from 'node:url';
 
 import { electronApp, is, optimizer } from '@electron-toolkit/utils';
 import { app, BrowserWindow, ipcMain, net, protocol, shell } from 'electron';
-const url = require('node:url');
 
 import icon from '../../resources/icon.png?asset';
 import actions from './actions';
