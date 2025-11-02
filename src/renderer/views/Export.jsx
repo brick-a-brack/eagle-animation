@@ -224,6 +224,8 @@ const Export = ({ t }) => {
       if (!project.title) {
         projectActions.rename(newCode);
       }
+    } else {
+      setPublicCode(null);
     }
 
     // Ask user to define output path
