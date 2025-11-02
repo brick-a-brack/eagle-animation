@@ -74,7 +74,7 @@ app.whenReady().then(() => {
     const urlObj = new URL(request.url);
 
     // Get disk path
-    const diskPath = `${PROJECTS_PATH}/${request.url.slice('ea-data://'.length).split('?')[0]}`;
+    const diskPath = `${PROJECTS_PATH}/${request.url.slice('ea-data://api/pictures/'.length).split('?')[0]}`;
 
     // Options
     const { w, h, m, f, q, i } = parseResizeArguments(urlObj.searchParams);
@@ -110,7 +110,7 @@ app.whenReady().then(() => {
       if (w || h) {
         img = img.resize(w ? parseInt(w, 10) : null, h ? parseInt(h, 10) : null, {
           fit: m === 'cover' ? 'cover' : 'contain',
-          withoutEnlargement: true,
+          withoutEnlargement: false,
         });
       }
 
