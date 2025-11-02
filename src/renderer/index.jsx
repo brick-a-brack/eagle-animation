@@ -24,14 +24,14 @@ try {
       disable_session_recording: true,
     });
   }
-} catch (err) { } // eslint-disable-line no-empty
+} catch (err) {} // eslint-disable-line no-empty
 
 window.track = (eventName, data = {}) => {
   try {
     if (POSTHOG_TOKEN) {
       posthog.capture(eventName, data);
     }
-  } catch (err) { } // eslint-disable-line no-empty
+  } catch (err) {} // eslint-disable-line no-empty
 };
 
 window.trackException = (error) => {
@@ -39,7 +39,7 @@ window.trackException = (error) => {
     if (POSTHOG_TOKEN) {
       posthog.captureException(error);
     }
-  } catch (err) { } // eslint-disable-line no-empty
+  } catch (err) {} // eslint-disable-line no-empty
 };
 
 globalThis.Buffer = Buffer;
@@ -62,7 +62,7 @@ window.EA = async (action, data) => {
   }
 };
 
-window.EAEvents = (name, callback = () => { }) => {
+window.EAEvents = (name, callback = () => {}) => {
   // IPC (Electron backend)
   if (typeof window.IPC !== 'undefined') {
     if (typeof callback !== 'undefined') {
@@ -78,12 +78,15 @@ window.EAEvents = (name, callback = () => { }) => {
   }
 };
 
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js', {
-      type: 'module',
-    })
-  });
+// Add service worker to serve pictures for web version
+if (typeof window.IPC === 'undefined') {
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./sw.js', {
+        type: 'module',
+      });
+    });
+  }
 }
 
 const container = document.getElementById('root');

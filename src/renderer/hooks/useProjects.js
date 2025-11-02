@@ -79,7 +79,7 @@ function useProjects(options) {
 
   return {
     projects:
-      projectsData?.map((e, i) => ({
+      projectsData?.map((e) => ({
         ...(e || {}),
         stats: {
           frames: countFrames(e.project),

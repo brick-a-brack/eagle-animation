@@ -1,4 +1,5 @@
 import Tag from '@components/Tag';
+import { getPictureLink } from '@core/resize';
 import faImages from '@icons/faImages';
 import { useRef } from 'react';
 import { withTranslation } from 'react-i18next';
@@ -8,7 +9,6 @@ import IconEdit from './assets/edit.svg?jsx';
 import IconOpen from './assets/open.svg?jsx';
 
 import * as style from './style.module.css';
-import { getPictureLink } from '@core/resize';
 
 let renameEvents = {};
 

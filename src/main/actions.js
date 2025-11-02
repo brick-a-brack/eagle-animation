@@ -1,3 +1,4 @@
+import { randomUUID } from 'node:crypto';
 import { copyFile } from 'node:fs/promises';
 
 import { shell } from 'electron';
@@ -13,7 +14,6 @@ import { exportProjectScene, exportSaveTemporaryBuffer, getSyncList, saveSyncLis
 import { createProject, deleteProject, getProjectData, getProjectsList, projectSave, savePicture } from './core/projects';
 import { getSettings, saveSettings } from './core/settings';
 import { selectFile, selectFolder } from './core/utils';
-import { randomUUID } from 'node:crypto';
 
 console.log(`💾 Eagle Animation files will be saved in the following folder: ${PROJECTS_PATH}`);
 

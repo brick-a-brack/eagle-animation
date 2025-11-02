@@ -5,8 +5,8 @@ import { v4 } from 'uuid';
 import { getPictureLink } from './resize';
 
 export const ExportFrames = async (
-  projectId = null,
-  sceneId = null,
+  projectId = null, // eslint-disable-line no-unused-vars
+  sceneId = null, // eslint-disable-line no-unused-vars
   files = [],
   opts = {
     duplicateFramesCopy: true,
@@ -60,6 +60,8 @@ export const ExportFrames = async (
             ...(copiedResolution.width ? { w: copiedResolution.width } : {}),
             ...(copiedResolution.height ? { h: copiedResolution.height } : {}),
             m: 'cover',
+            q: 100,
+            f: 'jpg',
             ...(typeof opts.forceFileExtension !== 'undefined' ? { e: computedExtension } : {}),
           })
         ).then((res) => res.blob());

@@ -1,18 +1,17 @@
 import 'source-map-support/register';
 
+import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import url from 'node:url';
-import { readFile } from 'node:fs/promises';
-
-import sharp from 'sharp';
 
 import { electronApp, is, optimizer } from '@electron-toolkit/utils';
 import { app, BrowserWindow, ipcMain, net, protocol, shell } from 'electron';
+import sharp from 'sharp';
 
 import icon from '../../resources/icon.png?asset';
+import { parseResizeArguments } from '../common/resizer';
 import actions from './actions';
 import { PROJECTS_PATH } from './config';
-import { parseResizeArguments } from '../common/resizer';
 
 let sendToRenderer = () => null;
 
@@ -72,7 +71,7 @@ app.whenReady().then(() => {
 
   protocol.handle('ea-data', async (request) => {
     // Parse URL and parameters
-    const urlObj = new URL(request.url); // ea-data://<project>/<path>?w=...&h=...&f=...&q=...
+    const urlObj = new URL(request.url);
 
     // Get disk path
     const diskPath = `${PROJECTS_PATH}/${request.url.slice('ea-data://'.length).split('?')[0]}`;

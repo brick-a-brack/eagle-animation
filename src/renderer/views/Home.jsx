@@ -64,7 +64,6 @@ const HomeView = ({ t }) => {
     }
   };
 
-  console.log(projects);
   return (
     <PageLayout>
       <HeaderBar
@@ -73,7 +72,7 @@ const HomeView = ({ t }) => {
           ...(settings?.EVENT_MODE_ENABLED && settings?.EVENT_API ? ['SYNC_LIST'] : []),
           ...(!isIos() ? [isFullscreen ? 'EXIT_FULLSCREEN' : 'ENTER_FULLSCREEN'] : []),
           'SHORTCUTS',
-          'SETTINGS'
+          'SETTINGS',
         ]}
         onAction={handleAction}
         withBorder

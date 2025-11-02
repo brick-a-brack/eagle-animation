@@ -428,7 +428,10 @@ const Animator = ({ t }) => {
         <HeaderBar
           leftActions={['BACK']}
           rightActions={[
-            ...(pictures?.length > 0 && (appCapabilities.includes('EXPORT_VIDEO') || appCapabilities.includes('EXPORT_FRAMES') || (appCapabilities.includes('BACKGROUND_SYNC') && settings?.EVENT_MODE_ENABLED)) ? ['EXPORT'] : []),
+            ...(pictures?.length > 0 &&
+            (appCapabilities.includes('EXPORT_VIDEO') || appCapabilities.includes('EXPORT_FRAMES') || (appCapabilities.includes('BACKGROUND_SYNC') && settings?.EVENT_MODE_ENABLED))
+              ? ['EXPORT']
+              : []),
             'SETTINGS',
           ]}
           onAction={handleAction}

@@ -1,7 +1,6 @@
-import fs from 'node:fs';
+import { readFile } from 'node:fs/promises';
 
 import { APP_NAME, VERSION } from '../config';
-import { readFile } from 'node:fs/promises';
 
 /*
     This file contains Brickfilms.com endpoints that are used to send the brickfilm by email
@@ -27,17 +26,6 @@ const retry = async (callback, options = {}) => {
     }
     await wait(delay * attempt);
   }
-};
-
-const getFormLength = (form) => {
-  return new Promise((resolve) => {
-    form.getLength((err, length) => {
-      if (err) {
-        return resolve(null);
-      }
-      return resolve(length);
-    });
-  });
 };
 
 export const uploadFile = async ({ sendMethod, endpoint, apiKey, code, email, fileExtension, filePath }) => {

@@ -1,9 +1,9 @@
 import { parseResizeArguments } from '@common/resizer';
-import { getFrameBlob } from './actions/frames';
-
 import resizeToFit from 'intrinsic-scale';
 
-console.log('SW YOLO');
+import { getFrameBlob } from './actions/frames';
+
+console.log('🥷 Service Worker loaded!');
 
 const generateFakeFrame = async (resolution) => {
   const height = resolution?.height || 1;
@@ -88,8 +88,6 @@ self.addEventListener('fetch', (event) => {
             return new Response(blob, { headers: { 'Content-Type': blob.type } });
           }
 
-console.log('DEBUG SW RESIZE', { w, h, m, f, q, i });
-
           // Metadata only
           if (i === 'json') {
             const size = await GetFrameResolution(blob);
@@ -118,7 +116,7 @@ console.log('DEBUG SW RESIZE', { w, h, m, f, q, i });
             },
           });
         } catch (err) {
-          console.error('Error fetching/resizing frame:', err);
+          console.error('Error fetching frame:', err);
           return new Response(JSON.stringify({ message: 'Failed to fetch image' }), {
             status: 503,
             headers: { 'Content-Type': 'application/json' },

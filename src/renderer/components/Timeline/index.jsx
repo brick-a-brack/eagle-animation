@@ -1,3 +1,4 @@
+import { getPictureLink } from '@core/resize';
 import { DndContext, MouseSensor, TouchSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { horizontalListSortingStrategy, SortableContext, useSortable } from '@dnd-kit/sortable';
 import { CSS as DNDCSS } from '@dnd-kit/utilities';
@@ -9,7 +10,6 @@ import { useEffect, useLayoutEffect, useRef } from 'react';
 import { withTranslation } from 'react-i18next';
 
 import * as style from './style.module.css';
-import { getPictureLink } from '@core/resize';
 
 const getPicturesKey = (pictures) => {
   const data = structuredClone(pictures);

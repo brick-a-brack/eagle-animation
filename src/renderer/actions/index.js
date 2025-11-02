@@ -7,7 +7,7 @@ import JSZip from 'jszip';
 
 import { createBuffer, flushBuffers, getBuffer } from './buffer';
 import { getFFmpeg } from './ffmpeg';
-import { createFrame, getFrameBlobUrl } from './frames';
+import { createFrame } from './frames';
 import { createProject, deleteProject, getAllProjects, getProject, saveProject } from './projects';
 
 let events = [];
