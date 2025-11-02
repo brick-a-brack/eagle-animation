@@ -68,12 +68,7 @@ const HomeView = ({ t }) => {
     <PageLayout>
       <HeaderBar
         leftChildren={<VersionUpdater onClick={handleLink} version={version} latestVersion={latestVersion} onLink={handleLink} />}
-        rightActions={[
-          ...(settings?.EVENT_MODE_ENABLED ? ['SYNC_LIST'] : []),
-          ...(!isIos() ? [isFullscreen ? 'EXIT_FULLSCREEN' : 'ENTER_FULLSCREEN'] : []),
-          'SHORTCUTS',
-          'SETTINGS',
-        ]}
+        rightActions={[...(settings?.EVENT_MODE_ENABLED ? ['SYNC_LIST'] : []), ...(!isIos() ? [isFullscreen ? 'EXIT_FULLSCREEN' : 'ENTER_FULLSCREEN'] : []), 'SHORTCUTS', 'SETTINGS']}
         onAction={handleAction}
         withBorder
       >

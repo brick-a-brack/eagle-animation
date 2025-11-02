@@ -159,7 +159,17 @@ export const Actions = {
   },
   EXPORT: async (
     evt,
-    { project_id, track_id, mode = 'video', format = 'h264', frames = [], custom_output_framerate = false, compress_as_zip = false, custom_output_framerate_number = 10, endpoint = null }
+    {
+      project_id,
+      track_id,
+      mode = 'video',
+      format = 'h264',
+      frames = [],
+      custom_output_framerate = false,
+      compress_as_zip = false,
+      custom_output_framerate_number = 10,
+      endpoint = null, //eslint-disable-line no-unused-vars
+    }
   ) => {
     const trackId = Number(track_id);
     const project = await getProject(project_id);
