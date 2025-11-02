@@ -37,53 +37,55 @@ export const ExportFrames = async (
   };
 
   // Generate frames
-  const frames = (
-    await Promise.all(
-      files.map(async (file) => {
-        if (file.deleted || file.hidden) {
-          onFrameDone();
-          return null;
-        }
-        const targetExtension = file.filename.split('.').pop() || 'jpg';
-        const computedExtension = (typeof opts.forceFileExtension !== 'undefined' ? opts.forceFileExtension : targetExtension) || targetExtension;
+  const rawFrames = [];
+  for (const file of files) {
+    console.log('FILE', file)
+    if (file.deleted || file.hidden) {
+      onFrameDone();
+      rawFrames.push(null);
+      continue;
+    }
 
-        // If needed we calc the width based on frame ratio and defined height
-        let copiedResolution = structuredClone(resolution);
-        if (copiedResolution && !copiedResolution.width) {
-          const frameResolution = await fetch(file.metaLink).then((res) => res.json());
-          copiedResolution.width = floorResolutionValue((copiedResolution.height * frameResolution.width) / frameResolution.height) || copiedResolution.height;
-        }
+    const targetExtension = file.filename.split('.').pop() || 'jpg';
+    const computedExtension = (typeof opts.forceFileExtension !== 'undefined' ? opts.forceFileExtension : targetExtension) || targetExtension;
 
-        // Compute frame using web worker
-        const frameBlob = await fetch(
-          getPictureLink(file.link, {
-            ...(copiedResolution.width ? { w: copiedResolution.width } : {}),
-            ...(copiedResolution.height ? { h: copiedResolution.height } : {}),
-            m: 'cover',
-            q: 100,
-            f: 'jpg',
-            ...(typeof opts.forceFileExtension !== 'undefined' ? { e: computedExtension } : {}),
-          })
-        ).then((res) => res.blob());
-
-        // Write file on disk/ram
-        const bufferId = v4();
-        await onBufferCreate(bufferId, Buffer.from(await frameBlob.arrayBuffer()));
-
-        // Increase counter
-        onFrameDone();
-
-        // Return frame data
-        return {
-          id: file.id,
-          length: file.length || 1,
-          extension: computedExtension,
-          mimeType: `image/${(computedExtension || 'jpg').replace('jpg', 'jpeg')}`,
-          bufferId: bufferId,
-        };
+    // If needed we calc the width based on frame ratio and defined height
+    let copiedResolution = structuredClone(resolution);
+    if (copiedResolution && !copiedResolution.width) {
+      const frameResolution = await fetch(file.metaLink).then((res) => res.json());
+      copiedResolution.width = floorResolutionValue((copiedResolution.height * frameResolution.width) / frameResolution.height) || copiedResolution.height;
+    }
+console.log('A');
+    // Compute frame using web worker
+    const frameArrayBuffer = await fetch(
+      getPictureLink(file.link, {
+        ...(copiedResolution.width ? { w: copiedResolution.width } : {}),
+        ...(copiedResolution.height ? { h: copiedResolution.height } : {}),
+        m: 'cover',
+        q: 100,
+        ...(typeof opts.forceFileExtension !== 'undefined' ? { f: computedExtension } : {}),
       })
-    )
-  )?.filter(Boolean);
+    ).then((res) => res.arrayBuffer());
+    console.log('B');
+
+    // Write file on disk/ram
+    const bufferId = v4();
+    await onBufferCreate(bufferId, Buffer.from(frameArrayBuffer));
+console.log('C');
+    // Increase counter
+    onFrameDone();
+
+    // Return frame data
+    rawFrames.push({
+      id: file.id,
+      length: file.length || 1,
+      extension: computedExtension,
+      mimeType: `image/${(computedExtension || 'jpg').replace('jpg', 'jpeg')}`,
+      bufferId: bufferId,
+    });
+    console.log('D');
+  }
+  const frames = rawFrames?.filter(Boolean);
 
   // Update progress
   if (typeof onProgress === 'function') {

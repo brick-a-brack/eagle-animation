@@ -17,8 +17,8 @@ import { selectFile, selectFolder } from './core/utils';
 
 console.log(`💾 Eagle Animation files will be saved in the following folder: ${PROJECTS_PATH}`);
 
-const getPictureLink = (projectId, sceneIndex, filename) => `ea-data://api/pictures/${projectId}/${sceneIndex}/${filename}`;
-const getMetaPictureLink = (projectId, sceneIndex, filename) => `ea-data://api/pictures/${projectId}/${sceneIndex}/${filename}?infos=json`;
+const getPictureLink = (projectId, sceneIndex, filename) => `ea://api/pictures/${projectId}/${sceneIndex}/${filename}`;
+const getMetaPictureLink = (projectId, sceneIndex, filename) => `ea://api/pictures/${projectId}/${sceneIndex}/${filename}?infos=json`;
 
 const computeProject = (data) => {
   const copiedData = structuredClone(data);

@@ -15,7 +15,7 @@ import { PROJECTS_PATH } from './config';
 
 let sendToRenderer = () => null;
 
-protocol.registerSchemesAsPrivileged([{ scheme: 'ea-data', privileges: { bypassCSP: true, standard: true, secure: true, supportFetchAPI: true } }]);
+protocol.registerSchemesAsPrivileged([{ scheme: 'ea', privileges: { bypassCSP: true, standard: true, secure: true, supportFetchAPI: true } }]);
 
 function createWindow() {
   // Create the browser window.
@@ -69,12 +69,12 @@ app.whenReady().then(() => {
     optimizer.watchWindowShortcuts(window);
   });
 
-  protocol.handle('ea-data', async (request) => {
+  protocol.handle('ea', async (request) => {
     // Parse URL and parameters
     const urlObj = new URL(request.url);
 
     // Get disk path
-    const diskPath = `${PROJECTS_PATH}/${request.url.slice('ea-data://api/pictures/'.length).split('?')[0]}`;
+    const diskPath = `${PROJECTS_PATH}/${request.url.slice('ea://api/pictures/'.length).split('?')[0]}`;
 
     // Options
     const { w, h, m, f, q, i } = parseResizeArguments(urlObj.searchParams);
@@ -142,7 +142,7 @@ app.whenReady().then(() => {
         },
       });
     } catch (err) {
-      console.error('ea-data handler error', err);
+      console.error('ea handler error', err);
       return net.fetch(url.pathToFileURL(diskPath).toString());
     }
   });

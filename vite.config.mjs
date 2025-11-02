@@ -6,7 +6,7 @@ import { defineConfig, normalizePath } from 'vite';
 import { viteStaticCopy } from 'vite-plugin-static-copy';
 import svgr from 'vite-plugin-svgr';
 import topLevelAwait from 'vite-plugin-top-level-await';
-import { serviceWorkerPlugin } from '@gautemo/vite-plugin-service-worker'
+import { serviceWorkerPlugin } from '@gautemo/vite-plugin-service-worker';
 
 const URL = process.env.VITE_PUBLIC_URL || '';
 

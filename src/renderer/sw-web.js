@@ -3,7 +3,7 @@ import resizeToFit from 'intrinsic-scale';
 
 import { getFrameBlob } from './actions/frames';
 
-console.log('🥷 Service Worker loaded!');
+console.log('🥷 Service Worker loaded! (Type=Web)');
 
 const generateFakeFrame = async (resolution) => {
   const height = resolution?.height || 1;
@@ -71,7 +71,7 @@ self.addEventListener('activate', () => self.clients.claim());
 self.addEventListener('fetch', (event) => {
   const url = new URL(event.request.url);
 
-  // Intercepter uniquement GET sur /api/special-data
+  // Catch special routes
   if (event.request.method === 'GET' && url.pathname.startsWith('/api/pictures/')) {
     event.respondWith(
       (async () => {
@@ -116,8 +116,8 @@ self.addEventListener('fetch', (event) => {
             },
           });
         } catch (err) {
-          console.error('Error fetching frame:', err);
-          return new Response(JSON.stringify({ message: 'Failed to fetch image' }), {
+          console.error('Service Worker Error:', err);
+          return new Response(JSON.stringify({ message: 'Service Worker Error' }), {
             status: 503,
             headers: { 'Content-Type': 'application/json' },
           });
