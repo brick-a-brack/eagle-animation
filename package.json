@@ -74,13 +74,16 @@
     "react-select": "^5.10.2",
     "react-tooltip": "^5.30.0",
     "rimraf": "^6.0.1",
+    "sharp": "^0.34.4",
     "source-map-support": "^0.5.21",
     "uuid": "^13.0.0",
+    "vite-plugin-pwa": "^1.1.0",
     "web-gphoto2": "^0.4.1"
   },
   "devDependencies": {
     "@electron-toolkit/eslint-config": "1.0.2",
     "@electron-toolkit/eslint-config-prettier": "2.0.0",
+    "@gautemo/vite-plugin-service-worker": "^0.1.0",
     "@vitejs/plugin-react": "^5.0.4",
     "buffer": "^6.0.3",
     "electron": "^38.3.0",

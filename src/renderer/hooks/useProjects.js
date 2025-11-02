@@ -1,4 +1,3 @@
-import { OptimizeFrame } from '@core/Optimizer';
 import { useCallback, useEffect, useState } from 'react';
 
 const getDefaultFrame = (data) => {
@@ -34,7 +33,6 @@ const countFrames = (project) => {
 
 function useProjects(options) {
   const [projectsData, setProjectsData] = useState(null);
-  const [previewUrls, setPreviewUrls] = useState([]);
 
   // Initial load
   useEffect(() => {
@@ -51,24 +49,6 @@ function useProjects(options) {
       setProjectsData(data);
     });
   }, []);
-
-  useEffect(() => {
-    if (!projectsData) {
-      return;
-    }
-    Promise.all(
-      projectsData.map(async (project) => {
-        const defaultFrame = await getDefaultFrame(project);
-        if (!defaultFrame?.picture) {
-          return null;
-        }
-        const optimizedFrame = await OptimizeFrame(defaultFrame.projectId, defaultFrame.sceneId, defaultFrame.picture.id, 'preview', defaultFrame.picture.link);
-        return optimizedFrame;
-      })
-    ).then((links) => {
-      setPreviewUrls(links);
-    });
-  }, [projectsData]);
 
   // Action rename
   const actionRename = useCallback(async (projectId, title = '') => {
@@ -98,7 +78,14 @@ function useProjects(options) {
   );
 
   return {
-    projects: projectsData?.map((e, i) => ({ ...(e || {}), stats: { frames: countFrames(e.project) }, preview: previewUrls[i] || null })) || null,
+    projects:
+      projectsData?.map((e, i) => ({
+        ...(e || {}),
+        stats: {
+          frames: countFrames(e.project),
+        },
+        preview: getDefaultFrame(e)?.picture?.link || null,
+      })) || null,
     actions: {
       refresh: actionRefresh,
       create: actionCreate,

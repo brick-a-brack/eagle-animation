@@ -14,7 +14,7 @@ import Switch from '@components/Switch';
 import { ALLOWED_LETTERS } from '@config-web';
 import { ExportFrames } from '@core/Export';
 import { parseRatio } from '@core/ratio';
-import { GetFrameResolutions } from '@core/ResolutionsCache';
+import { getPictureLink } from '@core/resize';
 import useAppCapabilities from '@hooks/useAppCapabilities';
 import useProject from '@hooks/useProject';
 import useSettings from '@hooks/useSettings';
@@ -32,6 +32,17 @@ const generateCustomUuid = (length) => {
   }
   return out;
 };
+
+export const GetFrameResolutions = async (frames) => {
+  if (!frames || frames.length === 0) {
+    return [];
+  }
+  const resolutions = await Promise.all(frames.map((frame) => {
+    return fetch(frame.metaLink).then((res) => res.json()).catch(() => ({ width: null, height: null }));
+  }));
+  return resolutions;
+};
+
 
 const Export = ({ t }) => {
   const { id, track } = useParams();
@@ -103,7 +114,7 @@ const Export = ({ t }) => {
 
   const framesKey = JSON.stringify(project?.scenes?.[Number(track)]?.pictures);
   useEffect(() => {
-    GetFrameResolutions(id, Number(track), project?.scenes?.[Number(track)]?.pictures)
+    GetFrameResolutions(project?.scenes?.[Number(track)]?.pictures)
       .then((d) => {
         setResolutions(d);
       })

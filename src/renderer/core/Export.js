@@ -2,8 +2,7 @@ import { floorResolution, floorResolutionValue } from '@common/resolution';
 import { Buffer } from 'buffer';
 import { v4 } from 'uuid';
 
-import { GetFrameResolution } from './ResolutionsCache';
-import { ExportFrame } from './Worker';
+import { getPictureLink } from './resize';
 
 export const ExportFrames = async (
   projectId = null,
@@ -51,12 +50,19 @@ export const ExportFrames = async (
         // If needed we calc the width based on frame ratio and defined height
         let copiedResolution = structuredClone(resolution);
         if (copiedResolution && !copiedResolution.width) {
-          const frameResolution = await GetFrameResolution(projectId, sceneId, file.id, file.link);
+          const frameResolution = await fetch(file.metaLink).then((res) => res.json());
           copiedResolution.width = floorResolutionValue((copiedResolution.height * frameResolution.width) / frameResolution.height) || copiedResolution.height;
         }
 
         // Compute frame using web worker
-        const frameBlob = await ExportFrame(file.link, copiedResolution, typeof opts.forceFileExtension !== 'undefined' ? computedExtension : undefined, 'cover');
+        const frameBlob = await fetch(
+          getPictureLink(file.link, {
+            ...(copiedResolution.width ? { w: copiedResolution.width } : {}),
+            ...(copiedResolution.height ? { h: copiedResolution.height } : {}),
+            m: 'cover',
+            ...(typeof opts.forceFileExtension !== 'undefined' ? { e: computedExtension } : {}),
+          })
+        ).then((res) => res.blob());
 
         // Write file on disk/ram
         const bufferId = v4();

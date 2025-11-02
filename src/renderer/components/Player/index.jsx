@@ -4,8 +4,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 
 import * as style from './style.module.css';
-
-const PLAYER_USABLE_FRAME_PROPERTY = 'preview'; // 'link' for original, 'preview' for 720p preview, 'thumbnail' for 80p preview
+import { getPictureLink } from '@core/resize';
 
 const drawArea = (ctx, x, y, width, height) => {
   ctx.fillRect(x, y, width, 1);
@@ -25,6 +24,9 @@ class Player extends Component {
       picture: React.createRef(),
       grid: React.createRef(),
     };
+
+    // Cached images promises
+    this.images = {};
 
     this.state = {
       width: 0,
@@ -90,7 +92,7 @@ class Player extends Component {
         }
 
         const frame = (newFrameIndex === false ? filteredFrames[filteredFrames.length - 1] : filteredFrames[newFrameIndex]) || false;
-        this.drawFrame(frame[PLAYER_USABLE_FRAME_PROPERTY] || false);
+        this.drawFrame(frame.link || false);
         this.setState({ frameIndex: newFrameIndex });
         this.props.onFrameChange(newFrameIndex !== false && frame ? frame.id : false);
         return true;
@@ -150,7 +152,7 @@ class Player extends Component {
         clearInterval(this.clock);
       }
       const frame = this.frames[this.frames.length - 1] || false; // Draw last frame for onion feature
-      this.drawFrame(frame[PLAYER_USABLE_FRAME_PROPERTY] || false);
+      this.drawFrame(frame.link || false);
       this.setState({ frameIndex: false });
       this.props.onFrameChange(false);
       this.props.onPlayingStatusChange(false);
@@ -162,7 +164,7 @@ class Player extends Component {
       }
       if (id === false) {
         const frame = this.frames[this.frames.length - 1] || false; // Draw last frame for onion feature
-        this.drawFrame(frame[PLAYER_USABLE_FRAME_PROPERTY] || false);
+        this.drawFrame(frame.link || false);
         this.setState({ frameIndex: false });
         this.props.onFrameChange(false);
         return;
@@ -170,7 +172,7 @@ class Player extends Component {
       const frame = this.frames.find((e) => e.id === id) || false;
       const frameIndex = this.frames.findIndex((e) => e.id === id);
       this.setState({ frameIndex: frameIndex === -1 ? false : frameIndex });
-      this.drawFrame(frame[PLAYER_USABLE_FRAME_PROPERTY] || false);
+      this.drawFrame(frame.link || false);
       this.props.onFrameChange(frame.id);
       this.props.onPlayingStatusChange(false);
     };
@@ -286,6 +288,25 @@ class Player extends Component {
     }
   }
 
+  loadImage(link) {
+    if (this.images[link]) {
+      return this.images[link];
+    }
+    this.images[link] = new Promise((resolve, reject) => {
+      const img = new Image();
+      const resolver = () => {
+        img.removeEventListener('error', reject);
+        img.removeEventListener('load', resolver);
+        resolve(img);
+      };
+      img.addEventListener('error', reject);
+      img.addEventListener('load', resolver);
+      img.src = link;
+    });
+
+    return this.images[link];
+  }
+
   drawFrame(src = false) {
     const ctx = this.dom.picture.current.getContext('2d', { alpha: false });
     if (src === false) {
@@ -294,41 +315,34 @@ class Player extends Component {
       return;
     }
 
-    const img = new Image();
-    img.addEventListener('error', () => {
+    this.loadImage(getPictureLink(src, { h: 720, m: 'contain' })).then(img => {
+      ctx.fillStyle = '#000000';
+      ctx.fillRect(0, 0, this.getSize().width, this.getSize().height);
+
+      let ratioPosition = null;
+      if (this.getVideoRatio()) {
+        ratioPosition = resizeToFit('contain', { width: this.getVideoRatio(), height: 1 }, { width: this.getSize().width, height: this.getSize().height });
+      } else {
+        ratioPosition = { width: this.getSize().width, height: this.getSize().height };
+      }
+
+      const imagePosition = resizeToFit('cover', { width: img.width, height: img.height }, { width: ratioPosition.width, height: ratioPosition.height });
+
+      ctx.drawImage(
+        img,
+        0,
+        0,
+        img.width,
+        img.height,
+        Math.round(this.getSize().width / 2) - imagePosition.width / 2,
+        Math.round(this.getSize().height / 2) - imagePosition.height / 2,
+        imagePosition.width,
+        imagePosition.height
+      );
+    }).catch(err => {
       ctx.fillStyle = '#000000';
       ctx.fillRect(0, 0, this.getSize().width, this.getSize().height);
     });
-    img.addEventListener(
-      'load',
-      () => {
-        ctx.fillStyle = '#000000';
-        ctx.fillRect(0, 0, this.getSize().width, this.getSize().height);
-
-        let ratioPosition = null;
-        if (this.getVideoRatio()) {
-          ratioPosition = resizeToFit('contain', { width: this.getVideoRatio(), height: 1 }, { width: this.getSize().width, height: this.getSize().height });
-        } else {
-          ratioPosition = { width: this.getSize().width, height: this.getSize().height };
-        }
-
-        const imagePosition = resizeToFit('cover', { width: img.width, height: img.height }, { width: ratioPosition.width, height: ratioPosition.height });
-
-        ctx.drawImage(
-          img,
-          0,
-          0,
-          img.width,
-          img.height,
-          Math.round(this.getSize().width / 2) - imagePosition.width / 2,
-          Math.round(this.getSize().height / 2) - imagePosition.height / 2,
-          imagePosition.width,
-          imagePosition.height
-        );
-      },
-      false
-    );
-    img.src = src;
   }
 
   render() {

@@ -6,6 +6,7 @@ import { defineConfig, normalizePath } from 'vite';
 import { viteStaticCopy } from 'vite-plugin-static-copy';
 import svgr from 'vite-plugin-svgr';
 import topLevelAwait from 'vite-plugin-top-level-await';
+import { serviceWorkerPlugin } from '@gautemo/vite-plugin-service-worker'
 
 const URL = process.env.VITE_PUBLIC_URL || '';
 
@@ -17,12 +18,17 @@ export default defineConfig({
     cssTarget: ['chrome100'],
     sourcemap: true,
     outDir: resolve(__dirname, 'out/web/'),
+    rollupOptions: {
+      input: {
+        main: 'src/renderer/index.html',
+      },
+    },
   },
   worker: {
     format: 'es',
   },
   optimizeDeps: {
-    exclude: ["@ffmpeg/ffmpeg", "@ffmpeg/util", "web-gphoto2"],
+    exclude: ['@ffmpeg/ffmpeg', '@ffmpeg/util', 'web-gphoto2'],
   },
   resolve: {
     alias: {
@@ -72,11 +78,14 @@ export default defineConfig({
         },
       ],
     }),
+    serviceWorkerPlugin({
+      filename: 'sw.js',
+    }),
   ],
   server: {
     headers: {
-      "Cross-Origin-Opener-Policy": "same-origin",
-      "Cross-Origin-Embedder-Policy": "require-corp",
+      'Cross-Origin-Opener-Policy': 'same-origin',
+      'Cross-Origin-Embedder-Policy': 'require-corp',
     },
   },
 });

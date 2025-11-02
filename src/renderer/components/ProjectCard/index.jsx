@@ -8,6 +8,7 @@ import IconEdit from './assets/edit.svg?jsx';
 import IconOpen from './assets/open.svg?jsx';
 
 import * as style from './style.module.css';
+import { getPictureLink } from '@core/resize';
 
 let renameEvents = {};
 
@@ -35,7 +36,7 @@ const ProjectCard = ({ id = '', placeholder = '', title = '', picture = '', onCl
 
   return (
     <div className={style.box}>
-      <div className={style.banner}>{picture && <img alt="" src={picture} loading="lazy" />}</div>
+      <div className={style.banner}>{picture && <img alt="" src={getPictureLink(picture, { w: 300, h: 200, m: 'cover' })} loading="lazy" />}</div>
       {nbFrames !== null && <Tag tag={`${nbFrames || 0}`} icon={faImages} position="TOP-RIGHT" />}
       <div role="button" tabIndex={0} className={style.bannerhover} onClick={handleClick}>
         {icon === 'ADD' && <IconAdd />}
