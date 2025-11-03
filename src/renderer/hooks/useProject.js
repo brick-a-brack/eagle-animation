@@ -19,6 +19,7 @@ function useProject(options) {
       for (const trackIndex in d.project.scenes) {
         for (const pictureIndex in d.project.scenes[trackIndex].pictures) {
           delete d.project.scenes[trackIndex].pictures[pictureIndex].link;
+          delete d.project.scenes[trackIndex].pictures[pictureIndex].metaLink;
         }
       }
       window.EA('SAVE_PROJECT', { project_id: options?.id, data: d });

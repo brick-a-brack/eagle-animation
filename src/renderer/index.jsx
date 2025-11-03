@@ -81,13 +81,6 @@ window.EAEvents = (name, callback = () => { }) => {
 // Add service worker
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    // IPC (Electron backend)
-    if (typeof window.IPC !== 'undefined') {
-      navigator.serviceWorker.register('./sw-electron.js', {
-        type: 'module',
-      });
-    }
-
     // Web (Web browser backend)
     if (typeof window.IPC === 'undefined') {
       navigator.serviceWorker.register('./sw-web.js', {

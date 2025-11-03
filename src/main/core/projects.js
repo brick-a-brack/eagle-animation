@@ -32,6 +32,7 @@ export const generateProjectObject = (name) => ({
 export const getProjectData = async (path) => {
   const file = format({ dir: path, base: PROJECT_FILE });
   const data = await readFile(file, 'utf8');
+  console.log('RAW', data)
   const project = JSON.parse(data);
   const id = path.replaceAll('\\', '/').split('/').pop();
   return { project, _path: path, _file: file, _id: id };

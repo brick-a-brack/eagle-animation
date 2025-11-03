@@ -10,6 +10,7 @@ import { useEffect, useLayoutEffect, useRef } from 'react';
 import { withTranslation } from 'react-i18next';
 
 import * as style from './style.module.css';
+import faCamera from '@icons/faCamera';
 
 const getPicturesKey = (pictures) => {
   const data = structuredClone(pictures);
@@ -139,7 +140,10 @@ const Timeline = ({ onSelect, onMove, select = false, pictures = [], playing = f
             onSelect(false);
           }}
         >
-          <span id="timeline-frame-live" className={style.img} role="button" tabIndex={0} />
+          <span id="timeline-frame-live" className={style.img} role="button" tabIndex={0} >
+            
+          <FontAwesomeIcon icon={faCamera} />
+          </span>
           <span className={style.title}>{t('Live')}</span>
         </span>
       </aside>
