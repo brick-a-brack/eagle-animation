@@ -39,7 +39,6 @@ export const ExportFrames = async (
   // Generate frames
   const rawFrames = [];
   for (const file of files) {
-    console.log('FILE', file)
     if (file.deleted || file.hidden) {
       onFrameDone();
       rawFrames.push(null);
@@ -55,23 +54,26 @@ export const ExportFrames = async (
       const frameResolution = await fetch(file.metaLink).then((res) => res.json());
       copiedResolution.width = floorResolutionValue((copiedResolution.height * frameResolution.width) / frameResolution.height) || copiedResolution.height;
     }
-console.log('A');
+
     // Compute frame using web worker
     const frameArrayBuffer = await fetch(
       getPictureLink(file.link, {
-        ...(copiedResolution.width ? { w: copiedResolution.width } : {}),
-        ...(copiedResolution.height ? { h: copiedResolution.height } : {}),
-        m: 'cover',
-        q: 100,
+        ...(copiedResolution && copiedResolution.width ? { w: copiedResolution.width } : {}),
+        ...(copiedResolution && copiedResolution.height ? { h: copiedResolution.height } : {}),
+        ...(copiedResolution
+          ? {
+              m: 'cover',
+              q: 100,
+            }
+          : {}),
         ...(typeof opts.forceFileExtension !== 'undefined' ? { f: computedExtension } : {}),
       })
     ).then((res) => res.arrayBuffer());
-    console.log('B');
 
     // Write file on disk/ram
     const bufferId = v4();
     await onBufferCreate(bufferId, Buffer.from(frameArrayBuffer));
-console.log('C');
+
     // Increase counter
     onFrameDone();
 
@@ -83,7 +85,6 @@ console.log('C');
       mimeType: `image/${(computedExtension || 'jpg').replace('jpg', 'jpeg')}`,
       bufferId: bufferId,
     });
-    console.log('D');
   }
   const frames = rawFrames?.filter(Boolean);
 

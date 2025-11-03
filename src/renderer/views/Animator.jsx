@@ -428,7 +428,7 @@ const Animator = ({ t }) => {
         <HeaderBar
           leftActions={['BACK']}
           rightActions={[
-            ...(pictures?.some(e => !e?.hidden) &&
+            ...(pictures?.some((e) => !e?.hidden) &&
             (appCapabilities.includes('EXPORT_VIDEO') || appCapabilities.includes('EXPORT_FRAMES') || (appCapabilities.includes('BACKGROUND_SYNC') && settings?.EVENT_MODE_ENABLED))
               ? ['EXPORT']
               : []),
@@ -466,7 +466,9 @@ const Animator = ({ t }) => {
           reverseY={settings.REVERSE_Y}
         />
         <div>
-          {settings?.EVENT_MODE_ENABLED && <LimitWarning nbFrames={pictures.length} nbFramesLimit={settings?.LIMIT_NUMBER_OF_FRAMES} startedAt={startedAt} activityDuration={settings?.LIMIT_ACTIVITY_DURATION} />}
+          {settings?.EVENT_MODE_ENABLED && (
+            <LimitWarning nbFrames={pictures.length} nbFramesLimit={settings?.LIMIT_NUMBER_OF_FRAMES} startedAt={startedAt} activityDuration={settings?.LIMIT_ACTIVITY_DURATION} />
+          )}
           <ControlBar
             onAction={handleAction}
             showCameraSettings={showCameraSettings}

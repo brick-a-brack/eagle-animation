@@ -10,8 +10,8 @@ export const getPictureLink = (url = '', args = {}) => {
     ...(args.w ? { w: Math.round(args.w) } : {}),
     ...(args.h ? { h: Math.round(args.h) } : {}),
     ...(args.m ? { m: args.m } : {}),
-    ...(f ? { f } : {}),
-    ...(q ? { q } : {}),
+    ...(args.f ? { f } : {}),
+    ...(args.f && q ? { q } : {}),
   }).toString();
 
   return `${url}?${params}`;
