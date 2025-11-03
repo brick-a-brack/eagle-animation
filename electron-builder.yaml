@@ -1,6 +1,7 @@
 appId: com.eagle-animation.app
 productName: Eagle Animation
 #compression: maximum
+nativeRebuilder: legacy
 
 directories:
   output: binaries
