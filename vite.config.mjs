@@ -18,11 +18,6 @@ export default defineConfig({
     cssTarget: ['chrome100'],
     sourcemap: true,
     outDir: resolve(__dirname, 'out/web/'),
-    rollupOptions: {
-      input: {
-        main: 'src/renderer/index.html',
-      },
-    },
   },
   worker: {
     format: 'es',
