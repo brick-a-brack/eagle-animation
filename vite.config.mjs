@@ -17,12 +17,15 @@ export default defineConfig({
     cssTarget: ['chrome100'],
     sourcemap: true,
     outDir: resolve(__dirname, 'out/web/'),
+    rollupOptions: {
+      input: resolve(__dirname, 'src/renderer/index.html'),
+    },
   },
   worker: {
     format: 'es',
   },
   optimizeDeps: {
-    exclude: ["@ffmpeg/ffmpeg", "@ffmpeg/util", "web-gphoto2"],
+    exclude: ['@ffmpeg/ffmpeg', '@ffmpeg/util', 'web-gphoto2'],
   },
   resolve: {
     alias: {
@@ -75,8 +78,8 @@ export default defineConfig({
   ],
   server: {
     headers: {
-      "Cross-Origin-Opener-Policy": "same-origin",
-      "Cross-Origin-Embedder-Policy": "require-corp",
+      'Cross-Origin-Opener-Policy': 'same-origin',
+      'Cross-Origin-Embedder-Policy': 'require-corp',
     },
   },
 });

@@ -28,7 +28,7 @@ const SyncItem = ({
   const displayTarget = email || publicCode || t('Unknown');
 
   return (
-    <div className={`${style.item} ${isUploaded ? style.uploaded : ''}`}>
+    <div className={`${style.item}`}>
       <div className={style.icon}>
         <FontAwesomeIcon icon={faFileVideo} />
       </div>
