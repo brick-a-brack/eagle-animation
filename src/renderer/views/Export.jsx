@@ -14,7 +14,6 @@ import Switch from '@components/Switch';
 import { ALLOWED_LETTERS } from '@config-web';
 import { ExportFrames } from '@core/Export';
 import { parseRatio } from '@core/ratio';
-import { GetFrameResolutions } from '@core/ResolutionsCache';
 import useAppCapabilities from '@hooks/useAppCapabilities';
 import useProject from '@hooks/useProject';
 import useSettings from '@hooks/useSettings';
@@ -31,6 +30,20 @@ const generateCustomUuid = (length) => {
     out += ALLOWED_LETTERS[array[i] % ALLOWED_LETTERS.length];
   }
   return out;
+};
+
+export const GetFrameResolutions = async (frames) => {
+  if (!frames || frames.length === 0) {
+    return [];
+  }
+  const resolutions = await Promise.all(
+    frames.map((frame) => {
+      return fetch(frame.metaLink)
+        .then((res) => res.json())
+        .catch(() => ({ width: null, height: null }));
+    })
+  );
+  return resolutions;
 };
 
 const Export = ({ t }) => {
@@ -103,7 +116,7 @@ const Export = ({ t }) => {
 
   const framesKey = JSON.stringify(project?.scenes?.[Number(track)]?.pictures);
   useEffect(() => {
-    GetFrameResolutions(id, Number(track), project?.scenes?.[Number(track)]?.pictures)
+    GetFrameResolutions(project?.scenes?.[Number(track)]?.pictures)
       .then((d) => {
         setResolutions(d);
       })
@@ -137,7 +150,13 @@ const Export = ({ t }) => {
 
   useEffect(() => {
     (async () => {
-      const bestMode = appCapabilities.includes('EXPORT_VIDEO') ? 'video' : appCapabilities.includes('EXPORT_FRAMES') ? 'frames' : (appCapabilities.includes('BACKGROUND_SYNC') && settings?.EVENT_MODE_ENABLED) ? 'send' : 'none';
+      const bestMode = appCapabilities.includes('EXPORT_VIDEO')
+        ? 'video'
+        : appCapabilities.includes('EXPORT_FRAMES')
+          ? 'frames'
+          : appCapabilities.includes('BACKGROUND_SYNC') && settings?.EVENT_MODE_ENABLED
+            ? 'send'
+            : 'none';
       if (
         (watch('mode') === 'video' && !appCapabilities.includes('EXPORT_VIDEO')) ||
         (watch('mode') === 'frames' && !appCapabilities.includes('EXPORT_FRAMES')) ||
@@ -205,6 +224,8 @@ const Export = ({ t }) => {
       if (!project.title) {
         projectActions.rename(newCode);
       }
+    } else {
+      setPublicCode(null);
     }
 
     // Ask user to define output path
@@ -212,16 +233,16 @@ const Export = ({ t }) => {
       data.mode === 'send'
         ? null
         : await window.EA('EXPORT_SELECT_PATH', {
-          type: data.mode === 'video' ? 'FILE' : 'FOLDER',
-          format: data.format,
-          translations: {
-            EXPORT_FRAMES: t('Export animation frames'),
-            EXPORT_VIDEO: t('Export as video'),
-            DEFAULT_FILE_NAME: t('video'),
-            EXT_NAME: t('Video file'),
-          },
-          compress_as_zip: data.mode === 'frames' ? data.compressAsZip && appCapabilities.includes('EXPORT_FRAMES_ZIP') : false,
-        });
+            type: data.mode === 'video' ? 'FILE' : 'FOLDER',
+            format: data.format,
+            translations: {
+              EXPORT_FRAMES: t('Export animation frames'),
+              EXPORT_VIDEO: t('Export as video'),
+              DEFAULT_FILE_NAME: t('video'),
+              EXT_NAME: t('Video file'),
+            },
+            compress_as_zip: data.mode === 'frames' ? data.compressAsZip && appCapabilities.includes('EXPORT_FRAMES_ZIP') : false,
+          });
 
     // Cancel if result is null, (dialog closed)
     if (data.mode !== 'send' && outputPath === null) {
@@ -356,14 +377,17 @@ const Export = ({ t }) => {
                   </FormGroup>
                 )}
 
-                {['send'].includes(watch('mode')) && (<>
-                  <FormGroup label={t('Send method')} description={t('The way the user will retrieve their video')}>
-                    <Select control={control} options={sendMethods} register={register('sendMethod')} />
-                  </FormGroup>
-                  {watch('sendMethod') === 'email' && <FormGroup label={t('Email address')} description={t('The email address to send the video to')}>
-                    <Input control={control} register={register('email')} />
-                  </FormGroup>}
-                </>
+                {['send'].includes(watch('mode')) && (
+                  <>
+                    <FormGroup label={t('Send method')} description={t('The way the user will retrieve their video')}>
+                      <Select control={control} options={sendMethods} register={register('sendMethod')} />
+                    </FormGroup>
+                    {watch('sendMethod') === 'email' && (
+                      <FormGroup label={t('Email address')} description={t('The email address to send the video to')}>
+                        <Input control={control} register={register('email')} />
+                      </FormGroup>
+                    )}
+                  </>
                 )}
 
                 {watch('mode') === 'frames' && (

@@ -13,7 +13,7 @@ import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { withTranslation } from 'react-i18next';
 
-const SettingsForm = ({ settings = {}, onUpdate = () => { }, t }) => {
+const SettingsForm = ({ settings = {}, onUpdate = () => {}, t }) => {
   const { appCapabilities } = useAppCapabilities();
   const form = useForm({
     mode: 'all',
@@ -104,27 +104,29 @@ const SettingsForm = ({ settings = {}, onUpdate = () => { }, t }) => {
           </div>
         </FormGroup>
 
-        {watch('EVENT_MODE_ENABLED') && <>
-          <FormGroup label={t('Recommended number of frames')} description={t('Number of frames allowed before displaying a warning message')}>
-            <NumberInput register={register('LIMIT_NUMBER_OF_FRAMES')} min={0} />
-          </FormGroup>
+        {watch('EVENT_MODE_ENABLED') && (
+          <>
+            <FormGroup label={t('Recommended number of frames')} description={t('Number of frames allowed before displaying a warning message')}>
+              <NumberInput register={register('LIMIT_NUMBER_OF_FRAMES')} min={0} />
+            </FormGroup>
 
-          <FormGroup label={t('Recommended activity duration')} description={t('Duration in minutes on the animator page before displaying a warning message')}>
-            <NumberInput register={register('LIMIT_ACTIVITY_DURATION')} min={0} />
-          </FormGroup>
+            <FormGroup label={t('Recommended activity duration')} description={t('Duration in minutes on the animator page before displaying a warning message')}>
+              <NumberInput register={register('LIMIT_ACTIVITY_DURATION')} min={0} />
+            </FormGroup>
 
-          {appCapabilities.includes('BACKGROUND_SYNC') && (
-            <>
-              <FormGroup label={t('Partner API endpoint')} description={t('The URL of the API to use for workshop mode')}>
-                <Input control={control} register={register('EVENT_API')} />
-              </FormGroup>
+            {appCapabilities.includes('BACKGROUND_SYNC') && (
+              <>
+                <FormGroup label={t('Partner API endpoint')} description={t('The URL of the API to use for workshop mode')}>
+                  <Input control={control} register={register('EVENT_API')} />
+                </FormGroup>
 
-              <FormGroup label={t('Partner API key')} description={t('The authentification key of the API for workshop mode')}>
-                <Input control={control} register={register('EVENT_KEY')} />
-              </FormGroup>
-            </>
-          )}
-        </>}
+                <FormGroup label={t('Partner API key')} description={t('The authentification key of the API for workshop mode')}>
+                  <Input control={control} register={register('EVENT_KEY')} />
+                </FormGroup>
+              </>
+            )}
+          </>
+        )}
       </FormLayout>
     </form>
   );

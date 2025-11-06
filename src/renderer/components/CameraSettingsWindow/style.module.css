@@ -3,6 +3,13 @@
     width: calc(100% - 2 * var(--space-huge));
 }
 
+@media screen and (width <=768px) {
+    .actions {
+        margin: 0 var(--space-big);
+        width: calc(100% - 2 * var(--space-big));
+    }
+}
+
 .refreshIcon {
     background: var(--color-theme-medium);
     border: 0;
@@ -25,7 +32,6 @@
 .refreshIcon svg {
     vertical-align: middle;
 }
-
 
 .refreshIcon:hover {
     background: var(--color-theme-light);
