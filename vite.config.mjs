@@ -6,9 +6,51 @@ import { defineConfig, normalizePath } from 'vite';
 import { viteStaticCopy } from 'vite-plugin-static-copy';
 import svgr from 'vite-plugin-svgr';
 import topLevelAwait from 'vite-plugin-top-level-await';
-import { serviceWorkerPlugin } from '@gautemo/vite-plugin-service-worker';
 
 const URL = process.env.VITE_PUBLIC_URL || '';
+
+function serviceWorkerPlugin(options) {
+  const name = "vite-plugin-service-worker";
+  const virtualModuleId = `virtual:${name}`;
+  const resolvedVirtualModuleId = "\0" + virtualModuleId;
+  let isBuild = false;
+  return {
+    name,
+    config(_, { command }) {
+      isBuild = command === "build";
+      return {
+        build: {
+          rollupOptions: {
+            input: {
+              main: resolve(__dirname, 'src/renderer/index.html'),
+              sw: options.filename
+            },
+            output: {
+              entryFileNames: ({ facadeModuleId }) => {
+                if (facadeModuleId?.includes(options.filename)) {
+                  return `[name].js`;
+                }
+                return "assets/[name].[hash].js";
+              }
+            }
+          }
+        }
+      };
+    },
+    resolveId(id) {
+      if (id === virtualModuleId) {
+        return resolvedVirtualModuleId;
+      }
+    },
+    load(id) {
+      if (id === resolvedVirtualModuleId) {
+        let filename = isBuild ? options.filename.replace(".ts", ".js") : options.filename;
+        if (!filename.startsWith("/")) filename = `/${filename}`;
+        return `export const serviceWorkerFile = '${filename}'`;
+      }
+    }
+  };
+}
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -18,15 +60,12 @@ export default defineConfig({
     cssTarget: ['chrome100'],
     sourcemap: true,
     outDir: resolve(__dirname, 'out/web/'),
-    rollupOptions: {
-      input: resolve(__dirname, 'src/renderer/index.html'),
-    },
   },
   worker: {
     format: 'es',
   },
   optimizeDeps: {
-    exclude: ['@ffmpeg/ffmpeg', '@ffmpeg/util', 'web-gphoto2'],
+    exclude: ["@ffmpeg/ffmpeg", "@ffmpeg/util", "web-gphoto2"],
   },
   resolve: {
     alias: {
@@ -77,13 +116,13 @@ export default defineConfig({
       ],
     }),
     serviceWorkerPlugin({
-      filename: 'sw.js',
+      filename: resolve(__dirname, 'src/renderer/sw-web.js'),
     }),
   ],
   server: {
     headers: {
-      'Cross-Origin-Opener-Policy': 'same-origin',
-      'Cross-Origin-Embedder-Policy': 'require-corp',
+      "Cross-Origin-Opener-Policy": "same-origin",
+      "Cross-Origin-Embedder-Policy": "require-corp",
     },
   },
 });
