@@ -1,7 +1,9 @@
+import { getPictureLink } from '@core/resize';
 import { DndContext, MouseSensor, TouchSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { horizontalListSortingStrategy, SortableContext, useSortable } from '@dnd-kit/sortable';
 import { CSS as DNDCSS } from '@dnd-kit/utilities';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import faCamera from '@icons/faCamera';
 import faEyeSlash from '@icons/faEyeSlash';
 import faForwardFast from '@icons/faForwardFast';
 import animateScrollTo from 'animated-scroll-to';
@@ -40,7 +42,7 @@ const SortableItem = ({ img, isShortPlayBegining = false, playing = false, selec
       onClick={() => onSelect(img)}
       className={`${style.containerImg} ${selected ? style.selected : ''} ${!playing && style.containerImgHover} ${img.hidden ? style.isHidden : ''}`}
     >
-      <span className={style.img}>{img.thumbnail && <img alt="" className={style.imgcontent} src={img.thumbnail} loading="lazy" />}</span>
+      <span className={style.img}>{img.link && <img alt="" className={style.imgcontent} src={getPictureLink(img.link, { w: 80, h: 80, m: 'cover' })} loading="lazy" />}</span>
       {img.hidden && <FontAwesomeIcon className={style.icon} icon={faEyeSlash} />}
       {isShortPlayBegining && <FontAwesomeIcon className={style.shortPlayIcon} icon={faForwardFast} />}
       {img.length > 1 && <span className={style.duplicated}>{`x${img.length}`}</span>}
@@ -138,7 +140,9 @@ const Timeline = ({ onSelect, onMove, select = false, pictures = [], playing = f
             onSelect(false);
           }}
         >
-          <span id="timeline-frame-live" className={style.img} role="button" tabIndex={0} />
+          <span id="timeline-frame-live" className={style.img} role="button" tabIndex={0}>
+            <FontAwesomeIcon icon={faCamera} />
+          </span>
           <span className={style.title}>{t('Live')}</span>
         </span>
       </aside>

@@ -5,11 +5,11 @@ import faFileExport from '@icons/faFileExport';
 import faFilmGear from '@icons/faFilmGear';
 import faGear from '@icons/faGear';
 import faKeyboard from '@icons/faKeyboard';
+import faListCheck from '@icons/faListCheck';
 import faUpRightAndDownLeftFromCenter from '@icons/faUpRightAndDownLeftFromCenter';
 import { withTranslation } from 'react-i18next';
 
 import * as style from './style.module.css';
-import faListCheck from '@icons/faListCheck';
 
 const ActionButton = withTranslation()(({ type, tooltipPosition = 'LEFT', onClick = () => {}, t }) => {
   const titles = {
@@ -20,7 +20,7 @@ const ActionButton = withTranslation()(({ type, tooltipPosition = 'LEFT', onClic
     EXPORT: t('Export'),
     ENTER_FULLSCREEN: t('Fullscreen'),
     EXIT_FULLSCREEN: t('Exit fullscreen'),
-    SYNC_LIST: t('Sync list')
+    SYNC_LIST: t('Sync list'),
   };
 
   const icons = {
@@ -31,7 +31,7 @@ const ActionButton = withTranslation()(({ type, tooltipPosition = 'LEFT', onClic
     EXPORT: faFileExport,
     ENTER_FULLSCREEN: faUpRightAndDownLeftFromCenter,
     EXIT_FULLSCREEN: faDownLeftAndUpRightToCenter,
-    SYNC_LIST: faListCheck
+    SYNC_LIST: faListCheck,
   };
 
   return <Button label={titles?.[type] || null} onClick={onClick} icon={icons?.[type] || null} tooltipPosition={tooltipPosition} />;

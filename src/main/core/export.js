@@ -6,9 +6,9 @@ import { rimraf } from 'rimraf';
 import { v4 as uuidv4 } from 'uuid';
 
 import { getFFmpegArgs, parseFFmpegLogs } from '../../common/ffmpeg';
+import { PARTNER_API } from '../config';
 import { ffmpeg } from './ffmpeg';
 import { getProjectData } from './projects';
-import { PARTNER_API } from '../config';
 
 export const exportSaveTemporaryBuffer = async (projectPath, bufferId, buffer) => {
   const directoryPath = join(projectPath, `/.tmp/`);
@@ -42,7 +42,7 @@ export const getSyncList = async (path) => {
     const file = format({ dir: path, base: 'sync.json' });
     const data = await readFile(file, 'utf8');
     const sync = JSON.parse(data);
-    const stats = await Promise.all(sync.map(e => join(path, '/.sync/', e.fileName)).map(e => stat(e).catch(() => null)));
+    const stats = await Promise.all(sync.map((e) => join(path, '/.sync/', e.fileName)).map((e) => stat(e).catch(() => null)));
     return [...sync].map((e, i) => ({ ...e, apiEndpoint: e.apiEndpoint || PARTNER_API, fileSize: stats?.[i]?.size || null }));
   } catch (e) {
     return [];

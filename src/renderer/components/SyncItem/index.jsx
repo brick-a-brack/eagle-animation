@@ -14,31 +14,21 @@ const formatFileSize = (bytes) => {
   return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + ' ' + sizes[i];
 };
 
-const SyncItem = ({ 
-  apiKey, 
-  endpoint, 
-  fileExtension, 
-  fileSize, 
-  fileName, 
-  isUploaded, 
-  publicCode, 
-  email,
-  t 
-}) => {
+const SyncItem = ({ fileSize, isUploaded, publicCode, email, t }) => {
   const displayTarget = email || publicCode || t('Unknown');
 
   return (
-    <div className={`${style.item} ${isUploaded ? style.uploaded : ''}`}>
+    <div className={`${style.item}`}>
       <div className={style.icon}>
         <FontAwesomeIcon icon={faFileVideo} />
       </div>
-      
+
       <div className={style.content}>
         <div className={style.mainInfo}>
           <div className={style.target}>
             <span className={style.targetValue}>{displayTarget}</span>
           </div>
-          
+
           <div className={style.fileInfo}>
             <span className={style.fileSize}>{formatFileSize(fileSize || 0)}</span>
           </div>
