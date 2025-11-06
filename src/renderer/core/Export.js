@@ -2,12 +2,11 @@ import { floorResolution, floorResolutionValue } from '@common/resolution';
 import { Buffer } from 'buffer';
 import { v4 } from 'uuid';
 
-import { GetFrameResolution } from './ResolutionsCache';
-import { ExportFrame } from './Worker';
+import { getPictureLink } from './resize';
 
 export const ExportFrames = async (
-  projectId = null,
-  sceneId = null,
+  projectId = null, // eslint-disable-line no-unused-vars
+  sceneId = null, // eslint-disable-line no-unused-vars
   files = [],
   opts = {
     duplicateFramesCopy: true,
@@ -38,44 +37,56 @@ export const ExportFrames = async (
   };
 
   // Generate frames
-  const frames = (
-    await Promise.all(
-      files.map(async (file) => {
-        if (file.deleted || file.hidden) {
-          onFrameDone();
-          return null;
-        }
-        const targetExtension = file.filename.split('.').pop() || 'jpg';
-        const computedExtension = (typeof opts.forceFileExtension !== 'undefined' ? opts.forceFileExtension : targetExtension) || targetExtension;
+  const rawFrames = [];
+  for (const file of files) {
+    if (file.deleted || file.hidden) {
+      onFrameDone();
+      rawFrames.push(null);
+      continue;
+    }
 
-        // If needed we calc the width based on frame ratio and defined height
-        let copiedResolution = structuredClone(resolution);
-        if (copiedResolution && !copiedResolution.width) {
-          const frameResolution = await GetFrameResolution(projectId, sceneId, file.id, file.link);
-          copiedResolution.width = floorResolutionValue((copiedResolution.height * frameResolution.width) / frameResolution.height) || copiedResolution.height;
-        }
+    const targetExtension = file.filename.split('.').pop() || 'jpg';
+    const computedExtension = (typeof opts.forceFileExtension !== 'undefined' ? opts.forceFileExtension : targetExtension) || targetExtension;
 
-        // Compute frame using web worker
-        const frameBlob = await ExportFrame(file.link, copiedResolution, typeof opts.forceFileExtension !== 'undefined' ? computedExtension : undefined, 'cover');
+    // If needed we calc the width based on frame ratio and defined height
+    let copiedResolution = structuredClone(resolution);
+    if (copiedResolution && !copiedResolution.width) {
+      const frameResolution = await fetch(file.metaLink).then((res) => res.json());
+      copiedResolution.width = floorResolutionValue((copiedResolution.height * frameResolution.width) / frameResolution.height) || copiedResolution.height;
+    }
 
-        // Write file on disk/ram
-        const bufferId = v4();
-        await onBufferCreate(bufferId, Buffer.from(await frameBlob.arrayBuffer()));
-
-        // Increase counter
-        onFrameDone();
-
-        // Return frame data
-        return {
-          id: file.id,
-          length: file.length || 1,
-          extension: computedExtension,
-          mimeType: `image/${(computedExtension || 'jpg').replace('jpg', 'jpeg')}`,
-          bufferId: bufferId,
-        };
+    // Compute frame using web worker
+    const frameArrayBuffer = await fetch(
+      getPictureLink(file.link, {
+        ...(copiedResolution && copiedResolution.width ? { w: copiedResolution.width } : {}),
+        ...(copiedResolution && copiedResolution.height ? { h: copiedResolution.height } : {}),
+        ...(copiedResolution
+          ? {
+              m: 'cover',
+              q: 100,
+            }
+          : {}),
+        ...(typeof opts.forceFileExtension !== 'undefined' ? { f: computedExtension } : {}),
       })
-    )
-  )?.filter(Boolean);
+    ).then((res) => res.arrayBuffer());
+
+    // Write file on disk/ram
+    const bufferId = v4();
+    await onBufferCreate(bufferId, Buffer.from(frameArrayBuffer));
+
+    // Increase counter
+    onFrameDone();
+
+    // Return frame data
+    rawFrames.push({
+      id: file.id,
+      length: file.length || 1,
+      extension: computedExtension,
+      mimeType: `image/${(computedExtension || 'jpg').replace('jpg', 'jpeg')}`,
+      bufferId: bufferId,
+    });
+  }
+  const frames = rawFrames?.filter(Boolean);
 
   // Update progress
   if (typeof onProgress === 'function') {

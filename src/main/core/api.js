@@ -1,10 +1,6 @@
-import fs from 'node:fs';
-import path from 'node:path';
+import { readFile } from 'node:fs/promises';
 
-import FormData from 'form-data';
-import fetch from 'node-fetch';
-
-import { APP_NAME, PARTNER_API, VERSION } from '../config';
+import { APP_NAME, VERSION } from '../config';
 
 /*
     This file contains Brickfilms.com endpoints that are used to send the brickfilm by email
@@ -32,43 +28,29 @@ const retry = async (callback, options = {}) => {
   }
 };
 
-const getFormLength = (form) => {
-  return new Promise((resolve) => {
-    form.getLength((err, length) => {
-      if (err) {
-        return resolve(null);
-      }
-      return resolve(length);
-    });
-  });
-};
+export const uploadFile = async ({ sendMethod, endpoint, apiKey, code, email, fileExtension, filePath }) => {
+  // Prepare file data
+  const fileBuffer = await readFile(filePath);
+  const fileBlob = new Blob([fileBuffer]);
 
-export const uploadFile = async (apiKey, code, fileExtension, filePath) => {
   // Prepare form data
   const form = new FormData();
-  form.append('mode', 'code');
-  form.append('code', code);
+  form.append('mode', sendMethod);
+  form.append('code', code || '');
+  form.append('email', email || '');
   form.append('fileExtension', fileExtension);
-  form.append('file', fs.createReadStream(filePath), { filename: path.basename(filePath) });
-
-  // Prepare headers
-  const formHeaders = form.getHeaders();
-  formHeaders['Authorization'] = `Bearer ${apiKey.trim()}`;
-  formHeaders['X-App-Name'] = APP_NAME;
-  formHeaders['X-App-Version'] = VERSION;
-
-  // Try to set Content-Length if available (optional but helpful for some servers)
-  const length = await getFormLength(form);
-  if (length != null) {
-    formHeaders['Content-Length'] = String(length);
-  }
+  form.append('file', fileBlob, `video.${fileExtension}`);
 
   // Send HTTP call with retry
   const res = await retry(
     async () => {
-      const r = await fetch(`${PARTNER_API}eagle-animation/task`, {
+      const r = await fetch(endpoint, {
         method: 'PUT',
-        headers: formHeaders,
+        headers: {
+          Authorization: `Bearer ${apiKey.trim()}`,
+          'X-App-Name': APP_NAME,
+          'X-App-Version': VERSION,
+        },
         body: form,
       });
 

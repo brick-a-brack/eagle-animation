@@ -31,8 +31,18 @@ export const generateProjectObject = (name) => ({
 // Read the project.json file in a specified directory
 export const getProjectData = async (path) => {
   const file = format({ dir: path, base: PROJECT_FILE });
-  const data = await readFile(file, 'utf8');
-  const project = JSON.parse(data);
+  let project = null;
+  for (let attempt = 1; attempt <= 3; attempt++) {
+    const data = await readFile(file, 'utf8');
+    try {
+      project = JSON.parse(data);
+      break;
+    } catch (err) {} // eslint-disable-line no-empty
+    await new Promise((resolve) => setTimeout(resolve, 50 * attempt));
+  }
+  if (!project) {
+    throw new Error('FAILED_TO_LOAD_PROJECT');
+  }
   const id = path.replaceAll('\\', '/').split('/').pop();
   return { project, _path: path, _file: file, _id: id };
 };

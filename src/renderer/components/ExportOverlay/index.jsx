@@ -9,7 +9,7 @@ import IconQuit from './assets/quit.svg?jsx';
 
 import * as style from './style.module.css';
 
-const ExportOverlay = ({ t, publicCode = null, onCancel = null, isExporting = false, progress = 0 }) => {
+const ExportOverlay = ({ t, showNewProjectButton = false, publicCode = null, onCancel = null, isExporting = false, progress = 0 }) => {
   const { actions: projectsActions } = useProjects();
   const navigate = useNavigate();
 
@@ -56,7 +56,7 @@ const ExportOverlay = ({ t, publicCode = null, onCancel = null, isExporting = fa
           <div className={style.done}>
             <IconDone />
           </div>
-          {publicCode && <ActionCard onClick={handleCreateProject} title={t('Create new project')} sizeAuto />}
+          {showNewProjectButton && <ActionCard onClick={handleCreateProject} title={t('Create new project')} sizeAuto />}
         </div>
       )}
       {isExporting && <div className={style.info}>{t('Export will take a while, please be patient')}</div>}

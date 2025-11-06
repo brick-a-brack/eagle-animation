@@ -1,4 +1,4 @@
-import { copyFile, readFile, writeFile } from 'node:fs/promises';
+import { copyFile, readFile, stat, writeFile } from 'node:fs/promises';
 import { format, join } from 'node:path';
 
 import { mkdirp } from 'mkdirp';
@@ -6,6 +6,7 @@ import { rimraf } from 'rimraf';
 import { v4 as uuidv4 } from 'uuid';
 
 import { getFFmpegArgs, parseFFmpegLogs } from '../../common/ffmpeg';
+import { PARTNER_API } from '../config';
 import { ffmpeg } from './ffmpeg';
 import { getProjectData } from './projects';
 
@@ -41,7 +42,8 @@ export const getSyncList = async (path) => {
     const file = format({ dir: path, base: 'sync.json' });
     const data = await readFile(file, 'utf8');
     const sync = JSON.parse(data);
-    return [...sync];
+    const stats = await Promise.all(sync.map((e) => join(path, '/.sync/', e.fileName)).map((e) => stat(e).catch(() => null)));
+    return [...sync].map((e, i) => ({ ...e, apiEndpoint: e.apiEndpoint || PARTNER_API, fileSize: stats?.[i]?.size || null }));
   } catch (e) {
     return [];
   }

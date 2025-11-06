@@ -7,7 +7,7 @@ import JSZip from 'jszip';
 
 import { createBuffer, flushBuffers, getBuffer } from './buffer';
 import { getFFmpeg } from './ffmpeg';
-import { createFrame, getFrameBlobUrl } from './frames';
+import { createFrame } from './frames';
 import { createProject, deleteProject, getAllProjects, getProject, saveProject } from './projects';
 
 let events = [];
@@ -29,7 +29,7 @@ export const sendEvent = (name, data) => {
   }
 };
 
-const computeProject = async (data, bindPictureLink = true) => {
+const computeProject = async (data) => {
   const copiedData = structuredClone(data);
   const scenes = await Promise.all(
     copiedData?.project?.scenes?.map(async (scene) => {
@@ -38,7 +38,8 @@ const computeProject = async (data, bindPictureLink = true) => {
         pictures: await Promise.all(
           scene.pictures.map(async (picture) => ({
             ...picture,
-            link: bindPictureLink ? await getFrameBlobUrl(picture.filename?.split('.')?.[0]) : null,
+            link: `/api/pictures/${picture.id}/${picture.filename}`,
+            metaLink: `/api/pictures/${picture.id}/${picture.filename}?infos=json`,
           }))
         ),
       };
@@ -65,7 +66,7 @@ export const Actions = {
   },
   GET_PROJECTS: async () => {
     const projects = await getAllProjects();
-    return Promise.all(projects.map((d) => computeProject(d, false)));
+    return Promise.all(projects.map((d) => computeProject(d)));
   },
   NEW_PROJECT: async (evt, { title }) => {
     const id = await createProject(title);
@@ -94,11 +95,14 @@ export const Actions = {
   },
   SAVE_PICTURE: async (evt, { buffer, extension = 'jpg' }) => {
     const frameId = await createFrame(buffer, extension);
+    const ext = extension || 'dat';
+    const filename = `${frameId}.${ext}`;
     return {
-      filename: `${frameId}.${extension || 'dat'}`,
+      filename,
       deleted: false,
       length: 1,
-      link: await getFrameBlobUrl(frameId),
+      link: `/api/pictures/${frameId}/${filename}`,
+      metaLink: `/api/pictures/${frameId}/${filename}?infos=json`,
     };
   },
   GET_SETTINGS: async () => {
@@ -118,6 +122,9 @@ export const Actions = {
   },
   SYNC: async () => {
     return null;
+  },
+  GET_SYNC_LIST: async () => {
+    return [];
   },
   APP_CAPABILITIES: async () => {
     const capabilities = ['EXPORT_VIDEO', 'EXPORT_VIDEO_H264', 'EXPORT_VIDEO_VP8', 'EXPORT_VIDEO_PRORES', 'EXPORT_FRAMES', 'EXPORT_FRAMES_ZIP'];
@@ -150,7 +157,20 @@ export const Actions = {
   EXPORT_BUFFER: async (evt, { buffer_id, buffer }) => {
     await createBuffer(buffer_id, buffer);
   },
-  EXPORT: async (evt, { project_id, track_id, mode = 'video', format = 'h264', frames = [], custom_output_framerate = false, compress_as_zip = false, custom_output_framerate_number = 10 }) => {
+  EXPORT: async (
+    evt,
+    {
+      project_id,
+      track_id,
+      mode = 'video',
+      format = 'h264',
+      frames = [],
+      custom_output_framerate = false,
+      compress_as_zip = false,
+      custom_output_framerate_number = 10,
+      endpoint = null, //eslint-disable-line no-unused-vars
+    }
+  ) => {
     const trackId = Number(track_id);
     const project = await getProject(project_id);
 

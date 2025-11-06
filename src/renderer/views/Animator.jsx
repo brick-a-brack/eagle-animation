@@ -140,21 +140,21 @@ const Animator = ({ t }) => {
     (() => {
       setFps(project?.scenes?.[track]?.framerate);
     })();
-  }, [project?.scenes, track]);
+  }, [project?.scenes?.[track]?.framerate]);
 
   // Sync ratio when project change
   useEffect(() => {
     (() => {
       setRatio(project?.scenes?.[track]?.ratio ? parseRatio(project?.scenes?.[track]?.ratio) : null);
     })();
-  }, [project?.scenes, track]);
+  }, [project?.scenes?.[track]?.ratio]);
 
   // Select default camera
   useEffect(() => {
-    if (settings && settings?.CAMERA_ID) {
+    if (settings?.CAMERA_ID) {
       cameraActions.setCamera(settings?.CAMERA_ID || null);
     }
-  }, [settings?.CAMERA_ID, cameraActions, settings]);
+  }, [settings?.CAMERA_ID]);
 
   // Shortcut if informations are not ready
   if (!project || !settings || !devices) {
@@ -428,7 +428,10 @@ const Animator = ({ t }) => {
         <HeaderBar
           leftActions={['BACK']}
           rightActions={[
-            ...(pictures?.length > 0 && (appCapabilities.includes('EXPORT_VIDEO') || appCapabilities.includes('EXPORT_FRAMES') || appCapabilities.includes('BACKGROUND_SYNC')) ? ['EXPORT'] : []),
+            ...(pictures?.some((e) => !e?.hidden) &&
+            (appCapabilities.includes('EXPORT_VIDEO') || appCapabilities.includes('EXPORT_FRAMES') || (appCapabilities.includes('BACKGROUND_SYNC') && settings?.EVENT_MODE_ENABLED))
+              ? ['EXPORT']
+              : []),
             'SETTINGS',
           ]}
           onAction={handleAction}
@@ -463,7 +466,9 @@ const Animator = ({ t }) => {
           reverseY={settings.REVERSE_Y}
         />
         <div>
-          <LimitWarning nbFrames={pictures.length} nbFramesLimit={settings?.LIMIT_NUMBER_OF_FRAMES} startedAt={startedAt} activityDuration={settings?.LIMIT_ACTIVITY_DURATION} />
+          {settings?.EVENT_MODE_ENABLED && (
+            <LimitWarning nbFrames={pictures.length} nbFramesLimit={settings?.LIMIT_NUMBER_OF_FRAMES} startedAt={startedAt} activityDuration={settings?.LIMIT_ACTIVITY_DURATION} />
+          )}
           <ControlBar
             onAction={handleAction}
             showCameraSettings={showCameraSettings}

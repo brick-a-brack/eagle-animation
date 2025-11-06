@@ -1,18 +1,21 @@
 import 'source-map-support/register';
 
+import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
+import url from 'node:url';
 
 import { electronApp, is, optimizer } from '@electron-toolkit/utils';
 import { app, BrowserWindow, ipcMain, net, protocol, shell } from 'electron';
-const url = require('node:url');
+import sharp from 'sharp';
 
 import icon from '../../resources/icon.png?asset';
+import { parseResizeArguments } from '../common/resizer';
 import actions from './actions';
 import { PROJECTS_PATH } from './config';
 
 let sendToRenderer = () => null;
 
-protocol.registerSchemesAsPrivileged([{ scheme: 'ea-data', privileges: { bypassCSP: true, standard: true, secure: true, supportFetchAPI: true } }]);
+protocol.registerSchemesAsPrivileged([{ scheme: 'ea', privileges: { bypassCSP: true, standard: true, secure: true, supportFetchAPI: true } }]);
 
 function createWindow() {
   // Create the browser window.
@@ -66,10 +69,82 @@ app.whenReady().then(() => {
     optimizer.watchWindowShortcuts(window);
   });
 
-  protocol.handle('ea-data', (request) => {
-    const relativePath = request.url.slice('ea-data://'.length);
-    const diskPath = `${PROJECTS_PATH}/${relativePath}`;
-    return net.fetch(url.pathToFileURL(diskPath).toString());
+  protocol.handle('ea', async (request) => {
+    // Parse URL and parameters
+    const urlObj = new URL(request.url);
+
+    // Get disk path
+    const diskPath = `${PROJECTS_PATH}/${request.url.slice('ea://api/pictures/'.length).split('?')[0]}`;
+
+    // Options
+    const { w, h, m, f, q, i } = parseResizeArguments(urlObj.searchParams);
+
+    // No changes needed
+    if (!w && !h && !f && !q && !m && !i) {
+      return net.fetch(url.pathToFileURL(diskPath).toString());
+    }
+
+    try {
+      // Create a Sharp instance
+      const inputBuf = await readFile(diskPath);
+      let img = sharp(inputBuf);
+
+      // Metadata only
+      if (i === 'json') {
+        const size = await img.metadata();
+        return new Response(
+          JSON.stringify({
+            width: size.width,
+            height: size.height,
+          }),
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              'Cache-Control': 'public, max-age=31536000',
+            },
+          }
+        );
+      }
+
+      // Resize
+      if (w || h) {
+        img = img.resize(w ? parseInt(w, 10) : null, h ? parseInt(h, 10) : null, {
+          fit: m === 'cover' ? 'cover' : 'contain',
+          withoutEnlargement: false,
+        });
+      }
+
+      // Format conversion
+      const quality = q ? parseInt(q, 10) : 80;
+      let outputBuffer = null;
+      let mimeType = null;
+      if (!outputBuffer && f === 'png') {
+        outputBuffer = await img.png({ quality }).toBuffer();
+        mimeType = 'image/png';
+      }
+      if (!outputBuffer && f === 'webp') {
+        outputBuffer = await img.webp({ quality }).toBuffer();
+        mimeType = 'image/webp';
+      }
+      if (!outputBuffer && f === 'avif') {
+        outputBuffer = await img.avif({ quality }).toBuffer();
+        mimeType = 'image/avif';
+      }
+      if (!outputBuffer) {
+        outputBuffer = await img.jpeg({ quality }).toBuffer();
+        mimeType = 'image/jpeg';
+      }
+
+      return new Response(outputBuffer, {
+        headers: {
+          'content-type': mimeType,
+          'Cache-Control': 'public, max-age=31536000',
+        },
+      });
+    } catch (err) {
+      console.error('ea handler error', err);
+      return net.fetch(url.pathToFileURL(diskPath).toString());
+    }
   });
 
   createWindow();
