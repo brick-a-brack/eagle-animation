@@ -1,7 +1,6 @@
+import Window from '@components/Window';
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-
-import Window from '../components/Window';
 
 const defaultState = { component: null, props: {} };
 
@@ -50,8 +49,12 @@ export const WindowProvider = ({ children }) => {
   );
 
   useEffect(() => {
-    if (openState) setOpenState(false);
-  }, [pathname]);
+    (() => {
+      if (openState) {
+        setOpenState(false);
+      }
+    })();
+  }, [pathname, openState]);
 
   return (
     <WindowContext.Provider value={{ isOpened: openState, component: state.component, props: state.props, actions }}>

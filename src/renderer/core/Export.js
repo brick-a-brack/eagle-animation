@@ -1,7 +1,7 @@
+import { floorResolution, floorResolutionValue } from '@common/resolution';
 import { Buffer } from 'buffer';
 import { v4 } from 'uuid';
 
-import { floorResolution, floorResolutionValue } from '../../common/resolution';
 import { GetFrameResolution } from './ResolutionsCache';
 import { ExportFrame } from './Worker';
 

@@ -1,0 +1,57 @@
+.title {
+    align-items: center;
+    display: flex;
+    gap: var(--space-medium);
+    justify-content: space-between;
+}
+
+.input {
+    appearance: textfield;
+    background: transparent;
+    border: none;
+    color: var(--color-white);
+    field-sizing: content;
+    font-size: var(--font-size-4);
+    font-weight: 600;
+    line-height: var(--line-size-4);
+    max-width: 420px;
+    outline: none;
+}
+
+.action {
+    align-items: center;
+    color: var(--color-white);
+    cursor: pointer;
+    display: flex;
+    height: 18px;
+    transition: color 0.2s ease-in-out;
+    width: 18px;
+}
+
+.action:hover {
+    color: var(--color-primary);
+}
+
+.action svg {
+    height: 100%;
+    margin-top: 2px;
+    width: 100%;
+}
+
+@media screen and (width <=800px) {
+    .input {
+        max-width: 300px;
+    }
+}
+
+@media screen and (width <=650px) {
+    .input {
+        max-width: 200px;
+    }
+}
+
+@media screen and (width <=450px) {
+    .input {
+        max-width: 100px;
+    }
+}

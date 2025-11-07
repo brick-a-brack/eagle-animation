@@ -11,9 +11,9 @@
 
 .tab {
     align-items: center;
-    background: #2f3136;
+    background: var(--color-theme-medium);
     border-bottom: 3px solid var(--color-primary);
-    border-left: 1px solid var(--color-theme-light);
+    border-left: 1px solid var(--color-primary);
     display: flex;
     height: 45px;
     justify-content: center;
@@ -22,7 +22,7 @@
 }
 
 .tab svg {
-    color: #fff;
+    color: var(--color-white);
     height: 22px;
     width: 22px;
     z-index:1;

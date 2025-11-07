@@ -1,0 +1,13 @@
+.logo {
+    display: flex;
+    height: 100%;
+    text-align: center;
+    vertical-align: middle;
+    width: 100%;
+}
+
+
+.logo svg {
+    height: 100%;
+    width: 100%;
+}

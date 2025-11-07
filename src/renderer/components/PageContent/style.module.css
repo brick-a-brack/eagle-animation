@@ -1,0 +1,23 @@
+.pageContent {
+    height: 100%;
+    overflow-y:scroll
+}
+
+.pageContent::-webkit-scrollbar {
+    width: 15px;
+  }
+  
+  .pageContent::-webkit-scrollbar-thumb {
+    background-clip: padding-box;
+    background-color: var(--color-primary);
+    border: 3px solid transparent;
+    border-radius: var(--border-radius-small);
+    cursor: pointer;
+    min-height: 50px;
+  }
+  
+  .pageContent::-webkit-scrollbar-track {
+    background-color: rgb(0 0 0 / 0%);
+  }
+
+  

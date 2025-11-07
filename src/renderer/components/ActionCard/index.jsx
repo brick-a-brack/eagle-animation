@@ -1,9 +1,8 @@
+import Action from '@components/Action';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-
-import faFileVideo from '../../icons/faFileVideo';
-import faFolderImage from '../../icons/faFolderImage';
-import faPaperPlane from '../../icons/faPaperPlane';
-import Action from '../Action';
+import faFileVideo from '@icons/faFileVideo';
+import faFolderImage from '@icons/faFolderImage';
+import faPaperPlane from '@icons/faPaperPlane';
 
 import * as style from './style.module.css';
 
@@ -13,12 +12,12 @@ const icons = {
   VIDEO: faFileVideo,
 };
 
-const ActionCard = ({ icon, action, className = '', disabled = false, selected = false, title = '', sizeAuto = false, secondary = false }) => {
+const ActionCard = ({ icon, onClick, className = '', disabled = false, selected = false, title = '', sizeAuto = false, secondary = false }) => {
   const faIcon = icons[icon] || null;
 
   return (
     <Action
-      action={action}
+      onClick={onClick}
       className={`${style.block} ${disabled ? style.disabled : ''}  ${selected ? style.selected : ''} ${secondary ? style.secondary : ''}  ${sizeAuto ? style.sizeAuto : ''} ${className || ''}`}
     >
       {faIcon && (

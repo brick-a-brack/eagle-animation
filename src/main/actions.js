@@ -1,8 +1,7 @@
 import { copyFile } from 'node:fs/promises';
 
-import { shell, systemPreferences } from 'electron';
+import { shell } from 'electron';
 import { mkdirp } from 'mkdirp';
-import fetch from 'node-fetch';
 import { join } from 'path-browserify';
 
 import { getEncodingProfile } from '../common/ffmpeg';
@@ -14,26 +13,14 @@ import { exportProjectScene, exportSaveTemporaryBuffer, getSyncList, saveSyncLis
 import { createProject, deleteProject, getProjectData, getProjectsList, projectSave, savePicture } from './core/projects';
 import { getSettings, saveSettings } from './core/settings';
 import { selectFile, selectFolder } from './core/utils';
+import { randomUUID } from 'node:crypto';
 
 console.log(`💾 Eagle Animation files will be saved in the following folder: ${PROJECTS_PATH}`);
 
 const getPictureLink = (projectId, sceneIndex, filename) => `ea-data://${projectId}/${sceneIndex}/${filename}`;
 
-const getDefaultPreview = (data) => {
-  for (let i = 0; i < (data?.project?.scenes?.length || 0); i++) {
-    for (const picture of data?.project?.scenes?.[i]?.pictures || []) {
-      if (!picture?.deleted) {
-        return getPictureLink(data._id, i, picture.filename);
-      }
-    }
-  }
-  return null;
-};
-
 const computeProject = (data) => {
   const copiedData = structuredClone(data);
-
-  let preview = getDefaultPreview(copiedData);
   const scenes = copiedData.project.scenes.map((scene, i) => ({
     ...scene,
     pictures: scene.pictures.map((picture) => ({
@@ -45,7 +32,6 @@ const computeProject = (data) => {
   let output = {
     ...copiedData,
     id: copiedData._id,
-    preview,
     project: {
       ...copiedData.project,
       scenes,
@@ -61,25 +47,6 @@ const computeProject = (data) => {
 };
 
 const actions = {
-  GET_MEDIA_PERMISSIONS: async () => {
-    if (typeof systemPreferences.getMediaAccessStatus === 'function') {
-      const [camera, microphone] = await Promise.all([systemPreferences.getMediaAccessStatus('camera'), systemPreferences.getMediaAccessStatus('microphone')]);
-      return {
-        camera,
-        microphone,
-      };
-    }
-    return {
-      camera: 'granted',
-      microphone: 'granted',
-    };
-  },
-  ASK_MEDIA_PERMISSION: async (evt, { mediaType }) => {
-    if (typeof systemPreferences.askForMediaAccess === 'function') {
-      return systemPreferences.askForMediaAccess(mediaType);
-    }
-    return true;
-  },
   GET_LAST_VERSION: async () => {
     if (CONTRIBUTE_REPOSITORY) {
       const res = await fetch(`https://raw.githubusercontent.com/${CONTRIBUTE_REPOSITORY}/master/package.json`).then((res) => res.json());
@@ -161,13 +128,6 @@ const actions = {
       });
     }
   },
-  GET_BATTERY_STATUS_NATIVE_CAMERA: async (evt, { camera_id }) => {
-    const camera = await getCamera(camera_id);
-    if (camera) {
-      return camera.batteryStatus();
-    }
-    return null;
-  },
   DISCONNECT_NATIVE_CAMERA: async (evt, { camera_id }) => {
     const camera = await getCamera(camera_id);
     if (camera) {
@@ -188,7 +148,15 @@ const actions = {
       try {
         if (!syncElement.isUploaded) {
           console.log(`☁️ Sync start ${syncElement.publicCode} (${syncElement.apiKey})`);
-          await uploadFile(syncElement.apiKey, syncElement.publicCode, syncElement.fileExtension, join(PROJECTS_PATH, '/.sync/', syncElement.fileName));
+          await uploadFile({
+            sendMethod: syncElement.sendMethod,
+            endpoint: syncElement.apiEndpoint,
+            apiKey: syncElement.apiKey,
+            code: syncElement.publicCode,
+            email: syncElement.email,
+            fileExtension: syncElement.fileExtension,
+            filePath: join(PROJECTS_PATH, '/.sync/', syncElement.fileName),
+          });
           syncList[i].isUploaded = true;
           await saveSyncList(PROJECTS_PATH, syncList);
           console.log(`✅ Sync finished ${syncElement.publicCode} (${syncElement.apiKey})`);
@@ -197,6 +165,10 @@ const actions = {
         console.log(`❌ Sync failed ${syncElement.publicCode} (${syncElement.apiKey})`, err);
       }
     }
+  },
+  GET_SYNC_LIST: async () => {
+    const syncList = await getSyncList(PROJECTS_PATH);
+    return syncList;
   },
   APP_CAPABILITIES: async () => {
     const capabilities = [
@@ -249,8 +221,11 @@ const actions = {
       custom_output_framerate_number = 10,
       output_path = null,
       public_code = 'default',
+      send_method = 'code',
       event_key = '',
       framerate = 10,
+      endpoint = null,
+      email = null,
     },
     sendToRenderer
   ) => {
@@ -271,7 +246,8 @@ const actions = {
       await mkdirp(join(PROJECTS_PATH, '/.sync/'));
     }
 
-    const path = mode === 'send' ? join(PROJECTS_PATH, '/.sync/', `${public_code}.${profile.extension}`) : output_path;
+    const fileId = randomUUID();
+    const path = mode === 'send' ? join(PROJECTS_PATH, '/.sync/', `${fileId}.${profile.extension}`) : output_path;
     await exportProjectScene(
       join(PROJECTS_PATH, project_id),
       track_id,
@@ -286,16 +262,19 @@ const actions = {
       (progress) => sendToRenderer('FFMPEG_PROGRESS', { progress })
     );
 
-    if (mode === 'send') {
+    if (mode === 'send' && endpoint) {
       const syncList = await getSyncList(PROJECTS_PATH);
       await saveSyncList(PROJECTS_PATH, [
         ...syncList,
         {
+          sendMethod: send_method,
           apiKey: event_key,
-          publicCode: public_code,
-          fileName: `${public_code}.${profile.extension}`,
+          publicCode: send_method === 'code' ? public_code : null,
+          email: send_method === 'email' ? email : null,
+          fileName: `${fileId}.${profile.extension}`,
           fileExtension: profile.extension,
           isUploaded: false,
+          apiEndpoint: endpoint,
         },
       ]);
 

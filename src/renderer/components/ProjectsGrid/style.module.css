@@ -4,7 +4,6 @@
   flex-flow: row wrap;
   flex-wrap: wrap;
   font-size: 0;
-  height: calc(100vh - 200px);
   line-height: 0;
   margin: auto;
   overflow-y: auto;
@@ -12,23 +11,6 @@
   place-content: flex-start center;
   text-align: center;
   width: 100%;
-}
-
-.wrapper::-webkit-scrollbar {
-  width: 15px;
-}
-
-.wrapper::-webkit-scrollbar-thumb {
-  background-clip: padding-box;
-  background-color: #486ee5;
-  border: 3px solid transparent;
-  border-radius: 8px;
-  cursor: pointer;
-  min-height: 50px;
-}
-
-.wrapper::-webkit-scrollbar-track {
-  background-color: rgb(0 0 0 / 0%);
 }
 
 .fakeBox {
@@ -40,10 +22,4 @@
   opacity: 0;
   overflow: hidden;
   width: 300px;
-}
-
-@media screen and (height <= 600px) {
-  .wrapper {
-    height: calc(100vh);
-  }
 }

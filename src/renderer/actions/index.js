@@ -1,16 +1,17 @@
-import isFirefox from '@braintree/browser-detection/is-firefox';
+import { getEncodingProfile, getFFmpegArgs, parseFFmpegLogs } from '@common/ffmpeg';
+import { isBlink } from '@common/isBlink';
+import { LS_SETTINGS } from '@config-web';
 import { fetchFile } from '@ffmpeg/util';
 import { saveAs } from 'file-saver';
 import JSZip from 'jszip';
 
-import { getEncodingProfile, getFFmpegArgs, parseFFmpegLogs } from '../../common/ffmpeg';
-import { LS_SETTINGS } from '../config';
 import { createBuffer, flushBuffers, getBuffer } from './buffer';
 import { getFFmpeg } from './ffmpeg';
 import { createFrame, getFrameBlobUrl } from './frames';
 import { createProject, deleteProject, getAllProjects, getProject, saveProject } from './projects';
 
 let events = [];
+let currentDirectory = null;
 
 export const addEventListener = (name, callback) => {
   events.push([name, callback]);
@@ -28,20 +29,8 @@ export const sendEvent = (name, data) => {
   }
 };
 
-const getDefaultPreview = async (data) => {
-  for (let i = 0; i < (data?.project?.scenes?.length || 0); i++) {
-    for (const picture of data?.project?.scenes?.[i]?.pictures || []) {
-      if (!picture.deleted) {
-        return getFrameBlobUrl(picture.filename?.split('.')?.[0]);
-      }
-    }
-  }
-  return null;
-};
-
 const computeProject = async (data, bindPictureLink = true) => {
   const copiedData = structuredClone(data);
-  let preview = await getDefaultPreview(copiedData);
   const scenes = await Promise.all(
     copiedData?.project?.scenes?.map(async (scene) => {
       return {
@@ -58,7 +47,6 @@ const computeProject = async (data, bindPictureLink = true) => {
 
   let output = {
     id: copiedData.id,
-    preview,
     project: {
       ...copiedData?.project,
       scenes,
@@ -71,51 +59,7 @@ const computeProject = async (data, bindPictureLink = true) => {
   return output;
 };
 
-let dedupProms = {};
-
 export const Actions = {
-  GET_MEDIA_PERMISSIONS: async () => {
-    if (isFirefox()) {
-      dedupProms.testCamera =
-        dedupProms.testCamera ||
-        navigator.mediaDevices
-          .getUserMedia({ video: true })
-          .then(() => true)
-          .catch(() => false);
-
-      dedupProms.testMicrophone =
-        dedupProms.testMicrophone ||
-        navigator.mediaDevices
-          .getUserMedia({ audio: true })
-          .then(() => true)
-          .catch(() => false);
-
-      const [firefoxCameraPermission, firefoxMicrophonePermission] = await Promise.all([dedupProms.testCamera, dedupProms.testMicrophone]);
-      return {
-        camera: firefoxCameraPermission ? 'granted' : 'denied',
-        microphone: firefoxMicrophonePermission ? 'granted' : 'denied',
-      };
-    } else {
-      const [cameraPermission, microphonePermission] = await Promise.all([
-        navigator.permissions.query({ name: 'camera' }).catch(() => null),
-        navigator.permissions.query({ name: 'microphone' }).catch(() => null),
-      ]);
-      return {
-        camera: cameraPermission?.state === 'granted' ? 'granted' : 'denied',
-        microphone: microphonePermission?.state === 'granted' ? 'granted' : 'denied',
-      };
-    }
-  },
-  ASK_MEDIA_PERMISSION: async (evt, { mediaType }) => {
-    const permission = await navigator.mediaDevices
-      .getUserMedia({
-        ...(mediaType === 'camera' ? { video: true } : {}),
-        ...(mediaType === 'microphone' ? { audio: true } : {}),
-      })
-      .then(() => true)
-      .catch(() => false);
-    return permission;
-  },
   GET_LAST_VERSION: async () => {
     return { version: null }; // Web version is always up-to-date, ignore update detection
   },
@@ -175,34 +119,84 @@ export const Actions = {
   SYNC: async () => {
     return null;
   },
+  GET_SYNC_LIST: async () => {
+    return [];
+  },
   APP_CAPABILITIES: async () => {
-    const capabilities = ['EXPORT_VIDEO', 'EXPORT_VIDEO_H264', 'EXPORT_VIDEO_VP8', 'EXPORT_VIDEO_PRORES', 'EXPORT_FRAMES'];
+    const capabilities = ['EXPORT_VIDEO', 'EXPORT_VIDEO_H264', 'EXPORT_VIDEO_VP8', 'EXPORT_VIDEO_PRORES', 'EXPORT_FRAMES', 'EXPORT_FRAMES_ZIP'];
 
-    // Firefox don't support photo mode
-    if (!isFirefox()) {
+    // Chromium based browsers support photo mode
+    if (isBlink()) {
       capabilities.push('LOW_FRAMERATE_QUALITY_IMPROVEMENT');
     }
 
     return capabilities;
   },
-  EXPORT_SELECT_PATH: async () => '',
+  EXPORT_SELECT_PATH: async (evt, { compress_as_zip = false }) => {
+    currentDirectory = null;
+    if (!compress_as_zip) {
+      try {
+        if ('showDirectoryPicker' in self) {
+          const dirHandle = await window.showDirectoryPicker();
+          currentDirectory = await dirHandle.getDirectoryHandle('frames', {
+            create: true,
+          });
+          return currentDirectory ? true : null;
+        }
+      } catch (err) {
+        currentDirectory = false;
+        return null;
+      }
+    }
+    return true;
+  },
   EXPORT_BUFFER: async (evt, { buffer_id, buffer }) => {
     await createBuffer(buffer_id, buffer);
   },
-  EXPORT: async (evt, { project_id, track_id, mode = 'video', format = 'h264', frames = [], custom_output_framerate = false, custom_output_framerate_number = 10 }) => {
+  EXPORT: async (
+    evt,
+    { project_id, track_id, mode = 'video', format = 'h264', frames = [], custom_output_framerate = false, compress_as_zip = false, custom_output_framerate_number = 10, endpoint = null }
+  ) => {
     const trackId = Number(track_id);
     const project = await getProject(project_id);
 
+    // Frames export
     if (mode === 'frames') {
-      const zip = new JSZip();
-      for (let i = 0; i < frames.length; i++) {
-        const frame = frames[i];
-        const buffer = await getBuffer(frame.buffer_id);
-        zip.file(`frame-${frame.index.toString().padStart(6, '0')}.${frame.extension}`, buffer);
+      if (compress_as_zip) {
+        // Fallback on regular ZIP
+        const zip = new JSZip();
+        for (let i = 0; i < frames.length; i++) {
+          const frame = frames[i];
+          const buffer = await getBuffer(frame.buffer_id);
+          zip.file(`frame-${frame.index.toString().padStart(6, '0')}.${frame.extension}`, buffer);
+        }
+        zip.generateAsync({ type: 'blob' }).then((content) => {
+          saveAs(content, 'frames.zip');
+        });
+      } else if (currentDirectory !== null) {
+        // Use FileSystem API (Chromium only)
+        if (currentDirectory !== false) {
+          for (let i = 0; i < frames.length; i++) {
+            const frame = frames[i];
+            const buffer = await getBuffer(frame.buffer_id);
+            const fileHandle = await currentDirectory.getFileHandle(`frame-${frame.index.toString().padStart(6, '0')}.${frame.extension}`, { create: true });
+            const writable = await fileHandle.createWritable();
+            await writable.write(buffer);
+            await writable.close();
+          }
+        }
+        currentDirectory = null;
+      } else {
+        let blob = null;
+        for (let i = 0; i < frames.length; i++) {
+          const frame = frames[i];
+          const buffer = await getBuffer(frame.buffer_id);
+          const filename = `frame-${frame.index.toString().padStart(6, '0')}.${frame.extension}`;
+          blob = new Blob([buffer], { type: `image/${frame?.extension?.replace('jpg', 'jpeg') || 'jpeg'}` });
+          saveAs(blob, filename);
+          blob = null;
+        }
       }
-      zip.generateAsync({ type: 'blob' }).then((content) => {
-        saveAs(content, 'frames.zip');
-      });
     }
 
     if (mode === 'video') {

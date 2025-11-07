@@ -26,10 +26,12 @@ mac:
   artifactName: Eagle-Animation-${version}-mac.${ext}
   executableName: eagle-animation
   category: public.app-category.photography
-  icon: out/renderer/icon.icns
+  icon: out/renderer/icon-mac.icns
   extendInfo:
     NSMicrophoneUsageDescription: Please give us access to your microphone
     NSCameraUsageDescription: Please give us access to your camera
+    NSCameraUseContinuityCameraDeviceType: true
+    AVCaptureDeviceTypeContinuityCamera: true
     com.apple.security.device.audio-input: true
     com.apple.security.device.camera: true
 
@@ -39,7 +41,7 @@ linux:
   category: Photography
   synopsis: EagleAnimation is an awesome, free and open-source animation software.
   description: EagleAnimation is an awesome, free and open-source animation software.
-  icon: out/renderer/icon.icns
+  icon: out/renderer/icon-linux.icns
   target:
     - deb
     - rpm

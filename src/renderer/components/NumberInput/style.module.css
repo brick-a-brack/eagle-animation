@@ -1,8 +1,8 @@
 .container {
     align-items: center;
     background: var(--color-theme-medium);
-    border-radius: 8px;
-    color: #fff;
+    border-radius: var(--border-radius-small);
+    color: var(--color-white);
     display: flex;
     justify-content: center;
     overflow: hidden;
@@ -17,7 +17,7 @@
     background: transparent;
     border: none;
     box-sizing: border-box;
-    color: #fff;
+    color: var(--color-white);
     font-size: var(--font-size-6);
     line-height: var(--line-size-6);
     text-align: center;
@@ -33,7 +33,7 @@
 .button {
     background: transparent;
     border: none;
-    color: #fff;
+    color: var(--color-white);
     cursor: pointer;
     display: inline-block;
     font-size: var(--font-size-6);

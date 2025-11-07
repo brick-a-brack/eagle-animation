@@ -1,26 +1,20 @@
-import isFirefox from '@braintree/browser-detection/is-firefox';
-import isSafari from '@braintree/browser-detection/is-safari';
+import CustomSlider from '@components/CustomSlider';
+import FormGroup from '@components/FormGroup';
+import FormLayout from '@components/FormLayout';
+import GridIcon from '@components/GridIcon';
+import Heading from '@components/Heading';
+import Input from '@components/Input';
+import NumberInput from '@components/NumberInput';
+import Select from '@components/Select';
+import Switch from '@components/Switch';
+import { LANGUAGES } from '@config-web';
+import useAppCapabilities from '@hooks/useAppCapabilities';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { withTranslation } from 'react-i18next';
 
-import { LANGUAGES } from '../../config';
-import useAppCapabilities from '../../hooks/useAppCapabilities';
-import useCamera from '../../hooks/useCamera';
-import CustomSlider from '../CustomSlider';
-import FormGroup from '../FormGroup';
-import FormLayout from '../FormLayout';
-import GridIcon from '../GridIcon';
-import Heading from '../Heading';
-import Input from '../Input';
-import MediaStatus from '../MediaStatus';
-import NumberInput from '../NumberInput';
-import Select from '../Select';
-import Switch from '../Switch';
-
-const SettingsForm = ({ settings = {}, onUpdate = () => {}, t }) => {
+const SettingsForm = ({ settings = {}, onUpdate = () => { }, t }) => {
   const { appCapabilities } = useAppCapabilities();
-  const { permissions, actions: cameraActions } = useCamera();
   const form = useForm({
     mode: 'all',
     defaultValues: settings,
@@ -38,32 +32,11 @@ const SettingsForm = ({ settings = {}, onUpdate = () => {}, t }) => {
 
   return (
     <form id="settings">
-      <FormLayout title={t('Settings')}>
+      <FormLayout>
         <Heading h={1}>{t('Interface')}</Heading>
         <FormGroup label={t('Language')} description={t('The application language to use')}>
           <Select options={LNGS_OPTIONS} control={control} register={register('LANGUAGE')} />
         </FormGroup>
-
-        {(isSafari() || isFirefox()) && (
-          <>
-            <Heading h={1}>{t('Permissions')}</Heading>
-            <MediaStatus
-              type={'camera'}
-              permission={permissions?.camera}
-              action={() => {
-                cameraActions.askPermission('camera');
-              }}
-            />
-            <MediaStatus
-              title={'microphone'}
-              permission={permissions?.microphone}
-              action={() => {
-                cameraActions.askPermission('microphone');
-              }}
-            />
-          </>
-        )}
-
         <Heading h={1}>{t('Playback')}</Heading>
         <FormGroup label={t('Short play')} description={t('Number of frames to play when short play is enabled')}>
           <NumberInput register={register('SHORT_PLAY')} min={1} />
@@ -123,14 +96,35 @@ const SettingsForm = ({ settings = {}, onUpdate = () => {}, t }) => {
             <NumberInput register={register('GRID_COLUMNS')} min={1} max={12} />
           </FormGroup>
         )}
-        {appCapabilities.includes('BACKGROUND_SYNC') && (
-          <>
-            <Heading h={1}>{t('Stop motion workshops')}</Heading>
-            <FormGroup label={t('API key to send videos')} description={t('Brick à Brack allows partners to easily export/send videos, contact us for more informations')}>
-              <Input control={control} register={register('EVENT_KEY')} />
-            </FormGroup>
-          </>
-        )}
+
+        <Heading h={1}>{t('Workshops features')}</Heading>
+        <FormGroup label={t('Enable workshop features')} description={t('Enable features related to stop motion workshops')}>
+          <div>
+            <Switch register={register('EVENT_MODE_ENABLED')} />
+          </div>
+        </FormGroup>
+
+        {watch('EVENT_MODE_ENABLED') && <>
+          <FormGroup label={t('Recommended number of frames')} description={t('Number of frames allowed before displaying a warning message')}>
+            <NumberInput register={register('LIMIT_NUMBER_OF_FRAMES')} min={0} />
+          </FormGroup>
+
+          <FormGroup label={t('Recommended activity duration')} description={t('Duration in minutes on the animator page before displaying a warning message')}>
+            <NumberInput register={register('LIMIT_ACTIVITY_DURATION')} min={0} />
+          </FormGroup>
+
+          {appCapabilities.includes('BACKGROUND_SYNC') && (
+            <>
+              <FormGroup label={t('Partner API endpoint')} description={t('The URL of the API to use for workshop mode')}>
+                <Input control={control} register={register('EVENT_API')} />
+              </FormGroup>
+
+              <FormGroup label={t('Partner API key')} description={t('The authentification key of the API for workshop mode')}>
+                <Input control={control} register={register('EVENT_KEY')} />
+              </FormGroup>
+            </>
+          )}
+        </>}
       </FormLayout>
     </form>
   );

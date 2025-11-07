@@ -1,6 +1,5 @@
+import Action from '@components/Action';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-
-import Action from '../Action';
 
 import * as style from './style.module.css';
 
@@ -19,7 +18,7 @@ const IconTabs = ({ tabs = [], onClick = () => {} }) => {
       <div className={style.tabContainer}>
         <div className={style.backgroundTab} style={{ transform: `translateX(${selectedIndex * (45 + 1) + 3}px)` }} />
         {tabs.map((e, i) => (
-          <Action key={e.id || e.title || i} title={e.title} action={() => onClick(e, i)} className={`${style.tab} ${i === 0 ? style.tabFirst : ''} ${i === tabs.length - 1 ? style.tabLast : ''}`}>
+          <Action key={e.id || e.title || i} title={e.title} onClick={() => onClick(e, i)} className={`${style.tab} ${i === 0 ? style.tabFirst : ''} ${i === tabs.length - 1 ? style.tabLast : ''}`}>
             {e.icon && <FontAwesomeIcon icon={e.icon} />}
           </Action>
         ))}

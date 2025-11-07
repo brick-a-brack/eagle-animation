@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@components/*": ["src/renderer/components/*"],
+      "@core/*": ["src/renderer/core/*"],
+      "@views/*": ["src/renderer/views/*"],
+      "@icons/*": ["src/renderer/icons/*"],
+      "@hooks/*": ["src/renderer/hooks/*"],
+      "@common/*": ["src/common/*"],
+      "@config-web": ["src/renderer/config.js"],
+      "@i18n": ["src/renderer/i18n.js"]
+    }
+  }
+}

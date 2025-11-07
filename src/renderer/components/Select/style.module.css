@@ -1,9 +1,9 @@
 .select {
     background: var(--color-theme-medium);
     border: 0;
-    border-radius: 8px;
+    border-radius: var(--border-radius-small);
     box-sizing: border-box;
-    color: #fff;
+    color: var(--color-white);
     display: inline-block;
     font-size: var(--font-size-6);
     height: 26px;
@@ -11,11 +11,21 @@
     margin: 0;
     max-width: 300px;
     overflow: hidden;
-    padding:0 var(--space-small);
+    padding: 0 var(--space-small);
     width: 100%;
+    max-width: 250px;
 }
 
 .select:hover,
 .select:focus {
     background-color: var(--color-theme-light);
+}
+
+.select option:disabled {
+    color: var(--color-white);
+}
+
+.isDisabled {
+    cursor: not-allowed;
+    opacity: 0.2;
 }

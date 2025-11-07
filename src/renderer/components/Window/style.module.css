@@ -14,7 +14,7 @@
 }
 
 .window {
-  background: #2f3136;
+  background: var(--color-theme-dark);
   border-top: solid 3px var(--color-primary);
     bottom: 0;
     box-shadow: 0 0 10px 0 rgb(114 114 114 / 10%);

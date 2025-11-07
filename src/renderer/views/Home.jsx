@@ -1,35 +1,25 @@
-import isFirefox from '@braintree/browser-detection/is-firefox';
-import isSafari from '@braintree/browser-detection/is-safari';
+import { isIos } from '@braintree/browser-detection';
+import HeaderBar from '@components/HeaderBar';
+import Logo from '@components/Logo';
+import PageContent from '@components/PageContent';
+import PageLayout from '@components/PageLayout';
+import ProjectCard from '@components/ProjectCard';
+import ProjectsGrid from '@components/ProjectsGrid';
+import VersionUpdater from '@components/VersionUpdater';
+import useAppVersion from '@hooks/useAppVersion';
+import useFullscreen from '@hooks/useFullscreen';
+import useProjects from '@hooks/useProjects';
+import useSettings from '@hooks/useSettings';
 import { useEffect } from 'react';
 import { withTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
-import ActionsBar from '../components/ActionsBar';
-import Header from '../components/Header';
-import ProjectCard from '../components/ProjectCard';
-import ProjectsGrid from '../components/ProjectsGrid';
-import { LS_PERMISSIONS } from '../config';
-import useAppVersion from '../hooks/useAppVersion';
-import useCamera from '../hooks/useCamera';
-import useProjects from '../hooks/useProjects';
-
 const HomeView = ({ t }) => {
   const { version, latestVersion, actions: versionActions } = useAppVersion();
   const { projects, actions: projectsActions } = useProjects();
+  const { settings } = useSettings();
   const navigate = useNavigate();
-  const { actions: cameraActions } = useCamera();
-
-  // Unload camera
-  useEffect(() => {
-    cameraActions.setCamera(null);
-  }, []);
-
-  // Permissions redirect
-  useEffect(() => {
-    if (!localStorage.getItem(LS_PERMISSIONS) && (isFirefox() || isSafari())) {
-      navigate('/permissions?back=/');
-    }
-  }, []);
+  const { isFullscreen, enterFullscreen, exitFullscreen } = useFullscreen();
 
   useEffect(() => {
     // Trigger background sync
@@ -69,23 +59,49 @@ const HomeView = ({ t }) => {
     if (action === 'KEYPAD') {
       navigate('/keypad?back=/');
     }
+    if (action === 'SYNC_LIST') {
+      navigate('/sync-list?back=/');
+    }
+    if (action === 'ENTER_FULLSCREEN') {
+      enterFullscreen();
+    }
+    if (action === 'EXIT_FULLSCREEN') {
+      exitFullscreen();
+    }
   };
 
+  console.log(projects);
   return (
-    <>
-      <Header action={handleLink} version={version} latestVersion={latestVersion} />
-      <ActionsBar actions={['SETTINGS', 'SHORTCUTS', 'REMOTE', 'KEYPAD']} position="RIGHT" onAction={handleAction} />
-      {projects !== null && (
-        <ProjectsGrid>
-          <ProjectCard placeholder={t('New project')} onClick={handleCreateProject} icon="ADD" />
-          {[...projects]
-            .sort((a, b) => b.project.updated - a.project.updated)
-            .map((e) => (
-              <ProjectCard key={e.id} id={e.id} title={e.project.title} picture={e.preview} nbFrames={e?.stats?.frames || 0} onClick={handleOpenProject} onTitleChange={handleRenameProject} />
-            ))}
-        </ProjectsGrid>
-      )}
-    </>
+    <PageLayout>
+      <HeaderBar
+        leftChildren={<VersionUpdater onClick={handleLink} version={version} latestVersion={latestVersion} onLink={handleLink} />}
+        rightActions={[
+          ...(settings?.EVENT_MODE_ENABLED && settings?.EVENT_API ? ['SYNC_LIST'] : []),
+          ...(!isIos() ? [isFullscreen ? 'EXIT_FULLSCREEN' : 'ENTER_FULLSCREEN'] : []),
+          'SHORTCUTS',
+          'SETTINGS',
+          'REMOTE', 
+          'KEYPAD'
+        ]}
+        onAction={handleAction}
+        withBorder
+      >
+        <Logo />
+      </HeaderBar>
+      <PageContent>
+        {projects !== null && (
+          <ProjectsGrid>
+            <ProjectCard placeholder={t('New project')} onClick={handleCreateProject} icon="ADD" />
+            {[...projects]
+              .filter((e) => Boolean(e?.stats?.frames || 0))
+              .sort((a, b) => b.project.updated - a.project.updated)
+              .map((e) => (
+                <ProjectCard key={e.id} id={e.id} title={e.project.title} picture={e.preview} nbFrames={e?.stats?.frames || 0} onClick={handleOpenProject} onTitleChange={handleRenameProject} />
+              ))}
+          </ProjectsGrid>
+        )}
+      </PageContent>
+    </PageLayout>
   );
 };
 

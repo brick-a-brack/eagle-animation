@@ -1,3 +1,5 @@
+import 'source-map-support/register';
+
 import { join } from 'node:path';
 
 import { electronApp, is, optimizer } from '@electron-toolkit/utils';
@@ -17,8 +19,8 @@ function createWindow() {
   const mainWindow = new BrowserWindow({
     width: 1280,
     height: 720,
-    minWidth: 1024,
-    minHeight: 576,
+    minWidth: 1080,
+    minHeight: 450,
     title: 'Eagle Animation by Brick à Brack (Brickfilms.com)',
     show: false,
     autoHideMenuBar: true,

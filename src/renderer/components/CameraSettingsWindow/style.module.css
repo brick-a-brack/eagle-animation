@@ -1,23 +1,32 @@
 .actions {
-    margin: 0 var(--space-huge) ;
-    width:calc(100% - 2 * var(--space-huge));
+    margin: 0 var(--space-huge);
+    width: calc(100% - 2 * var(--space-huge));
 }
 
 .refreshIcon {
     background: var(--color-theme-medium);
     border: 0;
-    border-radius: 8px;
+    border-radius: var(--border-radius-small);
     box-sizing: border-box;
-    color: #fff;
+    color: var(--color-white);
     display: inline-block;
     font-size: var(--font-size-6);
     height: 26px;
     line-height: var(--line-size-6);
     margin: 0;
     margin-left: var(--space-medium);
-    max-width:26px;
+    max-width: 26px;
     overflow: hidden;
     padding: 0;
     text-align: center;
     width: 100%;
+}
+
+.refreshIcon svg {
+    vertical-align: middle;
+}
+
+
+.refreshIcon:hover {
+    background: var(--color-theme-light);
 }
