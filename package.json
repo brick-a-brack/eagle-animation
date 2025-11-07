@@ -73,7 +73,8 @@
     "react-router-dom": "^7.9.4",
     "react-select": "^5.10.2",
     "react-tooltip": "^5.30.0",
-    "rimraf": "^6.0.1",
+    "rimraf": "^6.1.0",
+    "sharp": "^0.34.5",
     "source-map-support": "^0.5.21",
     "uuid": "^13.0.0",
     "web-gphoto2": "^0.4.1"
@@ -106,6 +107,8 @@
     "vite-plugin-top-level-await": "^1.6.0"
   },
   "optionalDependencies": {
-    "@brick-a-brack/napi-canon-cameras": "0.1.5"
+    "@brick-a-brack/napi-canon-cameras": "0.1.5",
+    "@esbuild/darwin-arm64": "^0.25.12",
+    "@rollup/rollup-darwin-arm64": "^4.53.0"
   }
 }
