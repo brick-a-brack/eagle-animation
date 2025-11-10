@@ -3,11 +3,11 @@ import CustomErrorBoundary from '@components/CustomErrorBoundary';
 import AnimatorView from '@views/Animator';
 import ExportView from '@views/Export';
 import HomeView from '@views/Home';
+import KeypadView from '@views/Keypad';
+import RemoteView from '@views/Remote';
 import SettingsView from '@views/Settings';
 import ShortcutsView from '@views/Shortcuts';
 import SyncListView from '@views/SyncList';
-import RemoteView from '@views/Remote';
-import KeypadView from '@views/Keypad';
 import { MemoryRouter as Router, Route, Routes } from 'react-router-dom';
 
 import { WindowProvider } from './contexts/WindowContext';

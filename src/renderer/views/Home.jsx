@@ -80,8 +80,8 @@ const HomeView = ({ t }) => {
           ...(!isIos() ? [isFullscreen ? 'EXIT_FULLSCREEN' : 'ENTER_FULLSCREEN'] : []),
           'SHORTCUTS',
           'SETTINGS',
-          'REMOTE', 
-          'KEYPAD'
+          'REMOTE',
+          'KEYPAD',
         ]}
         onAction={handleAction}
         withBorder

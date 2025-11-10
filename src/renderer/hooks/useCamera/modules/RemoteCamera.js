@@ -1,6 +1,4 @@
-import isFirefox from '@braintree/browser-detection/is-firefox';
-
-import remote from '../core/Remote';
+import remote from '@core/Remote';
 
 class RemoteCamera {
   constructor(deviceId = null) {
@@ -349,12 +347,14 @@ class RemoteCamera {
   }
 
   async connect({ videoDOM, imageDOM } = { videoDOM: false, imageDOM: false }, settings = {}, onBinded = () => {}) {
-    /* this.video = videoDOM;
+    this.video = videoDOM;
     this.settings = settings;
 
     // Reset preview canvas size for preview
     imageDOM.width = 0;
     imageDOM.height = 0;
+/*
+    const call = peer.call("another-peers-id", stream);
 
     await this.initPreview();
 
@@ -362,11 +362,7 @@ class RemoteCamera {
       onBinded();
     }
 
-    return true;*/
-  }
-
-  async batteryStatus() {
-    return null;
+    return true;*/*/
   }
 
   async takePicture() {
@@ -425,12 +421,15 @@ class RemoteCamera {
 
 class RemoteCameraBrowser {
   static async getCameras() {
+    console.log('Remote get cameras')
     for (const conn of remote.connections) {
       const data = await remote.action(conn.id, 'LIST_CAMERAS');
+console.log('HERE', data)
+
       return data.cameras.map((stream) => ({
         deviceId: stream.deviceId,
-        type: 'WEB',
-        module: 'WEBCAM',
+        type: 'REMOTE',
+        module: 'REMOTE',
         label: stream.label || 'Untitled',
       }));
     }

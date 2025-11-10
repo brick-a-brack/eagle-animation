@@ -8,30 +8,31 @@ import { withTranslation } from 'react-i18next';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
 const SyncListView = ({ t }) => {
-    const [searchParams] = useSearchParams();
-    const { items } = useSyncList();
-    const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const { items } = useSyncList();
+  const navigate = useNavigate();
 
-    const handleBack = () => {
-        navigate(searchParams.get('back') || '/');
-    };
+  const handleBack = () => {
+    navigate(searchParams.get('back') || '/');
+  };
 
-    const orderedItems = [
-        ...[...items].reverse().filter(item => item.isUploaded === false),
-        ...[...items].reverse().filter(item => item.isUploaded === true),
-    ];
+  const orderedItems = [...[...items].reverse().filter((item) => item.isUploaded === false), ...[...items].reverse().filter((item) => item.isUploaded === true)];
 
-    return (<>
-        <LoadingPage show={!items} />
-        <PageLayout>
-            <HeaderBar leftActions={['BACK']} onAction={handleBack} title={t('Sync list')} withBorder />
-            <PageContent>
-                <div style={{ padding: '20px' }}>
-                    {orderedItems.map(item => <SyncItem key={item.filename} {...item} />)}
-                </div>
-            </PageContent>
-        </PageLayout>
-    </>);
+  return (
+    <>
+      <LoadingPage show={!items} />
+      <PageLayout>
+        <HeaderBar leftActions={['BACK']} onAction={handleBack} title={t('Sync list')} withBorder />
+        <PageContent>
+          <div style={{ padding: '20px' }}>
+            {orderedItems.map((item) => (
+              <SyncItem key={item.filename} {...item} />
+            ))}
+          </div>
+        </PageContent>
+      </PageLayout>
+    </>
+  );
 };
 
 export default withTranslation()(SyncListView);

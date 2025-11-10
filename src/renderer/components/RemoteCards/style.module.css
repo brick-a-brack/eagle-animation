@@ -1,0 +1,151 @@
+.container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+@media (max-width: 800px) {
+  .container {
+    grid-template-columns: 1fr;
+  }
+}
+
+.card {
+  background: rgba(255,255,255,0.03);
+  border-radius: 10px;
+  padding: 20px;
+  color: #fff;
+  min-height: 220px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+  display: flex;
+  flex-direction: column;
+}
+
+.title {
+  margin: 0 0 10px 0;
+  font-size: 20px;
+}
+
+.body {
+  flex: 1 1 auto;
+}
+
+.deviceRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.label {
+  font-weight: 600;
+  opacity: 0.9;
+}
+
+.peerId {
+  font-family: monospace;
+  background: rgba(255,255,255,0.04);
+  padding: 10px 12px;
+  border-radius: 8px;
+  flex: 1 1 auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 16px;
+  font-weight: 600;
+  border: 1px solid rgba(255,255,255,0.06);
+  color: #fff;
+}
+
+.copyButton {
+  background: rgba(255,255,255,0.03);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.08);
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.sectionTitle {
+  margin-top: 8px;
+  font-size: 13px;
+  opacity: 0.9;
+}
+
+.list {
+  list-style: none;
+  padding: 8px 0 0 0;
+  margin: 0;
+}
+
+.listItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px dashed rgba(255,255,255,0.02);
+}
+
+.connectionId {
+  font-family: monospace;
+  opacity: 0.95;
+}
+
+.smallButton {
+  background: rgba(255,255,255,0.04);
+  color: #fff;
+  border: none;
+  padding: 6px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.empty {
+  color: rgba(255,255,255,0.5);
+  padding: 6px 0;
+}
+
+.pairRow {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.input {
+  flex: 1 1 auto;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.09);
+  background: rgba(0,0,0,0.32);
+  color: #fff;
+  font-size: 15px;
+}
+
+.button {
+  background: linear-gradient(180deg,#4a90e2,#357ab8);
+  color: #fff;
+  border: none;
+  padding: 10px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 15px;
+}
+
+/* make peerId input look consistent when readOnly */
+.peerId[readonly] {
+  background: rgba(255,255,255,0.02);
+}
+
+.hint {
+  margin-top: 12px;
+  font-size: 12px;
+  color: rgba(255,255,255,0.7);
+}
+
+.description {
+  margin: 0 0 8px 0;
+  color: rgba(255,255,255,0.9);
+}

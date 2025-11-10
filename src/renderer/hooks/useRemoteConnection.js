@@ -1,6 +1,5 @@
+import remote from '@core/Remote';
 import { useCallback, useEffect, useRef, useState } from 'react';
-
-import remote from '../core/Remote';
 
 const useRemoteConnection = () => {
   const [immediate, setImmediate] = useState(null);
