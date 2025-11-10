@@ -150,13 +150,20 @@ const Export = ({ t }) => {
 
   useEffect(() => {
     (async () => {
-      const bestMode = appCapabilities.includes('EXPORT_VIDEO')
-        ? 'video'
-        : appCapabilities.includes('EXPORT_FRAMES')
-          ? 'frames'
-          : appCapabilities.includes('BACKGROUND_SYNC') && settings?.EVENT_MODE_ENABLED
-            ? 'send'
-            : 'none';
+      const bestMode = (() => {
+        if (appCapabilities.includes('BACKGROUND_SYNC') && settings?.EVENT_MODE_ENABLED) {
+          return 'send';
+        }
+        if (appCapabilities.includes('EXPORT_VIDEO')) {
+          return 'video';
+        }
+        if (appCapabilities.includes('EXPORT_FRAMES')) {
+          return 'frames';
+        }
+
+        return 'none'
+      })();
+
       if (
         (watch('mode') === 'video' && !appCapabilities.includes('EXPORT_VIDEO')) ||
         (watch('mode') === 'frames' && !appCapabilities.includes('EXPORT_FRAMES')) ||
