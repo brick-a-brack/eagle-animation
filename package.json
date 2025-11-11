@@ -109,6 +109,6 @@
   "optionalDependencies": {
     "@brick-a-brack/napi-canon-cameras": "0.1.5",
     "@esbuild/darwin-arm64": "^0.25.12",
-    "@rollup/rollup-darwin-arm64": "^4.53.0"
+    "@rollup/rollup-darwin-arm64": "^4.53.2"
   }
 }
