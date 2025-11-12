@@ -1,3 +1,4 @@
+import { randomUUID } from 'node:crypto';
 import { copyFile } from 'node:fs/promises';
 
 import { shell } from 'electron';
@@ -13,11 +14,11 @@ import { exportProjectScene, exportSaveTemporaryBuffer, getSyncList, saveSyncLis
 import { createProject, deleteProject, getProjectData, getProjectsList, projectSave, savePicture } from './core/projects';
 import { getSettings, saveSettings } from './core/settings';
 import { selectFile, selectFolder } from './core/utils';
-import { randomUUID } from 'node:crypto';
 
 console.log(`💾 Eagle Animation files will be saved in the following folder: ${PROJECTS_PATH}`);
 
-const getPictureLink = (projectId, sceneIndex, filename) => `ea-data://${projectId}/${sceneIndex}/${filename}`;
+const getPictureLink = (projectId, sceneIndex, filename) => `ea://api/pictures/${projectId}/${sceneIndex}/${filename}`;
+const getMetaPictureLink = (projectId, sceneIndex, filename) => `ea://api/pictures/${projectId}/${sceneIndex}/${filename}?infos=json`;
 
 const computeProject = (data) => {
   const copiedData = structuredClone(data);
@@ -26,6 +27,7 @@ const computeProject = (data) => {
     pictures: scene.pictures.map((picture) => ({
       ...picture,
       link: getPictureLink(copiedData._id, i, picture.filename),
+      metaLink: getMetaPictureLink(copiedData._id, i, picture.filename),
     })),
   }));
 
@@ -81,6 +83,7 @@ const actions = {
     return {
       ...picture,
       link: getPictureLink(data._id, track_id, picture.filename),
+      metaLink: getMetaPictureLink(data._id, track_id, picture.filename),
     };
   },
   OPEN_LINK: async (evt, { link }) => {

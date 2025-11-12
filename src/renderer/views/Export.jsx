@@ -14,7 +14,6 @@ import Select from '@components/Select';
 import Switch from '@components/Switch';
 import { ExportFrames } from '@core/Export';
 import { parseRatio } from '@core/ratio';
-import { GetFrameResolutions } from '@core/ResolutionsCache';
 import useAppCapabilities from '@hooks/useAppCapabilities';
 import useProject from '@hooks/useProject';
 import useSettings from '@hooks/useSettings';
@@ -22,6 +21,20 @@ import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { withTranslation } from 'react-i18next';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
+
+export const GetFrameResolutions = async (frames) => {
+  if (!frames || frames.length === 0) {
+    return [];
+  }
+  const resolutions = await Promise.all(
+    frames.map((frame) => {
+      return fetch(frame.metaLink)
+        .then((res) => res.json())
+        .catch(() => ({ width: null, height: null }));
+    })
+  );
+  return resolutions;
+};
 
 const Export = ({ t }) => {
   const { id, track } = useParams();
@@ -93,7 +106,7 @@ const Export = ({ t }) => {
 
   const framesKey = JSON.stringify(project?.scenes?.[Number(track)]?.pictures);
   useEffect(() => {
-    GetFrameResolutions(id, Number(track), project?.scenes?.[Number(track)]?.pictures)
+    GetFrameResolutions(project?.scenes?.[Number(track)]?.pictures)
       .then((d) => {
         setResolutions(d);
       })
@@ -127,13 +140,20 @@ const Export = ({ t }) => {
 
   useEffect(() => {
     (async () => {
-      const bestMode = appCapabilities.includes('EXPORT_VIDEO')
-        ? 'video'
-        : appCapabilities.includes('EXPORT_FRAMES')
-          ? 'frames'
-          : appCapabilities.includes('BACKGROUND_SYNC') && settings?.EVENT_MODE_ENABLED
-            ? 'send'
-            : 'none';
+      const bestMode = (() => {
+        if (appCapabilities.includes('BACKGROUND_SYNC') && settings?.EVENT_MODE_ENABLED) {
+          return 'send';
+        }
+        if (appCapabilities.includes('EXPORT_VIDEO')) {
+          return 'video';
+        }
+        if (appCapabilities.includes('EXPORT_FRAMES')) {
+          return 'frames';
+        }
+
+        return 'none'
+      })();
+
       if (
         (watch('mode') === 'video' && !appCapabilities.includes('EXPORT_VIDEO')) ||
         (watch('mode') === 'frames' && !appCapabilities.includes('EXPORT_FRAMES')) ||
@@ -201,6 +221,8 @@ const Export = ({ t }) => {
       if (!project.title) {
         projectActions.rename(newCode);
       }
+    } else {
+      setPublicCode(null);
     }
 
     // Ask user to define output path

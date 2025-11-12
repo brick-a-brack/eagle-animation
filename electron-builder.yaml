@@ -1,6 +1,7 @@
 appId: com.eagle-animation.app
 productName: Eagle Animation
 #compression: maximum
+nativeRebuilder: legacy
 
 directories:
   output: binaries
@@ -24,7 +25,7 @@ win:
 
 mac:
   artifactName: Eagle-Animation-${version}-mac.${ext}
-  executableName: eagle-animation
+  executableName: Eagle Animation
   category: public.app-category.photography
   icon: out/renderer/icon-mac.icns
   extendInfo:

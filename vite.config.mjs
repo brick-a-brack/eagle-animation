@@ -9,6 +9,49 @@ import topLevelAwait from 'vite-plugin-top-level-await';
 
 const URL = process.env.VITE_PUBLIC_URL || '';
 
+function serviceWorkerPlugin(options) {
+  const name = "vite-plugin-service-worker";
+  const virtualModuleId = `virtual:${name}`;
+  const resolvedVirtualModuleId = "\0" + virtualModuleId;
+  let isBuild = false;
+  return {
+    name,
+    config(_, { command }) {
+      isBuild = command === "build";
+      return {
+        build: {
+          rollupOptions: {
+            input: {
+              main: resolve(__dirname, 'src/renderer/index.html'),
+              sw: options.filename
+            },
+            output: {
+              entryFileNames: ({ facadeModuleId }) => {
+                if (facadeModuleId?.includes(options.filename)) {
+                  return `[name].js`;
+                }
+                return "assets/[name].[hash].js";
+              }
+            }
+          }
+        }
+      };
+    },
+    resolveId(id) {
+      if (id === virtualModuleId) {
+        return resolvedVirtualModuleId;
+      }
+    },
+    load(id) {
+      if (id === resolvedVirtualModuleId) {
+        let filename = isBuild ? options.filename.replace(".ts", ".js") : options.filename;
+        if (!filename.startsWith("/")) filename = `/${filename}`;
+        return `export const serviceWorkerFile = '${filename}'`;
+      }
+    }
+  };
+}
+
 // https://vitejs.dev/config/
 export default defineConfig({
   ...(URL ? { base: URL } : {}),
@@ -71,6 +114,9 @@ export default defineConfig({
           dest: '.',
         },
       ],
+    }),
+    serviceWorkerPlugin({
+      filename: resolve(__dirname, 'src/renderer/sw-web.js'),
     }),
   ],
   server: {

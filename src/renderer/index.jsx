@@ -78,6 +78,18 @@ window.EAEvents = (name, callback = () => {}) => {
   }
 };
 
+// Add service worker
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    // Web (Web browser backend)
+    if (typeof window.IPC === 'undefined') {
+      navigator.serviceWorker.register('./sw-web.js', {
+        type: 'module',
+      });
+    }
+  });
+}
+
 const container = document.getElementById('root');
 const root = createRoot(container);
 root.render(

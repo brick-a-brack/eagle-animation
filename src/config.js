@@ -126,4 +126,4 @@ export const ALLOWED_LANGUAGES = ['en', 'fr', 'de', 'es', 'it', 'pt', 'pl', 'eo'
 export const DEFAULT_LANGUAGE = 'en';
 
 // Partner API url
-export const PARTNER_API = 'https://api.brickfilms.com/';
+export const PARTNER_API = 'https://api.brickfilms.com/eagle-animation';
