@@ -362,7 +362,7 @@ class RemoteCamera {
       onBinded();
     }
 
-    return true;*/*/
+    return true;*/
   }
 
   async takePicture() {
