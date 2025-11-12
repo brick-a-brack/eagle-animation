@@ -27,7 +27,7 @@
     "build:web": "vite build",
     "build:unpack": "electron-vite build && electron-builder --dir",
     "build:win": "electron-vite build && electron-builder --win",
-    "build:mac": "electron-vite build && electron-builder --mac universal",
+    "build:mac": "electron-vite build && electron-builder --mac --universal",
     "build:linux": "electron-vite build && electron-builder --linux",
     "postinstall": "electron-builder install-app-deps",
     "extract-strings": "i18next-scanner",
