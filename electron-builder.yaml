@@ -25,7 +25,7 @@ win:
 
 mac:
   artifactName: Eagle-Animation-${version}-mac.${ext}
-  executableName: eagle-animation
+  executableName: Eagle Animation
   category: public.app-category.photography
   icon: out/renderer/icon-mac.icns
   extendInfo:
