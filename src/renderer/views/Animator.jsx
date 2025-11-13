@@ -432,7 +432,6 @@ const Animator = ({ t }) => {
             (appCapabilities.includes('EXPORT_VIDEO') || appCapabilities.includes('EXPORT_FRAMES') || (appCapabilities.includes('BACKGROUND_SYNC') && settings?.EVENT_MODE_ENABLED))
               ? ['EXPORT']
               : []),
-            'SETTINGS',
           ]}
           onAction={handleAction}
         >
