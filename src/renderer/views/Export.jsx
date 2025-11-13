@@ -149,6 +149,10 @@ const Export = ({ t }) => {
   }, [watch('mode'), JSON.stringify(videoResolutions), JSON.stringify(imageResolutions)]);
 
   useEffect(() => {
+    if (!settings || !appCapabilities) {
+      return;
+    }
+
     (async () => {
       const bestMode = (() => {
         if (appCapabilities.includes('BACKGROUND_SYNC') && settings?.EVENT_MODE_ENABLED) {
@@ -173,7 +177,7 @@ const Export = ({ t }) => {
         setValue('mode', bestMode);
       }
     })();
-  }, [appCapabilities]);
+  }, [appCapabilities, settings]);
 
   const handleBack = async () => {
     navigate(searchParams.get('back') || '/');
@@ -240,16 +244,16 @@ const Export = ({ t }) => {
       data.mode === 'send'
         ? null
         : await window.EA('EXPORT_SELECT_PATH', {
-            type: data.mode === 'video' ? 'FILE' : 'FOLDER',
-            format: data.format,
-            translations: {
-              EXPORT_FRAMES: t('Export animation frames'),
-              EXPORT_VIDEO: t('Export as video'),
-              DEFAULT_FILE_NAME: t('video'),
-              EXT_NAME: t('Video file'),
-            },
-            compress_as_zip: data.mode === 'frames' ? data.compressAsZip && appCapabilities.includes('EXPORT_FRAMES_ZIP') : false,
-          });
+          type: data.mode === 'video' ? 'FILE' : 'FOLDER',
+          format: data.format,
+          translations: {
+            EXPORT_FRAMES: t('Export animation frames'),
+            EXPORT_VIDEO: t('Export as video'),
+            DEFAULT_FILE_NAME: t('video'),
+            EXT_NAME: t('Video file'),
+          },
+          compress_as_zip: data.mode === 'frames' ? data.compressAsZip && appCapabilities.includes('EXPORT_FRAMES_ZIP') : false,
+        });
 
     // Cancel if result is null, (dialog closed)
     if (data.mode !== 'send' && outputPath === null) {
