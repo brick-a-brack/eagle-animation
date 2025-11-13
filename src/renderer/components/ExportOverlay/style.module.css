@@ -52,7 +52,7 @@
     align-items: center;
     display: flex;
     flex-direction: column;
-    gap: var(--space-huge);
+    gap: calc(2 * var(--space-huge));
     justify-content: center;
     width: 100%;
 }
