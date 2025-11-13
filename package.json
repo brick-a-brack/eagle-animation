@@ -62,15 +62,15 @@
     "p-limit": "^7.2.0",
     "path-browserify": "^1.0.1",
     "postcss-media-minmax": "^5.0.0",
-    "posthog-js": "^1.288.0",
+    "posthog-js": "^1.292.0",
     "prop-types": "^15.8.1",
     "rc-slider": "^11.1.9",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-hook-form": "^7.66.0",
-    "react-i18next": "^16.2.4",
+    "react-i18next": "^16.3.3",
     "react-keyboard-event-handler": "^1.5.4",
-    "react-router-dom": "^7.9.5",
+    "react-router-dom": "^7.9.6",
     "react-select": "^5.10.2",
     "react-tooltip": "^5.30.0",
     "rimraf": "^6.1.0",
@@ -82,9 +82,9 @@
   "devDependencies": {
     "@electron-toolkit/eslint-config": "1.0.2",
     "@electron-toolkit/eslint-config-prettier": "2.0.0",
-    "@vitejs/plugin-react": "^5.1.0",
+    "@vitejs/plugin-react": "^5.1.1",
     "buffer": "^6.0.3",
-    "electron": "^39.1.0",
+    "electron": "^39.1.2",
     "electron-builder": "26.0.12",
     "electron-vite": "^4.0.1",
     "eslint": "8.57.0",
@@ -101,14 +101,14 @@
     "stylelint": "^16.25.0",
     "stylelint-config-standard": "^39.0.1",
     "stylelint-order": "^7.0.0",
-    "vite": "^7.1.11",
+    "vite": "^7.2.2",
     "vite-plugin-static-copy": "^3.1.4",
     "vite-plugin-svgr": "^4.5.0",
     "vite-plugin-top-level-await": "^1.6.0"
   },
   "optionalDependencies": {
     "@brick-a-brack/napi-canon-cameras": "0.1.5",
-    "@esbuild/darwin-arm64": "^0.25.12",
-    "@rollup/rollup-darwin-arm64": "^4.53.0"
+    "@esbuild/darwin-arm64": "^0.27.0",
+    "@rollup/rollup-darwin-arm64": "^4.53.2"
   }
 }
