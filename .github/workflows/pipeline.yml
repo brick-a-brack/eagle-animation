@@ -47,8 +47,8 @@ jobs:
       - name: Install dependencies (Sharp for macOS)
         if: ${{ (matrix.versions.os == 'macos-latest') }}
         run: |
-          npm install --cpu=x64 --os=darwin sharp
-          npm install --cpu=arm64 --os=darwin sharp
+          npm install --cpu=x64 --os=darwin sharp --force
+          npm install --cpu=arm64 --os=darwin sharp --force
 
       - name: Packaging Windows
         if: ${{ (matrix.versions.os == 'windows-latest') && (matrix.versions.type == 'app') }}
