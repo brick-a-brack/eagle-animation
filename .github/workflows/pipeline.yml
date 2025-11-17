@@ -31,11 +31,24 @@ jobs:
         with:
           node-version: 20
 
+      - name: Installing Linux bundling dependencies
+        if: ${{ (matrix.versions.os == 'ubuntu-latest') && (matrix.versions.type == 'app') }}
+        uses: awalsh128/cache-apt-pkgs-action@latest
+        with:
+          packages: flatpak flatpak-builder rpm
+          version: 1.0
+
       # Replace by npm ci when it will be fixed
       - name: Install dependencies
         run: |
           rm package-lock.json
           npm i --force
+
+      - name: Install dependencies (Sharp for macOS)
+        if: ${{ (matrix.versions.os == 'macos-latest') }}
+        run: |
+          npm install --cpu=x64 --os=darwin sharp
+          npm install --cpu=arm64 --os=darwin sharp
 
       - name: Packaging Windows
         if: ${{ (matrix.versions.os == 'windows-latest') && (matrix.versions.type == 'app') }}
@@ -48,13 +61,6 @@ jobs:
         run: npm run build:mac
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Installing Linux bundling dependencies
-        if: ${{ (matrix.versions.os == 'ubuntu-latest') && (matrix.versions.type == 'app') }}
-        uses: awalsh128/cache-apt-pkgs-action@latest
-        with:
-          packages: flatpak flatpak-builder rpm
-          version: 1.0
   
       - name: Packaging Linux
         if: ${{ (matrix.versions.os == 'ubuntu-latest') && (matrix.versions.type == 'app') }}
