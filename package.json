@@ -57,7 +57,7 @@
     "i18next-http-backend": "^3.0.2",
     "intrinsic-scale": "^5.0.0",
     "jszip": "^3.10.1",
-    "lodash": "^4.17.21",
+    "lodash": "^4.17.23",
     "mkdirp": "^3.0.1",
     "p-limit": "^7.2.0",
     "path-browserify": "^1.0.1",
