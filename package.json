@@ -93,7 +93,7 @@
     "globals": "^17.3.0",
     "husky": "^9.1.7",
     "i18next-scanner": "^4.6.0",
-    "lightningcss": "^1.30.2",
+    "lightningcss": "^1.31.1",
     "prettier": "^3.8.1",
     "process": "^0.11.10",
     "react": "^19.2.0",
