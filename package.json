@@ -94,7 +94,7 @@
     "husky": "^9.1.7",
     "i18next-scanner": "^4.6.0",
     "lightningcss": "^1.30.2",
-    "prettier": "^3.6.2",
+    "prettier": "^3.8.1",
     "process": "^0.11.10",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
