@@ -30,6 +30,7 @@ mac:
   executableName: Eagle Animation
   category: public.app-category.photography
   icon: out/renderer/icon-mac.icns
+  singleArchFiles: "**/node_modules/{@img/sharp-darwin-arm64,@esbuild/darwin-arm64,@rollup/rollup-darwin-arm64}/**"
   extendInfo:
     NSMicrophoneUsageDescription: Please give us access to your microphone
     NSCameraUsageDescription: Please give us access to your camera
