@@ -11,11 +11,6 @@ files:
   - package.json
   - out/**
 
-asarUnpack:
-  - "**/*.node"
-  - "node_modules/@img/**"
-  - "node_modules/sharp/**"
-
 extraMetadata:
   main: out/main/index.js
   name: eagle-animation
@@ -48,6 +43,10 @@ linux:
   synopsis: EagleAnimation is an awesome, free and open-source animation software.
   description: EagleAnimation is an awesome, free and open-source animation software.
   icon: out/renderer/icon-linux.icns
+  aasarUnpack:
+    - "**/*.node"
+    - "node_modules/@img/**"
+    - "node_modules/sharp/**"
   target:
     - deb
     - rpm
