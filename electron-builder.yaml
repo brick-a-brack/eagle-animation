@@ -33,6 +33,7 @@ mac:
   executableName: Eagle Animation
   category: public.app-category.photography
   icon: out/renderer/icon-mac.icns
+  x64ArchFiles: "**/node_modules/{@esbuild,@rollup}/**"
   extendInfo:
     NSMicrophoneUsageDescription: Please give us access to your microphone
     NSCameraUsageDescription: Please give us access to your camera
