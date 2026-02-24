@@ -43,7 +43,7 @@ linux:
   synopsis: EagleAnimation is an awesome, free and open-source animation software.
   description: EagleAnimation is an awesome, free and open-source animation software.
   icon: out/renderer/icon-linux.icns
-  aasarUnpack:
+  asarUnpack:
     - "**/*.node"
     - "node_modules/@img/**"
     - "node_modules/sharp/**"
