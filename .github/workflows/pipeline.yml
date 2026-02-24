@@ -44,6 +44,11 @@ jobs:
           rm package-lock.json
           npm i --force
 
+      - name: Install dependencies (Sharp for Linux)
+        if: ${{ (matrix.versions.os == 'ubuntu-latest') && (matrix.versions.type == 'app') }}
+        run: |
+          npm install --cpu=x64 --os=linux sharp --force
+
       - name: Install dependencies (Sharp for macOS)
         if: ${{ (matrix.versions.os == 'macos-latest') }}
         run: |
