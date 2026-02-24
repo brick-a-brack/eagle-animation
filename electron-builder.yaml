@@ -13,6 +13,7 @@ files:
   - "!node_modules/@esbuild/darwin-arm64/**"
   - "!node_modules/@rollup/rollup-darwin-arm64/**"
   - "!node_modules/@img/sharp-darwin-arm64/**"
+  - "!node_modules/@img/sharp-libvips-darwin-arm64/**"
 
 extraMetadata:
   main: out/main/index.js
@@ -31,7 +32,10 @@ mac:
   executableName: Eagle Animation
   category: public.app-category.photography
   icon: out/renderer/icon-mac.icns
-  x64ArchFiles: "**/node_modules/@img/sharp-darwin-x64/**"
+  x64ArchFiles: "**/node_modules/@img/sharp-*-darwin-x64/**"
+  files:
+    - "node_modules/@img/sharp-darwin-arm64/**"
+    - "node_modules/@img/sharp-libvips-darwin-arm64/**"
   asarUnpack:
     - "**/*.node"
     - "node_modules/@img/**"
