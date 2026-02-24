@@ -10,8 +10,8 @@ directories:
 files:
   - package.json
   - out/**
-  - !node_modules/@esbuild/darwin-arm64/**
-  - !node_modules/@rollup/rollup-darwin-arm64/**
+  - "!node_modules/@esbuild/darwin-arm64/**"
+  - "!node_modules/@rollup/rollup-darwin-arm64/**"
 
 extraMetadata:
   main: out/main/index.js
