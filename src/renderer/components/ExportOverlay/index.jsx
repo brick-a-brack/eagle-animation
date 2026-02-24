@@ -14,8 +14,7 @@ const ExportOverlay = ({ t, showNewProjectButton = false, publicCode = null, onC
   const navigate = useNavigate();
 
   const handleCreateProject = async () => {
-    const title = t('New project');
-    const project = await projectsActions.create(title);
+    const project = await projectsActions.create();
     navigate(`/animator/${project.id}/0`);
     window.track('project_created', { projectId: project.id });
   };

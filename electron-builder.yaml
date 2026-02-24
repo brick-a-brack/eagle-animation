@@ -11,6 +11,11 @@ files:
   - package.json
   - out/**
 
+asarUnpack:
+  - "**/*.node"
+  - "node_modules/@img/**"
+  - "node_modules/sharp/**"
+
 extraMetadata:
   main: out/main/index.js
   name: eagle-animation
