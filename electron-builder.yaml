@@ -12,6 +12,7 @@ files:
   - out/**
   - "!node_modules/@esbuild/darwin-arm64/**"
   - "!node_modules/@rollup/rollup-darwin-arm64/**"
+  - "!node_modules/@img/sharp-darwin-arm64/**"
 
 extraMetadata:
   main: out/main/index.js
@@ -31,6 +32,8 @@ mac:
   category: public.app-category.photography
   icon: out/renderer/icon-mac.icns
   mergeASARs: false
+  files:
+    - "node_modules/@img/sharp-darwin-arm64/**"
   extendInfo:
     NSMicrophoneUsageDescription: Please give us access to your microphone
     NSCameraUsageDescription: Please give us access to your camera
