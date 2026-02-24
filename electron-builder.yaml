@@ -10,10 +10,11 @@ directories:
 files:
   - package.json
   - out/**
-  - "!node_modules/@esbuild/darwin-arm64/**"
-  - "!node_modules/@rollup/rollup-darwin-arm64/**"
-  - "!node_modules/@img/sharp-darwin-arm64/**"
-  - "!node_modules/@img/sharp-libvips-darwin-arm64/**"
+
+asarUnpack:
+  - "**/*.node"
+  - "node_modules/@img/**"
+  - "node_modules/sharp/**"
 
 extraMetadata:
   main: out/main/index.js
@@ -32,14 +33,6 @@ mac:
   executableName: Eagle Animation
   category: public.app-category.photography
   icon: out/renderer/icon-mac.icns
-  x64ArchFiles: "**/node_modules/@img/sharp*-x64/**"
-  files:
-    - "node_modules/@img/sharp-darwin-arm64/**"
-    - "node_modules/@img/sharp-libvips-darwin-arm64/**"
-  asarUnpack:
-    - "**/*.node"
-    - "node_modules/@img/**"
-    - "node_modules/sharp/**"
   extendInfo:
     NSMicrophoneUsageDescription: Please give us access to your microphone
     NSCameraUsageDescription: Please give us access to your camera
@@ -55,10 +48,6 @@ linux:
   synopsis: EagleAnimation is an awesome, free and open-source animation software.
   description: EagleAnimation is an awesome, free and open-source animation software.
   icon: out/renderer/icon-linux.icns
-  asarUnpack:
-    - "**/*.node"
-    - "node_modules/@img/**"
-    - "node_modules/sharp/**"
   target:
     - deb
     - rpm
