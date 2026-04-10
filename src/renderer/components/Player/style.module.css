@@ -108,6 +108,21 @@
     bottom: 0;
 }
 
+.hiddenLayer {
+    height: 100%;
+    width: 100%;
+    opacity: 0.5;
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.hiddenIcon {
+    height: 60%;
+    width: 60%;
+    color: var(--color-black);
+}
 
 
 
