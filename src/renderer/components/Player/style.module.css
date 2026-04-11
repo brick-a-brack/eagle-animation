@@ -111,17 +111,18 @@
 .hiddenLayer {
     height: 100%;
     width: 100%;
-    opacity: 0.5;
+    opacity: 0.7;
     position: absolute;
     display: flex;
     align-items: center;
     justify-content: center;
+    background-color: var(--color-theme-light);
 }
 
 .hiddenIcon {
     height: 60%;
     width: 60%;
-    color: var(--color-black);
+    color: var(--color-theme-extra-light);
 }
 
 
