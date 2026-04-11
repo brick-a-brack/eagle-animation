@@ -379,7 +379,7 @@ class Player extends Component {
           {this.getVideoRatio() !== null && borderTopBottom > 0 && <div className={style.borderTop} style={{ height: `${borderTopBottom * 100}%`, opacity: ratioLayerOpacity || 1 }} />}
           {this.getVideoRatio() !== null && borderTopBottom > 0 && <div className={style.borderBottom} style={{ height: `${borderTopBottom * 100}%`, opacity: ratioLayerOpacity || 1 }} />}
 
-          {frames[frameIndex]?.hidden && <div className={style.hiddenLayer}><FontAwesomeIcon className={style.hiddenIcon} icon={faEyeSlash} /></div>}
+          {frames[frameIndex]?.hidden && !this.props.isPlaying && <div className={style.hiddenLayer}><FontAwesomeIcon className={style.hiddenIcon} icon={faEyeSlash} /></div>}
 
           <canvas ref={this.dom.grid} className={style.layout} style={{ opacity: isCameraReady && showGrid && frameIndex === false ? 1 : 0 }} />
 

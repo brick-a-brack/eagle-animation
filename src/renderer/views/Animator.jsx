@@ -444,6 +444,7 @@ const Animator = ({ t }) => {
           onInit={handlePlayerInit}
           onFrameChange={setCurrentFrameId}
           onPlayingStatusChange={setIsPlaying}
+          isPlaying={isPlaying}
           pictures={pictures}
           onionValue={onionValue}
           showGrid={gridStatus}
