@@ -47,14 +47,29 @@ const playSound = (src, timeout = 2000) => {
 };
 
 // Get previous frame id
-const getPreviousFrameId = (list, frameId) => {
+const getPreviousFrameId = (list, frameId, skipHiddenFramesSetting = false) => {
   const frames = list.filter((pict) => !pict.deleted);
   if (frameId === false && frames.length) {
+    if(skipHiddenFramesSetting) {
+      for(let i = frames.length - 1; i >= 0; i--) {
+        if(!frames[i].hidden) {
+          return frames[i].id;
+        }
+      }
+    }
     return frames[frames.length - 1].id;
   }
   const frameIndex = frames.findIndex((f) => f.id === frameId);
   if (frameIndex === -1 || frameIndex === 0) {
     return frames[0].id;
+  }
+  if(skipHiddenFramesSetting) {
+    for(let i = frameIndex - 1; i >= 0; i--) {
+      if(!frames[i].hidden) {
+        return frames[i].id;
+      }
+    }
+    return frames[frameIndex].id;
   }
   return frames[frameIndex - 1].id;
 };
@@ -63,13 +78,21 @@ const getPreviousFrameId = (list, frameId) => {
 const getLastFrameId = (list) => getPreviousFrameId(list, false);
 
 // Get next frame id
-const getNextFrameId = (list, frameId) => {
+const getNextFrameId = (list, frameId, skipHiddenFramesSettings = false) => {
   const frames = list.filter((pict) => !pict.deleted);
   if (frameId === false) {
     return false;
   }
   const frameIndex = frames.findIndex((f) => f.id === frameId);
   if (frameIndex === -1 || frameIndex === frames.length - 1) {
+    return false;
+  }
+  if(skipHiddenFramesSettings) {
+    for(let i = frameIndex + 1; i < frames.length; i++) {
+      if(!frames[i].hidden) {
+        return frames[i].id;
+      }
+    }
     return false;
   }
   return frames[frameIndex + 1].id;
