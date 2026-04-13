@@ -242,5 +242,9 @@
   "The way the user will retrieve their video": "Tapa, jolla käyttäjä saa videonsa",
   "Email address": "Sähköpostiosoite",
   "The email address to send the video to": "Sähköpostiosoite, johon video lähetetään",
-  "No items to sync": "Ei synkronoitavia kohteita"
+  "No items to sync": "Ei synkronoitavia kohteita",
+  "Skip hidden frames on navigation": "__NOT_TRANSLATED__",
+  "Skip hidden frames when navigating through the animation": "__NOT_TRANSLATED__",
+  "Previous frame with or without hidden frames": "__NOT_TRANSLATED__",
+  "Next frame with or without hidden frames": "__NOT_TRANSLATED__"
 }

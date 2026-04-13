@@ -242,5 +242,9 @@
   "The way the user will retrieve their video": "Ο τρόπος με τον οποίο ο χρήστης θα λάβει το βίντεο του",
   "Email address": "Διεύθυνση email",
   "The email address to send the video to": "Η διεύθυνση email που θα σταλεί το βίντεο",
-  "No items to sync": "Δεν υπάρχουν στοιχεία για συγχρονισμό"
+  "No items to sync": "Δεν υπάρχουν στοιχεία για συγχρονισμό",
+  "Skip hidden frames on navigation": "__NOT_TRANSLATED__",
+  "Skip hidden frames when navigating through the animation": "__NOT_TRANSLATED__",
+  "Previous frame with or without hidden frames": "__NOT_TRANSLATED__",
+  "Next frame with or without hidden frames": "__NOT_TRANSLATED__"
 }

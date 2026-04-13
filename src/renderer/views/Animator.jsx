@@ -56,6 +56,7 @@ const getPreviousFrameId = (list, frameId, skipHiddenFramesSetting = false) => {
           return frames[i].id;
         }
       }
+      return false;
     }
     return frames[frames.length - 1].id;
   }
@@ -330,11 +331,19 @@ const Animator = ({ t }) => {
       navigate('/');
     },
     FRAME_LEFT: () => {
-      const newId = getPreviousFrameId(pictures, currentFrameId);
+      const newId = getPreviousFrameId(pictures, currentFrameId, settings.SKIP_HIDDEN_FRAMES);
       playerRef.current.showFrame(newId);
     },
     FRAME_RIGHT: () => {
-      const newId = getNextFrameId(pictures, currentFrameId);
+      const newId = getNextFrameId(pictures, currentFrameId, settings.SKIP_HIDDEN_FRAMES);
+      playerRef.current.showFrame(newId);
+    },
+    FRAME_LEFT_WITH_OR_WITHOUT_HIDDEN_FRAMES: () => {
+      const newId = getPreviousFrameId(pictures, currentFrameId, !settings.SKIP_HIDDEN_FRAMES);
+      playerRef.current.showFrame(newId);
+    },
+    FRAME_RIGHT_WITH_OR_WITHOUT_HIDDEN_FRAMES: () => {
+      const newId = getNextFrameId(pictures, currentFrameId, !settings.SKIP_HIDDEN_FRAMES);
       playerRef.current.showFrame(newId);
     },
     FRAME_LIVE: () => {

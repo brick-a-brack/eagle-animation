@@ -50,6 +50,8 @@ const ShortcutsList = ({ t, shortcuts }) => {
     HOME: t('Exit'),
     FRAME_LEFT: t('Previous frame'),
     FRAME_RIGHT: t('Next frame'),
+    FRAME_LEFT_WITH_OR_WITHOUT_HIDDEN_FRAMES: t('Previous frame with or without hidden frames'),
+    FRAME_RIGHT_WITH_OR_WITHOUT_HIDDEN_FRAMES: t('Next frame with or without hidden frames'),
     FRAME_LIVE: t('Jump to live view'),
     FRAME_FIRST: t('Jump to first frame'),
     ONION_MORE: t('Increase onion skin'),
@@ -81,7 +83,7 @@ const ShortcutsList = ({ t, shortcuts }) => {
       'GRID',
     ],
     ACTIONS: ['DELETE_FRAME', 'CLONE', 'DUPLICATE', 'DEDUPLICATE', 'HIDE_FRAME'],
-    NAVIGATION: ['FRAME_LEFT', 'FRAME_RIGHT', 'FRAME_LIVE', 'FRAME_FIRST'],
+    NAVIGATION: ['FRAME_LEFT', 'FRAME_RIGHT', 'FRAME_LIVE', 'FRAME_FIRST', 'FRAME_LEFT_WITH_OR_WITHOUT_HIDDEN_FRAMES', 'FRAME_RIGHT_WITH_OR_WITHOUT_HIDDEN_FRAMES'],
     OTHER: ['HOME'],
   };
 

@@ -257,5 +257,9 @@
   "The way the user will retrieve their video": "Die Art und Weise, wie der Benutzer sein Video abrufen wird",
   "Email address": "E-Mail-Adresse",
   "The email address to send the video to": "Die E-Mail-Adresse, an die das Video gesendet werden soll",
-  "No items to sync": "Keine Elemente zum Synchronisieren"
+  "No items to sync": "Keine Elemente zum Synchronisieren",
+  "Skip hidden frames on navigation": "__NOT_TRANSLATED__",
+  "Skip hidden frames when navigating through the animation": "__NOT_TRANSLATED__",
+  "Previous frame with or without hidden frames": "__NOT_TRANSLATED__",
+  "Next frame with or without hidden frames": "__NOT_TRANSLATED__"
 }

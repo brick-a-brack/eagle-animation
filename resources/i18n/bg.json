@@ -242,5 +242,9 @@
   "The way the user will retrieve their video": "Начинът, по който потребителят ще получи видеото си",
   "Email address": "Имейл адрес",
   "The email address to send the video to": "Имейл адресът, на който да се изпрати видеото",
-  "No items to sync": "Няма елементи за синхронизиране"
+  "No items to sync": "Няма елементи за синхронизиране",
+  "Skip hidden frames on navigation": "__NOT_TRANSLATED__",
+  "Skip hidden frames when navigating through the animation": "__NOT_TRANSLATED__",
+  "Previous frame with or without hidden frames": "__NOT_TRANSLATED__",
+  "Next frame with or without hidden frames": "__NOT_TRANSLATED__"
 }

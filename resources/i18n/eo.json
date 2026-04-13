@@ -257,5 +257,9 @@
   "The way the user will retrieve their video": "La maniero, laŭ kiu la uzanto ricevos sian videon",
   "Email address": "Retpoŝta adreso",
   "The email address to send the video to": "La retpoŝta adreso, al kiu sendi la videon",
-  "No items to sync": "Neniuj eroj por sinkronigi"
+  "No items to sync": "Neniuj eroj por sinkronigi",
+  "Skip hidden frames on navigation": "__NOT_TRANSLATED__",
+  "Skip hidden frames when navigating through the animation": "__NOT_TRANSLATED__",
+  "Previous frame with or without hidden frames": "__NOT_TRANSLATED__",
+  "Next frame with or without hidden frames": "__NOT_TRANSLATED__"
 }
