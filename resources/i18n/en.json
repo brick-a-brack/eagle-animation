@@ -258,7 +258,7 @@
   "The email address to send the video to": "The email address to send the video to",
   "No items to sync": "No items to sync",
   "Skip hidden frames on navigation": "Skip hidden frames on navigation",
-  "Skip hidden frames when navigating through the animation": "Skip hidden frames when navigating through the animation",
-  "Previous frame with or without hidden frames": "Previous frame with or without hidden frames",
-  "Next frame with or without hidden frames": "Next frame with or without hidden frames"
+  "Skip hidden frames when navigating through the animation using keyboard": "Skip hidden frames when navigating through the animation using keyboard",
+  "Alternative previous frame": "Alternative previous frame",
+  "Alternative next frame": "Alternative next frame"
 }

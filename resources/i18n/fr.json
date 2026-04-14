@@ -259,7 +259,7 @@
   "The email address to send the video to": "L'adresse e-mail à laquelle envoyer la vidéo",
   "No items to sync": "Pas d'éléments à synchroniser",
   "Skip hidden frames on navigation": "Sauter les images masquées lors de la navigation",
-  "Skip hidden frames when navigating through the animation": "Sauter les images masquées lors de la navigation dans l'animation",
-  "Previous frame with or without hidden frames": "Image précédente avec ou sans images masquées",
-  "Next frame with or without hidden frames": "Image suivante avec ou sans images masquées"
+  "Skip hidden frames when navigating through the animation using keyboard": "Sauter les images masquées lors de la navigation dans l'animation en utilisant le clavier",
+  "Alternative previous frame": "Image précédente alternative",
+  "Alternative next frame": "Image suivante alternative"
 }
