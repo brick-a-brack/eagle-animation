@@ -54,58 +54,57 @@ const getPreviousFrameId = (frames, frameId, skipHiddenFrames = false) => {
       continue;
     }
 
-    // Live view case, return the last non hidden frame or hidden if we don't skip hidden frames
-    if (frameId === false && (!frame?.hidden || (!skipHiddenFrames && !!frame?.hidden))) {
+    const isShowable = !frame?.hidden || (!skipHiddenFrames && !!frame?.hidden);
+
+    // Live view case, return the first showable frame
+    if (frameId === false && isShowable) {
       return frame.id;
     }
 
-    // Frame found
+    // Frame found, the next showable frame we find will be returned
     if (frame.id === frameId) {
-      // Frame found is the first frame, we stay on the current frame (frameId)
-      if (frame.id === frames[0].id) {
-        return frameId;
-      }
       frameFound = true;
       continue;
     }
 
-    // We return the previous frame not hidden or hidden if we don't skip hidden frames
-    if (frameFound && (!frame?.hidden || (!skipHiddenFrames && !!frame?.hidden))) {
+    // Return the current showable frame
+    if (frameFound && isShowable) {
       return frame.id;
-    }
-
-    // All previous frames are hidden, we stay on the current frame (frameId)
-    if (frameFound && frame.id === frames[0].id) {
-      return frameId;
     }
   }
 
-  // No non deleted frames in frames so we return false (we are on live view and we stay on live view)
-  return false;
+  // Fallback, return the initial frameId
+  return frameId;
 };
 
 // Get last frame id
-const getLastFrameId = (list) => getPreviousFrameId(list, false);
+const getLastFrameId = (frames) => getPreviousFrameId(frames, false);
 
 // Get next frame id
-const getNextFrameId = (list, frameId, skipHiddenFrames = false) => {
-  const frames = list.filter((pict) => !pict.deleted);
-  if (frameId === false) {
-    return false;
-  }
-  const frameIndex = frames.findIndex((f) => f.id === frameId);
-  if (frameIndex === -1 || frameIndex === frames.length - 1) {
-    return false;
-  }
-  if(skipHiddenFrames) {
-    for(let i = frameIndex + 1; i < frames.length; i++) {
-      if(!frames[i].hidden) {
-        return frames[i].id;
-      }
+const getNextFrameId = (frames, frameId, skipHiddenFrames = false) => {
+
+  let frameFound = false;
+  for (const frame of frames) {
+    if (frame.deleted) {
+      continue;
     }
-    return false;
+
+    const isShowable = !frame?.hidden || (!skipHiddenFrames && !!frame?.hidden);
+
+    // Frame found, the next showable frame we find will be returned
+    if (frame.id === frameId) {
+      frameFound = true;
+      continue;
+    }
+
+    // Return the current showable frame
+    if (frameFound && isShowable) {
+      return frame.id;
+    }
   }
-  return frames[frameIndex + 1].id;
+
+  // Fallback, return to the live view
+  return false;
 };
 
 // Get first frame id
@@ -303,6 +302,9 @@ const Animator = ({ t }) => {
       setShowCameraSettings(!showCameraSettings);
     },
     DELETE_FRAME: async () => {
+      if (pictures.length === 0) {
+        return;
+      }
       let frameIdToDelete = currentFrameId;
       let newId = false;
 
