@@ -47,39 +47,48 @@ const playSound = (src, timeout = 2000) => {
 };
 
 // Get previous frame id
-const getPreviousFrameId = (list, frameId, skipHiddenFramesSetting = false) => {
-  const frames = list.filter((pict) => !pict.deleted);
-  if (frameId === false && frames.length) {
-    if(skipHiddenFramesSetting) {
-      for(let i = frames.length - 1; i >= 0; i--) {
-        if(!frames[i].hidden) {
-          return frames[i].id;
-        }
-      }
-      return false;
+const getPreviousFrameId = (frames, frameId, skipHiddenFrames = false) => {
+  let frameFound = false;
+  for (const frame of frames.toReversed()) {
+    if (frame.deleted) {
+      continue;
     }
-    return frames[frames.length - 1].id;
-  }
-  const frameIndex = frames.findIndex((f) => f.id === frameId);
-  if (frameIndex === -1 || frameIndex === 0) {
-    return frames[0].id;
-  }
-  if(skipHiddenFramesSetting) {
-    for(let i = frameIndex - 1; i >= 0; i--) {
-      if(!frames[i].hidden) {
-        return frames[i].id;
-      }
+
+    // Live view case, return the last non hidden frame or hidden if we don't skip hidden frames
+    if (frameId === false && (!frame?.hidden || (!skipHiddenFrames && !!frame?.hidden))) {
+      return frame.id;
     }
-    return frames[frameIndex].id;
+
+    // Frame found
+    if (frame.id === frameId) {
+      // Frame found is the first frame, we stay on the current frame (frameId)
+      if (frame.id === frames[0].id) {
+        return frameId;
+      }
+      frameFound = true;
+      continue;
+    }
+
+    // We return the previous frame not hidden or hidden if we don't skip hidden frames
+    if (frameFound && (!frame?.hidden || (!skipHiddenFrames && !!frame?.hidden))) {
+      return frame.id;
+    }
+
+    // All previous frames are hidden, we stay on the current frame (frameId)
+    if (frameFound && frame.id === frames[0].id) {
+      return frameId;
+    }
   }
-  return frames[frameIndex - 1].id;
+
+  // No non deleted frames in frames so we return false (we are on live view and we stay on live view)
+  return false;
 };
 
 // Get last frame id
 const getLastFrameId = (list) => getPreviousFrameId(list, false);
 
 // Get next frame id
-const getNextFrameId = (list, frameId, skipHiddenFramesSettings = false) => {
+const getNextFrameId = (list, frameId, skipHiddenFrames = false) => {
   const frames = list.filter((pict) => !pict.deleted);
   if (frameId === false) {
     return false;
@@ -88,7 +97,7 @@ const getNextFrameId = (list, frameId, skipHiddenFramesSettings = false) => {
   if (frameIndex === -1 || frameIndex === frames.length - 1) {
     return false;
   }
-  if(skipHiddenFramesSettings) {
+  if(skipHiddenFrames) {
     for(let i = frameIndex + 1; i < frames.length; i++) {
       if(!frames[i].hidden) {
         return frames[i].id;
@@ -338,11 +347,11 @@ const Animator = ({ t }) => {
       const newId = getNextFrameId(pictures, currentFrameId, settings.SKIP_HIDDEN_FRAMES);
       playerRef.current.showFrame(newId);
     },
-    FRAME_LEFT_WITH_OR_WITHOUT_HIDDEN_FRAMES: () => {
+    ALTERNATIVE_FRAME_LEFT: () => {
       const newId = getPreviousFrameId(pictures, currentFrameId, !settings.SKIP_HIDDEN_FRAMES);
       playerRef.current.showFrame(newId);
     },
-    FRAME_RIGHT_WITH_OR_WITHOUT_HIDDEN_FRAMES: () => {
+    ALTERNATIVE_FRAME_RIGHT: () => {
       const newId = getNextFrameId(pictures, currentFrameId, !settings.SKIP_HIDDEN_FRAMES);
       playerRef.current.showFrame(newId);
     },
