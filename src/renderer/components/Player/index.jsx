@@ -3,6 +3,8 @@ import resizeToFit from 'intrinsic-scale';
 import { isEqual } from 'lodash';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import faEyeSlash from '@icons/faEyeSlash';
 
 import * as style from './style.module.css';
 
@@ -355,6 +357,7 @@ class Player extends Component {
     const borderLeftRight = (this.getSize().width - borders.width) / 2 / this.getSize().width;
     const borderTopBottom = (this.getSize().height - borders.height) / 2 / this.getSize().height;
     const reverseClassNames = `${reverseX ? style.reverseX : ''} ${reverseY ? style.reverseY : ''}`;
+    const frames = this.props.pictures.filter((e) => !e.deleted).reduce((acc, e) => [...acc, ...new Array(e.length || 1).fill(e)], []);
 
     return (
       <div className={`${style.playerContainer} ${frameIndex === false ? style.live : ''}`}>
@@ -375,6 +378,8 @@ class Player extends Component {
           {this.getVideoRatio() !== null && borderLeftRight > 0 && <div className={style.borderRight} style={{ width: `${borderLeftRight * 100}%`, opacity: ratioLayerOpacity || 1 }} />}
           {this.getVideoRatio() !== null && borderTopBottom > 0 && <div className={style.borderTop} style={{ height: `${borderTopBottom * 100}%`, opacity: ratioLayerOpacity || 1 }} />}
           {this.getVideoRatio() !== null && borderTopBottom > 0 && <div className={style.borderBottom} style={{ height: `${borderTopBottom * 100}%`, opacity: ratioLayerOpacity || 1 }} />}
+
+          {frames[frameIndex]?.hidden && !this.props.isPlaying && <div className={style.hiddenLayer}><FontAwesomeIcon className={style.hiddenIcon} icon={faEyeSlash} /></div>}
 
           <canvas ref={this.dom.grid} className={style.layout} style={{ opacity: isCameraReady && showGrid && frameIndex === false ? 1 : 0 }} />
 

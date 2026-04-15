@@ -21,6 +21,8 @@ const SHORTCUTS = {
   HIDE_FRAME: ['h'],
   FRAME_LEFT: ['left', '1'],
   FRAME_RIGHT: ['right', '2'],
+  ALTERNATIVE_FRAME_LEFT: ['shift+left'],
+  ALTERNATIVE_FRAME_RIGHT: ['shift+right'],
   FRAME_LIVE: ['end', 'up', '3', 'ctrl+right'],
   FRAME_FIRST: ['home', 'down', 'ctrl+left'],
   ONION_MORE: ['+'],
