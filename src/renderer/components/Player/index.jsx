@@ -214,6 +214,7 @@ class Player extends Component {
       }
     }
 
+    // Redraw grid if ratio changed
     if (!isEqual(prevProps.videoRatio, this.props.videoRatio)) {
       this.drawGrid();
     }
