@@ -260,5 +260,9 @@
   "The way the user will retrieve their video": "Sposób, w jaki użytkownik odbierze swoje wideo",
   "Email address": "Adres e-mail",
   "The email address to send the video to": "Adres e-mail, na który należy wysłać wideo",
-  "No items to sync": "Brak elementów do synchronizacji"
+  "No items to sync": "Brak elementów do synchronizacji",
+  "Skip hidden frames on navigation": "Pomijaj ukryte klatki podczas nawigacji",
+  "Skip hidden frames when navigating through the animation using keyboard": "Pomijaj ukryte klatki podczas nawigacji w animacji za pomocą klawiatury",
+  "Alternative previous frame": "Alternatywna poprzednia klatka",
+  "Alternative next frame": "Alternatywna następna klatka"
 }

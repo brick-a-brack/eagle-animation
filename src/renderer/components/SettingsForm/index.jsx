@@ -51,6 +51,12 @@ const SettingsForm = ({ settings = {}, onUpdate = () => {}, t }) => {
             <Switch register={register('LOOP_SHOW_LIVE')} />
           </div>
         </FormGroup>
+        <Heading h={1}>{t('Navigation')}</Heading>
+        <FormGroup label={t('Skip hidden frames on navigation')} description={t('Skip hidden frames when navigating through the animation using keyboard')}> 
+          <div>
+            <Switch register={register('SKIP_HIDDEN_FRAMES')} />
+          </div>
+        </FormGroup>
         <Heading h={1}>{t('Capture')}</Heading>
         <FormGroup label={t('Sound effects')} description={t('Play sound effects when you take or remove a frame')}>
           <div>

@@ -242,5 +242,9 @@
   "The way the user will retrieve their video": "Tapa, jolla käyttäjä saa videonsa",
   "Email address": "Sähköpostiosoite",
   "The email address to send the video to": "Sähköpostiosoite, johon video lähetetään",
-  "No items to sync": "Ei synkronoitavia kohteita"
+  "No items to sync": "Ei synkronoitavia kohteita",
+  "Skip hidden frames on navigation": "Ohita piilotetut kehykset navigoinnissa",
+  "Skip hidden frames when navigating through the animation using keyboard": "Ohita piilotetut kehykset navigoidessasi animaatiossa näppäimistön avulla",
+  "Alternative previous frame": "Vaihtoehtoinen edellinen kehys",
+  "Alternative next frame": "Vaihtoehtoinen seuraava kehys"
 }

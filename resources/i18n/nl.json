@@ -242,5 +242,9 @@
   "The way the user will retrieve their video": "De manier waarop de gebruiker zijn video zal ophalen",
   "Email address": "E-mailadres",
   "The email address to send the video to": "Het e-mailadres waar de video naar toe moet worden gestuurd",
-  "No items to sync": "Geen items om te synchroniseren"
+  "No items to sync": "Geen items om te synchroniseren",
+  "Skip hidden frames on navigation": "Overslaan van verborgen frames tijdens navigatie",
+  "Skip hidden frames when navigating through the animation using keyboard": "Sla verborgen frames over bij het navigeren door de animatie met het toetsenbord",
+  "Alternative previous frame": "Alternatieve vorige afbeelding",
+  "Alternative next frame": "Alternatieve volgende afbeelding"
 }

@@ -264,5 +264,9 @@
   "The way the user will retrieve their video": "Būdas, kaip vartotojas gaus savo vaizdo įrašą",
   "Email address": "El. pašto adresas",
   "The email address to send the video to": "El. pašto adresas, kuriuo siųsti vaizdo įrašą",
-  "No items to sync": "Nėra elementų sinchronizavimui"
+  "No items to sync": "Nėra elementų sinchronizavimui",
+  "Skip hidden frames on navigation": "Praleisti paslėptus kadrus naršant",
+  "Skip hidden frames when navigating through the animation using keyboard": "Praleisti paslėptus kadrus naršant animacijoje naudojant klaviatūrą",
+  "Alternative previous frame": "Alternatyvus ankstesnis kadras",
+  "Alternative next frame": "Alternatyvus sekantis kadras"
 }
