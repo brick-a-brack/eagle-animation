@@ -258,5 +258,11 @@
   "The way the user will retrieve their video": "A maneira como o usuário recuperará seu vídeo",
   "Email address": "Endereço de e-mail",
   "The email address to send the video to": "O endereço de e-mail para enviar o vídeo",
-  "No items to sync": "Não há itens para sincronizar"
+  "No items to sync": "Não há itens para sincronizar",
+  "Skip hidden frames on navigation": "Pular quadros ocultos na navegação",
+  "Skip hidden frames when navigating through the animation using keyboard": "Pular quadros ocultos ao navegar pela animação usando o teclado",
+  "Alternative previous frame": "Quadro anterior alternativo",
+  "Alternative next frame": "Quadro seguinte alternativo",
+  "Development Version": "Versão de Desenvolvimento",
+  "Unknown Version": "Versão Desconhecida"
 }

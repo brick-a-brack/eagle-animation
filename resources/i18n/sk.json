@@ -245,5 +245,11 @@
   "The way the user will retrieve their video": "Spôsob, akým užívateľ získa svoje video",
   "Email address": "E-mailová adresa",
   "The email address to send the video to": "E-mailová adresa, na ktorú sa má video poslať",
-  "No items to sync": "Žiadne položky na synchronizáciu"
+  "No items to sync": "Žiadne položky na synchronizáciu",
+  "Skip hidden frames on navigation": "Preskočiť skryté snímky pri navigácii",
+  "Skip hidden frames when navigating through the animation using keyboard": "Preskočiť skryté snímky pri prechádzaní animáciou pomocou klávesnice",
+  "Alternative previous frame": "Alternatívny predchádzajúci snímok",
+  "Alternative next frame": "Alternatívny nasledujúci snímok",
+  "Development Version": "Vývojová verzia",
+  "Unknown Version": "Neznáma verzia"
 }

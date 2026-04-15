@@ -57,19 +57,25 @@ jobs:
 
       - name: Packaging Windows
         if: ${{ (matrix.versions.os == 'windows-latest') && (matrix.versions.type == 'app') }}
-        run: npm run build:win
+        run: |
+          echo "VITE_COMMIT_HASH=`git rev-parse HEAD`" >> .env
+          npm run build:win
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Packaging MacOS
         if: ${{ (matrix.versions.os == 'macos-latest') && (matrix.versions.type == 'app') }}
-        run: npm run build:mac
+        run: |
+          echo "VITE_COMMIT_HASH=`git rev-parse HEAD`" >> .env
+          npm run build:mac
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   
       - name: Packaging Linux
         if: ${{ (matrix.versions.os == 'ubuntu-latest') && (matrix.versions.type == 'app') }}
-        run: npm run build:linux
+        run: |
+          echo "VITE_COMMIT_HASH=`git rev-parse HEAD`" >> .env
+          npm run build:linux
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

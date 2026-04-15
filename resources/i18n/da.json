@@ -242,5 +242,11 @@
   "The way the user will retrieve their video": "Måden brugeren vil hente deres video på",
   "Email address": "E-mailadresse",
   "The email address to send the video to": "E-mailadressen, hvor videoen skal sendes til",
-  "No items to sync": "Ingen elementer at synkronisere"
+  "No items to sync": "Ingen elementer at synkronisere",
+  "Skip hidden frames on navigation": "Spring over skjulte rammer under navigation",
+  "Skip hidden frames when navigating through the animation using keyboard": "Spring skjulte rammer over, når du navigerer gennem animationen ved hjælp af tastaturet",
+  "Alternative previous frame": "Alternativ forrige ramme",
+  "Alternative next frame": "Alternativ næste ramme",
+  "Development Version": "Udviklingsversion",
+  "Unknown Version": "Ukendt version"
 }

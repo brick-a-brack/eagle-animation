@@ -242,5 +242,11 @@
   "The way the user will retrieve their video": "Начинът, по който потребителят ще получи видеото си",
   "Email address": "Имейл адрес",
   "The email address to send the video to": "Имейл адресът, на който да се изпрати видеото",
-  "No items to sync": "Няма елементи за синхронизиране"
+  "No items to sync": "Няма елементи за синхронизиране",
+  "Skip hidden frames on navigation": "Пропуснете скритите кадри при навигация",
+  "Skip hidden frames when navigating through the animation using keyboard": "Пропуснете скритите кадри при навигация в анимацията с помощта на клавиатурата",
+  "Alternative previous frame": "Алтернативен предишен кадър",
+  "Alternative next frame": "Алтернативен следващ кадър",
+  "Development Version": "Версия за разработка",
+  "Unknown Version": "Непозната версия"
 }

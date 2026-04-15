@@ -246,5 +246,11 @@
   "The way the user will retrieve their video": "Kako bo uporabnik pridobil svoj video",
   "Email address": "E-poštni naslov",
   "The email address to send the video to": "E-poštni naslov za pošiljanje videa",
-  "No items to sync": "Ni elementov za sinhronizacijo"
+  "No items to sync": "Ni elementov za sinhronizacijo",
+  "Skip hidden frames on navigation": "Preskoči skrite sličice med navigacijo",
+  "Skip hidden frames when navigating through the animation using keyboard": "Preskoči skrite sličice pri navigaciji skozi animacijo z uporabo tipkovnice",
+  "Alternative previous frame": "Alternativna prejšnja sličica",
+  "Alternative next frame": "Alternativna naslednja sličica",
+  "Development Version": "Razvojna različica",
+  "Unknown Version": "Neznana različica"
 }

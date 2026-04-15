@@ -257,5 +257,11 @@
   "The way the user will retrieve their video": "La maniero, laŭ kiu la uzanto ricevos sian videon",
   "Email address": "Retpoŝta adreso",
   "The email address to send the video to": "La retpoŝta adreso, al kiu sendi la videon",
-  "No items to sync": "Neniuj eroj por sinkronigi"
+  "No items to sync": "Neniuj eroj por sinkronigi",
+  "Skip hidden frames on navigation": "Sali malkaŝitajn kadrojn dum la navigado",
+  "Skip hidden frames when navigating through the animation using keyboard": "Sali kaŝitajn kadrojn dum navigado tra la animacio uzante la klavaron",
+  "Alternative previous frame": "Alternativa antaŭa kadro",
+  "Alternative next frame": "Alternativa sekva kadro",
+  "Development Version": "Evoluiga Versio",
+  "Unknown Version": "Nekonata Versio"
 }

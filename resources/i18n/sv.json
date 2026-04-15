@@ -242,5 +242,11 @@
   "The way the user will retrieve their video": "Hur användaren kommer att hämta sin video",
   "Email address": "E-postadress",
   "The email address to send the video to": "E-postadressen att skicka videon till",
-  "No items to sync": "Inga objekt att synkronisera"
+  "No items to sync": "Inga objekt att synkronisera",
+  "Skip hidden frames on navigation": "Hoppa över dolda bilder vid navigering",
+  "Skip hidden frames when navigating through the animation using keyboard": "Hoppa över dolda bilder när du navigerar genom animationen med tangentbordet",
+  "Alternative previous frame": "Alternativ föregående bild",
+  "Alternative next frame": "Alternativ nästa bild",
+  "Development Version": "Utvecklingsversion",
+  "Unknown Version": "Okänd version"
 }
