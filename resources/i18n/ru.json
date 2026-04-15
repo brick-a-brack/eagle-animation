@@ -246,8 +246,8 @@
   "Email address": "Адрес электронной почты",
   "The email address to send the video to": "Адрес электронной почты для отправки видео",
   "No items to sync": "Нет элементов для синхронизации",
-  "Skip hidden frames on navigation": "__NOT_TRANSLATED__",
-  "Skip hidden frames when navigating through the animation": "__NOT_TRANSLATED__",
-  "Previous frame with or without hidden frames": "__NOT_TRANSLATED__",
-  "Next frame with or without hidden frames": "__NOT_TRANSLATED__"
+  "Skip hidden frames on navigation": "Пропускать скрытые кадры при навигации",
+  "Skip hidden frames when navigating through the animation using keyboard": "Пропускать скрытые кадры при навигации по анимации с помощью клавиатуры",
+  "Alternative previous frame": "Альтернативный предыдущий кадр",
+  "Alternative next frame": "Альтернативный следующий кадр"
 }

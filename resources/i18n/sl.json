@@ -247,8 +247,8 @@
   "Email address": "E-poštni naslov",
   "The email address to send the video to": "E-poštni naslov za pošiljanje videa",
   "No items to sync": "Ni elementov za sinhronizacijo",
-  "Skip hidden frames on navigation": "__NOT_TRANSLATED__",
-  "Skip hidden frames when navigating through the animation": "__NOT_TRANSLATED__",
-  "Previous frame with or without hidden frames": "__NOT_TRANSLATED__",
-  "Next frame with or without hidden frames": "__NOT_TRANSLATED__"
+  "Skip hidden frames on navigation": "Preskoči skrite sličice med navigacijo",
+  "Skip hidden frames when navigating through the animation using keyboard": "Preskoči skrite sličice pri navigaciji skozi animacijo z uporabo tipkovnice",
+  "Alternative previous frame": "Alternativna prejšnja sličica",
+  "Alternative next frame": "Alternativna naslednja sličica"
 }

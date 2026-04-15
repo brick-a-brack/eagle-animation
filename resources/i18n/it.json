@@ -259,8 +259,8 @@
   "Email address": "Indirizzo email",
   "The email address to send the video to": "L'indirizzo email a cui inviare il video",
   "No items to sync": "Nessun elemento da sincronizzare",
-  "Skip hidden frames on navigation": "__NOT_TRANSLATED__",
-  "Skip hidden frames when navigating through the animation": "__NOT_TRANSLATED__",
-  "Previous frame with or without hidden frames": "__NOT_TRANSLATED__",
-  "Next frame with or without hidden frames": "__NOT_TRANSLATED__"
+  "Skip hidden frames on navigation": "Salta i fotogrammi nascosti durante la navigazione",
+  "Skip hidden frames when navigating through the animation using keyboard": "Salta i fotogrammi nascosti durante la navigazione nell'animazione utilizzando la tastiera",
+  "Alternative previous frame": "Fotogramma precedente alternativo",
+  "Alternative next frame": "Fotogramma successivo alternativo"
 }

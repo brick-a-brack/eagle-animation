@@ -243,8 +243,8 @@
   "Email address": "Email cím",
   "The email address to send the video to": "Az email cím, ahova a videót küldeni kell",
   "No items to sync": "Nincsenek szinkronizálandó elemek",
-  "Skip hidden frames on navigation": "__NOT_TRANSLATED__",
-  "Skip hidden frames when navigating through the animation": "__NOT_TRANSLATED__",
-  "Previous frame with or without hidden frames": "__NOT_TRANSLATED__",
-  "Next frame with or without hidden frames": "__NOT_TRANSLATED__"
+  "Skip hidden frames on navigation": "Rejtett képkockák kihagyása a navigálás során",
+  "Skip hidden frames when navigating through the animation using keyboard": "Ugrás a rejtett képkockákon az animációban való navigálás során a billentyűzet használatával",
+  "Alternative previous frame": "Alternatív előző képkocka",
+  "Alternative next frame": "Alternatív következő képkocka"
 }

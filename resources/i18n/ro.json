@@ -245,8 +245,8 @@
   "Email address": "Adresă de e-mail",
   "The email address to send the video to": "Adresa de e-mail la care să se trimită videoclipul",
   "No items to sync": "Nu există elemente de sincronizat",
-  "Skip hidden frames on navigation": "__NOT_TRANSLATED__",
-  "Skip hidden frames when navigating through the animation": "__NOT_TRANSLATED__",
-  "Previous frame with or without hidden frames": "__NOT_TRANSLATED__",
-  "Next frame with or without hidden frames": "__NOT_TRANSLATED__"
+  "Skip hidden frames on navigation": "Sari peste cadrele ascunse în timpul navigării",
+  "Skip hidden frames when navigating through the animation using keyboard": "Sari peste cadrele ascunse atunci când navighezi prin animație folosind tastatura",
+  "Alternative previous frame": "Cadru anterior alternativ",
+  "Alternative next frame": "Cadru următor alternativ"
 }

@@ -246,8 +246,8 @@
   "Email address": "E-mailová adresa",
   "The email address to send the video to": "E-mailová adresa, na kterou se má video poslat",
   "No items to sync": "Žádné položky k synchronizaci",
-  "Skip hidden frames on navigation": "__NOT_TRANSLATED__",
-  "Skip hidden frames when navigating through the animation": "__NOT_TRANSLATED__",
-  "Previous frame with or without hidden frames": "__NOT_TRANSLATED__",
-  "Next frame with or without hidden frames": "__NOT_TRANSLATED__"
+  "Skip hidden frames on navigation": "Přeskočit skryté snímky při navigaci",
+  "Skip hidden frames when navigating through the animation using keyboard": "Přeskočit skryté snímky při navigaci v animaci pomocí klávesnice",
+  "Alternative previous frame": "Alternativní předchozí snímek",
+  "Alternative next frame": "Alternativní následující snímek"
 }

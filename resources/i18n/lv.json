@@ -245,8 +245,8 @@
   "Email address": "E-pasta adrese",
   "The email address to send the video to": "E-pasta adrese, kurai nosūtīt video",
   "No items to sync": "Nav vienumu, ko sinhronizēt",
-  "Skip hidden frames on navigation": "__NOT_TRANSLATED__",
-  "Skip hidden frames when navigating through the animation": "__NOT_TRANSLATED__",
-  "Previous frame with or without hidden frames": "__NOT_TRANSLATED__",
-  "Next frame with or without hidden frames": "__NOT_TRANSLATED__"
+  "Skip hidden frames on navigation": "Izlaist slēptās kadras navigācijas laikā",
+  "Skip hidden frames when navigating through the animation using keyboard": "Izlaist slēptās kadras, pārvietojoties pa animāciju, izmantojot tastatūru",
+  "Alternative previous frame": "Alternatīvais iepriekšējais kadrs",
+  "Alternative next frame": "Alternatīvais nākamais kadrs"
 }

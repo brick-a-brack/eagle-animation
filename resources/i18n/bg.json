@@ -243,8 +243,8 @@
   "Email address": "Имейл адрес",
   "The email address to send the video to": "Имейл адресът, на който да се изпрати видеото",
   "No items to sync": "Няма елементи за синхронизиране",
-  "Skip hidden frames on navigation": "__NOT_TRANSLATED__",
-  "Skip hidden frames when navigating through the animation": "__NOT_TRANSLATED__",
-  "Previous frame with or without hidden frames": "__NOT_TRANSLATED__",
-  "Next frame with or without hidden frames": "__NOT_TRANSLATED__"
+  "Skip hidden frames on navigation": "Пропуснете скритите кадри при навигация",
+  "Skip hidden frames when navigating through the animation using keyboard": "Пропуснете скритите кадри при навигация в анимацията с помощта на клавиатурата",
+  "Alternative previous frame": "Алтернативен предишен кадър",
+  "Alternative next frame": "Алтернативен следващ кадър"
 }
