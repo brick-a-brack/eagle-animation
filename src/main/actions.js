@@ -1,8 +1,8 @@
+import { randomUUID } from 'node:crypto';
 import { copyFile } from 'node:fs/promises';
 
 import { shell } from 'electron';
 import { mkdirp } from 'mkdirp';
-import fetch from 'node-fetch';
 import { join } from 'path-browserify';
 
 import { getEncodingProfile } from '../common/ffmpeg';
@@ -17,7 +17,8 @@ import { selectFile, selectFolder } from './core/utils';
 
 console.log(`💾 Eagle Animation files will be saved in the following folder: ${PROJECTS_PATH}`);
 
-const getPictureLink = (projectId, sceneIndex, filename) => `ea-data://${projectId}/${sceneIndex}/${filename}`;
+const getPictureLink = (projectId, sceneIndex, filename) => `ea://api/pictures/${projectId}/${sceneIndex}/${filename}`;
+const getMetaPictureLink = (projectId, sceneIndex, filename) => `ea://api/pictures/${projectId}/${sceneIndex}/${filename}?infos=json`;
 
 const computeProject = (data) => {
   const copiedData = structuredClone(data);
@@ -26,6 +27,7 @@ const computeProject = (data) => {
     pictures: scene.pictures.map((picture) => ({
       ...picture,
       link: getPictureLink(copiedData._id, i, picture.filename),
+      metaLink: getMetaPictureLink(copiedData._id, i, picture.filename),
     })),
   }));
 
@@ -81,6 +83,7 @@ const actions = {
     return {
       ...picture,
       link: getPictureLink(data._id, track_id, picture.filename),
+      metaLink: getMetaPictureLink(data._id, track_id, picture.filename),
     };
   },
   OPEN_LINK: async (evt, { link }) => {
@@ -148,7 +151,15 @@ const actions = {
       try {
         if (!syncElement.isUploaded) {
           console.log(`☁️ Sync start ${syncElement.publicCode} (${syncElement.apiKey})`);
-          await uploadFile(syncElement.apiKey, syncElement.publicCode, syncElement.fileExtension, join(PROJECTS_PATH, '/.sync/', syncElement.fileName));
+          await uploadFile({
+            sendMethod: syncElement.sendMethod,
+            endpoint: syncElement.apiEndpoint,
+            apiKey: syncElement.apiKey,
+            code: syncElement.publicCode,
+            email: syncElement.email,
+            fileExtension: syncElement.fileExtension,
+            filePath: join(PROJECTS_PATH, '/.sync/', syncElement.fileName),
+          });
           syncList[i].isUploaded = true;
           await saveSyncList(PROJECTS_PATH, syncList);
           console.log(`✅ Sync finished ${syncElement.publicCode} (${syncElement.apiKey})`);
@@ -157,6 +168,10 @@ const actions = {
         console.log(`❌ Sync failed ${syncElement.publicCode} (${syncElement.apiKey})`, err);
       }
     }
+  },
+  GET_SYNC_LIST: async () => {
+    const syncList = await getSyncList(PROJECTS_PATH);
+    return syncList;
   },
   APP_CAPABILITIES: async () => {
     const capabilities = [
@@ -209,8 +224,11 @@ const actions = {
       custom_output_framerate_number = 10,
       output_path = null,
       public_code = 'default',
+      send_method = 'code',
       event_key = '',
       framerate = 10,
+      endpoint = null,
+      email = null,
     },
     sendToRenderer
   ) => {
@@ -231,7 +249,8 @@ const actions = {
       await mkdirp(join(PROJECTS_PATH, '/.sync/'));
     }
 
-    const path = mode === 'send' ? join(PROJECTS_PATH, '/.sync/', `${public_code}.${profile.extension}`) : output_path;
+    const fileId = randomUUID();
+    const path = mode === 'send' ? join(PROJECTS_PATH, '/.sync/', `${fileId}.${profile.extension}`) : output_path;
     await exportProjectScene(
       join(PROJECTS_PATH, project_id),
       track_id,
@@ -246,16 +265,19 @@ const actions = {
       (progress) => sendToRenderer('FFMPEG_PROGRESS', { progress })
     );
 
-    if (mode === 'send') {
+    if (mode === 'send' && endpoint) {
       const syncList = await getSyncList(PROJECTS_PATH);
       await saveSyncList(PROJECTS_PATH, [
         ...syncList,
         {
+          sendMethod: send_method,
           apiKey: event_key,
-          publicCode: public_code,
-          fileName: `${public_code}.${profile.extension}`,
+          publicCode: send_method === 'code' ? public_code : null,
+          email: send_method === 'email' ? email : null,
+          fileName: `${fileId}.${profile.extension}`,
           fileExtension: profile.extension,
           isUploaded: false,
+          apiEndpoint: endpoint,
         },
       ]);
 

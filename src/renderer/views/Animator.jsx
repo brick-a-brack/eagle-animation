@@ -48,32 +48,64 @@ const playSound = (src, timeout = 2000) => {
 };
 
 // Get previous frame id
-const getPreviousFrameId = (list, frameId) => {
-  const frames = list.filter((pict) => !pict.deleted);
-  if (frameId === false && frames.length) {
-    return frames[frames.length - 1].id;
+const getPreviousFrameId = (frames, frameId, skipHiddenFrames = false) => {
+  let frameFound = false;
+  for (const frame of frames.toReversed()) {
+    if (frame.deleted) {
+      continue;
+    }
+
+    const isShowable = !frame?.hidden || (!skipHiddenFrames && !!frame?.hidden);
+
+    // Live view case, return the first showable frame
+    if (frameId === false && isShowable) {
+      return frame.id;
+    }
+
+    // Frame found, the next showable frame we find will be returned
+    if (frame.id === frameId) {
+      frameFound = true;
+      continue;
+    }
+
+    // Return the current showable frame
+    if (frameFound && isShowable) {
+      return frame.id;
+    }
   }
-  const frameIndex = frames.findIndex((f) => f.id === frameId);
-  if (frameIndex === -1 || frameIndex === 0) {
-    return frames[0].id;
-  }
-  return frames[frameIndex - 1].id;
+
+  // Fallback, return the initial frameId
+  return frameId;
 };
 
 // Get last frame id
-const getLastFrameId = (list) => getPreviousFrameId(list, false);
+const getLastFrameId = (frames) => getPreviousFrameId(frames, false);
 
 // Get next frame id
-const getNextFrameId = (list, frameId) => {
-  const frames = list.filter((pict) => !pict.deleted);
-  if (frameId === false) {
-    return false;
+const getNextFrameId = (frames, frameId, skipHiddenFrames = false) => {
+
+  let frameFound = false;
+  for (const frame of frames) {
+    if (frame.deleted) {
+      continue;
+    }
+
+    const isShowable = !frame?.hidden || (!skipHiddenFrames && !!frame?.hidden);
+
+    // Frame found, the next showable frame we find will be returned
+    if (frame.id === frameId) {
+      frameFound = true;
+      continue;
+    }
+
+    // Return the current showable frame
+    if (frameFound && isShowable) {
+      return frame.id;
+    }
   }
-  const frameIndex = frames.findIndex((f) => f.id === frameId);
-  if (frameIndex === -1 || frameIndex === frames.length - 1) {
-    return false;
-  }
-  return frames[frameIndex + 1].id;
+
+  // Fallback, return to the live view
+  return false;
 };
 
 // Get first frame id
@@ -133,22 +165,28 @@ const Animator = ({ t }) => {
 
   // Disable frame deletion confirmation if we change the current frame
   useEffect(() => {
-    setDeleteOnLiveViewConfirmation(false);
+    (() => {
+      setDeleteOnLiveViewConfirmation(false);
+    })();
   }, [currentFrameId]);
 
   // Sync framerate when project change
   useEffect(() => {
-    setFps(project?.scenes?.[track]?.framerate);
+    (() => {
+      setFps(project?.scenes?.[track]?.framerate);
+    })();
   }, [project?.scenes?.[track]?.framerate]);
 
   // Sync ratio when project change
   useEffect(() => {
-    setRatio(project?.scenes?.[track]?.ratio ? parseRatio(project?.scenes?.[track]?.ratio) : null);
+    (() => {
+      setRatio(project?.scenes?.[track]?.ratio ? parseRatio(project?.scenes?.[track]?.ratio) : null);
+    })();
   }, [project?.scenes?.[track]?.ratio]);
 
   // Select default camera
   useEffect(() => {
-    if (settings && settings?.CAMERA_ID) {
+    if (settings?.CAMERA_ID) {
       cameraActions.setCamera(settings?.CAMERA_ID || null);
     }
   }, [settings?.CAMERA_ID]);
@@ -267,6 +305,9 @@ const Animator = ({ t }) => {
       setShowCameraSettings(!showCameraSettings);
     },
     DELETE_FRAME: async () => {
+      if (pictures.length === 0) {
+        return;
+      }
       let frameIdToDelete = currentFrameId;
       let newId = false;
 
@@ -304,11 +345,19 @@ const Animator = ({ t }) => {
       navigate('/');
     },
     FRAME_LEFT: () => {
-      const newId = getPreviousFrameId(pictures, currentFrameId);
+      const newId = getPreviousFrameId(pictures, currentFrameId, settings.SKIP_HIDDEN_FRAMES);
       playerRef.current.showFrame(newId);
     },
     FRAME_RIGHT: () => {
-      const newId = getNextFrameId(pictures, currentFrameId);
+      const newId = getNextFrameId(pictures, currentFrameId, settings.SKIP_HIDDEN_FRAMES);
+      playerRef.current.showFrame(newId);
+    },
+    ALTERNATIVE_FRAME_LEFT: () => {
+      const newId = getPreviousFrameId(pictures, currentFrameId, !settings.SKIP_HIDDEN_FRAMES);
+      playerRef.current.showFrame(newId);
+    },
+    ALTERNATIVE_FRAME_RIGHT: () => {
+      const newId = getNextFrameId(pictures, currentFrameId, !settings.SKIP_HIDDEN_FRAMES);
       playerRef.current.showFrame(newId);
     },
     FRAME_LIVE: () => {
@@ -434,8 +483,10 @@ const Animator = ({ t }) => {
         <HeaderBar
           leftActions={['BACK']}
           rightActions={[
-            ...(pictures?.length > 0 && (appCapabilities.includes('EXPORT_VIDEO') || appCapabilities.includes('EXPORT_FRAMES') || appCapabilities.includes('BACKGROUND_SYNC')) ? ['EXPORT'] : []),
-            'SETTINGS',
+            ...(pictures?.some((e) => !e?.hidden) &&
+            (appCapabilities.includes('EXPORT_VIDEO') || appCapabilities.includes('EXPORT_FRAMES') || (appCapabilities.includes('BACKGROUND_SYNC') && settings?.EVENT_MODE_ENABLED))
+              ? ['EXPORT']
+              : []),
           ]}
           onAction={handleAction}
         >
@@ -448,6 +499,7 @@ const Animator = ({ t }) => {
           onInit={handlePlayerInit}
           onFrameChange={setCurrentFrameId}
           onPlayingStatusChange={setIsPlaying}
+          isPlaying={isPlaying}
           pictures={pictures}
           onionValue={onionValue}
           showGrid={gridStatus}
@@ -469,7 +521,9 @@ const Animator = ({ t }) => {
           reverseY={settings.REVERSE_Y}
         />
         <div>
-          <LimitWarning nbFrames={pictures.length} nbFramesLimit={settings?.LIMIT_NUMBER_OF_FRAMES} startedAt={startedAt} activityDuration={settings?.LIMIT_ACTIVITY_DURATION} />
+          {settings?.EVENT_MODE_ENABLED && (
+            <LimitWarning nbFrames={pictures.length} nbFramesLimit={settings?.LIMIT_NUMBER_OF_FRAMES} startedAt={startedAt} activityDuration={settings?.LIMIT_ACTIVITY_DURATION} />
+          )}
           <ControlBar
             onAction={handleAction}
             showCameraSettings={showCameraSettings}

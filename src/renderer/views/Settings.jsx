@@ -12,7 +12,7 @@ const SettingsView = ({ t }) => {
   const { settings, actions: settingsActions } = useSettings();
   const navigate = useNavigate();
 
-  const handleBack = async () => {
+  const handleBack = () => {
     navigate(searchParams.get('back') || '/');
   };
 

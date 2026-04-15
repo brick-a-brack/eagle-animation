@@ -1,6 +1,5 @@
-import Dexie from 'dexie';
-
 import { DEFAULT_FPS, VERSION } from '@config-web';
+import Dexie from 'dexie';
 
 class ProjectsDatabase extends Dexie {
   constructor() {

@@ -1,11 +1,12 @@
+import { getPictureLink } from '@core/resize';
 import resizeToFit from 'intrinsic-scale';
 import { isEqual } from 'lodash';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import faEyeSlash from '@icons/faEyeSlash';
 
 import * as style from './style.module.css';
-
-const PLAYER_USABLE_FRAME_PROPERTY = 'preview'; // 'link' for original, 'preview' for 720p preview, 'thumbnail' for 80p preview
 
 const drawArea = (ctx, x, y, width, height) => {
   ctx.fillRect(x, y, width, 1);
@@ -25,6 +26,9 @@ class Player extends Component {
       picture: React.createRef(),
       grid: React.createRef(),
     };
+
+    // Cached images promises
+    this.images = {};
 
     this.state = {
       width: 0,
@@ -90,7 +94,7 @@ class Player extends Component {
         }
 
         const frame = (newFrameIndex === false ? filteredFrames[filteredFrames.length - 1] : filteredFrames[newFrameIndex]) || false;
-        this.drawFrame(frame[PLAYER_USABLE_FRAME_PROPERTY] || false);
+        this.drawFrame(frame.link || false);
         this.setState({ frameIndex: newFrameIndex });
         this.props.onFrameChange(newFrameIndex !== false && frame ? frame.id : false);
         return true;
@@ -150,7 +154,7 @@ class Player extends Component {
         clearInterval(this.clock);
       }
       const frame = this.frames[this.frames.length - 1] || false; // Draw last frame for onion feature
-      this.drawFrame(frame[PLAYER_USABLE_FRAME_PROPERTY] || false);
+      this.drawFrame(frame.link || false);
       this.setState({ frameIndex: false });
       this.props.onFrameChange(false);
       this.props.onPlayingStatusChange(false);
@@ -162,7 +166,7 @@ class Player extends Component {
       }
       if (id === false) {
         const frame = this.frames[this.frames.length - 1] || false; // Draw last frame for onion feature
-        this.drawFrame(frame[PLAYER_USABLE_FRAME_PROPERTY] || false);
+        this.drawFrame(frame.link || false);
         this.setState({ frameIndex: false });
         this.props.onFrameChange(false);
         return;
@@ -170,7 +174,7 @@ class Player extends Component {
       const frame = this.frames.find((e) => e.id === id) || false;
       const frameIndex = this.frames.findIndex((e) => e.id === id);
       this.setState({ frameIndex: frameIndex === -1 ? false : frameIndex });
-      this.drawFrame(frame[PLAYER_USABLE_FRAME_PROPERTY] || false);
+      this.drawFrame(frame.link || false);
       this.props.onFrameChange(frame.id);
       this.props.onPlayingStatusChange(false);
     };
@@ -286,6 +290,25 @@ class Player extends Component {
     }
   }
 
+  loadImage(link) {
+    if (this.images[link]) {
+      return this.images[link];
+    }
+    this.images[link] = new Promise((resolve, reject) => {
+      const img = new Image();
+      const resolver = () => {
+        img.removeEventListener('error', reject);
+        img.removeEventListener('load', resolver);
+        resolve(img);
+      };
+      img.addEventListener('error', reject);
+      img.addEventListener('load', resolver);
+      img.src = link;
+    });
+
+    return this.images[link];
+  }
+
   drawFrame(src = false) {
     const ctx = this.dom.picture.current.getContext('2d', { alpha: false });
     if (src === false) {
@@ -294,14 +317,8 @@ class Player extends Component {
       return;
     }
 
-    const img = new Image();
-    img.addEventListener('error', () => {
-      ctx.fillStyle = '#000000';
-      ctx.fillRect(0, 0, this.getSize().width, this.getSize().height);
-    });
-    img.addEventListener(
-      'load',
-      () => {
+    this.loadImage(getPictureLink(src, { h: 720, m: 'contain' }))
+      .then((img) => {
         ctx.fillStyle = '#000000';
         ctx.fillRect(0, 0, this.getSize().width, this.getSize().height);
 
@@ -325,10 +342,11 @@ class Player extends Component {
           imagePosition.width,
           imagePosition.height
         );
-      },
-      false
-    );
-    img.src = src;
+      })
+      .catch(() => {
+        ctx.fillStyle = '#000000';
+        ctx.fillRect(0, 0, this.getSize().width, this.getSize().height);
+      });
   }
 
   render() {
@@ -339,6 +357,7 @@ class Player extends Component {
     const borderLeftRight = (this.getSize().width - borders.width) / 2 / this.getSize().width;
     const borderTopBottom = (this.getSize().height - borders.height) / 2 / this.getSize().height;
     const reverseClassNames = `${reverseX ? style.reverseX : ''} ${reverseY ? style.reverseY : ''}`;
+    const frames = this.props.pictures.filter((e) => !e.deleted).reduce((acc, e) => [...acc, ...new Array(e.length || 1).fill(e)], []);
 
     return (
       <div className={`${style.playerContainer} ${frameIndex === false ? style.live : ''}`}>
@@ -359,6 +378,8 @@ class Player extends Component {
           {this.getVideoRatio() !== null && borderLeftRight > 0 && <div className={style.borderRight} style={{ width: `${borderLeftRight * 100}%`, opacity: ratioLayerOpacity || 1 }} />}
           {this.getVideoRatio() !== null && borderTopBottom > 0 && <div className={style.borderTop} style={{ height: `${borderTopBottom * 100}%`, opacity: ratioLayerOpacity || 1 }} />}
           {this.getVideoRatio() !== null && borderTopBottom > 0 && <div className={style.borderBottom} style={{ height: `${borderTopBottom * 100}%`, opacity: ratioLayerOpacity || 1 }} />}
+
+          {frames[frameIndex]?.hidden && !this.props.isPlaying && <div className={style.hiddenLayer}><FontAwesomeIcon className={style.hiddenIcon} icon={faEyeSlash} /></div>}
 
           <canvas ref={this.dom.grid} className={style.layout} style={{ opacity: isCameraReady && showGrid && frameIndex === false ? 1 : 0 }} />
 

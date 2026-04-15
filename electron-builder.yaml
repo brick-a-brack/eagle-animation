@@ -1,6 +1,7 @@
 appId: com.eagle-animation.app
 productName: Eagle Animation
 #compression: maximum
+nativeRebuilder: legacy
 
 directories:
   output: binaries
@@ -9,6 +10,11 @@ directories:
 files:
   - package.json
   - out/**
+
+asarUnpack:
+  - "**/*.node"
+  - "node_modules/@img/**"
+  - "node_modules/sharp/**"
 
 extraMetadata:
   main: out/main/index.js
@@ -24,7 +30,7 @@ win:
 
 mac:
   artifactName: Eagle-Animation-${version}-mac.${ext}
-  executableName: eagle-animation
+  executableName: Eagle Animation
   category: public.app-category.photography
   icon: out/renderer/icon-mac.icns
   extendInfo:

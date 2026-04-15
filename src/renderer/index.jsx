@@ -6,33 +6,47 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 
 import App from './App';
-import { BUILD, POSTHOG_HOST, POSTHOG_TOKEN } from './config';
+import { BUILD, IS_DEV, POSTHOG_HOST, POSTHOG_TOKEN, VERSION } from './config';
+
+// Catch alt key to avoid to open menu
+window.addEventListener('keydown', (e) => {
+  if (e.altKey) {
+    e.preventDefault();
+  }
+});
 
 try {
-  if (POSTHOG_TOKEN) {
+  if (!IS_DEV && POSTHOG_TOKEN) {
     posthog.init(POSTHOG_TOKEN, {
       api_host: POSTHOG_HOST,
       person_profiles: 'always',
       autocapture: false,
       disable_session_recording: true,
     });
+
+    posthog.register({
+      app_version: VERSION,
+      app_build: BUILD,
+    });
   }
-} catch (err) {} // eslint-disable-line no-empty
+} catch (err) { } // eslint-disable-line no-empty
 
 window.track = (eventName, data = {}) => {
   try {
-    if (POSTHOG_TOKEN) {
+    if (!IS_DEV && POSTHOG_TOKEN) {
+      console.log(`📊 Tracking event: ${eventName}`, data);
       posthog.capture(eventName, data);
     }
-  } catch (err) {} // eslint-disable-line no-empty
+  } catch (err) { } // eslint-disable-line no-empty
 };
 
 window.trackException = (error) => {
   try {
-    if (POSTHOG_TOKEN) {
+    if (!IS_DEV && POSTHOG_TOKEN) {
+      console.log(`📊 Tracking exception:`, error);
       posthog.captureException(error);
     }
-  } catch (err) {} // eslint-disable-line no-empty
+  } catch (err) { } // eslint-disable-line no-empty
 };
 
 globalThis.Buffer = Buffer;
@@ -55,7 +69,7 @@ window.EA = async (action, data) => {
   }
 };
 
-window.EAEvents = (name, callback = () => {}) => {
+window.EAEvents = (name, callback = () => { }) => {
   // IPC (Electron backend)
   if (typeof window.IPC !== 'undefined') {
     if (typeof callback !== 'undefined') {
@@ -70,6 +84,18 @@ window.EAEvents = (name, callback = () => {}) => {
     });
   }
 };
+
+// Add service worker
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    // Web (Web browser backend)
+    if (typeof window.IPC === 'undefined') {
+      navigator.serviceWorker.register('./sw-web.js', {
+        type: 'module',
+      });
+    }
+  });
+}
 
 const container = document.getElementById('root');
 const root = createRoot(container);

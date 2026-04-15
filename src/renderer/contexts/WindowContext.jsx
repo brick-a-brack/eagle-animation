@@ -49,8 +49,12 @@ export const WindowProvider = ({ children }) => {
   );
 
   useEffect(() => {
-    if (openState) setOpenState(false);
-  }, [pathname]);
+    (() => {
+      if (openState) {
+        setOpenState(false);
+      }
+    })();
+  }, [pathname, openState]);
 
   return (
     <WindowContext.Provider value={{ isOpened: openState, component: state.component, props: state.props, actions }}>

@@ -1,0 +1,28 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    color: var(--color-white);
+    text-align: center;
+    user-select: none;
+    margin: var(--space-huge) 0;
+}
+
+.icon {
+    margin-bottom: var(--space-medium);
+    width:40px;
+    height:40px;
+    fill:var(--color-white);
+}
+
+.icon svg {
+    width: 100%;
+    height: 100%;
+}
+
+.message {
+    font-size: var(--font-size-5);
+    margin-bottom: var(--space-small);
+}

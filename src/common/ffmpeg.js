@@ -95,7 +95,8 @@ export const getFFmpegArgs = (encodingProfile = false, outputFile = false, fps =
   }
 
   // Output file
-  args.push(`${outputFile}`);
+  const hasExtension = outputFile.toLowerCase().endsWith(`.${profile.extension}`);
+  args.push(`${outputFile}${hasExtension ? '' : `.${profile.extension}`}`);
 
   return args;
 };

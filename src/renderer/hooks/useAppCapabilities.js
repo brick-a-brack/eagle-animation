@@ -14,7 +14,7 @@ function useAppCapabilities() {
   const actionRefreshAppCapabilities = useCallback(async () => {
     const capabilities = await window.EA('APP_CAPABILITIES');
     setAppCapabilities(capabilities);
-  });
+  }, []);
 
   return {
     appCapabilities,

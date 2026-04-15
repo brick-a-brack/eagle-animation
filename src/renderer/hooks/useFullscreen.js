@@ -15,14 +15,14 @@ function useFullscreen() {
   // Action enable
   const actionEnable = useCallback(async () => {
     document.body.requestFullscreen();
-  });
+  }, []);
 
   // Action disable
   const actionDisable = useCallback(async () => {
     if (document.fullscreenElement) {
       document.exitFullscreen();
     }
-  });
+  }, []);
 
   return {
     enterFullscreen: actionEnable,

@@ -1,9 +1,9 @@
 .form {
+    box-sizing: border-box;
     margin: auto;
     max-width: 1100px;
     padding: var(--space-big) 1% var(--space-big) 1%;
     width: 98%;
-    box-sizing: border-box;
 }
 
 .title {

@@ -41,3 +41,23 @@ body {
   --color-theme-dark: #0e1928;
   --color-theme-extra-dark: #0b1321;
 }
+
+@media screen and (width <=768px) {
+  body {
+    --space-tiny: 2px;
+    --space-small: 6px;
+    --space-medium: 8px;
+    --space-big: 12px;
+    --space-huge: 18px;
+    --font-size-0: 1.7rem;
+    --font-size-1: 1.5rem;
+    --font-size-2: 1.3rem;
+    --font-size-3: 1.1rem;
+    --font-size-4: 1rem;
+    --font-size-5: 0.95rem;
+    --font-size-6: 0.9rem;
+    --font-size-7: 0.8rem;
+    --font-size-8: 0.7rem;
+    --font-size-9: 0.6rem;
+  }
+}

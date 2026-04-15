@@ -1,0 +1,127 @@
+.item {
+    align-items: center;
+    background-color: var(--color-theme-medium);
+    border: 2px solid var(--color-theme-light);
+    border-radius: var(--border-radius-small);
+    display: flex;
+    gap: var(--space-medium);
+    padding: var(--space-medium);
+    padding: var(--space-big) 1% var(--space-big) 1%;
+    width: 98%;
+    max-width: 1100px;
+    margin: 20px auto ;
+    box-sizing: border-box;
+}
+
+.icon {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    min-width: 40px;
+}
+
+.icon svg {
+    color: var(--color-white);
+    height: 30px;
+    width: 30px;
+}
+
+.content {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: var(--space-small);
+    overflow: hidden;
+}
+
+.mainInfo {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-small);
+}
+
+.target {
+    align-items: center;
+    display: flex;
+    font-size: var(--font-size-5);
+    font-weight: 600;
+    gap: var(--space-small);
+}
+
+.targetIcon {
+    color: var(--color-primary);
+}
+
+.targetValue {
+    color: var(--color-white);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.fileInfo {
+    align-items: center;
+    color: var(--color-white);
+    display: flex;
+    font-size: var(--font-size-6);
+    gap: var(--space-medium);
+    opacity: 0.7;
+}
+
+.fileName {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.fileSize {
+    flex-shrink: 0;
+    font-weight: 600;
+}
+
+.status {
+    align-items: center;
+    display: flex;
+    min-width: 100px;
+    user-select: none;
+}
+
+.statusUploaded,
+.statusPending {
+    align-items: center;
+    display: flex;
+    gap: var(--space-small);
+}
+
+.statusUploaded {
+    color: var(--color-primary);
+    font-weight: 600;
+}
+
+.statusPending {
+    color: var(--color-white);
+    opacity: 0.7;
+}
+
+.statusUploaded svg,
+.statusPending svg {
+    height: 20px;
+    width: 20px;
+}
+
+.statusUploaded span,
+.statusPending span {
+    font-size: var(--font-size-6);
+}
+
+@media (max-width: 768px) {
+    .item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .status {
+        width: 100%;
+        justify-content: flex-end;
+    }
+}
