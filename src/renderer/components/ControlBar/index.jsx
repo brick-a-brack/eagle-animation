@@ -16,7 +16,7 @@ import faImageSlash from '@icons/faImageSlash';
 import faPlay from '@icons/faPlay';
 import faSliders from '@icons/faSliders';
 import faStop from '@icons/faStop';
-import { useEffect } from 'react';
+import { useEffect, useState} from 'react';
 import { useForm } from 'react-hook-form';
 import { withTranslation } from 'react-i18next';
 
@@ -41,6 +41,7 @@ const ControlBar = ({
   onAction = null,
   totalAnimationFrames = 0,
   t,
+  isShifting = false,
 }) => {
   const form = useForm({
     mode: 'all',
@@ -78,7 +79,7 @@ const ControlBar = ({
 
         <Button style={{ marginLeft: 'var(--space-big)' }} title={t('Difference')} selected={differenceStatus} onClick={handleAction('DIFFERENCE')} icon={faDiamondHalfStroke} />
         {(gridModes.includes('GRID') || gridModes.includes('CENTER') || gridModes.includes('MARGINS')) && (
-          <Button title={gridStatus ? t('Disable grid') : t('Enable grid')} selected={gridStatus} onClick={handleAction('GRID')} icon={faFrame} />
+          <Button title={gridStatus ? t('Disable grid') : t('Enable grid')} selected={gridStatus} onClick={isShifting ? handleAction('ALTERNATIVE_GRID') : handleAction('GRID')} icon={faFrame} />
         )}
 
         <div className={`${style.slider} ${differenceStatus ? style.sliderDisabled : ''}`} id="onion" data-tooltip-content={t('Onion blending')}>

@@ -219,6 +219,10 @@ class Player extends Component {
       this.drawGrid();
     }
 
+    if (!isEqual(prevProps.gridModes, this.props.gridModes)) {
+      this.drawGrid();
+    }
+
     // Force to display live view if capabilities changed
     if (!isEqual(prevProps.cameraCapabilities, this.props.cameraCapabilities)) {
       this.showFrame(false);

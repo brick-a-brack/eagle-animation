@@ -123,6 +123,7 @@ const Animator = ({ t }) => {
 
   const [startedAt, setStartedAt] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [isShifting, setIsShifting] = useState(false);
   const { settings, actions: settingsActions } = useSettings();
   const { appCapabilities } = useAppCapabilities();
   const [showCameraSettings, setShowCameraSettings] = useState(false);
@@ -135,6 +136,7 @@ const Animator = ({ t }) => {
   const [ratio, setRatio] = useState(null);
   const [onionValue, setOnionValue] = useState(1);
   const [gridStatus, setGridStatus] = useState(false);
+  const [gridModes, setGridModes] = useState(false);
   const [currentFrameId, setCurrentFrameId] = useState(false);
   const [deleteOnLiveViewConfirmation, setDeleteOnLiveViewConfirmation] = useState(false);
   const [disableKeyboardShortcuts, setDisableKeyboardShortcuts] = useState(false);
@@ -378,7 +380,25 @@ const Animator = ({ t }) => {
     },
     GRID: () => {
       setGridStatus(!gridStatus);
+      setGridModes(false);
       window.track('animator_changed', { feature: 'grid', value: !gridStatus });
+    },
+    ALTERNATIVE_GRID: () => {
+      if (!gridStatus) {
+        setGridStatus(true);
+        setGridModes(['GRID']);
+        window.track('animator_changed', { feature: 'grid', value: !gridStatus });
+      } else if (gridStatus && (gridModes.includes('GRID') && gridModes.length === 1)) {
+        setGridModes(['CENTER']);
+      } else if (gridStatus && (gridModes.includes('CENTER') && gridModes.length === 1)) {
+        setGridModes(['MARGINS']);
+      } else if (gridStatus && (gridModes.includes('MARGINS') && gridModes.length === 1)) {
+        setGridModes(['GRID','CENTER','MARGINS']);
+      } else {
+        setGridStatus(false);
+        setGridModes(false);
+        window.track('animator_changed', { feature: 'grid', value: !gridStatus });
+      }
     },
     DIFFERENCE: () => {
       setDifferenceStatus(!differenceStatus);
@@ -435,6 +455,9 @@ const Animator = ({ t }) => {
     FPS_BLUR: () => {
       setDisableKeyboardShortcuts(false);
     },
+    SHIFT: () => {
+        setIsShifting(true);
+    }
   };
 
   const handlePlayerInit = (videoDOM = null, imageDOM = null) => {
@@ -498,7 +521,7 @@ const Animator = ({ t }) => {
           cameraId={currentCameraId}
           cameraCapabilities={currentCameraCapabilities}
           fps={fps}
-          gridModes={settings.GRID_MODES}
+          gridModes={gridModes ? gridModes : settings.GRID_MODES}
           gridOpacity={parseFloat(settings.GRID_OPACITY)}
           gridColumns={Number(settings.GRID_COLUMNS)}
           gridLines={Number(settings.GRID_LINES)}
@@ -515,7 +538,7 @@ const Animator = ({ t }) => {
           <ControlBar
             onAction={handleAction}
             showCameraSettings={showCameraSettings}
-            gridModes={settings.GRID_MODES}
+            gridModes={gridModes ? gridModes : settings.GRID_MODES}
             gridStatus={gridStatus}
             differenceStatus={differenceStatus}
             onionValue={onionValue}
@@ -530,6 +553,7 @@ const Animator = ({ t }) => {
             frameQuantity={pictures.length}
             isCurrentFrameHidden={!!currentFrame.hidden}
             totalAnimationFrames={totalAnimationFrames}
+            isShifting={isShifting}
           />
           <Timeline
             pictures={pictures}
