@@ -69,6 +69,20 @@
   opacity: 1;
 }
 
+.playing {
+  background-color: var(--color-white);
+  position: absolute;
+  animation-fill-mode: forwards;
+  animation-timing-function: linear;
+  animation-name: progress;
+  height: 2px;
+}
+
+@keyframes progress {
+  0% { width: 0; }
+  100% { width: calc(100% - 4px); }
+}
+
 .isHidden .img {
   filter: grayscale(1);
   opacity: 0.2

@@ -21,7 +21,7 @@ const getPicturesKey = (pictures) => {
   return JSON.stringify(data);
 };
 
-const SortableItem = ({ img, isShortPlayBegining = false, playing = false, selected, onSelect, index }) => {
+const SortableItem = ({ img, isShortPlayBegining = false, playing = false, selected, onSelect, index, fps }) => {
   const { setNodeRef, isDragging, transform, transition, listeners, attributes, active } = useSortable({ id: img.id });
   return (
     <span
@@ -46,11 +46,12 @@ const SortableItem = ({ img, isShortPlayBegining = false, playing = false, selec
       {isShortPlayBegining && <FontAwesomeIcon className={style.shortPlayIcon} icon={faForwardFast} />}
       {img.length > 1 && <span className={style.duplicated}>{`x${img.length}`}</span>}
       <span className={style.title}>{`#${index + 1}`}</span>
+      <span className={`${playing && selected ? style.playing : ''}`} style={{ animationDuration: 1 / fps * img.length + 's' }}></span>
     </span>
   );
 };
 
-const Timeline = ({ onSelect, onMove, select = false, pictures = [], playing = false, shortPlayStatus = false, shortPlayFrames = 0, t }) => {
+const Timeline = ({ onSelect, onMove, select = false, pictures = [], playing = false, shortPlayStatus = false, shortPlayFrames = 0, fps, t }) => {
   const ref = useRef(null);
 
   const sensors = useSensors(
@@ -130,6 +131,7 @@ const Timeline = ({ onSelect, onMove, select = false, pictures = [], playing = f
                 selected={select === img.id}
                 onSelect={onSelect}
                 isShortPlayBegining={shortPlayFrameId === img.id}
+                fps={fps}
               />
             ))}
         </SortableContext>

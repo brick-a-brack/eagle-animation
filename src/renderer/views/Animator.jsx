@@ -547,6 +547,7 @@ const Animator = ({ t }) => {
             playing={isPlaying}
             shortPlayStatus={shortPlayStatus}
             shortPlayFrames={Number(settings.SHORT_PLAY) || 1}
+            fps={fps}
           />
         </div>
       </PageLayout>
