@@ -123,7 +123,6 @@ const Animator = ({ t }) => {
 
   const [startedAt, setStartedAt] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [isShifting, setIsShifting] = useState(false);
   const { settings, actions: settingsActions } = useSettings();
   const { appCapabilities } = useAppCapabilities();
   const [showCameraSettings, setShowCameraSettings] = useState(false);
@@ -550,7 +549,6 @@ const Animator = ({ t }) => {
             frameQuantity={pictures.length}
             isCurrentFrameHidden={!!currentFrame.hidden}
             totalAnimationFrames={totalAnimationFrames}
-            isShifting={isShifting}
           />
           <Timeline
             pictures={pictures}
