@@ -19,6 +19,7 @@ import faStop from '@icons/faStop';
 import { useEffect, useState} from 'react';
 import { useForm } from 'react-hook-form';
 import { withTranslation } from 'react-i18next';
+import KeyboardEventHandler from 'react-keyboard-event-handler';
 
 import * as style from './style.module.css';
 
@@ -41,7 +42,6 @@ const ControlBar = ({
   onAction = null,
   totalAnimationFrames = 0,
   t,
-  isShifting = false,
 }) => {
   const form = useForm({
     mode: 'all',
@@ -51,6 +51,8 @@ const ControlBar = ({
   });
   const { watch, register, getValues, setValue } = form;
   const formValues = watch();
+
+  const [isShifting, setIsShifting] = useState(false);
 
   const handleAction = (action, args) => () => {
     if (onAction) {
@@ -67,6 +69,21 @@ const ControlBar = ({
     setValue('fps', fps);
   }, [fps]);
 
+  const getGridTitle = () => {
+    if (gridStatus && isShifting && gridModes) {
+      if (gridModes.includes('GRID') && gridModes.length === 1) {
+        return t('Change to center grid');
+      } else if (gridModes.includes('CENTER') && gridModes.length === 1) {
+        return t('Change to margins grid');
+      } else if (gridModes.includes('MARGINS') && gridModes.length === 1) {
+        return t('Change to all grids');
+      }
+      return t('Disable grid');
+    } else {
+      return gridStatus ? t('Disable grid') : t('Enable grid');
+    }  
+  }
+
   return (
     <div className={style.container}>
       <div className={`${style.subcontainer} ${style.left}`}>
@@ -77,9 +94,12 @@ const ControlBar = ({
         {!isPlaying && framePosition !== false && <Button title={t('Duplicate frame')} onClick={handleAction('DUPLICATE')} icon={faImageCirclePlus} />}
         {!isPlaying && framePosition !== false && <Button title={t('Remove frame')} onClick={handleAction('DELETE_FRAME')} icon={faImageSlash} />}
 
+        <KeyboardEventHandler handleKeys={['shift']} onKeyEvent={() => setIsShifting(true)} handleEventType="keydown" handleFocusableElements/>
+        <KeyboardEventHandler handleKeys={['shift']} onKeyEvent={() => setIsShifting(false)} handleEventType="keyup" handleFocusableElements/>
+
         <Button style={{ marginLeft: 'var(--space-big)' }} title={t('Difference')} selected={differenceStatus} onClick={handleAction('DIFFERENCE')} icon={faDiamondHalfStroke} />
         {(gridModes.includes('GRID') || gridModes.includes('CENTER') || gridModes.includes('MARGINS')) && (
-          <Button title={gridStatus ? t('Disable grid') : t('Enable grid')} selected={gridStatus} onClick={isShifting ? handleAction('ALTERNATIVE_GRID') : handleAction('GRID')} icon={faFrame} />
+          <Button title={getGridTitle()} selected={gridStatus} onClick={isShifting ? handleAction('ALTERNATIVE_GRID') : handleAction('GRID')} icon={faFrame} />
         )}
 
         <div className={`${style.slider} ${differenceStatus ? style.sliderDisabled : ''}`} id="onion" data-tooltip-content={t('Onion blending')}>

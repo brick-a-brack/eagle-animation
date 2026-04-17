@@ -388,11 +388,11 @@ const Animator = ({ t }) => {
         setGridStatus(true);
         setGridModes(['GRID']);
         window.track('animator_changed', { feature: 'grid', value: !gridStatus });
-      } else if (gridStatus && (gridModes.includes('GRID') && gridModes.length === 1)) {
+      } else if (gridStatus && gridModes && gridModes.includes('GRID') && gridModes.length === 1) {
         setGridModes(['CENTER']);
-      } else if (gridStatus && (gridModes.includes('CENTER') && gridModes.length === 1)) {
+      } else if (gridStatus && gridModes && gridModes.includes('CENTER') && gridModes.length === 1) {
         setGridModes(['MARGINS']);
-      } else if (gridStatus && (gridModes.includes('MARGINS') && gridModes.length === 1)) {
+      } else if (gridStatus && gridModes && gridModes.includes('MARGINS') && gridModes.length === 1) {
         setGridModes(['GRID','CENTER','MARGINS']);
       } else {
         setGridStatus(false);
@@ -455,9 +455,6 @@ const Animator = ({ t }) => {
     FPS_BLUR: () => {
       setDisableKeyboardShortcuts(false);
     },
-    SHIFT: () => {
-        setIsShifting(true);
-    }
   };
 
   const handlePlayerInit = (videoDOM = null, imageDOM = null) => {
