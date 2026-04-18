@@ -28,6 +28,26 @@ const computeProject = (data) => {
       ...picture,
       link: getPictureLink(copiedData._id, i, picture.filename),
       metaLink: getMetaPictureLink(copiedData._id, i, picture.filename),
+      ...(picture?.masking
+        ? {
+            masking: {
+              background: picture?.masking?.background
+                ? {
+                    ...picture?.masking?.background,
+                    link: getMetaPictureLink(copiedData._id, i, picture?.masking?.background?.filename),
+                    metaLink: getMetaPictureLink(copiedData._id, i, picture?.masking?.background?.filename),
+                  }
+                : null,
+              foreground: picture?.masking?.foreground
+                ? {
+                    ...picture?.masking?.foreground,
+                    link: getMetaPictureLink(copiedData._id, i, picture?.masking?.foreground?.filename),
+                    metaLink: getMetaPictureLink(copiedData._id, i, picture?.masking?.foreground?.filename),
+                  }
+                : null,
+            },
+          }
+        : {}),
     })),
   }));
 

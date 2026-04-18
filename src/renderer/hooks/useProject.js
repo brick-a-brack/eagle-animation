@@ -147,9 +147,21 @@ function useProject(options) {
     });
   }, []);
 
+  const cleanMaskingFrame = (frame, id) => {
+    if (!frame) {
+      return null;
+    }
+    const cleanedFrame = { ...frame, id };
+    delete cleanedFrame.deleted;
+    delete cleanedFrame.length;
+    delete cleanedFrame.link;
+    delete cleanedFrame.metaLink;
+    return cleanedFrame;
+  };
+
   // Action add frame
   const actionAddFrame = useCallback(
-    async (trackId, buffer, extension = 'jpg', beforeFrameId = false, mode = 'FRAME') => {
+    async (trackId, buffer, extension = 'jpg', beforeFrameId = false, backgroundBuffer = null) => {
       const sceneId = Number(trackId);
       const addedPicture = await window.EA('SAVE_PICTURE', {
         project_id: options?.id,
@@ -158,32 +170,41 @@ function useProject(options) {
         extension: ['png', 'jpg', 'webp'].includes(extension?.toLowerCase()) ? extension?.toLowerCase() : 'jpg',
       });
 
+      let backgroundPicture = null;
+      if (backgroundBuffer) {
+        backgroundPicture = await window.EA('SAVE_PICTURE', {
+          project_id: options?.id,
+          track_id: sceneId,
+          buffer: backgroundBuffer,
+          extension: ['png', 'jpg', 'webp'].includes(extension?.toLowerCase()) ? extension?.toLowerCase() : 'jpg',
+        });
+      }
+
       setProjectData((oldData) => {
         let d = structuredClone(oldData);
         if (d.project.scenes[sceneId]) {
-          const newId = Math.max(0, ...d.project.scenes[sceneId].pictures.map((e) => e.id)) + 1;
+          const newId =
+            Math.max(
+              0,
+              ...d.project.scenes[sceneId].pictures.map((e) => e?.id || 0),
+              ...d.project.scenes[sceneId].pictures.map((e) => e?.masking?.background?.id || 0),
+              ...d.project.scenes[sceneId].pictures.map((e) => e?.masking?.foreground?.id || 0)
+            ) + 1;
           const index = beforeFrameId === false ? -1 : d.project.scenes[sceneId].pictures.findIndex((f) => `${f.id}` === `${beforeFrameId}`);
+          const frameToAdd = {
+            ...addedPicture,
+            ...(backgroundPicture && {
+              masking: {
+                background: cleanMaskingFrame(backgroundPicture, newId + 1),
+                foreground: cleanMaskingFrame(addedPicture, newId),
+              },
+            }),
+          };
 
-          if (mode === 'FRAME' || mode === 'BACKGROUND') {
-            const newFrame = {
-              ...addedPicture,
-              id: newId,
-              ...(mode === 'BACKGROUND' ? { background: addedPicture, foreground: null } : {}),
-            };
-
-            if (index >= 0) {
-              d.project.scenes[sceneId].pictures = [...d.project.scenes[sceneId].pictures.slice(0, index), newFrame, ...d.project.scenes[sceneId].pictures.slice(index)];
-            } else {
-              d.project.scenes[sceneId].pictures = [...d.project.scenes[sceneId].pictures, newFrame];
-            }
-          }
-
-          if (mode === 'FOREGROUND') {
-            if (index >= 0) {
-              d.project.scenes[sceneId].pictures = [...d.project.scenes[sceneId].pictures.slice(0, index), { ...addedPicture, id: newId }, ...d.project.scenes[sceneId].pictures.slice(index)];
-            } else {
-              d.project.scenes[sceneId].pictures = [...d.project.scenes[sceneId].pictures, { ...addedPicture, id: newId }];
-            }
+          if (index >= 0) {
+            d.project.scenes[sceneId].pictures = [...d.project.scenes[sceneId].pictures.slice(0, index), { ...frameToAdd, id: newId }, ...d.project.scenes[sceneId].pictures.slice(index)];
+          } else {
+            d.project.scenes[sceneId].pictures = [...d.project.scenes[sceneId].pictures, { ...frameToAdd, id: newId }];
           }
         }
         return d;

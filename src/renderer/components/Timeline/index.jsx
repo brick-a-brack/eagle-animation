@@ -45,12 +45,13 @@ const SortableItem = ({ img, isShortPlayBegining = false, playing = false, selec
       {img.hidden && <FontAwesomeIcon className={style.icon} icon={faEyeSlash} />}
       {isShortPlayBegining && <FontAwesomeIcon className={style.shortPlayIcon} icon={faForwardFast} />}
       {img.length > 1 && <span className={style.duplicated}>{`x${img.length}`}</span>}
+      {img.masking && <span className={style.masking}>M</span>}
       <span className={style.title}>{`#${index + 1}`}</span>
     </span>
   );
 };
 
-const Timeline = ({ onSelect, onMove, select = false, pictures = [], playing = false, shortPlayStatus = false, shortPlayFrames = 0, t }) => {
+const Timeline = ({ onSelect, onMove, select = false, pictures = [], playing = false, shortPlayStatus = false, shortPlayFrames = 0, isPendingBackgroundFrameAvailable = false, t }) => {
   const ref = useRef(null);
 
   const sensors = useSensors(
@@ -141,6 +142,7 @@ const Timeline = ({ onSelect, onMove, select = false, pictures = [], playing = f
         >
           <span id="timeline-frame-live" className={style.img} role="button" tabIndex={0} />
           <span className={style.title}>{t('Live')}</span>
+          {isPendingBackgroundFrameAvailable && <span className={style.pendingBackgroundFrame}>BGD</span>}
         </span>
       </aside>
     </DndContext>

@@ -141,7 +141,7 @@ const Animator = ({ t }) => {
   const [deleteOnLiveViewConfirmation, setDeleteOnLiveViewConfirmation] = useState(false);
   const [disableKeyboardShortcuts, setDisableKeyboardShortcuts] = useState(false);
   const [maskingEditorStatus, setMaskingEditorStatus] = useState(false);
-  const [frameCaptureMode, setFrameCaptureMode] = useState('DEFAULT'); // DEFAULT, BACKGROUND, FOREGROUND
+  const [pendingBackgroundFrame, setPendingBackgroundFrame] = useState(false);
 
   const { project, actions: projectActions } = useProject({ id });
 
@@ -248,27 +248,37 @@ const Animator = ({ t }) => {
 
         setStartedAt((oldValue) => (oldValue ? oldValue : new Date().getTime() / 1000));
 
-        if (maskingMode === 'CONTINUOUS') {
-          // Check pending frame to determine the status
-          setFrameCaptureMode('FOREGROUND');
-        } else if (maskingMode === 'UNIQUE') {
-          setFrameCaptureMode('BACKGROUND');
-        }
-
-
-        for (let i = 0; i < (Number(nbPicturesToTake !== null ? nbPicturesToTake : settings.CAPTURE_FRAMES) || 1); i++) {
-          const nbFramesToTake = (settings.AVERAGING_ENABLED ? Number(settings.AVERAGING_VALUE) : 1) || 1;
+        const numberOfFramesToTake = (Number(nbPicturesToTake !== null ? nbPicturesToTake : settings.CAPTURE_FRAMES) || 1);
+        for (let i = 0; i < numberOfFramesToTake; i++) {
+          const nbFramesToTakeForAvg = (settings.AVERAGING_ENABLED ? Number(settings.AVERAGING_VALUE) : 1) || 1;
           try {
-            const { type, buffer } = await cameraActions.takePicture(nbFramesToTake, settings.REVERSE_X, settings.REVERSE_Y);
+            const frame = await cameraActions.takePicture(nbFramesToTakeForAvg, settings.REVERSE_X, settings.REVERSE_Y);
 
-            window.track('frame_captured', { projectId: `${id}`, trackId: `${track}`, reverseX: settings.REVERSE_X, reverseY: settings.REVERSE_Y, nbFrames: nbFramesToTake });
+            window.track('frame_captured', { projectId: `${id}`, trackId: `${track}`, reverseX: settings.REVERSE_X, reverseY: settings.REVERSE_Y, nbFrames: nbFramesToTakeForAvg });
 
             if (settings.SOUNDS) {
               const isAprilFoolsDay = new Date().getDate() === 1 && new Date().getMonth() === 3;
               playSound(isAprilFoolsDay ? soundEagle : soundShutter);
             }
 
-            await projectActions.addFrame(track, Buffer.from(buffer), type?.includes('png') ? 'png' : 'jpg', isPlaying ? false : currentFrameId, 'FRAME');
+            // Save frame
+            if (pendingBackgroundFrame || maskingMode === 'DISABLED') {
+              await projectActions.addFrame(
+                track,
+                Buffer.from(frame.buffer),
+                frame.type?.includes('png') ? 'png' : 'jpg',
+                isPlaying ? false : currentFrameId,
+                pendingBackgroundFrame ? Buffer.from(pendingBackgroundFrame.buffer) : null,
+              );
+            } else if (maskingMode === 'UNIQUE' || !pendingBackgroundFrame) {
+              setPendingBackgroundFrame(frame);
+            }
+
+            // Clean background
+            if (maskingMode === 'DISABLED' || (maskingMode === 'UNIQUE' && pendingBackgroundFrame)) {
+              setPendingBackgroundFrame(null);
+            }
+
           } catch (err) {
             if (settings.SOUNDS) {
               playSound(soundError);
@@ -456,10 +466,12 @@ const Animator = ({ t }) => {
       setDisableKeyboardShortcuts(false);
     },
     TOOGLE_MASKING_MODE: () => {
-      setMaskingMode((previousState) => {
-        const values = ['DISABLED', 'UNIQUE', 'CONTINUOUS'];
-        return values?.[values?.indexOf(previousState) + 1] || values?.[0];
-      });
+      const values = ['DISABLED', 'UNIQUE', 'CONTINUOUS'];
+      const newMode = values?.[values?.indexOf(maskingMode) + 1] || values?.[0];
+      if (newMode === 'DISABLED') {
+        setPendingBackgroundFrame(null);
+      }
+      setMaskingMode(newMode);
     },
     MASKING_EDITOR: () => {
       setMaskingEditorStatus(true);
@@ -536,7 +548,7 @@ const Animator = ({ t }) => {
           videoRatio={ratio?.value || null}
           reverseX={settings.REVERSE_X}
           reverseY={settings.REVERSE_Y}
-          frameCaptureMode={maskingMode !== 'DISABLED' ? frameCaptureMode : null}
+          frameCaptureMode={maskingMode !== 'DISABLED' ? (pendingBackgroundFrame ? 'FOREGROUND' : 'BACKGROUND') : null}
         />
         <div>
           {settings?.EVENT_MODE_ENABLED && (
@@ -570,6 +582,7 @@ const Animator = ({ t }) => {
             playing={isPlaying}
             shortPlayStatus={shortPlayStatus}
             shortPlayFrames={Number(settings.SHORT_PLAY) || 1}
+            isPendingBackgroundFrameAvailable={!!pendingBackgroundFrame}
           />
         </div>
       </PageLayout>

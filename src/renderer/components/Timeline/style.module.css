@@ -1,6 +1,6 @@
 .container {
   /* Height img + scollbar */
-  background: linear-gradient(0deg,var(--color-theme-light) 0%, var(--color-theme-dark) 100%);
+  background: linear-gradient(0deg, var(--color-theme-light) 0%, var(--color-theme-dark) 100%);
   box-sizing: border-box;
   overflow: scroll hidden;
   padding-left: 2px;
@@ -78,7 +78,7 @@
   color: var(--color-white);
   height: 24px;
   left: 50%;
-  opacity:0.5;
+  opacity: 0.5;
   pointer-events: none;
   position: absolute;
   top: 50%;
@@ -131,4 +131,32 @@
   pointer-events: none;
   position: absolute;
   right: 2px;
+}
+
+.masking {
+  background-color: var(--color-primary);
+  border-top-right-radius: var(--border-radius-small);
+  bottom: 0;
+  width: 14px;
+  color: var(--color-white);
+  font-size: var(--font-size-7);
+  height: 14px;
+  line-height: 14px;
+  padding: var(--space-tiny) var(--space-small);
+  pointer-events: none;
+  position: absolute;
+  left: 2px;
+}
+
+.pendingBackgroundFrame {
+  height: 80px;
+  line-height: 100%;
+  text-align: center;
+  width: 100%;
+  color: #fff;
+  position: absolute;
+  display: flex;
+  align-content: center;
+  justify-content: center;
+  align-items: center;
 }
