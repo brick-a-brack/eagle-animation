@@ -28,6 +28,9 @@ import faEye from '@icons/faEye';
 
 
 const MaskingWindow = ({
+  backgroundLayer = null,
+  foregroundLayer = null,
+  transparentLayer = null,
   t,
 }) => {
   const [selectedTab, setSelectedTab] = useState('REMOVE');
@@ -39,9 +42,13 @@ const MaskingWindow = ({
     { id: 'PREVIEW', icon: faEye, title: t('Preview') },
   ].map((e, i) => ({ ...e, selected: selectedTab === e.id || (i === 0 && selectedTab === null) }));
 
-  const backgroundLayer = '/background.jpg';
+console.log( backgroundLayer ,
+  foregroundLayer ,
+  transparentLayer ,)
+
+ /* const backgroundLayer = '/background.jpg';
   const foregroundLayer = '/foreground.jpg';
-  const transparentLayer = '/alpha.png';
+  const transparentLayer = '/alpha.png';*/
 
   return (
     <>

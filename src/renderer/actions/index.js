@@ -53,6 +53,11 @@ const computeProject = async (data) => {
                         link: `/api/pictures/${picture?.masking?.foreground?.id}/${picture?.masking?.foreground?.filename}`,
                         metaLink: `/api/pictures/${picture?.masking?.foreground?.id}/${picture?.masking?.foreground?.filename}?infos=json`,
                     } : null,
+                    transparent: picture?.masking?.transparent ? {
+                      ...picture?.masking?.transparent,
+                        link: `/api/pictures/${picture?.masking?.transparent?.id}/${picture?.masking?.transparent?.filename}`,
+                        metaLink: `/api/pictures/${picture?.masking?.transparent?.id}/${picture?.masking?.transparent?.filename}?infos=json`,
+                    } : null,
                   }
               } : {}),
           }))

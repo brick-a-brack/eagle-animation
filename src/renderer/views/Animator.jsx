@@ -505,6 +505,8 @@ const Animator = ({ t }) => {
     handleAction('RATIO_CHANGE', fields?.ratio?.userValue || '');
   };
 
+console.log('currentFrame', currentFrame?.masking)
+
   return (
     <>
       <LoadingPage show={false} />
@@ -571,6 +573,7 @@ const Animator = ({ t }) => {
             framePosition={framePosition}
             frameQuantity={pictures.length}
             isCurrentFrameHidden={!!currentFrame.hidden}
+            canUseMaskingEditor={!!currentFrame.masking}
             totalAnimationFrames={totalAnimationFrames}
             maskingMode={maskingMode}
           />
@@ -609,7 +612,11 @@ const Animator = ({ t }) => {
         />
       </Window>
       <Window isOpened={maskingEditorStatus} onClose={() => setMaskingEditorStatus(false)} isFullScreen={true}>
-        <MaskingWindow />
+        {maskingEditorStatus && <MaskingWindow
+          backgroundLayer={currentFrame?.masking?.background?.link || null}
+          foregroundLayer={currentFrame?.masking?.foreground?.link || null}
+          transparentLayer={currentFrame?.masking?.transparent?.link || null}
+        />}
       </Window>
     </>
   );

@@ -34,15 +34,22 @@ const computeProject = (data) => {
               background: picture?.masking?.background
                 ? {
                     ...picture?.masking?.background,
-                    link: getMetaPictureLink(copiedData._id, i, picture?.masking?.background?.filename),
+                    link: getPictureLink(copiedData._id, i, picture?.masking?.background?.filename),
                     metaLink: getMetaPictureLink(copiedData._id, i, picture?.masking?.background?.filename),
                   }
                 : null,
               foreground: picture?.masking?.foreground
                 ? {
                     ...picture?.masking?.foreground,
-                    link: getMetaPictureLink(copiedData._id, i, picture?.masking?.foreground?.filename),
+                    link: getPictureLink(copiedData._id, i, picture?.masking?.foreground?.filename),
                     metaLink: getMetaPictureLink(copiedData._id, i, picture?.masking?.foreground?.filename),
+                  }
+                : null,
+              transparent: picture?.masking?.transparent
+                ? {
+                    ...picture?.masking?.transparent,
+                    link: getPictureLink(copiedData._id, i, picture?.masking?.transparent?.filename),
+                    metaLink: getMetaPictureLink(copiedData._id, i, picture?.masking?.transparent?.filename),
                   }
                 : null,
             },
@@ -50,6 +57,8 @@ const computeProject = (data) => {
         : {}),
     })),
   }));
+
+  console.log(scenes);
 
   let output = {
     ...copiedData,
