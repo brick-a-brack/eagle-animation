@@ -377,24 +377,32 @@ const Animator = ({ t }) => {
       playerRef.current.showFrame(newId);
     },
     ONION_LESS: () => {
-      setOnionValue(Math.max(parseFloat(onionValue) - 0.1, 0));
-      window.track('animator_changed', { feature: 'onion', value: Math.max(parseFloat(onionValue) - 0.1, 0) });
+      if (!differenceStatus && framePosition === false) {
+        setOnionValue(Math.max(parseFloat(onionValue) - 0.1, 0));
+        window.track('animator_changed', { feature: 'onion', value: Math.max(parseFloat(onionValue) - 0.1, 0) });
+      }
     },
     ONION_MORE: () => {
-      setOnionValue(Math.min(parseFloat(onionValue) + 0.1, 1));
-      window.track('animator_changed', { feature: 'onion', value: Math.min(parseFloat(onionValue) + 0.1, 1) });
+      if (!differenceStatus && framePosition === false) {
+        setOnionValue(Math.min(parseFloat(onionValue) + 0.1, 1));
+        window.track('animator_changed', { feature: 'onion', value: Math.min(parseFloat(onionValue) + 0.1, 1) });
+      }
     },
     ONION_CHANGE: (value) => {
       setOnionValue(value);
       window.track('animator_changed', { feature: 'onion', value: value });
     },
     GRID: () => {
-      setGridStatus(!gridStatus);
-      window.track('animator_changed', { feature: 'grid', value: !gridStatus });
+      if (framePosition === false) {
+        setGridStatus(!gridStatus);
+        window.track('animator_changed', { feature: 'grid', value: !gridStatus });
+      }
     },
     DIFFERENCE: () => {
-      setDifferenceStatus(!differenceStatus);
-      window.track('animator_changed', { feature: 'difference', value: !differenceStatus });
+      if (framePosition === false) {
+        setDifferenceStatus(!differenceStatus);
+        window.track('animator_changed', { feature: 'difference', value: !differenceStatus });
+      }
     },
     FPS_CHANGE: async (v) => {
       projectActions.changeFPS(track, v || '1');

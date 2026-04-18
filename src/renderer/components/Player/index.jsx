@@ -214,6 +214,11 @@ class Player extends Component {
       }
     }
 
+    // Redraw grid if ratio changed
+    if (!isEqual(prevProps.videoRatio, this.props.videoRatio)) {
+      this.drawGrid();
+    }
+
     // Force to display live view if capabilities changed
     if (!isEqual(prevProps.cameraCapabilities, this.props.cameraCapabilities)) {
       this.showFrame(false);
@@ -265,14 +270,31 @@ class Player extends Component {
 
     const { width, height } = this.getSize();
     const ctx = this.dom.grid.current.getContext('2d');
+    ctx.clearRect(0, 0, width, height);
     ctx.fillStyle = color;
 
-    if (this.props.gridModes?.includes('GRID')) {
-      for (let i = 0; i < this.props.gridColumns; i++) {
-        ctx.fillRect(Math.round((width * (i + 1)) / this.props.gridColumns), 0, 1, height);
+    const videoRatio = this.getVideoRatio();
+    let widthRatio = width;
+    let heightRatio = height;
+    let marginX = 0;
+    let marginY = 0;
+
+    if (videoRatio) {
+      if (videoRatio > width / height) {
+        heightRatio = width / videoRatio;
+      } else {
+        widthRatio = (height * videoRatio);
       }
-      for (let i = 0; i < this.props.gridLines; i++) {
-        ctx.fillRect(0, Math.round((height * (i + 1)) / this.props.gridLines), width, 1);
+      marginX = (width - widthRatio) / 2;
+      marginY = (height - heightRatio) / 2;
+    }
+
+    if (this.props.gridModes?.includes('GRID')) {
+      for (let i = 0; i < this.props.gridColumns - 1; i++) {
+        ctx.fillRect(Math.round(marginX + (widthRatio * (i + 1)) / this.props.gridColumns), 0, 1, height);
+      }
+      for (let i = 0; i < this.props.gridLines - 1; i++) {
+        ctx.fillRect(0, Math.round(marginY + (heightRatio * (i + 1)) / this.props.gridLines), width, 1);
       }
     }
 
@@ -284,8 +306,8 @@ class Player extends Component {
 
     if (this.props.gridModes?.includes('MARGINS')) {
       // 90% and 80%
-      drawArea(ctx, 0.05 * width, 0.05 * height, 0.9 * width, 0.9 * height);
-      drawArea(ctx, 0.1 * width, 0.1 * height, 0.8 * width, 0.8 * height);
+      drawArea(ctx, Math.round(marginX + (0.05 * widthRatio)), Math.round(marginY + (0.05 * heightRatio)), Math.round(0.9 * widthRatio), Math.round(0.9 * heightRatio));
+      drawArea(ctx, Math.round(marginX + (0.1 * widthRatio)), Math.round(marginY + (0.1 * heightRatio)), Math.round(0.8 * widthRatio), Math.round(0.8 * heightRatio));
       // drawArea(ctx, 0.035 * width, 0.035 * height, 0.93 * width, 0.93 * height);
     }
   }
