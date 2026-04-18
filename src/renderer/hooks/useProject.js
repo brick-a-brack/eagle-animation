@@ -149,7 +149,7 @@ function useProject(options) {
 
   // Action add frame
   const actionAddFrame = useCallback(
-    async (trackId, buffer, extension = 'jpg', beforeFrameId = false) => {
+    async (trackId, buffer, extension = 'jpg', beforeFrameId = false, mode = 'FRAME') => {
       const sceneId = Number(trackId);
       const addedPicture = await window.EA('SAVE_PICTURE', {
         project_id: options?.id,
@@ -163,10 +163,27 @@ function useProject(options) {
         if (d.project.scenes[sceneId]) {
           const newId = Math.max(0, ...d.project.scenes[sceneId].pictures.map((e) => e.id)) + 1;
           const index = beforeFrameId === false ? -1 : d.project.scenes[sceneId].pictures.findIndex((f) => `${f.id}` === `${beforeFrameId}`);
-          if (index >= 0) {
-            d.project.scenes[sceneId].pictures = [...d.project.scenes[sceneId].pictures.slice(0, index), { ...addedPicture, id: newId }, ...d.project.scenes[sceneId].pictures.slice(index)];
-          } else {
-            d.project.scenes[sceneId].pictures = [...d.project.scenes[sceneId].pictures, { ...addedPicture, id: newId }];
+
+          if (mode === 'FRAME' || mode === 'BACKGROUND') {
+            const newFrame = {
+              ...addedPicture,
+              id: newId,
+              ...(mode === 'BACKGROUND' ? { background: addedPicture, foreground: null } : {}),
+            };
+
+            if (index >= 0) {
+              d.project.scenes[sceneId].pictures = [...d.project.scenes[sceneId].pictures.slice(0, index), newFrame, ...d.project.scenes[sceneId].pictures.slice(index)];
+            } else {
+              d.project.scenes[sceneId].pictures = [...d.project.scenes[sceneId].pictures, newFrame];
+            }
+          }
+
+          if (mode === 'FOREGROUND') {
+            if (index >= 0) {
+              d.project.scenes[sceneId].pictures = [...d.project.scenes[sceneId].pictures.slice(0, index), { ...addedPicture, id: newId }, ...d.project.scenes[sceneId].pictures.slice(index)];
+            } else {
+              d.project.scenes[sceneId].pictures = [...d.project.scenes[sceneId].pictures, { ...addedPicture, id: newId }];
+            }
           }
         }
         return d;

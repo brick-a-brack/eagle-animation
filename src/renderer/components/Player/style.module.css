@@ -125,7 +125,17 @@
     color: var(--color-theme-extra-light);
 }
 
-
+.frameMode {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    padding: 5px 10px;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: var(--color-white);
+    font-size: var(--font-size-3);
+    border-radius: 4px;
+    pointer-events: none;
+}
 
 
 
