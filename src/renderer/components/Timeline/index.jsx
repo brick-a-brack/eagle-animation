@@ -11,6 +11,8 @@ import { withTranslation } from 'react-i18next';
 
 import * as style from './style.module.css';
 
+const MINIMUM_ANIMATION_DURATION = 200; // Minimum duration to apply animation on timeline item when playing
+
 const getPicturesKey = (pictures) => {
   const data = structuredClone(pictures);
   for (let i = 0; i < pictures.length; i++) {
@@ -21,7 +23,11 @@ const getPicturesKey = (pictures) => {
   return JSON.stringify(data);
 };
 
-const SortableItem = ({ img, isShortPlayBegining = false, playing = false, selected, onSelect, index, fps }) => {
+const getPlayingAnimationDuration = (img, fps) => {
+  return Math.floor((1000 / fps) * img.length);
+};
+
+const SortableItem = ({ img, isBeforeShortPlayBeginning = false, isShortPlayBegining = false, playing = false, selected, onSelect, index, fps }) => {
   const { setNodeRef, isDragging, transform, transition, listeners, attributes, active } = useSortable({ id: img.id });
   return (
     <span
@@ -42,11 +48,12 @@ const SortableItem = ({ img, isShortPlayBegining = false, playing = false, selec
       className={`${style.containerImg} ${selected ? style.selected : ''} ${!playing && style.containerImgHover} ${img.hidden ? style.isHidden : ''}`}
     >
       <span className={style.img}>{img.link && <img alt="" className={style.imgcontent} src={getPictureLink(img.link, { w: 80, h: 80, m: 'cover' })} loading="lazy" />}</span>
-      {img.hidden && <FontAwesomeIcon className={style.icon} icon={faEyeSlash} />}
-      {isShortPlayBegining && <FontAwesomeIcon className={style.shortPlayIcon} icon={faForwardFast} />}
+      {isBeforeShortPlayBeginning && <span className={style.isBeforeShortPlayBeginning} />}
+      {img.hidden && <><span className={style.isHiddenOverlay} /><FontAwesomeIcon className={style.icon} icon={faEyeSlash} /></>}
+      {isShortPlayBegining && <><span className={style.shortPlayBar}/><span className={style.shortPlayIcon} /></>}
       {img.length > 1 && <span className={style.duplicated}>{`x${img.length}`}</span>}
       <span className={style.title}>{`#${index + 1}`}</span>
-      <span className={`${playing && selected ? style.playing : ''}`} style={{ animationDuration: 1 / fps * img.length + 's' }}></span>
+      <span className={`${playing && selected && (getPlayingAnimationDuration(img, fps) > MINIMUM_ANIMATION_DURATION) ? style.playing : ''}`} style={ getPlayingAnimationDuration(img, fps) > MINIMUM_ANIMATION_DURATION ? { animationDuration: getPlayingAnimationDuration(img, fps) + 'ms' } : {} }></span>
     </span>
   );
 };
@@ -103,6 +110,11 @@ const Timeline = ({ onSelect, onMove, select = false, pictures = [], playing = f
   const shortPlayFrameIndex = shortPlayStatus && shortPlayFrames > 0 && displayedFrames.length > shortPlayFrames ? displayedFrames.length - shortPlayFrames : 0;
   const shortPlayFrameId = shortPlayStatus && shortPlayFrames > 0 ? displayedFrames?.[shortPlayFrameIndex]?.id || null : null;
 
+  const isBeforeShortPlayBeginning = (index) => {
+    if (!shortPlayStatus || shortPlayFrames === 0) return false;
+    return index < getIndex(shortPlayFrameId);
+  }
+
   return (
     <DndContext
       sensors={sensors}
@@ -130,6 +142,7 @@ const Timeline = ({ onSelect, onMove, select = false, pictures = [], playing = f
                 img={img}
                 selected={select === img.id}
                 onSelect={onSelect}
+                isBeforeShortPlayBeginning={isBeforeShortPlayBeginning(index)}
                 isShortPlayBegining={shortPlayFrameId === img.id}
                 fps={fps}
               />
