@@ -508,10 +508,10 @@ const Animator = ({ t }) => {
 
   const handleCloseMaskingEditor = async () => {
     const d = await maskingEditorRef.current.exportLayers();
-    projectActions.updateFrame(track, currentFrame?.id, d.frame, undefined, undefined, d.layers.transparent);
+    await projectActions.updateFrame(track, currentFrame?.id, d.frame, undefined, undefined, d.layers.transparent);
     setShowMaskingEditor(false);
 
-    setInterval(() => {
+    setTimeout(() => {
       playerRef.current.showFrame(currentFrame?.id);
     }, 0);
   }
