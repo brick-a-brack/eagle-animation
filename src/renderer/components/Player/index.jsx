@@ -411,7 +411,7 @@ class Player extends Component {
 
           <canvas ref={this.dom.grid} className={style.layout} style={{ opacity: isCameraReady && showGrid && frameIndex === false ? 1 : 0 }} />
 
-          {this.props.frameCaptureMode && this.props.frameCaptureMode !== "DEFAULT" && (
+          {frameIndex === false && this.props.frameCaptureMode && this.props.frameCaptureMode !== "DEFAULT" && (
             <div className={style.frameMode}>{frameModeTranslations[this.props.frameCaptureMode] || this.props.frameCaptureMode}</div>
           )}
 
