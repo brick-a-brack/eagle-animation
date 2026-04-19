@@ -35,6 +35,8 @@ class MaskingEditor extends Component {
     };
 
     this.animId = null;
+
+    this.mouseLastPosition = null;
   }
 
   componentDidMount() {
@@ -45,8 +47,12 @@ class MaskingEditor extends Component {
     let last = 0;
     const loop = (time) => {
       const delta = time - last;
-      if (delta > 1000 / 30) { // 30 FPS
-        this._redraw();
+      if (delta > 1000 / 60) { // 30 FPS
+        try {
+          this._redraw();
+        } catch (err) {
+          console.error('ISSUE', err);
+        }
         last = time;
       }
       this.animId = requestAnimationFrame(loop);
@@ -60,7 +66,6 @@ class MaskingEditor extends Component {
       prevProps.foregroundLayer !== this.props.foregroundLayer ||
       prevProps.transparentLayer !== this.props.transparentLayer
     ) {
-      console.log('RELOADING EDITOR');
       this._loadImages();
     }
   }
@@ -128,15 +133,12 @@ class MaskingEditor extends Component {
   }
 
   _setupEventListeners() {
-    //console.log('CANVAS', this.dom.output);
-
     const canvas = this.dom.output.current;
 
     // Mouse events
     canvas.addEventListener('mousedown', this._startDrawing);
     window.addEventListener('mousemove', this._draw);
     window.addEventListener('mouseup', this._stopDrawing);
-    canvas.addEventListener('mouseleave', this._stopDrawing);
 
     // Touch events
     /* canvas.addEventListener('touchstart', this._handleTouch);
@@ -151,7 +153,6 @@ class MaskingEditor extends Component {
     canvas.removeEventListener('mousedown', this._startDrawing);
     window.removeEventListener('mousemove', this._draw);
     window.removeEventListener('mouseup', this._stopDrawing);
-    canvas.removeEventListener('mouseleave', this._stopDrawing);
 
     // Touch events
     /* canvas.removeEventListener('touchstart', this._handleTouch);
@@ -171,20 +172,57 @@ class MaskingEditor extends Component {
 
   _startDrawing = (e) => {
     this.isDrawing = true;
-
-    console.log('POS', e.target.getBoundingClientRect())
-
-    const x = e.offsetX / e.target.getBoundingClientRect().width * this.images.background.width;
-    const y = e.offsetY / e.target.getBoundingClientRect().height * this.images.background.height;
-
-
-    console.log('startDrawing', e)
+    const ctx = this.images.transparent.getContext('2d');
+    const { x, y } = this._getMouseInCanvasPosition(e, true);
+    this._drawLine(ctx, x, y, x, y);
     this.lastX = x;
     this.lastY = y;
     this.setState({ isDrawing: true });
   }
 
+  _drawLine = (ctx, x1, y1, x2, y2) => {
+    ctx.globalCompositeOperation = this.props.mode === 'RESTORE' ? 'destination-out' : 'source-over';
+    ctx.lineWidth = this.props.brushSize / 1000 * this.images.background.width; // TODO: Be sure it's consistent with various img size in % ?
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    ctx.strokeStyle = "rgba(255, 255, 255)";
+    ctx.shadowColor = 'rgba(255, 255, 255)';
+    ctx.filter = `blur(${Math.round(this.props.brushBlurSize / 10000 * this.images.background.width)}px)`;
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
+    ctx.stroke();
+  }
+
+  _getMouseInCanvasPosition = (e, applyLimits = false) => {
+    const canvasHitBox = this.dom.output.current.getBoundingClientRect();
+
+    // Get position in the picture
+    let x = (e.clientX - canvasHitBox.x) / canvasHitBox.width * this.images.background.width;
+    let y = (e.clientY - canvasHitBox.y) / canvasHitBox.height * this.images.background.height;
+
+    // X limit
+    if (e.clientX < canvasHitBox.x && applyLimits) {
+      x = 0;
+    }
+    if (e.clientX > canvasHitBox.x + canvasHitBox.width && applyLimits) {
+      x = this.images.background.width;
+    }
+
+    // Y limit
+    if (e.clientY < canvasHitBox.y && applyLimits) {
+      y = 0;
+    }
+    if (e.clientY > canvasHitBox.y + canvasHitBox.height && applyLimits) {
+      y = this.images.background.height;
+    }
+
+    return { x, y };
+  }
+
   _draw = (e) => {
+    this.mouseLastPosition = this._getMouseInCanvasPosition(e, false);
+
     if (!this.isDrawing) {
       return;
     }
@@ -193,9 +231,9 @@ class MaskingEditor extends Component {
       return;
     }
 
-    // Get position in the picture
-    const x = e.offsetX / e.target.getBoundingClientRect().width * this.images.background.width;
-    const y = e.offsetY / e.target.getBoundingClientRect().height * this.images.background.height;
+    const ctx = this.images.transparent.getContext('2d');
+
+    const { x, y } = this._getMouseInCanvasPosition(e, true);
 
     // First step
     if (this.lastX === null) {
@@ -205,22 +243,7 @@ class MaskingEditor extends Component {
       this.lastY === y;
     }
 
-    const ctx = this.images.transparent.getContext('2d');
-
-    ctx.globalCompositeOperation = this.props.mode === 'RESTORE' ? 'destination-out' : 'source-over';
-    ctx.lineWidth = this.props.brushSize * this.images.background.width / 1000; // TODO: Be sure it's consistent with various img size
-
-
-    ctx.lineCap = 'round';
-    ctx.lineJoin = 'round';
-    ctx.shadowBlur = 10;
-    ctx.strokeStyle = "rgba(255, 255, 255)";
-    ctx.shadowColor = 'rgba(255, 255, 255)';
-
-    ctx.beginPath();
-    ctx.moveTo(this.lastX, this.lastY);
-    ctx.lineTo(x, y);
-    ctx.stroke();
+    this._drawLine(ctx, this.lastX, this.lastY, x, y);
 
     this.lastX = x;
     this.lastY = y;
@@ -231,11 +254,13 @@ class MaskingEditor extends Component {
     this.setState({ isDrawing: false });
     this.lastX = null;
     this.lastY = null;
-    // this._notifyChange();
   }
 
   _drawToCanvas(canvas = null, mode = null) {
     const outputCtx = canvas.getContext('2d');
+
+    // Is editable by the user?
+    const isEditable = mode === 'REMOVE' || mode === 'RESTORE';
 
     // No background image, exit
     if (!this.images.background) {
@@ -249,22 +274,18 @@ class MaskingEditor extends Component {
     if (this.images.background) {
       outputCtx.globalCompositeOperation = 'source-over';
       outputCtx.drawImage(this.images.background, 0, 0, this.images.background.width, this.images.background.height);
-
-      if (mode === 'RESTORE') {
-        outputCtx.fillStyle = 'rgba(0, 0, 0, 0.5)';
-        outputCtx.fillRect(0, 0, this.images.background.width, this.images.background.height);
-      }
     }
+
 
     // Draw foreground with alpha mask
     if (this.images.foreground) {
-      const tempCtx = this.images.temporary.getContext('2d');
+      const tempCtx = this.images.temporary.getContext('2d'); // WHY ISSUE HERE ? TODO FIX  this.images.temporary = null ?
       tempCtx.clearRect(0, 0, this.images.background.width, this.images.background.height);
       tempCtx.globalCompositeOperation = 'source-over';
       tempCtx.drawImage(this.images.foreground, 0, 0);
 
-      if (mode === 'REMOVE') {
-        tempCtx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+      if (isEditable) {
+        tempCtx.fillStyle = 'rgba(0, 0, 0, 0.3)';
         tempCtx.fillRect(0, 0, this.images.background.width, this.images.background.height);
       }
 
@@ -273,6 +294,21 @@ class MaskingEditor extends Component {
       outputCtx.globalCompositeOperation = 'source-over';
       outputCtx.drawImage(this.images.temporary, 0, 0);
     }
+
+    if (this.mouseLastPosition && isEditable) {
+      outputCtx.beginPath();
+      outputCtx.arc(this.mouseLastPosition.x, this.mouseLastPosition.y, this.props.brushSize, 0, 2 * Math.PI);
+      outputCtx.fillStyle = "rgba(255,255,255,0.2)";
+      outputCtx.fill();
+    }
+  }
+
+  flush() {
+    if (!this.images.transparent) {
+      return;
+    }
+    const ctx = this.images.transparent.getContext('2d');
+    ctx.clearRect(0, 0, this.images.transparent.width, this.images.transparent.height);
   }
 
   _redraw() {
@@ -293,11 +329,12 @@ class MaskingEditor extends Component {
   }
 
   render() {
+    const isEditable = this.props.mode === 'REMOVE' || this.props.mode === 'RESTORE';
     return (
       <div className={style.container}>
         <canvas
           ref={this.dom.output}
-          className={style.layout}
+          className={`${style.layout} ${isEditable ? style.isEditable : ''}`}
         />
       </div>
     );

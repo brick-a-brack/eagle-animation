@@ -2,3 +2,15 @@
     margin: 0 var(--space-huge);
     width: calc(100% - 2 * var(--space-huge));
 }
+
+.navbar {
+  display: flex;
+  width: 100%;
+  justify-content: space-evenly;
+  height: 50px;
+}
+
+.navbarItem {
+  width: 100%;
+  position: relative;
+}
