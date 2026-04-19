@@ -15,7 +15,7 @@ import faFaceViewfinder from '@icons/faFaceViewfinder';
 import faLightbulbOn from '@icons/faLightbulbOn';
 import faMagnifyingGlass from '@icons/faMagnifyingGlass';
 import faRotate from '@icons/faRotate';
-import { useEffect, useState } from 'react';
+import { forwardRef, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { withTranslation } from 'react-i18next';
 
@@ -27,12 +27,12 @@ import CustomSlider from '@components/CustomSlider';
 import faEye from '@icons/faEye';
 
 
-const MaskingWindow = ({
+const MaskingWindow = forwardRef(({
   backgroundLayer = null,
   foregroundLayer = null,
   transparentLayer = null,
   t,
-}) => {
+}, ref) => {
   const [selectedTab, setSelectedTab] = useState('REMOVE');
   const [brushSize, setBrushSize] = useState(50);
 
@@ -41,14 +41,6 @@ const MaskingWindow = ({
     { id: 'RESTORE', icon: faEraserCirclePlus, title: t('Restore foreground') },
     { id: 'PREVIEW', icon: faEye, title: t('Preview') },
   ].map((e, i) => ({ ...e, selected: selectedTab === e.id || (i === 0 && selectedTab === null) }));
-
-console.log( backgroundLayer ,
-  foregroundLayer ,
-  transparentLayer ,)
-
- /* const backgroundLayer = '/background.jpg';
-  const foregroundLayer = '/foreground.jpg';
-  const transparentLayer = '/alpha.png';*/
 
   return (
     <>
@@ -59,11 +51,12 @@ console.log( backgroundLayer ,
         brushSize={brushSize}
         backgroundLayer={backgroundLayer}
         foregroundLayer={foregroundLayer}
-        transparentLayer={null}
+        transparentLayer={transparentLayer}
         mode={selectedTab}
+        ref={ref}
       />
     </>
   );
-};
+});
 
 export default withTranslation()(MaskingWindow);

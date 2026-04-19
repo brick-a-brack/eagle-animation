@@ -140,8 +140,9 @@ const Animator = ({ t }) => {
   const [currentFrameId, setCurrentFrameId] = useState(false);
   const [deleteOnLiveViewConfirmation, setDeleteOnLiveViewConfirmation] = useState(false);
   const [disableKeyboardShortcuts, setDisableKeyboardShortcuts] = useState(false);
-  const [maskingEditorStatus, setMaskingEditorStatus] = useState(false);
+  const [showMaskingEditor, setShowMaskingEditor] = useState(false);
   const [pendingBackgroundFrame, setPendingBackgroundFrame] = useState(false);
+  const maskingEditorRef = useRef(null);
 
   const { project, actions: projectActions } = useProject({ id });
 
@@ -474,7 +475,7 @@ const Animator = ({ t }) => {
       setMaskingMode(newMode);
     },
     MASKING_EDITOR: () => {
-      setMaskingEditorStatus(true);
+      setShowMaskingEditor(true);
     }
   };
 
@@ -505,7 +506,11 @@ const Animator = ({ t }) => {
     handleAction('RATIO_CHANGE', fields?.ratio?.userValue || '');
   };
 
-console.log('currentFrame', currentFrame?.masking)
+  const handleCloseMaskingEditor = async () => {
+    const d = await maskingEditorRef.current.exportLayers();
+    projectActions.updateFrame(track, currentFrame?.id, d.frame, undefined, undefined, d.layers.transparent)
+    setShowMaskingEditor(false);
+  }
 
   return (
     <>
@@ -589,7 +594,7 @@ console.log('currentFrame', currentFrame?.masking)
           />
         </div>
       </PageLayout>
-      {!showCameraSettings && !showProjectSettings && <KeyboardHandler onAction={handleAction} disabled={disableKeyboardShortcuts} />}
+      {!showCameraSettings && !showProjectSettings && !showMaskingEditor && <KeyboardHandler onAction={handleAction} disabled={disableKeyboardShortcuts} />}
       <Window isOpened={showCameraSettings} onClose={() => setShowCameraSettings(false)}>
         <CameraSettingsWindow
           cameraCapabilities={currentCameraCapabilities}
@@ -611,8 +616,9 @@ console.log('currentFrame', currentFrame?.masking)
           onProjectDelete={() => handleAction('DELETE_PROJECT')}
         />
       </Window>
-      <Window isOpened={maskingEditorStatus && !isPlaying} onClose={() => setMaskingEditorStatus(false)} isFullScreen={true}>
+      <Window isOpened={showMaskingEditor && !isPlaying} onClose={handleCloseMaskingEditor} isFullScreen={true}>
         {currentFrame && <MaskingWindow
+          ref={maskingEditorRef}
           backgroundLayer={currentFrame?.masking?.background?.link || null}
           foregroundLayer={currentFrame?.masking?.foreground?.link || null}
           transparentLayer={currentFrame?.masking?.transparent?.link || null}

@@ -58,8 +58,6 @@ const computeProject = (data) => {
     })),
   }));
 
-  console.log(scenes);
-
   let output = {
     ...copiedData,
     id: copiedData._id,

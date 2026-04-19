@@ -6,6 +6,7 @@ import { mkdirp } from 'mkdirp';
 
 import { DEFAULT_FPS, PROJECT_FILE, VERSION } from '../../config';
 import { time } from './utils';
+import { v4 } from 'uuid';
 
 const exists = async (path) => {
   const info = await stat(path).catch(() => null);
@@ -104,29 +105,11 @@ export const createProject = async (path, name) => {
   return getProjectData(projectPath);
 };
 
-// Choose picture id
-const choosePictureId = async (projectPath, scene, ext = 'jpg') => {
-  const dataOriginal = await getProjectData(projectPath);
-  const data = { ...dataOriginal };
-  if (!data.project.scenes[scene]) {
-    data.project.scenes[scene] = {
-      pictures: [],
-    };
-  }
-  let newId = Math.max(0, ...data.project.scenes[scene].pictures.map((e) => e.id));
-  let filePath = false;
-  while (filePath === false || (await exists(filePath))) {
-    newId++;
-    filePath = join(projectPath, `/${scene}/`, `${newId}.${ext}`);
-  }
-  return newId;
-};
-
 // Create image file
 const createImageFile = async (projectPath, scene, ext, data) => {
   const directoryPath = join(projectPath, `/${scene}/`);
   await mkdirp(directoryPath);
-  const id = await choosePictureId(projectPath, scene, ext);
+  const id = await v4();
   const filePath = join(projectPath, `/${scene}/`, `${id}.${ext}`);
   if (await exists(filePath)) {
     throw new Error('FILE_ALREADY_EXISTS');

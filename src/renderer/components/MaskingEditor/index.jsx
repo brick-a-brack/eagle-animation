@@ -56,6 +56,7 @@ class MaskingEditor extends Component {
       prevProps.foregroundLayer !== this.props.foregroundLayer ||
       prevProps.transparentLayer !== this.props.transparentLayer
     ) {
+      console.log('RELOADING EDITOR');
       this._loadImages();
     }
   }
@@ -123,54 +124,54 @@ class MaskingEditor extends Component {
     const canvas = this.dom.output.current;
 
     // Mouse events
-    canvas.addEventListener('mousedown', this._startDrawing);
-    window.addEventListener('mousemove', this._draw);
-    window.addEventListener('mouseup', this._stopDrawing);
+    /* canvas.addEventListener('mousedown', this._startDrawing);
+     window.addEventListener('mousemove', this._draw);
+     window.addEventListener('mouseup', this._stopDrawing);*/
     //canvas.addEventListener('mouseleave', this._stopDrawing);
 
     // Touch events
-    canvas.addEventListener('touchstart', this._handleTouch);
-    canvas.addEventListener('touchmove', this._handleTouch);
-    canvas.addEventListener('touchend', this._stopDrawing);
+    /* canvas.addEventListener('touchstart', this._handleTouch);
+     canvas.addEventListener('touchmove', this._handleTouch);
+     canvas.addEventListener('touchend', this._stopDrawing);*/
   }
 
   _removeEventListeners() {
     const canvas = this.dom.output.current;
 
     // Mouse events
-    canvas.removeEventListener('mousedown', this._startDrawing);
-    window.removeEventListener('mousemove', this._draw);
-    window.removeEventListener('mouseup', this._stopDrawing);
+    /* canvas.removeEventListener('mousedown', this._startDrawing);
+     window.removeEventListener('mousemove', this._draw);
+     window.removeEventListener('mouseup', this._stopDrawing);*/
     //canvas.removeEventListener('mouseleave', this._stopDrawing);
 
     // Touch events
-    canvas.removeEventListener('touchstart', this._handleTouch);
-    canvas.removeEventListener('touchmove', this._handleTouch);
-    canvas.removeEventListener('touchend', this._stopDrawing);
+    /* canvas.removeEventListener('touchstart', this._handleTouch);
+     canvas.removeEventListener('touchmove', this._handleTouch);
+     canvas.removeEventListener('touchend', this._stopDrawing);*/
   }
 
   _handleTouch = (e) => {
-    e.preventDefault();
-    const touch = e.touches[0];
-    const mouseEvent = new MouseEvent(e.type === 'touchstart' ? 'mousedown' : 'mousemove', {
-      clientX: touch.clientX,
-      clientY: touch.clientY
-    });
-    this.images.transparent.dispatchEvent(mouseEvent);
+    /* e.preventDefault();
+     const touch = e.touches[0];
+     const mouseEvent = new MouseEvent(e.type === 'touchstart' ? 'mousedown' : 'mousemove', {
+       clientX: touch.clientX,
+       clientY: touch.clientY
+     });
+     this.images.transparent.dispatchEvent(mouseEvent);*/
   }
 
   _startDrawing = (e) => {
-
-    console.log('POS', e.target.getBoundingClientRect())
-
-    const x = e.offsetX / e.target.getBoundingClientRect().width * this.images.background.width;
-    const y = e.offsetY / e.target.getBoundingClientRect().height * this.images.background.height;
-
-
-    console.log('startDrawing', e)
-    this.lastX = x;
-    this.lastY = y;
-    this.setState({ isDrawing: true });
+    /*
+        console.log('POS', e.target.getBoundingClientRect())
+    
+        const x = e.offsetX / e.target.getBoundingClientRect().width * this.images.background.width;
+        const y = e.offsetY / e.target.getBoundingClientRect().height * this.images.background.height;
+    
+    
+        console.log('startDrawing', e)
+        this.lastX = x;
+        this.lastY = y;*/
+    //this.setState({ isDrawing: true });
   }
 
   _draw = (e) => {
@@ -179,30 +180,29 @@ class MaskingEditor extends Component {
     }
 
     // Get position in the picture
-    const x = e.offsetX / e.target.getBoundingClientRect().width * this.images.background.width;
-    const y = e.offsetY / e.target.getBoundingClientRect().height * this.images.background.height;
-
-
-    const ctx = this.images.transparent.getContext('2d');
-
-    ctx.globalCompositeOperation = this.props.mode === 'RESTORE' ? 'destination-out' : 'source-over';
-    ctx.lineWidth = this.props.brushSize * this.images.background.width / 1000; // TODO: Be sure it's consistent with various img size
-
-
-    ctx.lineCap = 'round';
-    ctx.lineJoin = 'round';
-    ctx.shadowBlur = 10;
-    ctx.strokeStyle = "rgba(255, 255, 255)";
-    ctx.shadowColor = 'rgba(255, 255, 255)';
-
-    ctx.beginPath();
-    ctx.moveTo(this.lastX, this.lastY);
-    ctx.lineTo(x, y);
-    ctx.stroke();
-
-    this.lastX = x;
-    this.lastY = y;
-    this._redraw();
+    /* const x = e.offsetX / e.target.getBoundingClientRect().width * this.images.background.width;
+     const y = e.offsetY / e.target.getBoundingClientRect().height * this.images.background.height;
+ 
+ 
+     const ctx = this.images.transparent.getContext('2d');
+ 
+     ctx.globalCompositeOperation = this.props.mode === 'RESTORE' ? 'destination-out' : 'source-over';
+     ctx.lineWidth = this.props.brushSize * this.images.background.width / 1000; // TODO: Be sure it's consistent with various img size
+ 
+ 
+     ctx.lineCap = 'round';
+     ctx.lineJoin = 'round';
+     ctx.shadowBlur = 10;
+     ctx.strokeStyle = "rgba(255, 255, 255)";
+     ctx.shadowColor = 'rgba(255, 255, 255)';
+ 
+     ctx.beginPath();
+     ctx.moveTo(this.lastX, this.lastY);
+     ctx.lineTo(x, y);
+     ctx.stroke();
+ 
+     this.lastX = x;
+     this.lastY = y;*/
   }
 
   _stopDrawing = () => {
@@ -212,7 +212,9 @@ class MaskingEditor extends Component {
     // this._notifyChange();
   }
 
-  _redraw() {
+  _redraw(mode = null) {
+    const computedMode = mode || this.props.mode;
+
     //console.log('redraw', this.dom.output)
 
     const outputCtx = this.dom.output.current.getContext('2d');
@@ -229,7 +231,7 @@ class MaskingEditor extends Component {
       outputCtx.globalCompositeOperation = 'source-over';
       outputCtx.drawImage(this.images.background, 0, 0, this.images.background.width, this.images.background.height);
 
-      if (this.props.mode === 'RESTORE') {
+      if (computedMode === 'RESTORE') {
         outputCtx.fillStyle = 'rgba(0, 0, 0, 0.5)';
         outputCtx.fillRect(0, 0, this.images.background.width, this.images.background.height);
       }
@@ -242,14 +244,16 @@ class MaskingEditor extends Component {
       tempCtx.globalCompositeOperation = 'source-over';
       tempCtx.drawImage(this.images.foreground, 0, 0);
 
-      if (this.props.mode === 'REMOVE') {
+      if (computedMode === 'REMOVE') {
         tempCtx.fillStyle = 'rgba(0, 0, 0, 0.5)';
         tempCtx.fillRect(0, 0, this.images.background.width, this.images.background.height);
       }
 
 
       // Alt + clic = inverse
+      // TODO ?
 
+      console.log('WWWW', this.images)
 
       tempCtx.globalCompositeOperation = 'destination-out';
       tempCtx.drawImage(this.images.transparent, 0, 0);
@@ -257,20 +261,23 @@ class MaskingEditor extends Component {
       outputCtx.drawImage(this.images.temporary, 0, 0);
     }
 
-
-   // this.animId = window.requestAnimationFrame(() => this._redraw());
-
-
   }
 
-  /*_notifyChange() {
-     if (this.props.onChange) {
-       this.props.onChange({
-         result: this.dom.output.current.toDataURL(),
-         mask: this.images.transparent.toDataURL()
-       });
-     }
-  }*/
+  async exportLayers() { // can contain background, foreground, transparent, frame
+    this._redraw('PREVIEW');
+
+    const previewCanvas = this.dom.output.current;
+
+    return {
+      layers: {
+        //background : await new Promise(resolve => this.images.background.toBlob(resolve, 'image/jpeg')),
+        //foreground  :  await new Promise(resolve => this.images.foreground.toBlob(resolve, 'image/jpeg')),
+        transparent: await new Promise(resolve => this.images.transparent.toBlob(resolve, 'image/png')),
+      },
+      frame: await new Promise(resolve => previewCanvas.toBlob(resolve, 'image/jpeg')),
+    }
+
+  }
 
   render() {
     return (
