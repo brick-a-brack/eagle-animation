@@ -611,8 +611,8 @@ console.log('currentFrame', currentFrame?.masking)
           onProjectDelete={() => handleAction('DELETE_PROJECT')}
         />
       </Window>
-      <Window isOpened={maskingEditorStatus} onClose={() => setMaskingEditorStatus(false)} isFullScreen={true}>
-        {maskingEditorStatus && <MaskingWindow
+      <Window isOpened={maskingEditorStatus && !isPlaying} onClose={() => setMaskingEditorStatus(false)} isFullScreen={true}>
+        {currentFrame && <MaskingWindow
           backgroundLayer={currentFrame?.masking?.background?.link || null}
           foregroundLayer={currentFrame?.masking?.foreground?.link || null}
           transparentLayer={currentFrame?.masking?.transparent?.link || null}

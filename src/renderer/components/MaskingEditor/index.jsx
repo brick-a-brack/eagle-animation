@@ -29,11 +29,26 @@ class MaskingEditor extends Component {
       transparent: null,
       temporary: null,
     };
+
+    this.animId = null;
   }
 
   componentDidMount() {
     this._loadImages();
     this._setupEventListeners();
+
+    // Animation loop
+    let last = 0;
+    const loop = (time) => {
+      const delta = time - last;
+      if (delta > 1000 / 30) { // 30 FPS
+        this._redraw();
+        last = time;
+      }
+      this.animId = requestAnimationFrame(loop);
+    }
+
+    loop();
   }
 
   componentDidUpdate(prevProps) {
@@ -47,6 +62,9 @@ class MaskingEditor extends Component {
 
   componentWillUnmount() {
     this._removeEventListeners();
+    if (this.animId) {
+      window.cancelAnimationFrame(this.animId);
+    }
   }
 
   _loadImage(src, defaultWidth = null, defaultHeight = null) {
@@ -91,11 +109,6 @@ class MaskingEditor extends Component {
 
     // Prepare output canvas
     this._setupOutputCanvas(background.width, background.height);
-
-
-    setInterval(() => {
-      this._redraw();
-    }, 1000);
   }
 
   _setupOutputCanvas(width, height) {
@@ -105,6 +118,8 @@ class MaskingEditor extends Component {
   }
 
   _setupEventListeners() {
+    //console.log('CANVAS', this.dom.output);
+
     const canvas = this.dom.output.current;
 
     // Mouse events
@@ -194,11 +209,11 @@ class MaskingEditor extends Component {
     this.setState({ isDrawing: false });
     this.lastX = null;
     this.lastY = null;
-    this._notifyChange();
+    // this._notifyChange();
   }
 
   _redraw() {
-    console.log('redraw', this.dom.output)
+    //console.log('redraw', this.dom.output)
 
     const outputCtx = this.dom.output.current.getContext('2d');
 
@@ -208,7 +223,6 @@ class MaskingEditor extends Component {
 
     // Clear the output canvas
     outputCtx.clearRect(0, 0, this.images.background.width, this.images.background.height);
-
 
     // Draw background
     if (this.images.background) {
@@ -228,13 +242,11 @@ class MaskingEditor extends Component {
       tempCtx.globalCompositeOperation = 'source-over';
       tempCtx.drawImage(this.images.foreground, 0, 0);
 
-       if (this.props.mode === 'REMOVE') {
+      if (this.props.mode === 'REMOVE') {
         tempCtx.fillStyle = 'rgba(0, 0, 0, 0.5)';
         tempCtx.fillRect(0, 0, this.images.background.width, this.images.background.height);
       }
-  
 
-       
 
       // Alt + clic = inverse
 
@@ -244,6 +256,11 @@ class MaskingEditor extends Component {
       outputCtx.globalCompositeOperation = 'source-over';
       outputCtx.drawImage(this.images.temporary, 0, 0);
     }
+
+
+   // this.animId = window.requestAnimationFrame(() => this._redraw());
+
+
   }
 
   /*_notifyChange() {
