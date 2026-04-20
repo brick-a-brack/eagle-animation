@@ -8,6 +8,10 @@ import { forwardRef, useImperativeHandle, useRef, useState } from 'react';
 import { withTranslation } from 'react-i18next';
 
 import * as style from './style.module.css';
+import Button from '@components/Button';
+import faTrash from '@icons/faTrash';
+import faBroom from '@icons/faBroom';
+import faEraser from '@icons/faEraser';
 
 const MaskingWindow = forwardRef(function MaskingWindow({ backgroundLayer = null, foregroundLayer = null, transparentLayer = null, t }, ref) {
   const [selectedTab, setSelectedTab] = useState('REMOVE');
@@ -50,43 +54,36 @@ const MaskingWindow = forwardRef(function MaskingWindow({ backgroundLayer = null
       />
       {selectedTab !== 'PREVIEW' && (
         <div className={style.navbar}>
-          <div className={style.navbarItem}>
-            <button
-              onClick={() => {
-                setSelectedTab('REMOVE');
-              }}
-            >
-              REMOVE
-            </button>
-            <button
-              onClick={() => {
-                setSelectedTab('RESTORE');
-              }}
-            >
-              RESTORE
-            </button>
+          <div className={`${style.navbarItemLeft} ${style.navbarItemSmall}`}>
+            <Button icon={faEraser} selected={selectedTab === 'REMOVE'} onClick={() => {
+              setSelectedTab(selectedTab === 'REMOVE' ? 'RESTORE' : 'REMOVE');
+            }} title={selectedTab === 'REMOVE' ? t('Anti-Eraser') : t('Eraser')} />
           </div>
 
-          <div className={style.navbarItem}>
+          <div className={style.navbarItemLeft}>
             <div className={style.navbarItemRange} id="size" data-tooltip-content={t('Brush size')}>
-              <CustomSlider step={1} min={1} max={100} value={brushSize} onChange={setBrushSize} />
+              <div className={style.roundSize1} />
+              <CustomSlider step={1} min={1} max={100} value={brushSize} onChange={setBrushSize} maxWidth="150px" />
+              <div className={style.roundSize2} />
             </div>
+            <Tooltip anchorId="size" />
           </div>
 
-          <div className={style.navbarItem}>
+          <div className={style.navbarItemRight}>
             <div className={style.navbarItemRange} id="blur" data-tooltip-content={t('Blur size')}>
-              <CustomSlider step={1} min={1} max={100} value={brushBlurSize} onChange={setBrushBlurSize} />
+              <div className={style.roundBlur1} />
+              <CustomSlider step={1} min={1} max={100} value={brushBlurSize} onChange={setBrushBlurSize} maxWidth="150px" />
+              <div className={style.roundBlur2} />
             </div>
+            <Tooltip anchorId="blur" />
           </div>
 
-          <div className={style.navbarItem}>
-            <button onClick={handleFlush}>FLUSH</button>
+          <div className={`${style.navbarItemRight} ${style.navbarItemSmall}`}>
+            <Button icon={faBroom} onClick={handleFlush} title={t('Flush')} />
           </div>
         </div>
       )}
 
-      <Tooltip anchorId="size" />
-      <Tooltip anchorId="blur" />
     </>
   );
 });

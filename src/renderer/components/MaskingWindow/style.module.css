@@ -5,17 +5,34 @@
 
 .navbar {
     display: flex;
-    height: 80px;
+    height:52px;
     justify-content: space-evenly;
     width: 100%;
+    max-width: 1000px;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 30px;
+    margin: 10px auto;
 }
 
-.navbarItem {
+.navbarItemLeft,
+.navbarItemRight {
     align-items: center;
     display: flex;
     justify-content: center;
     position: relative;
     width: 100%;
+}
+
+.navbarItemLeft {
+    justify-content: flex-start;
+}
+
+.navbarItemRight {
+    justify-content: flex-end;
+}
+
+.navbarItemSmall {
+    width:84px;
 }
 
 .navbarItemRange {
@@ -24,4 +41,30 @@
     justify-content: center;
     width: 100%;
 
+}
+
+.roundSize1,
+.roundSize2,
+.roundBlur1,
+.roundBlur2 {
+    width: 20px;
+    min-width: 20px;
+    height: 20px;
+    background: var(--color-theme-light);
+    opacity: 0.8;
+    border-radius: 50%;
+    margin: 0 17px;
+}
+
+.roundSize1 {
+    transform: scale(0.4);
+}
+
+.roundSize2 {
+    transform: scale(1);
+}
+
+.roundBlur2 {
+    filter: blur(4px);
+    transform: scale(0.95);
 }

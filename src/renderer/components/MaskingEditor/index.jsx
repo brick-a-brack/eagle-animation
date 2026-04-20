@@ -278,7 +278,7 @@ class MaskingEditor extends Component {
     }
 
     // Draw foreground with alpha mask
-    if (this.images.foreground) {
+    if (this.images.foreground && this.images.temporary) {
       const tempCtx = this.images.temporary.getContext('2d'); // WHY ISSUE HERE ? TODO FIX  this.images.temporary = null ?
       tempCtx.clearRect(0, 0, this.images.background.width, this.images.background.height);
       tempCtx.globalCompositeOperation = 'source-over';

@@ -616,6 +616,7 @@ const Animator = ({ t }) => {
       <Window isOpened={showMaskingEditor && !isPlaying} onClose={handleCloseMaskingEditor} isFullScreen={true}>
         {currentFrame && currentFrame?.masking && (
           <MaskingWindow
+            key={currentFrame.id}
             ref={maskingEditorRef}
             backgroundLayer={currentFrame?.masking?.background?.link || null}
             foregroundLayer={currentFrame?.masking?.foreground?.link || null}
