@@ -11,6 +11,7 @@ import ProjectSettingsWindow from '@components/ProjectSettingsWindow';
 import ProjectTitle from '@components/ProjectTitle';
 import Timeline from '@components/Timeline';
 import Window from '@components/Window';
+import { mimeTypeToExtension } from '@core/frameTypes';
 import { parseRatio } from '@core/ratio';
 import useAppCapabilities from '@hooks/useAppCapabilities';
 import useCamera from '@hooks/useCamera';
@@ -261,14 +262,15 @@ const Animator = ({ t }) => {
             playSound(isAprilFoolsDay ? soundEagle : soundShutter);
           }
 
+          console.log('FT', frame)
+
           // Save frame
           if (pendingBackgroundFrame || maskingMode === 'DISABLED') {
             await projectActions.addFrame(
               track,
-              Buffer.from(frame.buffer),
-              frame.type?.includes('png') ? 'png' : 'jpg',
+              frame,
               isPlaying ? false : currentFrameId,
-              pendingBackgroundFrame ? Buffer.from(pendingBackgroundFrame.buffer) : null
+              pendingBackgroundFrame || null,
             );
           } else if (maskingMode === 'UNIQUE' || !pendingBackgroundFrame) {
             setPendingBackgroundFrame(frame);

@@ -122,8 +122,10 @@ class MaskingEditor extends Component {
   }
 
   _setupOutputCanvas(width, height) {
-    this.dom.output.current.width = width;
-    this.dom.output.current.height = height;
+    if (this.dom.output.current) {
+      this.dom.output.current.width = width;
+      this.dom.output.current.height = height;
+    }
     this.setState({ dimensions: { width, height } });
   }
 
@@ -155,7 +157,7 @@ class MaskingEditor extends Component {
      canvas.removeEventListener('touchend', this._stopDrawing);*/
   }
 
-  _handleTouch() {
+  _handleTouch = () => {
     /* e.preventDefault();
      const touch = e.touches[0];
      const mouseEvent = new MouseEvent(e.type === 'touchstart' ? 'mousedown' : 'mousemove', {
@@ -165,7 +167,7 @@ class MaskingEditor extends Component {
      this.images.transparent.dispatchEvent(mouseEvent);*/
   }
 
-  _startDrawing(e) {
+  _startDrawing = (e) => {
     this.isDrawing = true;
     const ctx = this.images.transparent.getContext('2d');
     const { x, y } = this._getMouseInCanvasPosition(e, true);
@@ -189,7 +191,7 @@ class MaskingEditor extends Component {
     ctx.stroke();
   }
 
-  _getMouseInCanvasPosition(e, applyLimits = false) {
+  _getMouseInCanvasPosition = (e, applyLimits = false) => {
     const canvasHitBox = this.dom.output.current.getBoundingClientRect();
 
     // Get position in the picture
@@ -215,7 +217,7 @@ class MaskingEditor extends Component {
     return { x, y };
   }
 
-  _draw(e) {
+  _draw = (e) => {
     this.mouseLastPosition = this._getMouseInCanvasPosition(e, false);
 
     if (!this.isDrawing) {
@@ -244,7 +246,7 @@ class MaskingEditor extends Component {
     this.lastY = y;
   }
 
-  _stopDrawing() {
+  _stopDrawing = () => {
     this.isDrawing = false;
     this.setState({ isDrawing: false });
     this.lastX = null;
@@ -252,6 +254,10 @@ class MaskingEditor extends Component {
   }
 
   _drawToCanvas(canvas = null, mode = null) {
+    if (!canvas) {
+      return;
+    }
+
     const outputCtx = canvas.getContext('2d');
 
     // Is editable by the user?
@@ -318,7 +324,7 @@ class MaskingEditor extends Component {
         //foreground  :  await new Promise(resolve => this.images.foreground.toBlob(resolve, 'image/jpeg')),
         transparent: await new Promise((resolve) => this.images.transparent.toBlob(resolve, 'image/png')),
       },
-      frame: await new Promise((resolve) => this.images.render.toBlob(resolve, 'image/jpeg')),
+      frame: await new Promise((resolve) => this.images.render.toBlob(resolve, 'image/png')),
     };
   }
 
@@ -345,8 +351,8 @@ MaskingEditor.propTypes = {
 MaskingEditor.defaultProps = {
   brushSize: 40,
   mode: 'REMOVE',
-  onModeChange: () => {},
-  onChange: () => {},
+  onModeChange: () => { },
+  onChange: () => { },
 };
 
 export default MaskingEditor;

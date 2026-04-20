@@ -80,6 +80,7 @@ const Export = ({ t }) => {
       compressAsZip: false,
       sendMethod: 'code',
       email: '',
+      exportMaskingLayers: true,
     },
   });
 
@@ -276,6 +277,7 @@ const Export = ({ t }) => {
       duplicateFramesAutoNumber: data.mode === 'send' ? Math.ceil(project?.scenes?.[Number(track)]?.framerate / 2) : data.duplicateFramesAutoNumber,
       forceFileExtension: data.mode === 'frames' ? (data.framesFormat === 'original' ? undefined : data.framesFormat) : 'jpg',
       resolution,
+      exportMaskingLayers: data.mode === 'frames' && !!data?.exportMaskingLayers,
     };
 
     // Track export
@@ -302,6 +304,7 @@ const Export = ({ t }) => {
       email: data.mode === 'send' && data.sendMethod === 'email' ? data.email : '',
       public_code: data.mode === 'send' && data.sendMethod === 'code' ? newCode : '',
       event_key: settings.EVENT_KEY,
+      exportMaskingLayers: !!data?.exportMaskingLayers,
     });
 
     setIsExporting(false);
@@ -358,6 +361,14 @@ const Export = ({ t }) => {
                   <FormGroup label={t('Use project ratio')} description={t('Normalize all the frames to match the project aspect ratio')}>
                     <div>
                       <Switch register={register('matchAspectRatio')} />
+                    </div>
+                  </FormGroup>
+                )}
+
+                {watch('mode') === 'frames' && (
+                  <FormGroup label={t('Export masking layers')} description={t('Export the layers of masked frames')}>
+                    <div>
+                      <Switch register={register('exportMaskingLayers')} />
                     </div>
                   </FormGroup>
                 )}

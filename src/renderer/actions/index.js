@@ -9,6 +9,7 @@ import { createBuffer, flushBuffers, getBuffer } from './buffer';
 import { getFFmpeg } from './ffmpeg';
 import { createFrame } from './frames';
 import { createProject, deleteProject, getAllProjects, getProject, saveProject } from './projects';
+import { extensionToMimeType } from '@core/frameTypes';
 
 let events = [];
 let currentDirectory = null;
@@ -120,7 +121,7 @@ export const Actions = {
     window.open(link, '_blank');
     return null;
   },
-  SAVE_PICTURE: async (evt, { buffer, extension = 'jpg' }) => {
+  SAVE_PICTURE: async (evt, { buffer, extension = 'dat' }) => {
     const frameId = await createFrame(buffer, extension);
     const ext = extension || 'dat';
     const filename = `${frameId}.${ext}`;
@@ -196,6 +197,7 @@ export const Actions = {
       compress_as_zip = false,
       custom_output_framerate_number = 10,
       endpoint = null, //eslint-disable-line no-unused-vars
+      exportMaskingLayers: false
     }
   ) => {
     const trackId = Number(track_id);
@@ -233,7 +235,7 @@ export const Actions = {
           const frame = frames[i];
           const buffer = await getBuffer(frame.buffer_id);
           const filename = `frame-${frame.index.toString().padStart(6, '0')}.${frame.extension}`;
-          blob = new Blob([buffer], { type: `image/${frame?.extension?.replace('jpg', 'jpeg') || 'jpeg'}` });
+          blob = new Blob([buffer], { type: extensionToMimeType(frame?.extension) });
           saveAs(blob, filename);
           blob = null;
         }

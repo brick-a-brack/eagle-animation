@@ -104,7 +104,7 @@ const actions = {
     const updatedData = await getProjectData(join(PROJECTS_PATH, project_id));
     return computeProject(updatedData);
   },
-  SAVE_PICTURE: async (evt, { project_id, track_id, buffer, extension = 'jpg' }) => {
+  SAVE_PICTURE: async (evt, { project_id, track_id, buffer, extension = 'dat' }) => {
     const data = await getProjectData(join(PROJECTS_PATH, project_id));
     const picture = await savePicture(join(PROJECTS_PATH, project_id), track_id, extension, buffer);
     return {
@@ -256,6 +256,7 @@ const actions = {
       framerate = 10,
       endpoint = null,
       email = null,
+      exportMaskingLayers = false,
     },
     sendToRenderer
   ) => {
@@ -263,7 +264,14 @@ const actions = {
       if (output_path) {
         const bufferDirectoryPath = join(join(PROJECTS_PATH, project_id), `/.tmp/`);
         for (const frame of frames) {
-          await copyFile(join(bufferDirectoryPath, frame.buffer_id), join(output_path, `frame-${frame.index.toString().padStart(6, '0')}.${frame.extension}`));
+          const typeName = {
+            MASKING_BACKGROUND: '-background',
+            MASKING_FOREGROUND: '-foreground',
+            MASKING_TRANSPARENT: '-transparent',
+            FRAME: '',
+          };
+
+          await copyFile(join(bufferDirectoryPath, frame.buffer_id), join(output_path, `frame-${frame.index.toString().padStart(6, '0')}${typeName[frame.type]}.${frame.extension}`));
         }
       }
       return true;

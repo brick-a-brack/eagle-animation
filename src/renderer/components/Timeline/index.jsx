@@ -7,7 +7,7 @@ import faEyeSlash from '@icons/faEyeSlash';
 import faForwardFast from '@icons/faForwardFast';
 import animateScrollTo from 'animated-scroll-to';
 import { useEffect, useLayoutEffect, useRef } from 'react';
-import { withTranslation } from 'react-i18next';
+import { useTranslation, withTranslation } from 'react-i18next';
 
 import * as style from './style.module.css';
 
@@ -23,6 +23,7 @@ const getPicturesKey = (pictures) => {
 
 const SortableItem = ({ img, isShortPlayBegining = false, playing = false, selected, onSelect, index }) => {
   const { setNodeRef, isDragging, transform, transition, listeners, attributes, active } = useSortable({ id: img.id });
+  const { t } = useTranslation();
   return (
     <span
       ref={setNodeRef}
@@ -45,7 +46,7 @@ const SortableItem = ({ img, isShortPlayBegining = false, playing = false, selec
       {img.hidden && <FontAwesomeIcon className={style.icon} icon={faEyeSlash} />}
       {isShortPlayBegining && <FontAwesomeIcon className={style.shortPlayIcon} icon={faForwardFast} />}
       {img.length > 1 && <span className={style.duplicated}>{`x${img.length}`}</span>}
-      {img.masking && <span className={style.masking}>M</span>}
+      {img.masking && <span className={style.masking}>{t('M')}</span>}
       <span className={style.title}>{`#${index + 1}`}</span>
     </span>
   );

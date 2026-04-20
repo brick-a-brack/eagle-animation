@@ -1,3 +1,4 @@
+import { extensionToMimeType } from '@core/frameTypes';
 import Dexie from 'dexie';
 
 class BlobFramesDatabase extends Dexie {
@@ -28,7 +29,7 @@ export const getFrameBlobUrl = async (id) => {
   if (!frame) {
     return null;
   }
-  const blob = new Blob([frame.buffer], { type: `image/${frame?.extension?.replace('jpg', 'jpeg') || 'jpeg'}` });
+  const blob = new Blob([frame.buffer], { type: extensionToMimeType(frame?.extension) });
   if (!blob) {
     return null;
   }
@@ -42,7 +43,7 @@ export const getFrameBlob = async (id) => {
   if (!frame) {
     return null;
   }
-  const blob = new Blob([frame.buffer], { type: `image/${frame?.extension?.replace('jpg', 'jpeg') || 'jpeg'}` });
+  const blob = new Blob([frame.buffer], { type: extensionToMimeType(frame?.extension) });
   if (!blob) {
     return null;
   }

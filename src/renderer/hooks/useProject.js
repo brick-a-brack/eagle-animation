@@ -1,3 +1,4 @@
+import { mimeTypeToExtension } from '@core/frameTypes';
 import { useCallback, useEffect, useState } from 'react';
 import { v4 } from 'uuid';
 
@@ -158,7 +159,7 @@ function useProject(options) {
             project_id: options?.id,
             track_id: sceneId,
             buffer: Buffer.from(await frameBuffer.arrayBuffer()),
-            extension: 'png',
+            extension: mimeTypeToExtension(frameBuffer.type),
           })
         : null,
       backgroundBuffer
@@ -166,7 +167,7 @@ function useProject(options) {
             project_id: options?.id,
             track_id: sceneId,
             buffer: Buffer.from(await backgroundBuffer.arrayBuffer()),
-            extension: 'png',
+            extension: mimeTypeToExtension(backgroundBuffer.type),
           })
         : null,
       foregroundBuffer
@@ -174,7 +175,7 @@ function useProject(options) {
             project_id: options?.id,
             track_id: sceneId,
             buffer: Buffer.from(await foregroundBuffer.arrayBuffer()),
-            extension: 'png',
+            extension: mimeTypeToExtension(foregroundBuffer.type),
           })
         : null,
       transparentBuffer
@@ -182,7 +183,7 @@ function useProject(options) {
             project_id: options?.id,
             track_id: sceneId,
             buffer: Buffer.from(await transparentBuffer.arrayBuffer()),
-            extension: 'png',
+            extension: mimeTypeToExtension(transparentBuffer.type),
           })
         : null,
     ]);
@@ -199,7 +200,6 @@ function useProject(options) {
               d.project.scenes[sceneId].pictures[i] = {
                 ...d.project.scenes[sceneId].pictures[i],
                 ...frameObject,
-                //id: newIds[0],
               };
             }
 
@@ -226,22 +226,26 @@ function useProject(options) {
 
   // Action add frame
   const actionAddFrame = useCallback(
-    async (trackId, buffer, extension = 'jpg', beforeFrameId = false, backgroundBuffer = null) => {
+    async (trackId, frameBlob, beforeFrameId = false, backgroundBlob = null) => {
+      const frameBuffer = Buffer.from(frameBlob.buffer);
+      const frameExtension = mimeTypeToExtension(frameBlob.type);
       const sceneId = Number(trackId);
       const addedPicture = await window.EA('SAVE_PICTURE', {
         project_id: options?.id,
         track_id: sceneId,
-        buffer,
-        extension: ['png', 'jpg', 'webp'].includes(extension?.toLowerCase()) ? extension?.toLowerCase() : 'jpg',
+        buffer: frameBuffer,
+        extension: frameExtension,
       });
 
       let backgroundPicture = null;
-      if (backgroundBuffer) {
+      if (backgroundBlob) {
+        const backgroundBuffer = Buffer.from(backgroundBlob.buffer);
+        const backgroundExtension = mimeTypeToExtension(backgroundBlob.type);
         backgroundPicture = await window.EA('SAVE_PICTURE', {
           project_id: options?.id,
           track_id: sceneId,
           buffer: backgroundBuffer,
-          extension: ['png', 'jpg', 'webp'].includes(extension?.toLowerCase()) ? extension?.toLowerCase() : 'jpg',
+          extension: backgroundExtension,
         });
       }
 

@@ -2,6 +2,7 @@ import { parseResizeArguments } from '@common/resizer';
 import resizeToFit from 'intrinsic-scale';
 
 import { getFrameBlob } from './actions/frames';
+import { extensionToMimeType } from '@core/frameTypes';
 
 console.log('🥷 Service Worker loaded! (Type=Web)');
 
@@ -62,7 +63,7 @@ const ExportFrame = async (
   ctx.fillStyle = '#000000';
   ctx.fillRect(0, 0, width, height);
   ctx.drawImage(img, 0, 0, naturalWidth, naturalHeight, outX, outY, outWidth, outHeight);
-  return canvas.convertToBlob({ type: `image/${(format || 'png').replace('jpg', 'jpeg')}` });
+  return canvas.convertToBlob({ type: extensionToMimeType(format || 'png')});
 };
 
 self.addEventListener('install', () => self.skipWaiting());

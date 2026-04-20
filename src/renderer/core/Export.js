@@ -3,6 +3,7 @@ import { Buffer } from 'buffer';
 import { v4 } from 'uuid';
 
 import { getPictureLink } from './resize';
+import { extensionToMimeType } from './frameTypes';
 
 export const ExportFrames = async (
   projectId = null, // eslint-disable-line no-unused-vars
@@ -14,6 +15,7 @@ export const ExportFrames = async (
     duplicateFramesAutoNumber: 1,
     forceFileExtension: undefined,
     resolution: null,
+    exportMaskingLayers: false,
   },
   onProgress = () => {},
   onBufferCreate = () => {}
@@ -38,13 +40,24 @@ export const ExportFrames = async (
 
   // Generate frames
   const rawFrames = [];
-  for (const file of files) {
-    if (file.deleted || file.hidden) {
-      onFrameDone();
-      rawFrames.push(null);
-      continue;
-    }
-
+  const filteredFrames = files
+    .filter((e) => !e.deleted && !e.hidden)
+    .map((e, index) => ({ ...e, index, type: 'FRAME' }))
+    .reduce(
+      (acc, e) => [
+        ...acc,
+        ...(e.masking && opts.exportMaskingLayers
+          ? [
+              e,
+              ...(e.masking.background ? [{ ...e.masking.background, type: 'MASKING_BACKGROUND', index: e.index, length: e.length }] : []),
+              ...(e.masking.foreground ? [{ ...e.masking.foreground, type: 'MASKING_FOREGROUND', index: e.index, length: e.length }] : []),
+              ...(e.masking.transparent ? [{ ...e.masking.transparent, type: 'MASKING_TRANSPARENT', index: e.index, length: e.length }] : []),
+            ]
+          : [e]),
+      ],
+      []
+    );
+  for (const file of filteredFrames) {
     const targetExtension = file.filename.split('.').pop() || 'jpg';
     const computedExtension = (typeof opts.forceFileExtension !== 'undefined' ? opts.forceFileExtension : targetExtension) || targetExtension;
 
@@ -80,9 +93,11 @@ export const ExportFrames = async (
     // Return frame data
     rawFrames.push({
       id: file.id,
+      index: file.index,
+      type: file.type,
       length: file.length || 1,
       extension: computedExtension,
-      mimeType: `image/${(computedExtension || 'jpg').replace('jpg', 'jpeg')}`,
+      mimeType: extensionToMimeType(computedExtension),
       bufferId: bufferId,
     });
   }
@@ -100,5 +115,5 @@ export const ExportFrames = async (
     return opts.duplicateFramesCopy ? frame.length : 1;
   };
 
-  return frames?.reduce((acc, e, i) => [...acc, ...Array(getNumberOfFrames(e, i)).fill(e)], []).map((e, i) => ({ ...e, index: i }));
+  return frames?.reduce((acc, e, i) => [...acc, ...Array(getNumberOfFrames(e, e.index)).fill(e)], []).map((e, i) => ({ ...e, index: e.index }));
 };
