@@ -15,8 +15,8 @@ class MaskingEditor extends Component {
       isDrawing: false,
       dimensions: {
         width: 0,
-        height: 0
-      }
+        height: 0,
+      },
     };
 
     // Last coorodonates
@@ -47,7 +47,8 @@ class MaskingEditor extends Component {
     let last = 0;
     const loop = (time) => {
       const delta = time - last;
-      if (delta > 1000 / 60) { // 30 FPS
+      if (delta > 1000 / 60) {
+        // 30 FPS
         try {
           this._redraw();
         } catch (err) {
@@ -56,16 +57,13 @@ class MaskingEditor extends Component {
         last = time;
       }
       this.animId = requestAnimationFrame(loop);
-    }
+    };
 
     loop();
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.backgroundLayer !== this.props.backgroundLayer ||
-      prevProps.foregroundLayer !== this.props.foregroundLayer ||
-      prevProps.transparentLayer !== this.props.transparentLayer
-    ) {
+    if (prevProps.backgroundLayer !== this.props.backgroundLayer || prevProps.foregroundLayer !== this.props.foregroundLayer || prevProps.transparentLayer !== this.props.transparentLayer) {
       this._loadImages();
     }
   }
@@ -102,15 +100,12 @@ class MaskingEditor extends Component {
 
   async _loadImages() {
     // Load background and foreground images
-    const [background, foreground] = await Promise.all([
-      this._loadImage(this.props.backgroundLayer),
-      this._loadImage(this.props.foregroundLayer),
-    ])
+    const [background, foreground] = await Promise.all([this._loadImage(this.props.backgroundLayer), this._loadImage(this.props.foregroundLayer)]);
     this.images.background = background;
     this.images.foreground = foreground;
 
     // Load transparent layer if provided
-    this.images.transparent = await this._loadImage(this.props.transparentLayer, background.width, background.height)
+    this.images.transparent = await this._loadImage(this.props.transparentLayer, background.width, background.height);
 
     // Prepare temporary canvas
     this.images.temporary = document.createElement('canvas');
@@ -160,7 +155,7 @@ class MaskingEditor extends Component {
      canvas.removeEventListener('touchend', this._stopDrawing);*/
   }
 
-  _handleTouch (e) {
+  _handleTouch() {
     /* e.preventDefault();
      const touch = e.touches[0];
      const mouseEvent = new MouseEvent(e.type === 'touchstart' ? 'mousedown' : 'mousemove', {
@@ -170,7 +165,7 @@ class MaskingEditor extends Component {
      this.images.transparent.dispatchEvent(mouseEvent);*/
   }
 
-  _startDrawing (e) {
+  _startDrawing(e) {
     this.isDrawing = true;
     const ctx = this.images.transparent.getContext('2d');
     const { x, y } = this._getMouseInCanvasPosition(e, true);
@@ -180,26 +175,26 @@ class MaskingEditor extends Component {
     this.setState({ isDrawing: true });
   }
 
-  _drawLine = (ctx, x1, y1, x2, y2) => {
+  _drawLine(ctx, x1, y1, x2, y2) {
     ctx.globalCompositeOperation = this.props.mode === 'RESTORE' ? 'destination-out' : 'source-over';
-    ctx.lineWidth = this.props.brushSize / 1000 * this.images.background.width; // TODO: Be sure it's consistent with various img size in % ?
+    ctx.lineWidth = (this.props.brushSize / 1000) * this.images.background.width; // TODO: Be sure it's consistent with various img size in % ?
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
-    ctx.strokeStyle = "rgba(255, 255, 255)";
+    ctx.strokeStyle = 'rgba(255, 255, 255)';
     ctx.shadowColor = 'rgba(255, 255, 255)';
-    ctx.filter = `blur(${Math.round(this.props.brushBlurSize / 10000 * this.images.background.width)}px)`;
+    ctx.filter = `blur(${Math.round((this.props.brushBlurSize / 10000) * this.images.background.width)}px)`;
     ctx.beginPath();
     ctx.moveTo(x1, y1);
     ctx.lineTo(x2, y2);
     ctx.stroke();
   }
 
-  _getMouseInCanvasPosition = (e, applyLimits = false) => {
+  _getMouseInCanvasPosition(e, applyLimits = false) {
     const canvasHitBox = this.dom.output.current.getBoundingClientRect();
 
     // Get position in the picture
-    let x = (e.clientX - canvasHitBox.x) / canvasHitBox.width * this.images.background.width;
-    let y = (e.clientY - canvasHitBox.y) / canvasHitBox.height * this.images.background.height;
+    let x = ((e.clientX - canvasHitBox.x) / canvasHitBox.width) * this.images.background.width;
+    let y = ((e.clientY - canvasHitBox.y) / canvasHitBox.height) * this.images.background.height;
 
     // X limit
     if (e.clientX < canvasHitBox.x && applyLimits) {
@@ -220,7 +215,7 @@ class MaskingEditor extends Component {
     return { x, y };
   }
 
-  _draw = (e) => {
+  _draw(e) {
     this.mouseLastPosition = this._getMouseInCanvasPosition(e, false);
 
     if (!this.isDrawing) {
@@ -249,7 +244,7 @@ class MaskingEditor extends Component {
     this.lastY = y;
   }
 
-  _stopDrawing = () => {
+  _stopDrawing() {
     this.isDrawing = false;
     this.setState({ isDrawing: false });
     this.lastX = null;
@@ -276,7 +271,6 @@ class MaskingEditor extends Component {
       outputCtx.drawImage(this.images.background, 0, 0, this.images.background.width, this.images.background.height);
     }
 
-
     // Draw foreground with alpha mask
     if (this.images.foreground) {
       const tempCtx = this.images.temporary.getContext('2d'); // WHY ISSUE HERE ? TODO FIX  this.images.temporary = null ?
@@ -298,7 +292,7 @@ class MaskingEditor extends Component {
     if (this.mouseLastPosition && isEditable) {
       outputCtx.beginPath();
       outputCtx.arc(this.mouseLastPosition.x, this.mouseLastPosition.y, this.props.brushSize, 0, 2 * Math.PI);
-      outputCtx.fillStyle = "rgba(255,255,255,0.2)";
+      outputCtx.fillStyle = 'rgba(255,255,255,0.2)';
       outputCtx.fill();
     }
   }
@@ -322,20 +316,17 @@ class MaskingEditor extends Component {
       layers: {
         //background : await new Promise(resolve => this.images.background.toBlob(resolve, 'image/jpeg')),
         //foreground  :  await new Promise(resolve => this.images.foreground.toBlob(resolve, 'image/jpeg')),
-        transparent: await new Promise(resolve => this.images.transparent.toBlob(resolve, 'image/png')),
+        transparent: await new Promise((resolve) => this.images.transparent.toBlob(resolve, 'image/png')),
       },
-      frame: await new Promise(resolve => this.images.render.toBlob(resolve, 'image/jpeg')),
-    }
+      frame: await new Promise((resolve) => this.images.render.toBlob(resolve, 'image/jpeg')),
+    };
   }
 
   render() {
     const isEditable = this.props.mode === 'REMOVE' || this.props.mode === 'RESTORE';
     return (
       <div className={style.container}>
-        <canvas
-          ref={this.dom.output}
-          className={`${style.layout} ${isEditable ? style.isEditable : ''}`}
-        />
+        <canvas ref={this.dom.output} className={`${style.layout} ${isEditable ? style.isEditable : ''}`} />
       </div>
     );
   }
@@ -354,8 +345,8 @@ MaskingEditor.propTypes = {
 MaskingEditor.defaultProps = {
   brushSize: 40,
   mode: 'REMOVE',
-  onModeChange: () => { },
-  onChange: () => { },
+  onModeChange: () => {},
+  onChange: () => {},
 };
 
 export default MaskingEditor;

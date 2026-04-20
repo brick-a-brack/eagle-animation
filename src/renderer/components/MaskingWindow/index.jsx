@@ -9,7 +9,7 @@ import { withTranslation } from 'react-i18next';
 
 import * as style from './style.module.css';
 
-const MaskingWindow = forwardRef(({ backgroundLayer = null, foregroundLayer = null, transparentLayer = null, t }, ref) => {
+const MaskingWindow = forwardRef(function MaskingWindow({ backgroundLayer = null, foregroundLayer = null, transparentLayer = null, t }, ref) {
   const [selectedTab, setSelectedTab] = useState('REMOVE');
   const [brushSize, setBrushSize] = useState(50);
   const [brushBlurSize, setBrushBlurSize] = useState(10);
