@@ -83,7 +83,6 @@ const getLastFrameId = (frames) => getPreviousFrameId(frames, false);
 
 // Get next frame id
 const getNextFrameId = (frames, frameId, skipHiddenFrames = false) => {
-
   let frameFound = false;
   for (const frame of frames) {
     if (frame.deleted) {
@@ -239,59 +238,58 @@ const Animator = ({ t }) => {
 
   const takePictures =
     (nbPicturesToTake = null) =>
-      async () => {
-        if (isTakingPicture || !currentCamera) {
-          return;
-        }
-        flushSync(() => {
-          setIsTakingPicture(true);
-        });
+    async () => {
+      if (isTakingPicture || !currentCamera) {
+        return;
+      }
+      flushSync(() => {
+        setIsTakingPicture(true);
+      });
 
-        setStartedAt((oldValue) => (oldValue ? oldValue : new Date().getTime() / 1000));
+      setStartedAt((oldValue) => (oldValue ? oldValue : new Date().getTime() / 1000));
 
-        const numberOfFramesToTake = (Number(nbPicturesToTake !== null ? nbPicturesToTake : settings.CAPTURE_FRAMES) || 1);
-        for (let i = 0; i < numberOfFramesToTake; i++) {
-          const nbFramesToTakeForAvg = (settings.AVERAGING_ENABLED ? Number(settings.AVERAGING_VALUE) : 1) || 1;
-          try {
-            const frame = await cameraActions.takePicture(nbFramesToTakeForAvg, settings.REVERSE_X, settings.REVERSE_Y);
+      const numberOfFramesToTake = Number(nbPicturesToTake !== null ? nbPicturesToTake : settings.CAPTURE_FRAMES) || 1;
+      for (let i = 0; i < numberOfFramesToTake; i++) {
+        const nbFramesToTakeForAvg = (settings.AVERAGING_ENABLED ? Number(settings.AVERAGING_VALUE) : 1) || 1;
+        try {
+          const frame = await cameraActions.takePicture(nbFramesToTakeForAvg, settings.REVERSE_X, settings.REVERSE_Y);
 
-            window.track('frame_captured', { projectId: `${id}`, trackId: `${track}`, reverseX: settings.REVERSE_X, reverseY: settings.REVERSE_Y, nbFrames: nbFramesToTakeForAvg });
+          window.track('frame_captured', { projectId: `${id}`, trackId: `${track}`, reverseX: settings.REVERSE_X, reverseY: settings.REVERSE_Y, nbFrames: nbFramesToTakeForAvg });
 
-            if (settings.SOUNDS) {
-              const isAprilFoolsDay = new Date().getDate() === 1 && new Date().getMonth() === 3;
-              playSound(isAprilFoolsDay ? soundEagle : soundShutter);
-            }
-
-            // Save frame
-            if (pendingBackgroundFrame || maskingMode === 'DISABLED') {
-              await projectActions.addFrame(
-                track,
-                Buffer.from(frame.buffer),
-                frame.type?.includes('png') ? 'png' : 'jpg',
-                isPlaying ? false : currentFrameId,
-                pendingBackgroundFrame ? Buffer.from(pendingBackgroundFrame.buffer) : null,
-              );
-            } else if (maskingMode === 'UNIQUE' || !pendingBackgroundFrame) {
-              setPendingBackgroundFrame(frame);
-            }
-
-            // Clean background
-            if (maskingMode === 'DISABLED' || (maskingMode === 'UNIQUE' && pendingBackgroundFrame)) {
-              setPendingBackgroundFrame(null);
-            }
-
-          } catch (err) {
-            if (settings.SOUNDS) {
-              playSound(soundError);
-            }
-            console.error('Failed to take a picture', err);
+          if (settings.SOUNDS) {
+            const isAprilFoolsDay = new Date().getDate() === 1 && new Date().getMonth() === 3;
+            playSound(isAprilFoolsDay ? soundEagle : soundShutter);
           }
-        }
 
-        flushSync(() => {
-          setIsTakingPicture(false);
-        });
-      };
+          // Save frame
+          if (pendingBackgroundFrame || maskingMode === 'DISABLED') {
+            await projectActions.addFrame(
+              track,
+              Buffer.from(frame.buffer),
+              frame.type?.includes('png') ? 'png' : 'jpg',
+              isPlaying ? false : currentFrameId,
+              pendingBackgroundFrame ? Buffer.from(pendingBackgroundFrame.buffer) : null
+            );
+          } else if (maskingMode === 'UNIQUE' || !pendingBackgroundFrame) {
+            setPendingBackgroundFrame(frame);
+          }
+
+          // Clean background
+          if (maskingMode === 'DISABLED' || (maskingMode === 'UNIQUE' && pendingBackgroundFrame)) {
+            setPendingBackgroundFrame(null);
+          }
+        } catch (err) {
+          if (settings.SOUNDS) {
+            playSound(soundError);
+          }
+          console.error('Failed to take a picture', err);
+        }
+      }
+
+      flushSync(() => {
+        setIsTakingPicture(false);
+      });
+    };
 
   const actionsEvents = {
     PLAY: () => {
@@ -430,7 +428,7 @@ const Animator = ({ t }) => {
     PROJECT_SETTINGS: () => {
       setShowProjectSettings((v) => !v);
     },
-    MORE: () => { },
+    MORE: () => {},
     EXPORT: () => {
       navigate(`/export/${id}/${track}?back=/animator/${id}/${track}`);
     },
@@ -476,7 +474,7 @@ const Animator = ({ t }) => {
     },
     MASKING_EDITOR: () => {
       setShowMaskingEditor(true);
-    }
+    },
   };
 
   const handlePlayerInit = (videoDOM = null, imageDOM = null) => {
@@ -514,7 +512,7 @@ const Animator = ({ t }) => {
     setTimeout(() => {
       playerRef.current.showFrame(currentFrame?.id);
     }, 0);
-  }
+  };
 
   return (
     <>
@@ -524,7 +522,7 @@ const Animator = ({ t }) => {
           leftActions={['BACK']}
           rightActions={[
             ...(pictures?.some((e) => !e?.hidden) &&
-              (appCapabilities.includes('EXPORT_VIDEO') || appCapabilities.includes('EXPORT_FRAMES') || (appCapabilities.includes('BACKGROUND_SYNC') && settings?.EVENT_MODE_ENABLED))
+            (appCapabilities.includes('EXPORT_VIDEO') || appCapabilities.includes('EXPORT_FRAMES') || (appCapabilities.includes('BACKGROUND_SYNC') && settings?.EVENT_MODE_ENABLED))
               ? ['EXPORT']
               : []),
           ]}
@@ -621,12 +619,14 @@ const Animator = ({ t }) => {
         />
       </Window>
       <Window isOpened={showMaskingEditor && !isPlaying} onClose={handleCloseMaskingEditor} isFullScreen={true}>
-        {currentFrame && <MaskingWindow
-          ref={maskingEditorRef}
-          backgroundLayer={currentFrame?.masking?.background?.link || null}
-          foregroundLayer={currentFrame?.masking?.foreground?.link || null}
-          transparentLayer={currentFrame?.masking?.transparent?.link || null}
-        />}
+        {currentFrame && (
+          <MaskingWindow
+            ref={maskingEditorRef}
+            backgroundLayer={currentFrame?.masking?.background?.link || null}
+            foregroundLayer={currentFrame?.masking?.foreground?.link || null}
+            transparentLayer={currentFrame?.masking?.transparent?.link || null}
+          />
+        )}
       </Window>
     </>
   );

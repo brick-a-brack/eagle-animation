@@ -150,7 +150,6 @@ function useProject(options) {
 
   // Action update frame
   const actionUpdateFrame = useCallback(async (trackId, frameId, frameBuffer = null, backgroundBuffer = null, foregroundBuffer = null, transparentBuffer = null) => {
-
     const sceneId = Number(trackId);
 
     const [frameObject, backgroundObject, foregroundObject, transparentObject] = await Promise.all([

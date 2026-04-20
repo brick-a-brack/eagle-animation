@@ -160,7 +160,7 @@ class MaskingEditor extends Component {
      canvas.removeEventListener('touchend', this._stopDrawing);*/
   }
 
-  _handleTouch = (e) => {
+  _handleTouch (e) {
     /* e.preventDefault();
      const touch = e.touches[0];
      const mouseEvent = new MouseEvent(e.type === 'touchstart' ? 'mousedown' : 'mousemove', {
@@ -170,7 +170,7 @@ class MaskingEditor extends Component {
      this.images.transparent.dispatchEvent(mouseEvent);*/
   }
 
-  _startDrawing = (e) => {
+  _startDrawing (e) {
     this.isDrawing = true;
     const ctx = this.images.transparent.getContext('2d');
     const { x, y } = this._getMouseInCanvasPosition(e, true);

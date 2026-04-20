@@ -3,10 +3,10 @@ import { readdir, readFile, stat, writeFile } from 'node:fs/promises';
 import { format, join } from 'node:path';
 
 import { mkdirp } from 'mkdirp';
+import { v4 } from 'uuid';
 
 import { DEFAULT_FPS, PROJECT_FILE, VERSION } from '../../config';
 import { time } from './utils';
-import { v4 } from 'uuid';
 
 const exists = async (path) => {
   const info = await stat(path).catch(() => null);

@@ -5,7 +5,7 @@ import { useCallback, useEffect, useState } from 'react';
 const DEFAULT_SETTINGS = {
   PLAY_FROM_BEGINING: false,
   LOOP_SHOW_LIVE: true,
-  SKIP_HIDDEN_FRAMES:false,
+  SKIP_HIDDEN_FRAMES: false,
   CAMERA_ID: null,
   FORCE_QUALITY: false,
   CAPTURE_FRAMES: 1,

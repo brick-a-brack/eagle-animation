@@ -43,23 +43,30 @@ const computeProject = async (data) => {
             ...(picture?.masking
               ? {
                   masking: {
-                    background: picture?.masking?.background ? {
-                      ...picture?.masking?.background,
-                        link: `/api/pictures/${picture?.masking?.background?.id}/${picture?.masking?.background?.filename}`,
-                        metaLink: `/api/pictures/${picture?.masking?.background?.id}/${picture?.masking?.background?.filename}?infos=json`,
-                    } : null,
-                    foreground: picture?.masking?.foreground ? {
-                      ...picture?.masking?.foreground,
-                        link: `/api/pictures/${picture?.masking?.foreground?.id}/${picture?.masking?.foreground?.filename}`,
-                        metaLink: `/api/pictures/${picture?.masking?.foreground?.id}/${picture?.masking?.foreground?.filename}?infos=json`,
-                    } : null,
-                    transparent: picture?.masking?.transparent ? {
-                      ...picture?.masking?.transparent,
-                        link: `/api/pictures/${picture?.masking?.transparent?.id}/${picture?.masking?.transparent?.filename}`,
-                        metaLink: `/api/pictures/${picture?.masking?.transparent?.id}/${picture?.masking?.transparent?.filename}?infos=json`,
-                    } : null,
-                  }
-              } : {}),
+                    background: picture?.masking?.background
+                      ? {
+                          ...picture?.masking?.background,
+                          link: `/api/pictures/${picture?.masking?.background?.id}/${picture?.masking?.background?.filename}`,
+                          metaLink: `/api/pictures/${picture?.masking?.background?.id}/${picture?.masking?.background?.filename}?infos=json`,
+                        }
+                      : null,
+                    foreground: picture?.masking?.foreground
+                      ? {
+                          ...picture?.masking?.foreground,
+                          link: `/api/pictures/${picture?.masking?.foreground?.id}/${picture?.masking?.foreground?.filename}`,
+                          metaLink: `/api/pictures/${picture?.masking?.foreground?.id}/${picture?.masking?.foreground?.filename}?infos=json`,
+                        }
+                      : null,
+                    transparent: picture?.masking?.transparent
+                      ? {
+                          ...picture?.masking?.transparent,
+                          link: `/api/pictures/${picture?.masking?.transparent?.id}/${picture?.masking?.transparent?.filename}`,
+                          metaLink: `/api/pictures/${picture?.masking?.transparent?.id}/${picture?.masking?.transparent?.filename}?infos=json`,
+                        }
+                      : null,
+                  },
+                }
+              : {}),
           }))
         ),
       };
