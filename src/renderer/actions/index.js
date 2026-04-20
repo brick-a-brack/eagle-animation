@@ -197,7 +197,7 @@ export const Actions = {
       compress_as_zip = false,
       custom_output_framerate_number = 10,
       endpoint = null, //eslint-disable-line no-unused-vars
-      exportMaskingLayers: false
+      exportMaskingLayers = false
     }
   ) => {
     const trackId = Number(track_id);
