@@ -5,23 +5,23 @@
 
 .navbar {
     display: flex;
-    width: 100%;
-    justify-content: space-evenly;
     height: 80px;
+    justify-content: space-evenly;
+    width: 100%;
 }
 
 .navbarItem {
-    width: 100%;
-    position: relative;
+    align-items: center;
     display: flex;
     justify-content: center;
-    align-items: center;
+    position: relative;
+    width: 100%;
 }
 
 .navbarItemRange {
-    width: 100%;
+    align-items: center;
     display: flex;
     justify-content: center;
-    align-items: center;
+    width: 100%;
 
 }
