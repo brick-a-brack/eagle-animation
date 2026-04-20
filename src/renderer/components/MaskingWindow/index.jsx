@@ -1,22 +1,21 @@
+import Button from '@components/Button';
 import CustomSlider from '@components/CustomSlider';
 import IconTabs from '@components/IconTabs';
 import MaskingEditor from '@components/MaskingEditor';
 import Tooltip from '@components/Tooltip';
+import faBroom from '@icons/faBroom';
+import faEraser from '@icons/faEraser';
 import faEye from '@icons/faEye';
 import faPen from '@icons/faPen';
 import { forwardRef, useImperativeHandle, useRef, useState } from 'react';
 import { withTranslation } from 'react-i18next';
 
 import * as style from './style.module.css';
-import Button from '@components/Button';
-import faTrash from '@icons/faTrash';
-import faBroom from '@icons/faBroom';
-import faEraser from '@icons/faEraser';
 
 const MaskingWindow = forwardRef(function MaskingWindow({ backgroundLayer = null, foregroundLayer = null, transparentLayer = null, t }, ref) {
   const [selectedTab, setSelectedTab] = useState('REMOVE');
   const [brushSize, setBrushSize] = useState(50);
-  const [brushBlurSize, setBrushBlurSize] = useState(10);
+  const [brushBlurSize, setBrushBlurSize] = useState(50);
 
   const editorRef = useRef(null);
 
@@ -55,9 +54,14 @@ const MaskingWindow = forwardRef(function MaskingWindow({ backgroundLayer = null
       {selectedTab !== 'PREVIEW' && (
         <div className={style.navbar}>
           <div className={`${style.navbarItemLeft} ${style.navbarItemSmall}`}>
-            <Button icon={faEraser} selected={selectedTab === 'REMOVE'} onClick={() => {
-              setSelectedTab(selectedTab === 'REMOVE' ? 'RESTORE' : 'REMOVE');
-            }} title={selectedTab === 'REMOVE' ? t('Anti-Eraser') : t('Eraser')} />
+            <Button
+              icon={faEraser}
+              selected={selectedTab === 'REMOVE'}
+              onClick={() => {
+                setSelectedTab(selectedTab === 'REMOVE' ? 'RESTORE' : 'REMOVE');
+              }}
+              title={selectedTab === 'REMOVE' ? t('Anti-Eraser') : t('Eraser')}
+            />
           </div>
 
           <div className={style.navbarItemLeft}>
@@ -83,7 +87,6 @@ const MaskingWindow = forwardRef(function MaskingWindow({ backgroundLayer = null
           </div>
         </div>
       )}
-
     </>
   );
 });
