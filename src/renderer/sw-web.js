@@ -78,7 +78,7 @@ self.addEventListener('fetch', (event) => {
       (async () => {
         try {
           // Parse id and args
-          const frameId = url.pathname.split('/api/pictures/')[1].split('/')[0];
+          const frameId = url.pathname.split('/api/pictures/')[1].split('.')[0];
           const { w, h, m, f, q, i } = parseResizeArguments(url.searchParams);
 
           // Get original frame blob

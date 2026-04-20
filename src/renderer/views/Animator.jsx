@@ -262,8 +262,6 @@ const Animator = ({ t }) => {
             playSound(isAprilFoolsDay ? soundEagle : soundShutter);
           }
 
-          console.log('FT', frame)
-
           // Save frame
           if (pendingBackgroundFrame || maskingMode === 'DISABLED') {
             await projectActions.addFrame(
@@ -621,7 +619,7 @@ const Animator = ({ t }) => {
         />
       </Window>
       <Window isOpened={showMaskingEditor && !isPlaying} onClose={handleCloseMaskingEditor} isFullScreen={true}>
-        {currentFrame && (
+        {currentFrame && currentFrame?.masking && (
           <MaskingWindow
             ref={maskingEditorRef}
             backgroundLayer={currentFrame?.masking?.background?.link || null}

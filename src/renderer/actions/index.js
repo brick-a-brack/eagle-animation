@@ -39,30 +39,30 @@ const computeProject = async (data) => {
         pictures: await Promise.all(
           scene.pictures.map(async (picture) => ({
             ...picture,
-            link: `/api/pictures/${picture.id}/${picture.filename}`,
-            metaLink: `/api/pictures/${picture.id}/${picture.filename}?infos=json`,
+            link: `/api/pictures/${picture.filename}`,
+            metaLink: `/api/pictures/${picture.filename}?infos=json`,
             ...(picture?.masking
               ? {
                   masking: {
                     background: picture?.masking?.background
                       ? {
                           ...picture?.masking?.background,
-                          link: `/api/pictures/${picture?.masking?.background?.id}/${picture?.masking?.background?.filename}`,
-                          metaLink: `/api/pictures/${picture?.masking?.background?.id}/${picture?.masking?.background?.filename}?infos=json`,
+                          link: `/api/pictures/${picture?.masking?.background?.filename}`,
+                          metaLink: `/api/pictures/${picture?.masking?.background?.filename}?infos=json`,
                         }
                       : null,
                     foreground: picture?.masking?.foreground
                       ? {
                           ...picture?.masking?.foreground,
-                          link: `/api/pictures/${picture?.masking?.foreground?.id}/${picture?.masking?.foreground?.filename}`,
-                          metaLink: `/api/pictures/${picture?.masking?.foreground?.id}/${picture?.masking?.foreground?.filename}?infos=json`,
+                          link: `/api/pictures/${picture?.masking?.foreground?.filename}`,
+                          metaLink: `/api/pictures/${picture?.masking?.foreground?.filename}?infos=json`,
                         }
                       : null,
                     transparent: picture?.masking?.transparent
                       ? {
                           ...picture?.masking?.transparent,
-                          link: `/api/pictures/${picture?.masking?.transparent?.id}/${picture?.masking?.transparent?.filename}`,
-                          metaLink: `/api/pictures/${picture?.masking?.transparent?.id}/${picture?.masking?.transparent?.filename}?infos=json`,
+                          link: `/api/pictures/${picture?.masking?.transparent?.filename}`,
+                          metaLink: `/api/pictures/${picture?.masking?.transparent?.filename}?infos=json`,
                         }
                       : null,
                   },
@@ -129,8 +129,8 @@ export const Actions = {
       filename,
       deleted: false,
       length: 1,
-      link: `/api/pictures/${frameId}/${filename}`,
-      metaLink: `/api/pictures/${frameId}/${filename}?infos=json`,
+      link: `/api/pictures/${filename}`,
+      metaLink: `/api/pictures/${filename}?infos=json`,
     };
   },
   GET_SETTINGS: async () => {
