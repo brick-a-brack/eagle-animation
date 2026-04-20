@@ -1,8 +1,8 @@
 import { parseResizeArguments } from '@common/resizer';
+import { extensionToMimeType, mimeTypeToExtension } from '@core/frameTypes';
 import resizeToFit from 'intrinsic-scale';
 
 import { getFrameBlob } from './actions/frames';
-import { extensionToMimeType } from '@core/frameTypes';
 
 console.log('🥷 Service Worker loaded! (Type=Web)');
 
@@ -59,11 +59,11 @@ const ExportFrame = async (
   canvas.height = height;
   canvas.width = width;
   const { width: outWidth, height: outHeight, x: outX, y: outY } = resizeToFit(mode, { width: naturalWidth, height: naturalHeight }, { width, height });
-  const ctx = canvas.getContext('2d', { alpha: false });
-  ctx.fillStyle = '#000000';
+  const ctx = canvas.getContext('2d', { alpha: format !== 'jpg' });
+  ctx.fillStyle = format !== 'jpg' ? 'rgba(0,0,0,0)' : '#000000';
   ctx.fillRect(0, 0, width, height);
   ctx.drawImage(img, 0, 0, naturalWidth, naturalHeight, outX, outY, outWidth, outHeight);
-  return canvas.convertToBlob({ type: extensionToMimeType(format || 'png')});
+  return canvas.convertToBlob({ type: extensionToMimeType(format || 'png') });
 };
 
 self.addEventListener('install', () => self.skipWaiting());
@@ -79,7 +79,9 @@ self.addEventListener('fetch', (event) => {
         try {
           // Parse id and args
           const frameId = url.pathname.split('/api/pictures/')[1].split('.')[0];
-          const { w, h, m, f, q, i } = parseResizeArguments(url.searchParams);
+          const args = parseResizeArguments(url.searchParams);
+          const { w, h, m, q, i } = args;
+          let { f } = args;
 
           // Get original frame blob
           const blob = await getFrameBlob(frameId);
@@ -104,6 +106,11 @@ self.addEventListener('fetch', (event) => {
                 },
               }
             );
+          }
+
+          // Format not specified
+          if (!f) {
+            f = mimeTypeToExtension(blob.type || 'image/jpeg');
           }
 
           // Resize and/or convert the image using WebWorker

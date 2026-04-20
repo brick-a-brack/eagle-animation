@@ -1,6 +1,7 @@
 import { getEncodingProfile, getFFmpegArgs, parseFFmpegLogs } from '@common/ffmpeg';
 import { isBlink } from '@common/isBlink';
 import { LS_SETTINGS } from '@config-web';
+import { extensionToMimeType } from '@core/frameTypes';
 import { fetchFile } from '@ffmpeg/util';
 import { saveAs } from 'file-saver';
 import JSZip from 'jszip';
@@ -9,7 +10,6 @@ import { createBuffer, flushBuffers, getBuffer } from './buffer';
 import { getFFmpeg } from './ffmpeg';
 import { createFrame } from './frames';
 import { createProject, deleteProject, getAllProjects, getProject, saveProject } from './projects';
-import { extensionToMimeType } from '@core/frameTypes';
 
 let events = [];
 let currentDirectory = null;
@@ -166,6 +166,7 @@ export const Actions = {
   },
   EXPORT_SELECT_PATH: async (evt, { compress_as_zip = false }) => {
     currentDirectory = null;
+
     if (!compress_as_zip) {
       try {
         if ('showDirectoryPicker' in self) {
@@ -197,11 +198,20 @@ export const Actions = {
       compress_as_zip = false,
       custom_output_framerate_number = 10,
       endpoint = null, //eslint-disable-line no-unused-vars
-      exportMaskingLayers = false
+      exportMaskingLayers = false,
     }
   ) => {
     const trackId = Number(track_id);
     const project = await getProject(project_id);
+
+    const typeNames = {
+      MASKING_BACKGROUND: '-background',
+      MASKING_FOREGROUND: '-foreground',
+      MASKING_TRANSPARENT: '-transparent',
+      FRAME: '',
+    };
+
+    console.log('frames', frames);
 
     // Frames export
     if (mode === 'frames') {
@@ -211,7 +221,7 @@ export const Actions = {
         for (let i = 0; i < frames.length; i++) {
           const frame = frames[i];
           const buffer = await getBuffer(frame.buffer_id);
-          zip.file(`frame-${frame.index.toString().padStart(6, '0')}.${frame.extension}`, buffer);
+          zip.file(`frame-${frame.index.toString().padStart(6, '0')}${typeNames[frame.type]}.${frame.extension}`, buffer);
         }
         zip.generateAsync({ type: 'blob' }).then((content) => {
           saveAs(content, 'frames.zip');
@@ -222,7 +232,7 @@ export const Actions = {
           for (let i = 0; i < frames.length; i++) {
             const frame = frames[i];
             const buffer = await getBuffer(frame.buffer_id);
-            const fileHandle = await currentDirectory.getFileHandle(`frame-${frame.index.toString().padStart(6, '0')}.${frame.extension}`, { create: true });
+            const fileHandle = await currentDirectory.getFileHandle(`frame-${frame.index.toString().padStart(6, '0')}${typeNames[frame.type]}.${frame.extension}`, { create: true });
             const writable = await fileHandle.createWritable();
             await writable.write(buffer);
             await writable.close();
@@ -234,10 +244,11 @@ export const Actions = {
         for (let i = 0; i < frames.length; i++) {
           const frame = frames[i];
           const buffer = await getBuffer(frame.buffer_id);
-          const filename = `frame-${frame.index.toString().padStart(6, '0')}.${frame.extension}`;
+          const filename = `frame-${frame.index.toString().padStart(6, '0')}${typeNames[frame.type]}.${frame.extension}`;
           blob = new Blob([buffer], { type: extensionToMimeType(frame?.extension) });
           saveAs(blob, filename);
           blob = null;
+          await new Promise((r) => setTimeout(r, 50));
         }
       }
     }

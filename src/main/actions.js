@@ -264,14 +264,14 @@ const actions = {
       if (output_path) {
         const bufferDirectoryPath = join(join(PROJECTS_PATH, project_id), `/.tmp/`);
         for (const frame of frames) {
-          const typeName = {
+          const typeNames = {
             MASKING_BACKGROUND: '-background',
             MASKING_FOREGROUND: '-foreground',
             MASKING_TRANSPARENT: '-transparent',
             FRAME: '',
           };
 
-          await copyFile(join(bufferDirectoryPath, frame.buffer_id), join(output_path, `frame-${frame.index.toString().padStart(6, '0')}${typeName[frame.type]}.${frame.extension}`));
+          await copyFile(join(bufferDirectoryPath, frame.buffer_id), join(output_path, `frame-${frame.index.toString().padStart(6, '0')}${typeNames[frame.type]}.${frame.extension}`));
         }
       }
       return true;

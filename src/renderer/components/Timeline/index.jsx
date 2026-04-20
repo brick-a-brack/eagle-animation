@@ -5,6 +5,7 @@ import { CSS as DNDCSS } from '@dnd-kit/utilities';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import faEyeSlash from '@icons/faEyeSlash';
 import faForwardFast from '@icons/faForwardFast';
+import faLayer from '@icons/faLayer';
 import animateScrollTo from 'animated-scroll-to';
 import { useEffect, useLayoutEffect, useRef } from 'react';
 import { useTranslation, withTranslation } from 'react-i18next';
@@ -52,7 +53,7 @@ const SortableItem = ({ img, isShortPlayBegining = false, playing = false, selec
   );
 };
 
-const Timeline = ({ onSelect, onMove, select = false, pictures = [], playing = false, shortPlayStatus = false, shortPlayFrames = 0, isPendingBackgroundFrameAvailable = false, t }) => {
+const Timeline = ({ onSelect, onMove, select = false, pictures = [], playing = false, shortPlayStatus = false, shortPlayFrames = 0, frameCaptureMode = false, t }) => {
   const ref = useRef(null);
 
   const sensors = useSensors(
@@ -143,7 +144,16 @@ const Timeline = ({ onSelect, onMove, select = false, pictures = [], playing = f
         >
           <span id="timeline-frame-live" className={style.img} role="button" tabIndex={0} />
           <span className={style.title}>{t('Live')}</span>
-          {isPendingBackgroundFrameAvailable && <span className={style.pendingBackgroundFrame}>BGD</span>}
+          {['FOREGROUND', 'BACKGROUND'].includes(frameCaptureMode) && select === false && (
+            <>
+              <span
+                className={`${style.liveLayerIcon} ${frameCaptureMode === 'BACKGROUND' ? style.liveLayerIconBackground : ''}  ${frameCaptureMode === 'FOREGROUND' ? style.liveLayerIconForeground : ''}`}
+              >
+                <FontAwesomeIcon icon={faLayer} />
+              </span>
+              <span className={style.liveLayerText}>{frameCaptureMode === 'FOREGROUND' ? t('Foreground') : t('Background')}</span>
+            </>
+          )}
         </span>
       </aside>
     </DndContext>

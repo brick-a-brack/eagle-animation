@@ -148,14 +148,50 @@
   width: 14px;
 }
 
-.pendingBackgroundFrame {
+
+.liveLayerIcon {
   place-content: center center;
   align-items: center;
   color: #fff;
   display: flex;
-  height: 80px;
+  height: 100%;
   line-height: 100%;
   position: absolute;
   text-align: center;
-  width: 100%;
+  width: calc(100% - 4px);
+  --fa-primary-color: var(--color-white);
+  --fa-secondary-color: var(--color-white);
+}
+
+
+.liveLayerIcon svg {
+  height: 40%;
+  width: 40%;
+  transform: translateY(5px);
+}
+
+.liveLayerIconBackground {
+  --fa-primary-opacity: 0.6;
+  --fa-secondary-opacity: 1;
+  --fa-secondary-color: var(--color-theme-medium);
+}
+
+.liveLayerIconForeground {
+  --fa-primary-opacity: 1;
+  --fa-secondary-opacity: 0.6;
+  --fa-primary-color: var(--color-theme-medium);
+}
+
+.liveLayerText {
+  color: var(--color-white);
+  font-size: 10px;
+  position: absolute;
+  width: calc(100% - 4px);
+  overflow: hidden;
+  text-align: center;
+  background: var(--color-theme-medium);
+  padding: 2px;
+  box-sizing: border-box;
+  bottom: 0;
+  text-overflow: ellipsis;
 }

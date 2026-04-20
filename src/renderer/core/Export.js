@@ -2,8 +2,8 @@ import { floorResolution, floorResolutionValue } from '@common/resolution';
 import { Buffer } from 'buffer';
 import { v4 } from 'uuid';
 
-import { getPictureLink } from './resize';
 import { extensionToMimeType } from './frameTypes';
+import { getPictureLink } from './resize';
 
 export const ExportFrames = async (
   projectId = null, // eslint-disable-line no-unused-vars

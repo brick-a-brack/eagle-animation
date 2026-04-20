@@ -381,12 +381,6 @@ class Player extends Component {
     const reverseClassNames = `${reverseX ? style.reverseX : ''} ${reverseY ? style.reverseY : ''}`;
     const frames = this.props.pictures.filter((e) => !e.deleted).reduce((acc, e) => [...acc, ...new Array(e.length || 1).fill(e)], []);
 
-    const frameModeTranslations = {
-      DEFAULT: t('Default'),
-      BACKGROUND: t('Background'),
-      FOREGROUND: t('Foreground'),
-    };
-
     return (
       <div className={`${style.playerContainer} ${frameIndex === false ? style.live : ''}`}>
         <div className={style.container} ref={this.dom.container} style={{ width: `${width}px`, height: `${height}px`, opacity: ready ? 1 : 0 }}>
@@ -414,10 +408,6 @@ class Player extends Component {
           )}
 
           <canvas ref={this.dom.grid} className={style.layout} style={{ opacity: isCameraReady && showGrid && frameIndex === false ? 1 : 0 }} />
-
-          {frameIndex === false && this.props.frameCaptureMode && this.props.frameCaptureMode !== 'DEFAULT' && (
-            <div className={style.frameMode}>{frameModeTranslations[this.props.frameCaptureMode] || this.props.frameCaptureMode}</div>
-          )}
 
           {!isCameraReady && frameIndex === false && <span className={style.loader} />}
           {!isCameraReady && frameIndex === false && <div className={style.info}>{t('If your camera does not load, try changing it in the camera settings')}</div>}

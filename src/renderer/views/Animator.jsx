@@ -11,7 +11,6 @@ import ProjectSettingsWindow from '@components/ProjectSettingsWindow';
 import ProjectTitle from '@components/ProjectTitle';
 import Timeline from '@components/Timeline';
 import Window from '@components/Window';
-import { mimeTypeToExtension } from '@core/frameTypes';
 import { parseRatio } from '@core/ratio';
 import useAppCapabilities from '@hooks/useAppCapabilities';
 import useCamera from '@hooks/useCamera';
@@ -264,12 +263,7 @@ const Animator = ({ t }) => {
 
           // Save frame
           if (pendingBackgroundFrame || maskingMode === 'DISABLED') {
-            await projectActions.addFrame(
-              track,
-              frame,
-              isPlaying ? false : currentFrameId,
-              pendingBackgroundFrame || null,
-            );
+            await projectActions.addFrame(track, frame, isPlaying ? false : currentFrameId, pendingBackgroundFrame || null);
           } else if (maskingMode === 'UNIQUE' || !pendingBackgroundFrame) {
             setPendingBackgroundFrame(frame);
           }
@@ -514,6 +508,8 @@ const Animator = ({ t }) => {
     }, 0);
   };
 
+  const frameCaptureMode = maskingMode !== 'DISABLED' && !isPlaying ? (pendingBackgroundFrame ? 'FOREGROUND' : 'BACKGROUND') : null;
+
   return (
     <>
       <LoadingPage show={false} />
@@ -557,7 +553,6 @@ const Animator = ({ t }) => {
           videoRatio={ratio?.value || null}
           reverseX={settings.REVERSE_X}
           reverseY={settings.REVERSE_Y}
-          frameCaptureMode={maskingMode !== 'DISABLED' ? (pendingBackgroundFrame ? 'FOREGROUND' : 'BACKGROUND') : null}
         />
         <div>
           {settings?.EVENT_MODE_ENABLED && (
@@ -592,7 +587,7 @@ const Animator = ({ t }) => {
             playing={isPlaying}
             shortPlayStatus={shortPlayStatus}
             shortPlayFrames={Number(settings.SHORT_PLAY) || 1}
-            isPendingBackgroundFrameAvailable={!!pendingBackgroundFrame}
+            frameCaptureMode={frameCaptureMode}
           />
         </div>
       </PageLayout>

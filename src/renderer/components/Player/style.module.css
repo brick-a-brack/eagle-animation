@@ -125,21 +125,6 @@
     width: 20%;
 }
 
-.frameMode {
-    background-color: rgb(0 0 0 / 50%);
-    border-radius: 4px;
-    color: var(--color-white);
-    font-size: var(--font-size-3);
-    left: 10px;
-    padding: 5px 10px;
-    pointer-events: none;
-    position: absolute;
-    top: 10px;
-}
-
-
-
-
 @keyframes rotate {
     0% {
         border-radius: 10%;
