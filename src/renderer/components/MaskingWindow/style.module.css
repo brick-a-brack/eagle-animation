@@ -4,13 +4,24 @@
 }
 
 .navbar {
-  display: flex;
-  width: 100%;
-  justify-content: space-evenly;
-  height: 50px;
+    display: flex;
+    width: 100%;
+    justify-content: space-evenly;
+    height: 80px;
 }
 
 .navbarItem {
-  width: 100%;
-  position: relative;
+    width: 100%;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.navbarItemRange {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
 }

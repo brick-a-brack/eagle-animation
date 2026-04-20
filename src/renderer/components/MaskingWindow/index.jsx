@@ -79,19 +79,23 @@ const MaskingWindow = forwardRef(({
           <button onClick={() => { setSelectedTab('RESTORE') }}>RESTORE</button>
         </div>
 
-        <div className={style.navbarItem} id="size" data-tooltip-content={t('Brush size')}>
-          <CustomSlider step={1} min={1} max={100} value={brushSize} onChange={setBrushSize} />
+        <div className={style.navbarItem} >
+          <div className={style.navbarItemRange} id="size" data-tooltip-content={t('Brush size')}>
+            <CustomSlider step={1} min={1} max={100} value={brushSize} onChange={setBrushSize} />
+          </div>
         </div>
 
-        <div className={style.navbarItem} id="blur" data-tooltip-content={t('Blur size')}>
-          <CustomSlider step={1} min={1} max={100} value={brushBlurSize} onChange={setBrushBlurSize} />
+        <div className={style.navbarItem} >
+          <div className={style.navbarItemRange} id="blur" data-tooltip-content={t('Blur size')}>
+            <CustomSlider step={1} min={1} max={100} value={brushBlurSize} onChange={setBrushBlurSize} />
+          </div>
         </div>
 
         <div className={style.navbarItem}>
           <button onClick={handleFlush}>FLUSH</button>
         </div>
 
-      </div>}
+      </div >}
 
       <Tooltip anchorId="size" />
       <Tooltip anchorId="blur" />
