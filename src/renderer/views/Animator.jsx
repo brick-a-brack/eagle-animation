@@ -619,7 +619,7 @@ const Animator = ({ t }) => {
           onProjectDelete={() => handleAction('DELETE_PROJECT')}
         />
       </Window>
-      <Window isOpened={showMaskingEditor && !isPlaying} onClose={handleCloseMaskingEditor} isFullScreen={true}>
+      {isPlaying && <Window isOpened={showMaskingEditor && !isPlaying} onClose={handleCloseMaskingEditor} isFullScreen={true}>
         {currentFrame && currentFrame?.masking && (
           <MaskingWindow
             key={currentFrame.id}
@@ -629,7 +629,7 @@ const Animator = ({ t }) => {
             transparentLayer={currentFrame?.masking?.transparent?.link || null}
           />
         )}
-      </Window>
+      </Window>}
     </>
   );
 };
