@@ -209,7 +209,18 @@ class Player extends Component {
 
   componentDidUpdate(prevProps) {
     if (!isEqual(prevProps.pictures, this.props.pictures)) {
+      const previousFrame = this.frames[this.state.frameIndex];
+
+      // Recompute internal player frames
       this.computeFrames();
+
+      // Get new index
+      const newFrameIndex = this.frames.findIndex((e) => e.id === previousFrame.id);
+
+      // Frame index changed
+      if (this.state.frameIndex !== newFrameIndex) {
+        this.setState({ frameIndex: newFrameIndex });
+      }
 
       // Force redraw last frame for onion skin
       if (this.state.frameIndex === false) {
