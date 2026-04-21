@@ -238,52 +238,52 @@ const Animator = ({ t }) => {
 
   const takePictures =
     (nbPicturesToTake = null) =>
-    async () => {
-      if (isTakingPicture || !currentCamera) {
-        return;
-      }
-      flushSync(() => {
-        setIsTakingPicture(true);
-      });
-
-      setStartedAt((oldValue) => (oldValue ? oldValue : new Date().getTime() / 1000));
-
-      const numberOfFramesToTake = Number(nbPicturesToTake !== null ? nbPicturesToTake : settings.CAPTURE_FRAMES) || 1;
-      for (let i = 0; i < numberOfFramesToTake; i++) {
-        const nbFramesToTakeForAvg = (settings.AVERAGING_ENABLED ? Number(settings.AVERAGING_VALUE) : 1) || 1;
-        try {
-          const frame = await cameraActions.takePicture(nbFramesToTakeForAvg, settings.REVERSE_X, settings.REVERSE_Y);
-
-          window.track('frame_captured', { projectId: `${id}`, trackId: `${track}`, reverseX: settings.REVERSE_X, reverseY: settings.REVERSE_Y, nbFrames: nbFramesToTakeForAvg });
-
-          if (settings.SOUNDS) {
-            const isAprilFoolsDay = new Date().getDate() === 1 && new Date().getMonth() === 3;
-            playSound(isAprilFoolsDay ? soundEagle : soundShutter);
-          }
-
-          // Save frame
-          if (pendingBackgroundFrame || maskingMode === 'DISABLED') {
-            await projectActions.addFrame(track, frame, isPlaying ? false : currentFrameId, pendingBackgroundFrame || null);
-          } else if (maskingMode === 'UNIQUE' || !pendingBackgroundFrame) {
-            setPendingBackgroundFrame(frame);
-          }
-
-          // Clean background
-          if (maskingMode === 'DISABLED' || (maskingMode === 'UNIQUE' && pendingBackgroundFrame)) {
-            setPendingBackgroundFrame(null);
-          }
-        } catch (err) {
-          if (settings.SOUNDS) {
-            playSound(soundError);
-          }
-          console.error('Failed to take a picture', err);
+      async () => {
+        if (isTakingPicture || !currentCamera) {
+          return;
         }
-      }
+        flushSync(() => {
+          setIsTakingPicture(true);
+        });
 
-      flushSync(() => {
-        setIsTakingPicture(false);
-      });
-    };
+        setStartedAt((oldValue) => (oldValue ? oldValue : new Date().getTime() / 1000));
+
+        const numberOfFramesToTake = Number(nbPicturesToTake !== null ? nbPicturesToTake : settings.CAPTURE_FRAMES) || 1;
+        for (let i = 0; i < numberOfFramesToTake; i++) {
+          const nbFramesToTakeForAvg = (settings.AVERAGING_ENABLED ? Number(settings.AVERAGING_VALUE) : 1) || 1;
+          try {
+            const frame = await cameraActions.takePicture(nbFramesToTakeForAvg, settings.REVERSE_X, settings.REVERSE_Y);
+
+            window.track('frame_captured', { projectId: `${id}`, trackId: `${track}`, reverseX: settings.REVERSE_X, reverseY: settings.REVERSE_Y, nbFrames: nbFramesToTakeForAvg });
+
+            if (settings.SOUNDS) {
+              const isAprilFoolsDay = new Date().getDate() === 1 && new Date().getMonth() === 3;
+              playSound(isAprilFoolsDay ? soundEagle : soundShutter);
+            }
+
+            // Save frame
+            if (pendingBackgroundFrame || maskingMode === 'DISABLED') {
+              await projectActions.addFrame(track, frame, isPlaying ? false : currentFrameId, pendingBackgroundFrame || null);
+            } else if (maskingMode === 'UNIQUE' || !pendingBackgroundFrame) {
+              setPendingBackgroundFrame(frame);
+            }
+
+            // Clean background
+            if (maskingMode === 'DISABLED' || (maskingMode === 'UNIQUE' && pendingBackgroundFrame)) {
+              setPendingBackgroundFrame(null);
+            }
+          } catch (err) {
+            if (settings.SOUNDS) {
+              playSound(soundError);
+            }
+            console.error('Failed to take a picture', err);
+          }
+        }
+
+        flushSync(() => {
+          setIsTakingPicture(false);
+        });
+      };
 
   const actionsEvents = {
     PLAY: () => {
@@ -422,7 +422,7 @@ const Animator = ({ t }) => {
     PROJECT_SETTINGS: () => {
       setShowProjectSettings((v) => !v);
     },
-    MORE: () => {},
+    MORE: () => { },
     EXPORT: () => {
       navigate(`/export/${id}/${track}?back=/animator/${id}/${track}`);
     },
@@ -524,7 +524,7 @@ const Animator = ({ t }) => {
           leftActions={['BACK']}
           rightActions={[
             ...(pictures?.some((e) => !e?.hidden) &&
-            (appCapabilities.includes('EXPORT_VIDEO') || appCapabilities.includes('EXPORT_FRAMES') || (appCapabilities.includes('BACKGROUND_SYNC') && settings?.EVENT_MODE_ENABLED))
+              (appCapabilities.includes('EXPORT_VIDEO') || appCapabilities.includes('EXPORT_FRAMES') || (appCapabilities.includes('BACKGROUND_SYNC') && settings?.EVENT_MODE_ENABLED))
               ? ['EXPORT']
               : []),
           ]}
