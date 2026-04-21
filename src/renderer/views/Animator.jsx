@@ -499,10 +499,16 @@ const Animator = ({ t }) => {
   };
 
   const handleCloseMaskingEditor = async () => {
+    // Get new images
     const d = await maskingEditorRef.current.exportLayers();
-    await projectActions.updateFrame(track, currentFrame?.id, d.frame, undefined, undefined, d.layers.transparent);
+    if (d && d?.frame && d?.layers?.transparent) {
+      await projectActions.updateFrame(track, currentFrame?.id, d.frame, undefined, undefined, d.layers.transparent);
+    }
+
+    // Close editor
     setShowMaskingEditor(false);
 
+    // Force player sync
     setTimeout(() => {
       playerRef.current.showFrame(currentFrame?.id);
     }, 0);

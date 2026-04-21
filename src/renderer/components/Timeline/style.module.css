@@ -150,15 +150,16 @@
 
 
 .liveLayerIcon {
-  place-content: center center;
   align-items: center;
   color: #fff;
   display: flex;
   height: 100%;
   line-height: 100%;
+  place-content: center center;
   position: absolute;
   text-align: center;
   width: calc(100% - 4px);
+
   --fa-primary-color: var(--color-white);
   --fa-secondary-color: var(--color-white);
 }
@@ -166,8 +167,8 @@
 
 .liveLayerIcon svg {
   height: 40%;
-  width: 40%;
   transform: translateY(5px);
+  width: 40%;
 }
 
 .liveLayerIconBackground {
@@ -183,15 +184,15 @@
 }
 
 .liveLayerText {
+  background: var(--color-theme-medium);
+  bottom: 0;
+  box-sizing: border-box;
   color: var(--color-white);
   font-size: 10px;
-  position: absolute;
-  width: calc(100% - 4px);
   overflow: hidden;
-  text-align: center;
-  background: var(--color-theme-medium);
   padding: 2px;
-  box-sizing: border-box;
-  bottom: 0;
+  position: absolute;
+  text-align: center;
   text-overflow: ellipsis;
+  width: calc(100% - 4px);
 }

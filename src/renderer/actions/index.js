@@ -198,7 +198,6 @@ export const Actions = {
       compress_as_zip = false,
       custom_output_framerate_number = 10,
       endpoint = null, //eslint-disable-line no-unused-vars
-      exportMaskingLayers = false,
     }
   ) => {
     const trackId = Number(track_id);
@@ -248,7 +247,7 @@ export const Actions = {
           blob = new Blob([buffer], { type: extensionToMimeType(frame?.extension) });
           saveAs(blob, filename);
           blob = null;
-          await new Promise((r) => setTimeout(r, 50));
+          await new Promise((r) => setTimeout(r, 500));
         }
       }
     }

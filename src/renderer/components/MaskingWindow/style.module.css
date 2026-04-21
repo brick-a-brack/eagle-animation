@@ -1,17 +1,29 @@
+.container {
+    place-content: center space-between;
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 3px);
+}
+
 .actions {
     margin: 0 var(--space-huge);
     width: calc(100% - 2 * var(--space-huge));
 }
 
 .navbar {
-    display: flex;
-    height:52px;
-    justify-content: space-evenly;
-    width: 100%;
-    max-width: 1000px;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgb(0 0 0 / 50%);
     border-radius: 30px;
-    margin: 10px auto;
+    display: flex;
+    height: 52px;
+    justify-content: space-evenly;
+    margin: 0 auto;
+    max-width: 1000px;
+    width: 100%;
+}
+
+.navbar.hidden {
+    opacity: 0;
+    pointer-events: none;
 }
 
 .navbarItemLeft,
@@ -32,7 +44,7 @@
 }
 
 .navbarItemSmall {
-    width:84px;
+    width: 84px;
 }
 
 .navbarItemRange {
@@ -47,13 +59,13 @@
 .roundSize2,
 .roundBlur1,
 .roundBlur2 {
-    width: 20px;
-    min-width: 20px;
-    height: 20px;
     background: var(--color-theme-light);
-    opacity: 0.8;
     border-radius: 50%;
+    height: 20px;
     margin: 0 17px;
+    min-width: 20px;
+    opacity: 0.8;
+    width: 20px;
 }
 
 .roundSize1 {

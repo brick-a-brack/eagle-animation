@@ -256,7 +256,6 @@ const actions = {
       framerate = 10,
       endpoint = null,
       email = null,
-      exportMaskingLayers = false,
     },
     sendToRenderer
   ) => {

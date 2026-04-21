@@ -22,6 +22,18 @@ function useProject(options) {
         for (const pictureIndex in d.project.scenes[trackIndex].pictures) {
           delete d.project.scenes[trackIndex].pictures[pictureIndex].link;
           delete d.project.scenes[trackIndex].pictures[pictureIndex].metaLink;
+          if (d.project.scenes[trackIndex].pictures[pictureIndex]?.masking?.background) {
+            delete d.project.scenes[trackIndex].pictures[pictureIndex].masking.background.link;
+            delete d.project.scenes[trackIndex].pictures[pictureIndex].masking.background.metaLink;
+          }
+          if (d.project.scenes[trackIndex].pictures[pictureIndex]?.masking?.foreground) {
+            delete d.project.scenes[trackIndex].pictures[pictureIndex].masking.foreground.link;
+            delete d.project.scenes[trackIndex].pictures[pictureIndex].masking.foreground.metaLink;
+          }
+          if (d.project.scenes[trackIndex].pictures[pictureIndex]?.masking?.transparent) {
+            delete d.project.scenes[trackIndex].pictures[pictureIndex].masking.transparent.link;
+            delete d.project.scenes[trackIndex].pictures[pictureIndex].masking.transparent.metaLink;
+          }
         }
       }
       window.EA('SAVE_PROJECT', { project_id: options?.id, data: d });

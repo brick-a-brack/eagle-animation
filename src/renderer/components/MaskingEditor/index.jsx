@@ -2,6 +2,8 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 
 import * as style from './style.module.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import faTriangleExclamation from '@icons/faTriangleExclamation';
 
 class MaskingEditor extends Component {
   constructor(props) {
@@ -12,6 +14,7 @@ class MaskingEditor extends Component {
     };
 
     this.state = {
+      error: false,
       isDrawing: false,
       dimensions: {
         width: 0,
@@ -117,6 +120,11 @@ class MaskingEditor extends Component {
     this.images.render.width = background.width;
     this.images.render.height = background.height;
 
+    // Check sizes
+    if (!this._isSameDimensions()) {
+      this.setState({ error: true })
+    }
+
     // Prepare visual output canvas
     this._setupOutputCanvas(background.width, background.height);
   }
@@ -179,7 +187,7 @@ class MaskingEditor extends Component {
 
   _drawLine(ctx, x1, y1, x2, y2) {
     ctx.globalCompositeOperation = this.props.mode === 'RESTORE' ? 'destination-out' : 'source-over';
-    ctx.lineWidth = (this.props.brushSize / 1000) * this.images.background.width; // TODO: Be sure it's consistent with various img size in % ?
+    ctx.lineWidth = this._getBrushSize();
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
     ctx.strokeStyle = 'rgba(255, 255, 255)';
@@ -219,6 +227,23 @@ class MaskingEditor extends Component {
     }
 
     return { x, y };
+  }
+
+  _getBrushSize = () => {
+    if (!this.images.background) {
+      return 0;
+    }
+
+    const imageSize = Math.min(this.images.background.width, this.images.background.height) || 0;
+    const value = (imageSize * (this.props.brushSize * 200 / 100) / 1000)
+
+    if (value < 1) {
+      return 1;
+    }
+    if (value > imageSize) {
+      return imageSize
+    }
+    return value;
   }
 
   _draw = (e) => {
@@ -261,18 +286,30 @@ class MaskingEditor extends Component {
     this.lastY = null;
   }
 
+  _isSameDimensions = () => {
+    return (
+      this.images.background.width === this.images.foreground.width && // Same width
+      this.images.background.height === this.images.foreground.height && // Same height
+      (!this.images.transparent || (
+        this.images.transparent.width === this.images.background.width || // Same width
+        this.images.transparent.height === this.images.background.height // Same height
+      ))
+    );
+  }
+
   _drawToCanvas(canvas = null, mode = null) {
     if (!canvas) {
       return;
     }
 
+    // Get context
     const outputCtx = canvas.getContext('2d');
 
     // Is editable by the user?
     const isEditable = mode === 'REMOVE' || mode === 'RESTORE';
 
-    // No background image, exit
-    if (!this.images.background) {
+    // No images, exit
+    if (!this.images.background || !this.images.foreground || !this._isSameDimensions()) {
       return;
     }
 
@@ -305,7 +342,7 @@ class MaskingEditor extends Component {
 
     if (this.mouseLastPosition && isEditable) {
       outputCtx.beginPath();
-      outputCtx.arc(this.mouseLastPosition.x, this.mouseLastPosition.y, this.props.brushSize, 0, 2 * Math.PI);
+      outputCtx.arc(this.mouseLastPosition.x, this.mouseLastPosition.y, this._getBrushSize() / 2, 0, 2 * Math.PI);
       outputCtx.fillStyle = 'rgba(255,255,255,0.2)';
       outputCtx.fill();
     }
@@ -324,6 +361,10 @@ class MaskingEditor extends Component {
   }
 
   async exportLayers() {
+    if (!this._isSameDimensions()) {
+      return null;
+    }
+
     this._drawToCanvas(this.images.render, 'PREVIEW');
 
     return {
@@ -341,6 +382,7 @@ class MaskingEditor extends Component {
     return (
       <div className={style.container}>
         <canvas ref={this.dom.output} className={`${style.layout} ${isEditable ? style.isEditable : ''}`} />
+        {this.state.error && <div className={style.error}><FontAwesomeIcon icon={faTriangleExclamation} /></div>}
       </div>
     );
   }
