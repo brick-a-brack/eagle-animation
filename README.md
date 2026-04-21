@@ -17,6 +17,7 @@ without ads!_ 🎥
 - 💾 **Easy export** - Export your animation to a video file or export frames to use them in video editing software.
 - ⚙️ **Adjust camera settings** - Control and adjust your camera settings.
 - 🪄 **Frame averaging** - Capture several frames and merge them to reduce picture noise automatically.
+- ✂️ **Masking** - Capture two shots and paint away what you want to hide, no green screen needed.
 - 🥖 **Oui-Oui-Baguette** - The software is available in several languages to allow everyone to use it.
 
 ## Get started
