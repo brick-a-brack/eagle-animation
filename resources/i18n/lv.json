@@ -250,5 +250,22 @@
   "Alternative previous frame": "Alternatīvais iepriekšējais kadrs",
   "Alternative next frame": "Alternatīvais nākamais kadrs",
   "Development Version": "Izstrādes versija",
-  "Unknown Version": "Nezināma versija"
+  "Unknown Version": "Nezināma versija",
+  "Disabled": "Atspējots",
+  "Unique": "Unikāls",
+  "Continuous": "Nepārtraukts",
+  "Open masking editor": "Atvērt maskēšanas redaktoru",
+  "Masking mode ({{status}})": "Maskēšanas režīms ({{status}})",
+  "Edit": "Rediģēt",
+  "Preview": "Priekšskatījums",
+  "Anti-Eraser": "Pretizdzēšamais",
+  "Eraser": "Dzēšgumija",
+  "Brush size": "Otai izmērs",
+  "Blur size": "Izplūduma izmērs",
+  "Flush": "Izsist",
+  "M": "M",
+  "Foreground": "Priekšplāns",
+  "Background": "Fons",
+  "Export masking layers": "Eksportēt maskēšanas slāņus",
+  "Export the layers of masked frames": "Eksportēt maskēto kadru slāņus"
 }

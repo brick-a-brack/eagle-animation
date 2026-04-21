@@ -263,5 +263,22 @@
   "Alternative previous frame": "Alternativa antaŭa kadro",
   "Alternative next frame": "Alternativa sekva kadro",
   "Development Version": "Evoluiga Versio",
-  "Unknown Version": "Nekonata Versio"
+  "Unknown Version": "Nekonata Versio",
+  "Disabled": "Malaktivigita",
+  "Unique": "Unika",
+  "Continuous": "Kontinuo",
+  "Open masking editor": "Malfermi maskan redaktilon",
+  "Masking mode ({{status}})": "Maska reĝimo ({{status}})",
+  "Edit": "Redakti",
+  "Preview": "Antaŭvido",
+  "Anti-Eraser": "Antaŭgumo",
+  "Eraser": "Gumo",
+  "Brush size": "Pentrilo grandeco",
+  "Blur size": "Nebula grandeco",
+  "Flush": "Forigi",
+  "M": "M",
+  "Foreground": "Antaŭplano",
+  "Background": "Malantaŭo",
+  "Export masking layers": "Eksporti maskajn tavolojn",
+  "Export the layers of masked frames": "Eksporti la tavolojn de maskitaj kadroj"
 }

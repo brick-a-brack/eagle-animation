@@ -1,10 +1,10 @@
 import { getPictureLink } from '@core/resize';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import faEyeSlash from '@icons/faEyeSlash';
 import resizeToFit from 'intrinsic-scale';
 import { isEqual } from 'lodash';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import faEyeSlash from '@icons/faEyeSlash';
 
 import * as style from './style.module.css';
 
@@ -283,7 +283,7 @@ class Player extends Component {
       if (videoRatio > width / height) {
         heightRatio = width / videoRatio;
       } else {
-        widthRatio = (height * videoRatio);
+        widthRatio = height * videoRatio;
       }
       marginX = (width - widthRatio) / 2;
       marginY = (height - heightRatio) / 2;
@@ -306,8 +306,8 @@ class Player extends Component {
 
     if (this.props.gridModes?.includes('MARGINS')) {
       // 90% and 80%
-      drawArea(ctx, Math.round(marginX + (0.05 * widthRatio)), Math.round(marginY + (0.05 * heightRatio)), Math.round(0.9 * widthRatio), Math.round(0.9 * heightRatio));
-      drawArea(ctx, Math.round(marginX + (0.1 * widthRatio)), Math.round(marginY + (0.1 * heightRatio)), Math.round(0.8 * widthRatio), Math.round(0.8 * heightRatio));
+      drawArea(ctx, Math.round(marginX + 0.05 * widthRatio), Math.round(marginY + 0.05 * heightRatio), Math.round(0.9 * widthRatio), Math.round(0.9 * heightRatio));
+      drawArea(ctx, Math.round(marginX + 0.1 * widthRatio), Math.round(marginY + 0.1 * heightRatio), Math.round(0.8 * widthRatio), Math.round(0.8 * heightRatio));
       // drawArea(ctx, 0.035 * width, 0.035 * height, 0.93 * width, 0.93 * height);
     }
   }
@@ -401,7 +401,11 @@ class Player extends Component {
           {this.getVideoRatio() !== null && borderTopBottom > 0 && <div className={style.borderTop} style={{ height: `${borderTopBottom * 100}%`, opacity: ratioLayerOpacity || 1 }} />}
           {this.getVideoRatio() !== null && borderTopBottom > 0 && <div className={style.borderBottom} style={{ height: `${borderTopBottom * 100}%`, opacity: ratioLayerOpacity || 1 }} />}
 
-          {frames[frameIndex]?.hidden && !this.props.isPlaying && <div className={style.hiddenLayer}><FontAwesomeIcon className={style.hiddenIcon} icon={faEyeSlash} /></div>}
+          {frames[frameIndex]?.hidden && !this.props.isPlaying && (
+            <div className={style.hiddenLayer}>
+              <FontAwesomeIcon className={style.hiddenIcon} icon={faEyeSlash} />
+            </div>
+          )}
 
           <canvas ref={this.dom.grid} className={style.layout} style={{ opacity: isCameraReady && showGrid && frameIndex === false ? 1 : 0 }} />
 

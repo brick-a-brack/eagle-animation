@@ -248,5 +248,22 @@
   "Alternative previous frame": "Alternatieve vorige afbeelding",
   "Alternative next frame": "Alternatieve volgende afbeelding",
   "Development Version": "Ontwikkelingsversie",
-  "Unknown Version": "Onbekende versie"
+  "Unknown Version": "Onbekende versie",
+  "Disabled": "Uitgeschakeld",
+  "Unique": "Uniek",
+  "Continuous": "Continue",
+  "Open masking editor": "Open masking editor",
+  "Masking mode ({{status}})": "Maskermodus ({{status}})",
+  "Edit": "Bewerken",
+  "Preview": "Voorbeeld",
+  "Anti-Eraser": "Anti-gom",
+  "Eraser": "Gom",
+  "Brush size": "Borstelgrootte",
+  "Blur size": "Vervaginggrootte",
+  "Flush": "Flush",
+  "M": "M",
+  "Foreground": "Voorgrond",
+  "Background": "Achtergrond",
+  "Export masking layers": "Exporteer maskeringslagen",
+  "Export the layers of masked frames": "Exporteer de lagen van gemaskeerde frames"
 }

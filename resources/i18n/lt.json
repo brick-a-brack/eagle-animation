@@ -270,5 +270,22 @@
   "Alternative previous frame": "Alternatyvus ankstesnis kadras",
   "Alternative next frame": "Alternatyvus sekantis kadras",
   "Development Version": "Kūrimo versija",
-  "Unknown Version": "Nežinoma versija"
+  "Unknown Version": "Nežinoma versija",
+  "Disabled": "Išjungta",
+  "Unique": "Unikalus",
+  "Continuous": "Nuolatinis",
+  "Open masking editor": "Atidaryti maskavimo redaktorių",
+  "Masking mode ({{status}})": "Maskavimo režimas ({{status}})",
+  "Edit": "Redaguoti",
+  "Preview": "Peržiūra",
+  "Anti-Eraser": "Anti-trintukas",
+  "Eraser": "Trintukas",
+  "Brush size": "Šepetėlio dydis",
+  "Blur size": "Neryškumo dydis",
+  "Flush": "Išvalyti",
+  "M": "M",
+  "Foreground": "Pirmas planas",
+  "Background": "Antras planas",
+  "Export masking layers": "Eksportuoti maskavimo sluoksnius",
+  "Export the layers of masked frames": "Eksportuoti maskuotų kadrų sluoksnius"
 }

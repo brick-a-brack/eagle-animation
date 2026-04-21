@@ -29,7 +29,7 @@ try {
       app_build: BUILD,
     });
   }
-} catch (err) { } // eslint-disable-line no-empty
+} catch (err) {} // eslint-disable-line no-empty
 
 window.track = (eventName, data = {}) => {
   try {
@@ -37,7 +37,7 @@ window.track = (eventName, data = {}) => {
       console.log(`📊 Tracking event: ${eventName}`, data);
       posthog.capture(eventName, data);
     }
-  } catch (err) { } // eslint-disable-line no-empty
+  } catch (err) {} // eslint-disable-line no-empty
 };
 
 window.trackException = (error) => {
@@ -46,7 +46,7 @@ window.trackException = (error) => {
       console.log(`📊 Tracking exception:`, error);
       posthog.captureException(error);
     }
-  } catch (err) { } // eslint-disable-line no-empty
+  } catch (err) {} // eslint-disable-line no-empty
 };
 
 globalThis.Buffer = Buffer;
@@ -69,7 +69,7 @@ window.EA = async (action, data) => {
   }
 };
 
-window.EAEvents = (name, callback = () => { }) => {
+window.EAEvents = (name, callback = () => {}) => {
   // IPC (Electron backend)
   if (typeof window.IPC !== 'undefined') {
     if (typeof callback !== 'undefined') {
