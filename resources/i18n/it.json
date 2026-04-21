@@ -264,5 +264,22 @@
   "Alternative previous frame": "Fotogramma precedente alternativo",
   "Alternative next frame": "Fotogramma successivo alternativo",
   "Development Version": "Versione di sviluppo",
-  "Unknown Version": "Versione sconosciuta"
+  "Unknown Version": "Versione sconosciuta",
+  "Disabled": "Disabilitato",
+  "Unique": "Unico",
+  "Continuous": "Continuo",
+  "Open masking editor": "Apri l'editor di mascheramento",
+  "Masking mode ({{status}})": "Modalità di mascheramento ({{status}})",
+  "Edit": "Modifica",
+  "Preview": "Anteprima",
+  "Anti-Eraser": "Anti-gomma",
+  "Eraser": "Gomma",
+  "Brush size": "Dimensione del pennello",
+  "Blur size": "Dimensione del blur",
+  "Flush": "Svuota",
+  "M": "M",
+  "Foreground": "Primo piano",
+  "Background": "Sfondo",
+  "Export masking layers": "Esporta i livelli di mascheramento",
+  "Export the layers of masked frames": "Esporta i livelli dei fotogrammi mascherati"
 }

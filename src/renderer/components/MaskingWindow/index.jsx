@@ -20,9 +20,6 @@ const MaskingWindow = forwardRef(function MaskingWindow({ backgroundLayer = null
   const editorRef = useRef(null);
 
   useImperativeHandle(ref, () => ({
-    flush() {
-      editorRef.current.flush();
-    },
     exportLayers() {
       return editorRef.current.exportLayers();
     },

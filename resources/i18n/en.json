@@ -262,5 +262,22 @@
   "Alternative previous frame": "Alternative previous frame",
   "Alternative next frame": "Alternative next frame",
   "Development Version": "Development Version",
-  "Unknown Version": "Unknown Version"
+  "Unknown Version": "Unknown Version",
+  "Disabled": "Disabled",
+  "Unique": "Unique",
+  "Continuous": "Continuous",
+  "Open masking editor": "Open masking editor",
+  "Masking mode ({{status}})": "Masking mode ({{status}})",
+  "Edit": "Edit",
+  "Preview": "Preview",
+  "Anti-Eraser": "Anti-Eraser",
+  "Eraser": "Eraser",
+  "Brush size": "Brush size",
+  "Blur size": "Blur size",
+  "Flush": "Flush",
+  "M": "M",
+  "Foreground": "Foreground",
+  "Background": "Background",
+  "Export masking layers": "Export masking layers",
+  "Export the layers of masked frames": "Export the layers of masked frames"
 }

@@ -248,5 +248,22 @@
   "Alternative previous frame": "Алтернативен предишен кадър",
   "Alternative next frame": "Алтернативен следващ кадър",
   "Development Version": "Версия за разработка",
-  "Unknown Version": "Непозната версия"
+  "Unknown Version": "Непозната версия",
+  "Disabled": "Деактивиран",
+  "Unique": "Уникален",
+  "Continuous": "Непрекъснат",
+  "Open masking editor": "Отвори редактора за маскиране",
+  "Masking mode ({{status}})": "Режим на маскиране ({{status}})",
+  "Edit": "Редактиране",
+  "Preview": "Преглед",
+  "Anti-Eraser": "Анти-гумка",
+  "Eraser": "Гумка",
+  "Brush size": "Размер на четката",
+  "Blur size": "Размер на размазване",
+  "Flush": "Изтрий",
+  "M": "м",
+  "Foreground": "Преден план",
+  "Background": "Заден план",
+  "Export masking layers": "Експортиране на маскиращи слоеве",
+  "Export the layers of masked frames": "Експортиране на слоевете на маскираните кадри"
 }

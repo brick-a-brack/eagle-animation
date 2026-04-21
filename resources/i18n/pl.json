@@ -266,5 +266,22 @@
   "Alternative previous frame": "Alternatywna poprzednia klatka",
   "Alternative next frame": "Alternatywna następna klatka",
   "Development Version": "Wersja deweloperska",
-  "Unknown Version": "Nieznana wersja"
+  "Unknown Version": "Nieznana wersja",
+  "Disabled": "Wyłączone",
+  "Unique": "Unikalne",
+  "Continuous": "Ciągły",
+  "Open masking editor": "Otwórz edytor maskowania",
+  "Masking mode ({{status}})": "Tryb maskowania ({{status}})",
+  "Edit": "Edytuj",
+  "Preview": "Podgląd",
+  "Anti-Eraser": "Anty-gumka",
+  "Eraser": "Gumka",
+  "Brush size": "Rozmiar pędzla",
+  "Blur size": "Rozmiar rozmycia",
+  "Flush": "Wyczyść",
+  "M": "M",
+  "Foreground": "Pierwszy plan",
+  "Background": "Tło",
+  "Export masking layers": "Eksportuj warstwy maskowania",
+  "Export the layers of masked frames": "Eksportuj warstwy zamaskowanych klatek"
 }

@@ -248,5 +248,22 @@
   "Alternative previous frame": "Alternativ föregående bild",
   "Alternative next frame": "Alternativ nästa bild",
   "Development Version": "Utvecklingsversion",
-  "Unknown Version": "Okänd version"
+  "Unknown Version": "Okänd version",
+  "Disabled": "Inaktiverad",
+  "Unique": "Unik",
+  "Continuous": "Kontinuerlig",
+  "Open masking editor": "Öppna maskeringsredigerare",
+  "Masking mode ({{status}})": "Maskeringsläge ({{status}})",
+  "Edit": "Redigera",
+  "Preview": "Förhandsgranska",
+  "Anti-Eraser": "Anti-raderare",
+  "Eraser": "Raderare",
+  "Brush size": "Penselstorlek",
+  "Blur size": "Suddstorlek",
+  "Flush": "Rensa",
+  "M": "M",
+  "Foreground": "Förgrund",
+  "Background": "Bakgrund",
+  "Export masking layers": "Exportera maskeringslager",
+  "Export the layers of masked frames": "Exportera lagren av maskerade bilder"
 }

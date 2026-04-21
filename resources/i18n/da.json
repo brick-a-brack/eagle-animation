@@ -248,5 +248,22 @@
   "Alternative previous frame": "Alternativ forrige ramme",
   "Alternative next frame": "Alternativ næste ramme",
   "Development Version": "Udviklingsversion",
-  "Unknown Version": "Ukendt version"
+  "Unknown Version": "Ukendt version",
+  "Disabled": "Deaktiveret",
+  "Unique": "Unik",
+  "Continuous": "Kontinuerlig",
+  "Open masking editor": "Åbn maskeringseditor",
+  "Masking mode ({{status}})": "Maskeringsmode ({{status}})",
+  "Edit": "Rediger",
+  "Preview": "Forhåndsvisning",
+  "Anti-Eraser": "Anti-viskelæder",
+  "Eraser": "Viskelæder",
+  "Brush size": "Penselstørrelse",
+  "Blur size": "Slørstørrelse",
+  "Flush": "Flush",
+  "M": "M",
+  "Foreground": "Forgrund",
+  "Background": "Baggrund",
+  "Export masking layers": "Eksporter maskeringslag",
+  "Export the layers of masked frames": "Eksporter lagene af maskede rammer"
 }
