@@ -74,7 +74,7 @@ class Player extends Component {
       const startOnLiveView = this.state.frameIndex === false;
 
       const exec = (force = false) => {
-        const filteredFrames = this.frames.filter((e) => !e.hidden);
+        const filteredFrames = this.frames;
 
         let newFrameIndex = false;
 
@@ -86,6 +86,9 @@ class Player extends Component {
           newFrameIndex = false;
         } else {
           newFrameIndex = this.state.frameIndex + 1;
+          while (this?.frames[newFrameIndex]?.hidden) {
+            newFrameIndex++;
+          }
         }
 
         // Set to first frame if the loopShowLive option is enabled
