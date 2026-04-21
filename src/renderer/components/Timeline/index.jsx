@@ -23,11 +23,17 @@ const getPicturesKey = (pictures) => {
   return JSON.stringify(data);
 };
 
-const getPlayingAnimationDuration = (img, fps) => {
+const getPlayingAnimationDuration = (img, fps, isShortPlayBeginning, shortPlayDuplicateOffset = 0) => {
+  
+  const imageLength = img.length;
+  
+  if (isShortPlayBeginning && img.length > 1 && shortPlayDuplicateOffset) {
+    return Math.floor((1000 / fps) * (imageLength - shortPlayDuplicateOffset));
+  }
   return Math.floor((1000 / fps) * img.length);
 };
 
-const SortableItem = ({ img, isBeforeShortPlayBeginning = false, isShortPlayBegining = false, playing = false, selected, onSelect, index, fps }) => {
+const SortableItem = ({ img, isBeforeShortPlayBeginning = false, isShortPlayBeginning = false, playing = false, selected, onSelect, index, fps, shortPlayDuplicateOffset = 0 }) => {
   const { setNodeRef, isDragging, transform, transition, listeners, attributes, active } = useSortable({ id: img.id });
   return (
     <span
@@ -50,10 +56,10 @@ const SortableItem = ({ img, isBeforeShortPlayBeginning = false, isShortPlayBegi
       <span className={style.img}>{img.link && <img alt="" className={style.imgcontent} src={getPictureLink(img.link, { w: 80, h: 80, m: 'cover' })} loading="lazy" />}</span>
       {isBeforeShortPlayBeginning && <span className={style.isBeforeShortPlayBeginning} />}
       {img.hidden && <><span className={style.isHiddenOverlay} /><FontAwesomeIcon className={style.icon} icon={faEyeSlash} /></>}
-      {isShortPlayBegining && <><span className={style.shortPlayBar}/><span className={style.shortPlayIcon} /></>}
+      {isShortPlayBeginning && <><span className={style.shortPlayBar}/><span className={style.shortPlayTriangle} /></>}
       {img.length > 1 && <span className={style.duplicated}>{`x${img.length}`}</span>}
       <span className={style.title}>{`#${index + 1}`}</span>
-      <span className={`${playing && selected && (getPlayingAnimationDuration(img, fps) > MINIMUM_ANIMATION_DURATION) ? style.playing : ''}`} style={ getPlayingAnimationDuration(img, fps) > MINIMUM_ANIMATION_DURATION ? { animationDuration: getPlayingAnimationDuration(img, fps) + 'ms' } : {} }></span>
+      <span className={`${playing && selected && (getPlayingAnimationDuration(img, fps, isShortPlayBeginning, shortPlayDuplicateOffset) > MINIMUM_ANIMATION_DURATION) ? style.playing : ''}`} style={ getPlayingAnimationDuration(img, fps, isShortPlayBeginning, shortPlayDuplicateOffset) > MINIMUM_ANIMATION_DURATION ? { animationDuration: getPlayingAnimationDuration(img, fps, isShortPlayBeginning, shortPlayDuplicateOffset) + 'ms' } : {} }></span>
     </span>
   );
 };
@@ -110,9 +116,16 @@ const Timeline = ({ onSelect, onMove, select = false, pictures = [], playing = f
   const shortPlayFrameIndex = shortPlayStatus && shortPlayFrames > 0 && displayedFrames.length > shortPlayFrames ? displayedFrames.length - shortPlayFrames : 0;
   const shortPlayFrameId = shortPlayStatus && shortPlayFrames > 0 ? displayedFrames?.[shortPlayFrameIndex]?.id || null : null;
 
+  // If short play first frame is duplicated, get index of the first occurrence of this frame in displayed frames to apply correct animation duration on timeline item when playing
+  const getShortPlayDuplicateFirstFrameIndex = (id) => shortPlayStatus && shortPlayFrames > 0 ? displayedFrames.findIndex((e) => `${e.id}` === `${id}`) : null;
+  
+  // offset between first occurence of frame duplicated and short play beginning frame (in the same duplicated frame)
+  const shortPlayDuplicateOffset = getShortPlayDuplicateFirstFrameIndex(shortPlayFrameId) !== null ? shortPlayFrameIndex - getShortPlayDuplicateFirstFrameIndex(shortPlayFrameId) : 0;
+  
+  const shortPlayFrameIndexInTimeline = getIndex(shortPlayFrameId);
+  
   const isBeforeShortPlayBeginning = (index) => {
-    if (!shortPlayStatus || shortPlayFrames === 0) return false;
-    return index < getIndex(shortPlayFrameId);
+    return (!shortPlayStatus || shortPlayFrames === 0) ? false : index < shortPlayFrameIndexInTimeline;
   }
 
   return (
@@ -143,7 +156,8 @@ const Timeline = ({ onSelect, onMove, select = false, pictures = [], playing = f
                 selected={select === img.id}
                 onSelect={onSelect}
                 isBeforeShortPlayBeginning={isBeforeShortPlayBeginning(index)}
-                isShortPlayBegining={shortPlayFrameId === img.id}
+                isShortPlayBeginning={shortPlayFrameId === img.id}
+                shortPlayDuplicateOffset={shortPlayDuplicateOffset}
                 fps={fps}
               />
             ))}

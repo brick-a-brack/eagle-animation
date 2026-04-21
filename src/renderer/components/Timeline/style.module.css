@@ -134,25 +134,25 @@
   background-color: rgb(0 0 0 / 0%);
 }
 
-.shortPlayIcon::before {
+.shortPlayTriangle::before {
   content: "";
   position: absolute;
   inset: 0;
   background-color: var(--color-primary);
   clip-path: polygon(100% 50%, 0% 0%, 0% 100%);
 }
-.shortPlayIcon {
+
+.shortPlayTriangle {
   height: 30px;
   position: absolute;
   left: 6px;
   width: 10px;
-  top:calc(50% - 15px)
-
+  top: calc(50% - 15px);
 }
 
 .shortPlayBar {
   background-color: var(--color-primary);
-  top:0;
+  top: 0;
   height: 100%;
   left: 2px;
   position: absolute;
