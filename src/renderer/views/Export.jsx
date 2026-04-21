@@ -80,7 +80,7 @@ const Export = ({ t }) => {
       compressAsZip: false,
       sendMethod: 'code',
       email: '',
-      exportMaskingLayers: true,
+      exportMaskingLayers: false,
     },
   });
 

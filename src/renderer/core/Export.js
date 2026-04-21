@@ -20,29 +20,26 @@ export const ExportFrames = async (
   onProgress = () => {},
   onBufferCreate = () => {}
 ) => {
+  const emitProgress = (v) => (typeof onProgress === 'function' ? onProgress(v) : null);
   const resolution = floorResolution(opts.resolution);
 
   console.log(`🤖 Exporting frames in ${resolution ? `${resolution.width || '(auto)'}x${resolution.height}` : 'original'}`);
 
   // Update progress
-  if (typeof onProgress === 'function') {
-    onProgress(0);
-  }
+  emitProgress(0);
 
-  // Update counter based on finished promise value
-  let framesDone = 0;
-  const onFrameDone = () => {
-    framesDone++;
-    if (typeof onProgress === 'function') {
-      onProgress(framesDone / files.length);
+  const getNumberOfFrames = (frame, index, nbFrames) => {
+    if (opts.duplicateFramesAuto && opts.duplicateFramesAutoNumber && (index === 0 || index === nbFrames - 1)) {
+      return Number(opts.duplicateFramesAutoNumber) + frame.length - 1;
     }
+    return opts.duplicateFramesCopy ? frame.length : 1;
   };
 
   // Generate frames
-  const rawFrames = [];
-  const filteredFrames = files
-    .filter((e) => !e.deleted && !e.hidden)
-    .map((e, index) => ({ ...e, index, type: 'FRAME' }))
+  const filteredFiles = files.filter((e) => !e.deleted && !e.hidden);
+  const exportableFiles = filteredFiles
+    .reduce((acc, e, i) => [...acc, ...Array(getNumberOfFrames(e, i, filteredFiles.length)).fill(e)], [])
+    .map((e, i) => ({ ...e, index: i, type: 'FRAME' }))
     .reduce(
       (acc, e) => [
         ...acc,
@@ -57,7 +54,12 @@ export const ExportFrames = async (
       ],
       []
     );
-  for (const file of filteredFrames) {
+
+  // Export each frame
+  const cachedBuffers = new Map();
+  const outputFrames = [];
+  for (let i = 0; i < exportableFiles.length; i++) {
+    const file = exportableFiles[i];
     const targetExtension = file.filename.split('.').pop() || 'jpg';
     const computedExtension = (typeof opts.forceFileExtension !== 'undefined' ? opts.forceFileExtension : targetExtension) || targetExtension;
 
@@ -68,52 +70,46 @@ export const ExportFrames = async (
       copiedResolution.width = floorResolutionValue((copiedResolution.height * frameResolution.width) / frameResolution.height) || copiedResolution.height;
     }
 
-    // Compute frame using web worker
-    const frameArrayBuffer = await fetch(
-      getPictureLink(file.link, {
-        ...(copiedResolution && copiedResolution.width ? { w: copiedResolution.width } : {}),
-        ...(copiedResolution && copiedResolution.height ? { h: copiedResolution.height } : {}),
-        ...(copiedResolution
-          ? {
-              m: 'cover',
-              q: 100,
-            }
-          : {}),
-        ...(typeof opts.forceFileExtension !== 'undefined' ? { f: computedExtension } : {}),
-      })
-    ).then((res) => res.arrayBuffer());
+    // If buffer is not cached, compute it
+    if (!cachedBuffers.has(`${file.type}:${file.id}`)) {
+      const frameArrayBuffer = await fetch(
+        getPictureLink(file.link, {
+          ...(copiedResolution && copiedResolution.width ? { w: copiedResolution.width } : {}),
+          ...(copiedResolution && copiedResolution.height ? { h: copiedResolution.height } : {}),
+          ...(copiedResolution
+            ? {
+                m: 'cover',
+                q: 100,
+              }
+            : {}),
+          ...(typeof opts.forceFileExtension !== 'undefined' ? { f: computedExtension } : {}),
+        })
+      ).then((res) => res.arrayBuffer());
 
-    // Write file on disk/ram
-    const bufferId = v4();
-    await onBufferCreate(bufferId, Buffer.from(frameArrayBuffer));
+      // Write file on disk/ram
+      const bufferId = v4();
+      await onBufferCreate(bufferId, Buffer.from(frameArrayBuffer));
+      cachedBuffers.set(`${file.type}:${file.id}`, bufferId);
+    }
 
-    // Increase counter
-    onFrameDone();
+    // Send progress
+    emitProgress((i + 1) / filteredFiles.length);
 
     // Return frame data
-    rawFrames.push({
+    outputFrames.push({
       id: file.id,
       index: file.index,
       type: file.type,
       length: file.length || 1,
       extension: computedExtension,
       mimeType: extensionToMimeType(computedExtension),
-      bufferId: bufferId,
+      bufferId: cachedBuffers.get(`${file.type}:${file.id}`),
     });
   }
-  const frames = rawFrames?.filter(Boolean);
 
   // Update progress
-  if (typeof onProgress === 'function') {
-    onProgress(1);
-  }
+  emitProgress(1);
 
-  const getNumberOfFrames = (frame, index) => {
-    if (opts.duplicateFramesAuto && opts.duplicateFramesAutoNumber && (index === 0 || index === frames.length - 1)) {
-      return Number(opts.duplicateFramesAutoNumber) + frame.length - 1;
-    }
-    return opts.duplicateFramesCopy ? frame.length : 1;
-  };
-
-  return frames?.reduce((acc, e, i) => [...acc, ...Array(getNumberOfFrames(e, e.index)).fill(e)], []).map((e, i) => ({ ...e, index: e.index }));
+  // Return all frames
+  return outputFrames;
 };

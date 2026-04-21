@@ -20,8 +20,8 @@ class MaskingEditor extends Component {
     };
 
     // Last coorodonates
-    this.lastX = 0;
-    this.lastY = 0;
+    this.lastX = null;
+    this.lastY = null;
 
     // To know if the user is drawing or not, we can't use the store value, beaucause it's async
     this.isDrawing = false;
@@ -194,6 +194,10 @@ class MaskingEditor extends Component {
   _getMouseInCanvasPosition = (e, applyLimits = false) => {
     const canvasHitBox = this.dom.output.current.getBoundingClientRect();
 
+    if (!canvasHitBox || !this.images.background) {
+      return null
+    }
+
     // Get position in the picture
     let x = ((e.clientX - canvasHitBox.x) / canvasHitBox.width) * this.images.background.width;
     let y = ((e.clientY - canvasHitBox.y) / canvasHitBox.height) * this.images.background.height;
@@ -230,17 +234,21 @@ class MaskingEditor extends Component {
 
     const ctx = this.images.transparent.getContext('2d');
 
-    const { x, y } = this._getMouseInCanvasPosition(e, true);
+    // Get mouse position
+    const mousePosition = this._getMouseInCanvasPosition(e, true);
+    const { x, y } = mousePosition || { x: null, y: null };
 
     // First step
     if (this.lastX === null) {
-      this.lastX === x;
+      this.lastX = x;
     }
     if (this.lastY === null) {
-      this.lastY === y;
+      this.lastY = y;
     }
 
-    this._drawLine(ctx, this.lastX, this.lastY, x, y);
+    if (x !== null && y !== null) {
+      this._drawLine(ctx, this.lastX, this.lastY, x, y);
+    }
 
     this.lastX = x;
     this.lastY = y;
@@ -279,7 +287,7 @@ class MaskingEditor extends Component {
 
     // Draw foreground with alpha mask
     if (this.images.foreground && this.images.temporary) {
-      const tempCtx = this.images.temporary.getContext('2d'); // WHY ISSUE HERE ? TODO FIX  this.images.temporary = null ?
+      const tempCtx = this.images.temporary.getContext('2d');
       tempCtx.clearRect(0, 0, this.images.background.width, this.images.background.height);
       tempCtx.globalCompositeOperation = 'source-over';
       tempCtx.drawImage(this.images.foreground, 0, 0);
