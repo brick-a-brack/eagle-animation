@@ -4,8 +4,6 @@
   flex-direction: column;
   height: calc(100vh - 100px - 2 * var(--space-huge));
   justify-content: center;
-
-  /* 100px is navbar + header height */
   position: relative;
   width: 100%;
 }

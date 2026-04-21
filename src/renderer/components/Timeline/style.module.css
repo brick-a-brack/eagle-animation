@@ -148,7 +148,6 @@
   width: 14px;
 }
 
-
 .liveLayerIcon {
   align-items: center;
   color: #fff;
@@ -159,11 +158,9 @@
   position: absolute;
   text-align: center;
   width: calc(100% - 4px);
-
   --fa-primary-color: var(--color-white);
   --fa-secondary-color: var(--color-white);
 }
-
 
 .liveLayerIcon svg {
   height: 40%;

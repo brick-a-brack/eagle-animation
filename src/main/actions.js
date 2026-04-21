@@ -20,6 +20,13 @@ console.log(`💾 Eagle Animation files will be saved in the following folder: $
 const getPictureLink = (projectId, sceneIndex, filename) => `ea://api/pictures/${projectId}/${sceneIndex}/${filename}`;
 const getMetaPictureLink = (projectId, sceneIndex, filename) => `ea://api/pictures/${projectId}/${sceneIndex}/${filename}?infos=json`;
 
+const FRAME_TYPES = {
+  MASKING_BACKGROUND: '-background',
+  MASKING_FOREGROUND: '-foreground',
+  MASKING_TRANSPARENT: '-transparent',
+  FRAME: '',
+};
+
 const computeProject = (data) => {
   const copiedData = structuredClone(data);
   const scenes = copiedData.project.scenes.map((scene, i) => ({
@@ -263,14 +270,7 @@ const actions = {
       if (output_path) {
         const bufferDirectoryPath = join(join(PROJECTS_PATH, project_id), `/.tmp/`);
         for (const frame of frames) {
-          const typeNames = {
-            MASKING_BACKGROUND: '-background',
-            MASKING_FOREGROUND: '-foreground',
-            MASKING_TRANSPARENT: '-transparent',
-            FRAME: '',
-          };
-
-          await copyFile(join(bufferDirectoryPath, frame.buffer_id), join(output_path, `frame-${frame.index.toString().padStart(6, '0')}${typeNames[frame.type]}.${frame.extension}`));
+          await copyFile(join(bufferDirectoryPath, frame.buffer_id), join(output_path, `frame-${frame.index.toString().padStart(6, '0')}${FRAME_TYPES[frame.type]}.${frame.extension}`));
         }
       }
       return true;

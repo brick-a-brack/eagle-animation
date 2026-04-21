@@ -9,10 +9,12 @@ class MaskingEditor extends Component {
   constructor(props) {
     super(props);
 
+    // DOM elements
     this.dom = {
       output: React.createRef(),
     };
 
+    // Component state
     this.state = {
       error: false,
       isDrawing: false,
@@ -29,6 +31,7 @@ class MaskingEditor extends Component {
     // To know if the user is drawing or not, we can't use the store value, beaucause it's async
     this.isDrawing = false;
 
+    // Loaded images data
     this.images = {
       foreground: null,
       background: null,
@@ -37,8 +40,10 @@ class MaskingEditor extends Component {
       render: null,
     };
 
+    // Refresh animation id
     this.animId = null;
 
+    // Last position of the mouse, to draw position on hover
     this.mouseLastPosition = null;
   }
 
@@ -144,11 +149,6 @@ class MaskingEditor extends Component {
     canvas.addEventListener('mousedown', this._startDrawing);
     window.addEventListener('mousemove', this._draw);
     window.addEventListener('mouseup', this._stopDrawing);
-
-    // Touch events
-    /* canvas.addEventListener('touchstart', this._handleTouch);
-     canvas.addEventListener('touchmove', this._handleTouch);
-     canvas.addEventListener('touchend', this._stopDrawing);*/
   }
 
   _removeEventListeners() {
@@ -158,21 +158,6 @@ class MaskingEditor extends Component {
     canvas.removeEventListener('mousedown', this._startDrawing);
     window.removeEventListener('mousemove', this._draw);
     window.removeEventListener('mouseup', this._stopDrawing);
-
-    // Touch events
-    /* canvas.removeEventListener('touchstart', this._handleTouch);
-     canvas.removeEventListener('touchmove', this._handleTouch);
-     canvas.removeEventListener('touchend', this._stopDrawing);*/
-  }
-
-  _handleTouch = () => {
-    /* e.preventDefault();
-     const touch = e.touches[0];
-     const mouseEvent = new MouseEvent(e.type === 'touchstart' ? 'mousedown' : 'mousemove', {
-       clientX: touch.clientX,
-       clientY: touch.clientY
-     });
-     this.images.transparent.dispatchEvent(mouseEvent);*/
   }
 
   _startDrawing = (e) => {
@@ -369,8 +354,6 @@ class MaskingEditor extends Component {
 
     return {
       layers: {
-        //background : await new Promise(resolve => this.images.background.toBlob(resolve, 'image/jpeg')),
-        //foreground  :  await new Promise(resolve => this.images.foreground.toBlob(resolve, 'image/jpeg')),
         transparent: await new Promise((resolve) => this.images.transparent.toBlob(resolve, 'image/png')),
       },
       frame: await new Promise((resolve) => this.images.render.toBlob(resolve, 'image/png')),
