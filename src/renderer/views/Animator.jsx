@@ -253,8 +253,9 @@ const Animator = ({ t }) => {
           const nbFramesToTakeForAvg = (settings.AVERAGING_ENABLED ? Number(settings.AVERAGING_VALUE) : 1) || 1;
           try {
             const frame = await cameraActions.takePicture(nbFramesToTakeForAvg, settings.REVERSE_X, settings.REVERSE_Y);
+            const frameType = maskingMode === 'DISABLED' ? 'NORMAL' : (pendingBackgroundFrame ? 'FOREGROUND' : 'BACKGROUND');
 
-            window.track('frame_captured', { projectId: `${id}`, trackId: `${track}`, reverseX: settings.REVERSE_X, reverseY: settings.REVERSE_Y, nbFrames: nbFramesToTakeForAvg });
+            window.track('frame_captured', { projectId: `${id}`, trackId: `${track}`, reverseX: settings.REVERSE_X, reverseY: settings.REVERSE_Y, nbFrames: nbFramesToTakeForAvg, maskingMode, frameType });
 
             if (settings.SOUNDS) {
               const isAprilFoolsDay = new Date().getDate() === 1 && new Date().getMonth() === 3;
@@ -465,6 +466,7 @@ const Animator = ({ t }) => {
         setPendingBackgroundFrame(null);
       }
       setMaskingMode(newMode);
+      window.track('animator_changed', { feature: 'masking', value: newMode });
     },
     MASKING_EDITOR: () => {
       setShowMaskingEditor(true);

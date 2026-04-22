@@ -30,13 +30,26 @@ const MaskingWindow = forwardRef(function MaskingWindow({ backgroundLayer = null
     { id: 'PREVIEW', icon: faEye, title: t('Preview'), selected: selectedTab === 'PREVIEW' },
   ];
 
+  const handleTabChange = (e) => {
+    const mode = e.id === 'EDIT' ? 'REMOVE' : 'PREVIEW';
+    setSelectedTab(mode)
+    window.track('masking', { feature: 'change_tab', mode });
+  }
+
   const handleFlush = () => {
     editorRef.current.flush();
+    window.track('masking', { feature: 'flush' });
   };
+
+  const handleEraserModeChange = () => {
+    const newMode = selectedTab === 'REMOVE' ? 'RESTORE' : 'REMOVE';
+    setSelectedTab(newMode);
+    window.track('masking', { feature: 'eraser_change', mode: newMode });
+  }
 
   return (
     <div className={style.container}>
-      <IconTabs tabs={categories} onClick={(e) => setSelectedTab(e.id === 'EDIT' ? 'REMOVE' : 'PREVIEW')} />
+      <IconTabs tabs={categories} onClick={handleTabChange} />
 
       <MaskingEditor
         brushSize={brushSize}
@@ -53,9 +66,7 @@ const MaskingWindow = forwardRef(function MaskingWindow({ backgroundLayer = null
           <Button
             icon={faEraser}
             selected={selectedTab === 'REMOVE'}
-            onClick={() => {
-              setSelectedTab(selectedTab === 'REMOVE' ? 'RESTORE' : 'REMOVE');
-            }}
+            onClick={handleEraserModeChange}
             title={selectedTab === 'REMOVE' ? t('Anti-Eraser') : t('Eraser')}
           />
         </div>
