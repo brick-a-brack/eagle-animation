@@ -34,4 +34,4 @@ client.on('ready', () => {
   }
 });
 
-client.login();
+client.login().catch(() => {});
