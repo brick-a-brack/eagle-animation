@@ -287,5 +287,14 @@
   "Foreground": "Pirmas planas",
   "Background": "Antras planas",
   "Export masking layers": "Eksportuoti maskavimo sluoksnius",
-  "Export the layers of masked frames": "Eksportuoti maskuotų kadrų sluoksnius"
+  "Export the layers of masked frames": "Eksportuoti maskuotų kadrų sluoksnius",
+  "Free Stop Motion Software": "Nemokama stop motion programinė įranga",
+  "Capture in progress": "Fiksavimas vyksta",
+  "Captured: {{content}}": "Fiksuota: {{content}}",
+  "{{count}} frame_one": "{{count}} kadras",
+  "{{count}} frame_few": "{{count}} kadrai",
+  "{{count}} frame_many": "{{count}} kadrai",
+  "{{count}} frame_other": "{{count}} kadrai",
+  "Export in progress": "Eksportavimas vyksta",
+  "Ready to animate": "Pasiruošę animuoti"
 }

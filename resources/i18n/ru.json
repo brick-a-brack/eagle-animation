@@ -268,5 +268,14 @@
   "Foreground": "Передний план",
   "Background": "Фон",
   "Export masking layers": "Экспортировать слои маскирования",
-  "Export the layers of masked frames": "Экспортировать слои замаскированных кадров"
+  "Export the layers of masked frames": "Экспортировать слои замаскированных кадров",
+  "Free Stop Motion Software": "Бесплатное программное обеспечение для стоп-моушн анимации",
+  "Capture in progress": "Запись в процессе",
+  "Captured: {{content}}": "Записано: {{content}}",
+  "{{count}} frame_one": "{{count}} кадр",
+  "{{count}} frame_few": "{{count}} кадра",
+  "{{count}} frame_many": "{{count}} кадра",
+  "{{count}} frame_other": "{{count}} кадра",
+  "Export in progress": "Экспорт в процессе",
+  "Ready to animate": "Готово к анимации"
 }

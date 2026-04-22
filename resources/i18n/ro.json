@@ -267,5 +267,13 @@
   "Foreground": "Prim-plan",
   "Background": "Fundal",
   "Export masking layers": "Exportă straturile de mască",
-  "Export the layers of masked frames": "Exportă straturile cadrelor mascate"
+  "Export the layers of masked frames": "Exportă straturile cadrelor mascate",
+  "Free Stop Motion Software": "Software de stop motion gratuit",
+  "Capture in progress": "Captură în curs",
+  "Captured: {{content}}": "Capturat: {{content}}",
+  "{{count}} frame_one": "{{count}} cadru",
+  "{{count}} frame_few": "{{count}} cadre",
+  "{{count}} frame_other": "{{count}} cadre",
+  "Export in progress": "Export în curs",
+  "Ready to animate": "Pregătit pentru animare"
 }

@@ -268,5 +268,14 @@
   "Foreground": "Popredie",
   "Background": "Pozadie",
   "Export masking layers": "Exportovať maskovacie vrstvy",
-  "Export the layers of masked frames": "Exportovať vrstvy maskovaných snímok"
+  "Export the layers of masked frames": "Exportovať vrstvy maskovaných snímok",
+  "Free Stop Motion Software": "Bezplatný softvér na stop motion animáciu",
+  "Capture in progress": "Zachytávanie prebieha",
+  "Captured: {{content}}": "Zachytené: {{content}}",
+  "{{count}} frame_one": "{{count}} snímka",
+  "{{count}} frame_few": "{{count}} snímky",
+  "{{count}} frame_many": "{{count}} snímky",
+  "{{count}} frame_other": "{{count}} snímky",
+  "Export in progress": "Export prebieha",
+  "Ready to animate": "Pripravené na animáciu"
 }

@@ -265,5 +265,12 @@
   "Foreground": "Преден план",
   "Background": "Заден план",
   "Export masking layers": "Експортиране на маскиращи слоеве",
-  "Export the layers of masked frames": "Експортиране на слоевете на маскираните кадри"
+  "Export the layers of masked frames": "Експортиране на слоевете на маскираните кадри",
+  "Free Stop Motion Software": "Безплатен софтуер за стоп моушън",
+  "Capture in progress": "Записването е в ход",
+  "Captured: {{content}}": "Записано: {{content}}",
+  "{{count}} frame_one": "{{count}} кадър",
+  "{{count}} frame_other": "{{count}} кадъра",
+  "Export in progress": "Експортиране в ход",
+  "Ready to animate": "Готов за анимация"
 }

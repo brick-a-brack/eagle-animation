@@ -265,5 +265,12 @@
   "Foreground": "Előtér",
   "Background": "Háttér",
   "Export masking layers": "Maszk rétegek exportálása",
-  "Export the layers of masked frames": "Maszkos képkockák rétegeinek exportálása"
+  "Export the layers of masked frames": "Maszkos képkockák rétegeinek exportálása",
+  "Free Stop Motion Software": "Ingyenes stop motion szoftver",
+  "Capture in progress": "Felvevés folyamatban",
+  "Captured: {{content}}": "Felvevés: {{content}}",
+  "{{count}} frame_one": "{{count}} kép",
+  "{{count}} frame_other": "{{count}} kép",
+  "Export in progress": "Exportálás folyamatban",
+  "Ready to animate": "Kész az animálásra"
 }

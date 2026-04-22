@@ -280,5 +280,12 @@
   "Foreground": "Antaŭplano",
   "Background": "Malantaŭo",
   "Export masking layers": "Eksporti maskajn tavolojn",
-  "Export the layers of masked frames": "Eksporti la tavolojn de maskitaj kadroj"
+  "Export the layers of masked frames": "Eksporti la tavolojn de maskitaj kadroj",
+  "Free Stop Motion Software": "Senpaga Stop Motion Programaro",
+  "Capture in progress": "Kapto en progreso",
+  "Captured: {{content}}": "Kapta: {{content}}",
+  "{{count}} frame_one": "{{count}} kadro",
+  "{{count}} frame_other": "{{count}} kadroj",
+  "Export in progress": "Eksporto en progreso",
+  "Ready to animate": "Pretas por animacio"
 }

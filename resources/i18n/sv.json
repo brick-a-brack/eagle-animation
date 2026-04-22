@@ -265,5 +265,12 @@
   "Foreground": "Förgrund",
   "Background": "Bakgrund",
   "Export masking layers": "Exportera maskeringslager",
-  "Export the layers of masked frames": "Exportera lagren av maskerade bilder"
+  "Export the layers of masked frames": "Exportera lagren av maskerade bilder",
+  "Free Stop Motion Software": "Gratis stop motion-programvara",
+  "Capture in progress": "Inspelning pågår",
+  "Captured: {{content}}": "Inspelad: {{content}}",
+  "{{count}} frame_one": "{{count}} bild",
+  "{{count}} frame_other": "{{count}} bilder",
+  "Export in progress": "Export pågår",
+  "Ready to animate": "Redo att animera"
 }

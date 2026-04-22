@@ -265,5 +265,12 @@
   "Foreground": "Πρώτο πλάνο",
   "Background": "Φόντο",
   "Export masking layers": "Εξαγωγή επιπέδων μάσκας",
-  "Export the layers of masked frames": "Εξαγωγή των επιπέδων των μασκαρισμένων καρέ"
+  "Export the layers of masked frames": "Εξαγωγή των επιπέδων των μασκαρισμένων καρέ",
+  "Free Stop Motion Software": "Δωρεάν Λογισμικό Stop Motion",
+  "Capture in progress": "Η λήψη είναι σε εξέλιξη",
+  "Captured: {{content}}": "Λήψη: {{content}}",
+  "{{count}} frame_one": "{{count}} καρέ",
+  "{{count}} frame_other": "{{count}} καρέ",
+  "Export in progress": "Εξαγωγή σε εξέλιξη",
+  "Ready to animate": "Έτοιμο προς ανίχνευση"
 }

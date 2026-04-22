@@ -265,5 +265,12 @@
   "Foreground": "Etualalla",
   "Background": "Taustalla",
   "Export masking layers": "Vie maskauskerrokset",
-  "Export the layers of masked frames": "Vie maskattujen kehysten kerrokset"
+  "Export the layers of masked frames": "Vie maskattujen kehysten kerrokset",
+  "Free Stop Motion Software": "Ilmainen stop motion -ohjelmisto",
+  "Capture in progress": "Kuvaus käynnissä",
+  "Captured: {{content}}": "Kuvattu: {{content}}",
+  "{{count}} frame_one": "{{count}} kuva",
+  "{{count}} frame_other": "{{count}} kuvaa",
+  "Export in progress": "Vienti käynnissä",
+  "Ready to animate": "Valmis animoimaan"
 }

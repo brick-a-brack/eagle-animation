@@ -265,5 +265,12 @@
   "Foreground": "Voorgrond",
   "Background": "Achtergrond",
   "Export masking layers": "Exporteer maskeringslagen",
-  "Export the layers of masked frames": "Exporteer de lagen van gemaskeerde frames"
+  "Export the layers of masked frames": "Exporteer de lagen van gemaskeerde frames",
+  "Free Stop Motion Software": "Gratis stop motion software",
+  "Capture in progress": "Opname in uitvoering",
+  "Captured: {{content}}": "Opgenomen: {{content}}",
+  "{{count}} frame_one": "{{count}} frame",
+  "{{count}} frame_other": "{{count}} frames",
+  "Export in progress": "Exporteren in uitvoering",
+  "Ready to animate": "Klaar om te animeren"
 }

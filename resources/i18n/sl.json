@@ -269,5 +269,14 @@
   "Foreground": "Sprednja stran",
   "Background": "Ozadje",
   "Export masking layers": "Izvozi plasti maskiranja",
-  "Export the layers of masked frames": "Izvozi plasti maskiranih okvirjev"
+  "Export the layers of masked frames": "Izvozi plasti maskiranih okvirjev",
+  "Free Stop Motion Software": "Brezplačna programska oprema za stop motion",
+  "Capture in progress": "Zajemanje v teku",
+  "Captured: {{content}}": "Zajeto: {{content}}",
+  "{{count}} frame_one": "{{count}} sličica",
+  "{{count}} frame_two": "__NOT_TRANSLATED__",
+  "{{count}} frame_few": "{{count}} sličic",
+  "{{count}} frame_other": "{{count}} sličic",
+  "Export in progress": "Izvoz v teku",
+  "Ready to animate": "Pripravljen za animacijo"
 }

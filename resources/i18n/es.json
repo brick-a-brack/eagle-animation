@@ -281,5 +281,13 @@
   "Foreground": "Primer plano",
   "Background": "Fondo",
   "Export masking layers": "Exportar capas de enmascaramiento",
-  "Export the layers of masked frames": "Exportar las capas de fotogramas enmascarados"
+  "Export the layers of masked frames": "Exportar las capas de fotogramas enmascarados",
+  "Free Stop Motion Software": "Software de stop motion gratuito",
+  "Capture in progress": "Captura en curso",
+  "Captured: {{content}}": "Capturado: {{content}}",
+  "{{count}} frame_one": "{{count}} fotograma",
+  "{{count}} frame_many": "{{count}} fotogramas",
+  "{{count}} frame_other": "{{count}} fotogramas",
+  "Export in progress": "Exportación en curso",
+  "Ready to animate": "Listo para animar"
 }

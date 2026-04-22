@@ -280,5 +280,13 @@
   "Foreground": "Premier plan",
   "Background": "Arrière-plan",
   "Export masking layers": "Exporter les calques de masquage",
-  "Export the layers of masked frames": "Exporter les calques de masquage des images"
+  "Export the layers of masked frames": "Exporter les calques de masquage des images",
+  "Free Stop Motion Software": "Logiciel de stop motion gratuit",
+  "Capture in progress": "Tournage en cours",
+  "Captured: {{content}}": "Tournage : {{content}}",
+  "{{count}} frame_one": "{{count}} photo",
+  "{{count}} frame_many": "{{count}} photos",
+  "{{count}} frame_other": "{{count}} photos",
+  "Export in progress": "Export en cours",
+  "Ready to animate": "Prêt à animer"
 }

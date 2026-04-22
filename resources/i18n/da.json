@@ -265,5 +265,12 @@
   "Foreground": "Forgrund",
   "Background": "Baggrund",
   "Export masking layers": "Eksporter maskeringslag",
-  "Export the layers of masked frames": "Eksporter lagene af maskede rammer"
+  "Export the layers of masked frames": "Eksporter lagene af maskede rammer",
+  "Free Stop Motion Software": "Gratis stop motion software",
+  "Capture in progress": "Optagelse i gang",
+  "Captured: {{content}}": "Optaget: {{content}}",
+  "{{count}} frame_one": "{{count}} billede",
+  "{{count}} frame_other": "{{count}} billeder",
+  "Export in progress": "Eksport i gang",
+  "Ready to animate": "Klar til at animere"
 }

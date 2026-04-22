@@ -280,5 +280,12 @@
   "Foreground": "Vordergrund",
   "Background": "Hintergrund",
   "Export masking layers": "Maskierungsebenen exportieren",
-  "Export the layers of masked frames": "Ebenen der maskierten Bilder exportieren"
+  "Export the layers of masked frames": "Ebenen der maskierten Bilder exportieren",
+  "Free Stop Motion Software": "Kostenlose Stop Motion Software",
+  "Capture in progress": "Aufnahme läuft",
+  "Captured: {{content}}": "Aufgenommen: {{content}}",
+  "{{count}} frame_one": "{{count}} Bild",
+  "{{count}} frame_other": "{{count}} Bilder",
+  "Export in progress": "Export läuft",
+  "Ready to animate": "Bereit zum Animieren"
 }

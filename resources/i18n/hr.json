@@ -267,5 +267,13 @@
   "Foreground": "Prednji plan",
   "Background": "Pozadina",
   "Export masking layers": "Izvezi slojeve maskiranja",
-  "Export the layers of masked frames": "Izvezi slojeve maskiranih okvira"
+  "Export the layers of masked frames": "Izvezi slojeve maskiranih okvira",
+  "Free Stop Motion Software": "Besplatni softver za stop motion",
+  "Capture in progress": "Zapisivanje u tijeku",
+  "Captured: {{content}}": "Zabilježeno: {{content}}",
+  "{{count}} frame_one": "{{count}} kadar",
+  "{{count}} frame_few": "{{count}} kadrova",
+  "{{count}} frame_other": "{{count}} kadrova",
+  "Export in progress": "Izvoz u tijeku",
+  "Ready to animate": "Spreman za animaciju"
 }
