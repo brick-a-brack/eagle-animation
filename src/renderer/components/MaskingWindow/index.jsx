@@ -32,9 +32,9 @@ const MaskingWindow = forwardRef(function MaskingWindow({ backgroundLayer = null
 
   const handleTabChange = (e) => {
     const mode = e.id === 'EDIT' ? 'REMOVE' : 'PREVIEW';
-    setSelectedTab(mode)
+    setSelectedTab(mode);
     window.track('masking', { feature: 'change_tab', mode });
-  }
+  };
 
   const handleFlush = () => {
     editorRef.current.flush();
@@ -45,7 +45,7 @@ const MaskingWindow = forwardRef(function MaskingWindow({ backgroundLayer = null
     const newMode = selectedTab === 'REMOVE' ? 'RESTORE' : 'REMOVE';
     setSelectedTab(newMode);
     window.track('masking', { feature: 'eraser_change', mode: newMode });
-  }
+  };
 
   return (
     <div className={style.container}>
@@ -63,12 +63,7 @@ const MaskingWindow = forwardRef(function MaskingWindow({ backgroundLayer = null
 
       <div className={`${style.navbar} ${selectedTab === 'PREVIEW' ? style.hidden : ''}`}>
         <div className={`${style.navbarItemLeft} ${style.navbarItemSmall}`}>
-          <Button
-            icon={faEraser}
-            selected={selectedTab === 'REMOVE'}
-            onClick={handleEraserModeChange}
-            title={selectedTab === 'REMOVE' ? t('Anti-Eraser') : t('Eraser')}
-          />
+          <Button icon={faEraser} selected={selectedTab === 'REMOVE'} onClick={handleEraserModeChange} title={selectedTab === 'REMOVE' ? t('Anti-Eraser') : t('Eraser')} />
         </div>
 
         <div className={style.navbarItemLeft}>
