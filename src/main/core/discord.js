@@ -34,4 +34,10 @@ client.on('ready', () => {
   }
 });
 
-client.login().catch(() => {});
+const attemptLogin = () => {
+  client.login().catch(() => {
+    setTimeout(attemptLogin, 60000);
+  });
+};
+
+attemptLogin();
