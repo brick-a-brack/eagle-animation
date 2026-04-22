@@ -51,6 +51,7 @@
     "animated-scroll-to": "^2.3.2",
     "compare-versions": "^6.1.1",
     "dexie": "^4.4.1",
+    "discord-api-types": "^0.38.47",
     "env-paths": "2.2.1",
     "ffmpeg-static": "^5.2.0",
     "file-saver": "^2.0.5",
