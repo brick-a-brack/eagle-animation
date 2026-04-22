@@ -83,7 +83,7 @@
   "devDependencies": {
     "@electron-toolkit/eslint-config": "1.0.2",
     "@electron-toolkit/eslint-config-prettier": "2.0.0",
-    "@vitejs/plugin-react": "^5.1.4",
+    "@vitejs/plugin-react": "^6.0.1",
     "buffer": "^6.0.3",
     "electron": "^41.1.1",
     "electron-builder": "26.0.12",
