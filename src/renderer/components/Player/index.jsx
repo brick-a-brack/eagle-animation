@@ -348,7 +348,7 @@ class Player extends Component {
     return this.images[link];
   }
 
-  drawFrame(src = false) {
+  async drawFrame(src = false) {
     const ctx = this.dom.picture.current.getContext('2d', { alpha: false });
     if (src === false) {
       ctx.fillStyle = 'rgba(0,0,0,0)';
@@ -356,36 +356,36 @@ class Player extends Component {
       return;
     }
 
-    this.loadImage(getPictureLink(src, { h: 720, m: 'contain', f: 'jpg' }))
-      .then((img) => {
-        ctx.fillStyle = '#000000';
-        ctx.fillRect(0, 0, this.getSize().width, this.getSize().height);
+    // Load image
+    const img = await this.loadImage(getPictureLink(src, { h: 720, m: 'contain', f: 'jpg' })).catch(() => null);
 
-        let ratioPosition = null;
-        if (this.getVideoRatio()) {
-          ratioPosition = resizeToFit('contain', { width: this.getVideoRatio(), height: 1 }, { width: this.getSize().width, height: this.getSize().height });
-        } else {
-          ratioPosition = { width: this.getSize().width, height: this.getSize().height };
-        }
+    // Draw background
+    ctx.fillStyle = '#000000';
+    ctx.fillRect(0, 0, this.getSize().width, this.getSize().height);
 
-        const imagePosition = resizeToFit('cover', { width: img.width, height: img.height }, { width: ratioPosition.width, height: ratioPosition.height });
+    // If image is loaded, draw it
+    if (img) {
+      let ratioPosition = null;
+      if (this.getVideoRatio()) {
+        ratioPosition = resizeToFit('contain', { width: this.getVideoRatio(), height: 1 }, { width: this.getSize().width, height: this.getSize().height });
+      } else {
+        ratioPosition = { width: this.getSize().width, height: this.getSize().height };
+      }
 
-        ctx.drawImage(
-          img,
-          0,
-          0,
-          img.width,
-          img.height,
-          Math.round(this.getSize().width / 2) - imagePosition.width / 2,
-          Math.round(this.getSize().height / 2) - imagePosition.height / 2,
-          imagePosition.width,
-          imagePosition.height
-        );
-      })
-      .catch(() => {
-        ctx.fillStyle = '#000000';
-        ctx.fillRect(0, 0, this.getSize().width, this.getSize().height);
-      });
+      const imagePosition = resizeToFit('cover', { width: img.width, height: img.height }, { width: ratioPosition.width, height: ratioPosition.height });
+
+      ctx.drawImage(
+        img,
+        0,
+        0,
+        img.width,
+        img.height,
+        Math.round(this.getSize().width / 2) - imagePosition.width / 2,
+        Math.round(this.getSize().height / 2) - imagePosition.height / 2,
+        imagePosition.width,
+        imagePosition.height
+      );
+    }
   }
 
   render() {
