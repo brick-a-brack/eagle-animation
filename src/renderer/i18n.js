@@ -13,6 +13,7 @@ i18n
     // Requires until i18next-scanner supports JSONv4: https://github.com/i18next/i18next-scanner/issues/228
     // Check and adapt "ordinal" translations when it will be supported and migrated
     compatibilityJSON: 'v3',
+    showSupportNotice: false,
 
     fallbackLng: DEFAULT_LANGUAGE,
     keySeparator: false,

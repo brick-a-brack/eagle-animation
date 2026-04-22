@@ -10,6 +10,7 @@ import { CONTRIBUTE_REPOSITORY } from '../config';
 import { flushCamera, getCamera, getCameras } from './cameras';
 import { PROJECTS_PATH } from './config';
 import { uploadFile } from './core/api';
+import { setDiscordActivity } from './core/discord';
 import { exportProjectScene, exportSaveTemporaryBuffer, getSyncList, saveSyncList } from './core/export';
 import { createProject, deleteProject, getProjectData, getProjectsList, projectSave, savePicture } from './core/projects';
 import { getSettings, saveSettings } from './core/settings';
@@ -20,6 +21,13 @@ console.log(`💾 Eagle Animation files will be saved in the following folder: $
 const getPictureLink = (projectId, sceneIndex, filename) => `ea://api/pictures/${projectId}/${sceneIndex}/${filename}`;
 const getMetaPictureLink = (projectId, sceneIndex, filename) => `ea://api/pictures/${projectId}/${sceneIndex}/${filename}?infos=json`;
 
+const FRAME_TYPES = {
+  MASKING_BACKGROUND: '-background',
+  MASKING_FOREGROUND: '-foreground',
+  MASKING_TRANSPARENT: '-transparent',
+  FRAME: '',
+};
+
 const computeProject = (data) => {
   const copiedData = structuredClone(data);
   const scenes = copiedData.project.scenes.map((scene, i) => ({
@@ -28,6 +36,33 @@ const computeProject = (data) => {
       ...picture,
       link: getPictureLink(copiedData._id, i, picture.filename),
       metaLink: getMetaPictureLink(copiedData._id, i, picture.filename),
+      ...(picture?.masking
+        ? {
+            masking: {
+              background: picture?.masking?.background
+                ? {
+                    ...picture?.masking?.background,
+                    link: getPictureLink(copiedData._id, i, picture?.masking?.background?.filename),
+                    metaLink: getMetaPictureLink(copiedData._id, i, picture?.masking?.background?.filename),
+                  }
+                : null,
+              foreground: picture?.masking?.foreground
+                ? {
+                    ...picture?.masking?.foreground,
+                    link: getPictureLink(copiedData._id, i, picture?.masking?.foreground?.filename),
+                    metaLink: getMetaPictureLink(copiedData._id, i, picture?.masking?.foreground?.filename),
+                  }
+                : null,
+              transparent: picture?.masking?.transparent
+                ? {
+                    ...picture?.masking?.transparent,
+                    link: getPictureLink(copiedData._id, i, picture?.masking?.transparent?.filename),
+                    metaLink: getMetaPictureLink(copiedData._id, i, picture?.masking?.transparent?.filename),
+                  }
+                : null,
+            },
+          }
+        : {}),
     })),
   }));
 
@@ -77,7 +112,7 @@ const actions = {
     const updatedData = await getProjectData(join(PROJECTS_PATH, project_id));
     return computeProject(updatedData);
   },
-  SAVE_PICTURE: async (evt, { project_id, track_id, buffer, extension = 'jpg' }) => {
+  SAVE_PICTURE: async (evt, { project_id, track_id, buffer, extension = 'dat' }) => {
     const data = await getProjectData(join(PROJECTS_PATH, project_id));
     const picture = await savePicture(join(PROJECTS_PATH, project_id), track_id, extension, buffer);
     return {
@@ -236,7 +271,7 @@ const actions = {
       if (output_path) {
         const bufferDirectoryPath = join(join(PROJECTS_PATH, project_id), `/.tmp/`);
         for (const frame of frames) {
-          await copyFile(join(bufferDirectoryPath, frame.buffer_id), join(output_path, `frame-${frame.index.toString().padStart(6, '0')}.${frame.extension}`));
+          await copyFile(join(bufferDirectoryPath, frame.buffer_id), join(output_path, `frame-${frame.index.toString().padStart(6, '0')}${FRAME_TYPES[frame.type]}.${frame.extension}`));
         }
       }
       return true;
@@ -285,6 +320,14 @@ const actions = {
     }
 
     return true;
+  },
+  DISCORD_ACTIVITY: async (evt, { description, actionIcon, actionTitle, applicationTitle }) => {
+    setDiscordActivity({
+      details: description || null,
+      smallImageKey: actionIcon || null,
+      smallImageText: actionTitle || null,
+      largeImageText: applicationTitle || null,
+    });
   },
 };
 

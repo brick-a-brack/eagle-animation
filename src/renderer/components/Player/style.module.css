@@ -108,11 +108,22 @@
     bottom: 0;
 }
 
+.hiddenLayer {
+    align-items: center;
+    background-color: var(--color-theme-light);
+    display: flex;
+    height: 100%;
+    justify-content: center;
+    opacity: 0.7;
+    position: absolute;
+    width: 100%;
+}
 
-
-
-
-
+.hiddenIcon {
+    color: var(--color-theme-extra-light);
+    height: 20%;
+    width: 20%;
+}
 
 @keyframes rotate {
     0% {

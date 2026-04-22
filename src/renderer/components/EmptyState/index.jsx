@@ -1,12 +1,15 @@
-import React from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import * as style from './style.module.css';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const EmptyState = ({ message = '', icon = null, children }) => {
   return (
     <div className={style.container}>
-      {icon && <div className={style.icon}><FontAwesomeIcon icon={icon} /></div>}
+      {icon && (
+        <div className={style.icon}>
+          <FontAwesomeIcon icon={icon} />
+        </div>
+      )}
       <div className={style.message}>{message}</div>
       {children}
     </div>

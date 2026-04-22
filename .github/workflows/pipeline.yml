@@ -22,12 +22,12 @@ jobs:
 
     steps:
       - name: Clone source code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           fetch-depth: 1
 
       - name: Use Node.js
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v4
         with:
           node-version: 20
 
@@ -57,19 +57,25 @@ jobs:
 
       - name: Packaging Windows
         if: ${{ (matrix.versions.os == 'windows-latest') && (matrix.versions.type == 'app') }}
-        run: npm run build:win
+        run: |
+          echo "VITE_COMMIT_HASH=${{ github.sha }}" >> .env
+          npm run build:win
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Packaging MacOS
         if: ${{ (matrix.versions.os == 'macos-latest') && (matrix.versions.type == 'app') }}
-        run: npm run build:mac
+        run: |
+          echo "VITE_COMMIT_HASH=${{ github.sha }}" >> .env
+          npm run build:mac
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   
       - name: Packaging Linux
         if: ${{ (matrix.versions.os == 'ubuntu-latest') && (matrix.versions.type == 'app') }}
-        run: npm run build:linux
+        run: |
+          echo "VITE_COMMIT_HASH=${{ github.sha }}" >> .env
+          npm run build:linux
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -77,7 +83,7 @@ jobs:
         if: ${{ (matrix.versions.os == 'ubuntu-latest') && (matrix.versions.type == 'web') }}
         run: |
           echo "VITE_PUBLIC_URL=${{ secrets.RUN_PUBLIC_URL }}" >> .env
-          echo "VITE_COMMIT_HASH=`git rev-parse HEAD`" >> .env
+          echo "VITE_COMMIT_HASH=${{ github.sha }}" >> .env
           npm run build:web
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

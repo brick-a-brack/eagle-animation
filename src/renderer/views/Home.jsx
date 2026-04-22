@@ -7,6 +7,7 @@ import ProjectCard from '@components/ProjectCard';
 import ProjectsGrid from '@components/ProjectsGrid';
 import VersionUpdater from '@components/VersionUpdater';
 import useAppVersion from '@hooks/useAppVersion';
+import useDiscordActivity from '@hooks/useDiscordActivity';
 import useFullscreen from '@hooks/useFullscreen';
 import useProjects from '@hooks/useProjects';
 import useSettings from '@hooks/useSettings';
@@ -20,6 +21,7 @@ const HomeView = ({ t }) => {
   const { settings } = useSettings();
   const navigate = useNavigate();
   const { isFullscreen, enterFullscreen, exitFullscreen } = useFullscreen();
+  useDiscordActivity({ description: t('Ready to animate') });
 
   useEffect(() => {
     // Trigger background sync

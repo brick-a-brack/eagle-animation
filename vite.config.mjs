@@ -5,7 +5,6 @@ import mediaMinMax from 'postcss-media-minmax';
 import { defineConfig, normalizePath } from 'vite';
 import { viteStaticCopy } from 'vite-plugin-static-copy';
 import svgr from 'vite-plugin-svgr';
-import topLevelAwait from 'vite-plugin-top-level-await';
 
 const URL = process.env.VITE_PUBLIC_URL || '';
 
@@ -86,12 +85,6 @@ export default defineConfig({
     },
   },
   plugins: [
-    topLevelAwait({
-      // The export name of top-level await promise for each chunk module
-      promiseExportName: '__tla',
-      // The function to generate import names of top-level await promise in each chunk module
-      promiseImportName: (i) => `__tla_${i}`,
-    }),
     react(),
     svgr({
       include: '**/*.svg?jsx',
