@@ -274,7 +274,7 @@
   "Capture in progress": "Zajemanje v teku",
   "Captured: {{content}}": "Zajeto: {{content}}",
   "{{count}} frame_one": "{{count}} sličica",
-  "{{count}} frame_two": "__NOT_TRANSLATED__",
+  "{{count}} frame_two": "{{count}} sličic",
   "{{count}} frame_few": "{{count}} sličic",
   "{{count}} frame_other": "{{count}} sličic",
   "Export in progress": "Izvoz v teku",

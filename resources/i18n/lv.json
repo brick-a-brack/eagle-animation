@@ -271,7 +271,7 @@
   "Free Stop Motion Software": "Bezmaksas stop motion programmatūra",
   "Capture in progress": "Notveršana notiek",
   "Captured: {{content}}": "Notverts: {{content}}",
-  "{{count}} frame_zero": "__NOT_TRANSLATED__",
+  "{{count}} frame_zero": "{{count}} kadrs",
   "{{count}} frame_one": "{{count}} kadrs",
   "{{count}} frame_other": "{{count}} kadri",
   "Export in progress": "Eksports notiek",
