@@ -619,7 +619,7 @@ const Animator = ({ t }) => {
           onProjectDelete={() => handleAction('DELETE_PROJECT')}
         />
       </Window>
-      {isPlaying && <Window isOpened={showMaskingEditor && !isPlaying} onClose={handleCloseMaskingEditor} isFullScreen={true}>
+      {!isPlaying && <Window isOpened={showMaskingEditor && !isPlaying} onClose={handleCloseMaskingEditor} isFullScreen={true}>
         {currentFrame && currentFrame?.masking && (
           <MaskingWindow
             key={currentFrame.id}
