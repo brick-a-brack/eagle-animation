@@ -4,7 +4,6 @@ import { horizontalListSortingStrategy, SortableContext, useSortable } from '@dn
 import { CSS as DNDCSS } from '@dnd-kit/utilities';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import faEyeSlash from '@icons/faEyeSlash';
-import faForwardFast from '@icons/faForwardFast';
 import animateScrollTo from 'animated-scroll-to';
 import { useEffect, useLayoutEffect, useRef } from 'react';
 import { withTranslation } from 'react-i18next';
@@ -64,7 +63,7 @@ const SortableItem = ({ img, isBeforeShortPlayBeginning = false, isShortPlayBegi
   );
 };
 
-const Timeline = ({ onSelect, onMove, select = false, pictures = [], playing = false, shortPlayStatus = false, shortPlayFrames = 0, fps, t }) => {
+const Timeline = ({ onSelect, onMove, select = false, pictures = [], playing = false, shortPlayStatus = false, shortPlayFrames = 0, playingFrameIndex = false, fps, t }) => {
   const ref = useRef(null);
 
   const sensors = useSensors(
@@ -123,7 +122,7 @@ const Timeline = ({ onSelect, onMove, select = false, pictures = [], playing = f
   const shortPlayDuplicateOffset = getShortPlayDuplicateFirstFrameIndex(shortPlayFrameId) !== null ? shortPlayFrameIndex - getShortPlayDuplicateFirstFrameIndex(shortPlayFrameId) : 0;
   
   const shortPlayFrameIndexInTimeline = getIndex(shortPlayFrameId);
-  
+
   const isBeforeShortPlayBeginning = (index) => {
     return (!shortPlayStatus || shortPlayFrames === 0) ? false : index < shortPlayFrameIndexInTimeline;
   }

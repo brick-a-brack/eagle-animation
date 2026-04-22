@@ -136,6 +136,7 @@ const Animator = ({ t }) => {
   const [onionValue, setOnionValue] = useState(1);
   const [gridStatus, setGridStatus] = useState(false);
   const [currentFrameId, setCurrentFrameId] = useState(false);
+  const [playingFrameIndex, setPlayingFrameIndex] = useState(false);
   const [deleteOnLiveViewConfirmation, setDeleteOnLiveViewConfirmation] = useState(false);
   const [disableKeyboardShortcuts, setDisableKeyboardShortcuts] = useState(false);
 
@@ -494,6 +495,7 @@ const Animator = ({ t }) => {
           isCameraReady={isCameraReady}
           onInit={handlePlayerInit}
           onFrameChange={setCurrentFrameId}
+          playingFrameIndex={setPlayingFrameIndex}
           onPlayingStatusChange={setIsPlaying}
           isPlaying={isPlaying}
           pictures={pictures}
@@ -545,6 +547,7 @@ const Animator = ({ t }) => {
             onMove={handleFrameMove}
             select={currentFrameId}
             playing={isPlaying}
+            playingFrameIndex={playingFrameIndex}
             shortPlayStatus={shortPlayStatus}
             shortPlayFrames={Number(settings.SHORT_PLAY) || 1}
             fps={fps}

@@ -96,6 +96,7 @@ class Player extends Component {
         const frame = (newFrameIndex === false ? filteredFrames[filteredFrames.length - 1] : filteredFrames[newFrameIndex]) || false;
         this.drawFrame(frame.link || false);
         this.setState({ frameIndex: newFrameIndex });
+        this.props.playingFrameIndex(newFrameIndex === -1 ? false : newFrameIndex);
         this.props.onFrameChange(newFrameIndex !== false && frame ? frame.id : false);
         return true;
       };
@@ -156,6 +157,7 @@ class Player extends Component {
       const frame = this.frames[this.frames.length - 1] || false; // Draw last frame for onion feature
       this.drawFrame(frame.link || false);
       this.setState({ frameIndex: false });
+      this.props.playingFrameIndex(false);
       this.props.onFrameChange(false);
       this.props.onPlayingStatusChange(false);
     };
