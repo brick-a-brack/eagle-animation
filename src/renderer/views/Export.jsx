@@ -15,6 +15,7 @@ import { ALLOWED_LETTERS } from '@config-web';
 import { ExportFrames } from '@core/Export';
 import { parseRatio } from '@core/ratio';
 import useAppCapabilities from '@hooks/useAppCapabilities';
+import useDiscordActivity from '@hooks/useDiscordActivity';
 import useProject from '@hooks/useProject';
 import useSettings from '@hooks/useSettings';
 import { useEffect, useState } from 'react';
@@ -62,6 +63,12 @@ const Export = ({ t }) => {
   const [searchParams] = useSearchParams();
   const { settings } = useSettings();
   const { appCapabilities } = useAppCapabilities();
+
+  useDiscordActivity({
+    actionTitle: project?.title || null,
+    actionIcon: 'exporting',
+    description: t('Export in progress'),
+  });
 
   const form = useForm({
     mode: 'all',

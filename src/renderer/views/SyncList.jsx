@@ -4,6 +4,7 @@ import LoadingPage from '@components/LoadingPage';
 import PageContent from '@components/PageContent';
 import PageLayout from '@components/PageLayout';
 import SyncItem from '@components/SyncItem';
+import useDiscordActivity from '@hooks/useDiscordActivity';
 import useSyncList from '@hooks/useSyncList';
 import faFilm from '@icons/faFilm';
 import { withTranslation } from 'react-i18next';
@@ -13,6 +14,7 @@ const SyncListView = ({ t }) => {
   const [searchParams] = useSearchParams();
   const { items } = useSyncList();
   const navigate = useNavigate();
+  useDiscordActivity({ description: t('Ready to animate') });
 
   const handleBack = () => {
     navigate(searchParams.get('back') || '/');

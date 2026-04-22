@@ -10,6 +10,7 @@ import { CONTRIBUTE_REPOSITORY } from '../config';
 import { flushCamera, getCamera, getCameras } from './cameras';
 import { PROJECTS_PATH } from './config';
 import { uploadFile } from './core/api';
+import { setDiscordActivity } from './core/discord';
 import { exportProjectScene, exportSaveTemporaryBuffer, getSyncList, saveSyncList } from './core/export';
 import { createProject, deleteProject, getProjectData, getProjectsList, projectSave, savePicture } from './core/projects';
 import { getSettings, saveSettings } from './core/settings';
@@ -319,6 +320,14 @@ const actions = {
     }
 
     return true;
+  },
+  DISCORD_ACTIVITY: async (evt, { description, actionIcon, actionTitle, applicationTitle }) => {
+    setDiscordActivity({
+      details: description || null,
+      smallImageKey: actionIcon || null,
+      smallImageText: actionTitle || null,
+      largeImageText: applicationTitle || null,
+    });
   },
 };
 

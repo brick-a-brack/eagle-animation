@@ -282,4 +282,5 @@ export const Actions = {
     await flushBuffers();
     return true;
   },
+  DISCORD_ACTIVITY: () => {},
 };
