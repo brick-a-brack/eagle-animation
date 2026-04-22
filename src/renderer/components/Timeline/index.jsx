@@ -43,7 +43,7 @@ const SortableItem = ({ img, isShortPlayBegining = false, playing = false, selec
       onClick={() => onSelect(img)}
       className={`${style.containerImg} ${selected ? style.selected : ''} ${!playing && style.containerImgHover} ${img.hidden ? style.isHidden : ''}`}
     >
-      <span className={style.img}>{img.link && <img alt="" className={style.imgcontent} src={getPictureLink(img.link, { w: 80, h: 80, m: 'cover' })} loading="lazy" />}</span>
+      <span className={style.img}>{img.link && <img alt="" className={style.imgcontent} src={getPictureLink(img.link, { w: 80, h: 80, m: 'cover', f: 'jpg' })} loading="lazy" />}</span>
       {img.hidden && <FontAwesomeIcon className={style.icon} icon={faEyeSlash} />}
       {isShortPlayBegining && <FontAwesomeIcon className={style.shortPlayIcon} icon={faForwardFast} />}
       {img.length > 1 && <span className={style.duplicated}>{`x${img.length}`}</span>}

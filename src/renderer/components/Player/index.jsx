@@ -356,7 +356,7 @@ class Player extends Component {
       return;
     }
 
-    this.loadImage(getPictureLink(src, { h: 720, m: 'contain' }))
+    this.loadImage(getPictureLink(src, { h: 720, m: 'contain', f: 'jpg' }))
       .then((img) => {
         ctx.fillStyle = '#000000';
         ctx.fillRect(0, 0, this.getSize().width, this.getSize().height);
