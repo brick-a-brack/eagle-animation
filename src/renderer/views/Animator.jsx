@@ -459,7 +459,7 @@ const Animator = ({ t }) => {
       setDisableKeyboardShortcuts(false);
     },
     TOOGLE_MASKING_MODE: () => {
-      const values = ['DISABLED', 'UNIQUE', 'CONTINUOUS'];
+      const values = ['DISABLED', 'CONTINUOUS', 'UNIQUE', ];
       const newMode = values?.[values?.indexOf(maskingMode) + 1] || values?.[0];
       if (newMode === 'DISABLED') {
         setPendingBackgroundFrame(null);
