@@ -91,7 +91,7 @@
     "electron-vite": "^5.0.0",
     "eslint": "8.57.0",
     "eslint-plugin-react": "^7.37.5",
-    "eslint-plugin-simple-import-sort": "^12.1.1",
+    "eslint-plugin-simple-import-sort": "^13.0.0",
     "globals": "^17.5.0",
     "husky": "^9.1.7",
     "i18next-scanner": "^4.6.0",
