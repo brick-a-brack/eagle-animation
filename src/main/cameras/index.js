@@ -1,14 +1,14 @@
 import { platform } from 'node:os';
 
 const Cameras = [];
-
+/*
 if (platform() === 'win32') {
   import('./canon')
     .then((canon) => {
       Cameras.push({ browser: canon.CameraBrowser, item: canon.Camera });
     })
     .catch(console.warn);
-}
+}*/
 
 let cachedCameras = {};
 
