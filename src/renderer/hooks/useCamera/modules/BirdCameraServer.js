@@ -1,56 +1,10 @@
 class BirdCameraServer {
   constructor(deviceId = null) {
     this.deviceId = deviceId;
-    /*this.stream = false;
-    this.video = false;
-    this.width = false;
-    this.height = false;*/
   }
 
   get id() {
     return this?.deviceId || null;
-  }
-
-  initPreview() {
-    /* // eslint-disable-next-line no-async-promise-executor
-    return new Promise(async (resolve, reject) => {
-      // Get preview stream
-      this.stream = await navigator.mediaDevices
-        .getUserMedia({
-          video: {
-            deviceId: this.deviceId ? { exact: this.deviceId } : undefined,
-
-            ...(isFirefox()
-              ? {
-                  width: { min: 640, ideal: 1920, max: 99999 },
-                  height: { min: 480, ideal: 1080, max: 99999 },
-                }
-              : {
-                  width: 99999, // Force to get the best quality available (Chromium only)
-                  height: 99999, // Force to get the best quality available (Chromium only)
-                  frameRate: this.settings?.forceMaxQuality ? undefined : 15,
-                }),
-          },
-          audio: false,
-        })
-        .catch(reject);
-
-      //console.log('[CAMERA]', 'Init', this.video, this.stream);
-      window.__DEBUG_DEVICE = this.stream;
-
-      // Launch preview
-      if (this.video) {
-        this.video.srcObject = this.stream;
-        this.video.addEventListener('canplay', () => {
-          this.video.play();
-          this.width = this.video.videoWidth;
-          this.height = this.video.videoHeight;
-          resolve();
-        });
-
-        //console.log('[CAMERA]', 'Ready');
-      }
-    });*/
   }
 
   async canResetCapabilities() {
@@ -73,23 +27,24 @@ class BirdCameraServer {
     await fetch(`http://127.0.0.1:8080/cameras/${this.deviceId}/connect`, {
       method: 'PUT',
     });
-    /*
-    this.video = videoDOM;
-    this.settings = settings;
+
+this.imageDOM = imageDOM;
 
     // Reset preview canvas size for preview
     imageDOM.width = 0;
     imageDOM.height = 0;
+    imageDOM.style.opacity = 0;
 
-    await this.initPreview();
+    imageDOM.src = `http://127.0.0.1:8080/cameras/${this.deviceId}/liveview`;
 
-    imageDOM.width = 0;
-    imageDOM.height = 0;
+    imageDOM.width = imageDOM.naturalWidth;
+    imageDOM.height = imageDOM.naturalHeight;
+    imageDOM.style.opacity = 1;
 
     if (typeof onBinded === 'function') {
       onBinded();
     }
-*/
+
     return true;
   }
 
@@ -102,19 +57,8 @@ class BirdCameraServer {
       method: 'PUT',
     });
 
-    /*if (this.video) {
-      this.video.src = null;
-      this.video.srcObject = null;
-      if (typeof this.video?.stop === 'function') {
-        this.video.stop();
-      }
-    }
-    if (this.stream) {
-      this.stream.getTracks().forEach((track) => {
-        track.stop();
-        track.enabled = false;
-      });
-    }*/
+    this.imageDOM.style.opacity = 0;
+    this.imageDOM.src = null;
   }
 }
 
@@ -123,10 +67,10 @@ class BirdCameraServerBrowser {
     try {
       const devices = await fetch('http://127.0.0.1:8080/cameras').then((res) => res.json());
       return devices.map((device) => ({
-        id: device.id,
-        label: device.label,
+        deviceId: device.id,
+        label: device.name,
         type: 'WEB',
-        module: 'BIRD_CAMERA_SERVER',
+        module: 'BIRD-CAMERA-SERVER',
       }));
     } catch (err) {
       console.error(err);

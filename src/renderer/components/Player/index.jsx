@@ -403,7 +403,7 @@ class Player extends Component {
         <div className={style.container} ref={this.dom.container} style={{ width: `${width}px`, height: `${height}px`, opacity: ready ? 1 : 0 }}>
           <video ref={this.dom.video} className={`${style.layout} ${reverseClassNames}`} style={{ opacity: isCameraReady && frameIndex === false ? 1 : 0 }} />
           <div style={{ opacity: frameIndex === false ? 1 : 0 }} className={`${style.layout} ${reverseClassNames}`}>
-            <canvas ref={this.dom.videoFrame} className={style.layoutVideoFrame} />
+            <img ref={this.dom.videoFrame} className={style.layoutVideoFrame} />
           </div>
           <canvas
             ref={this.dom.picture}

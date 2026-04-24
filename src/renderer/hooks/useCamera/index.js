@@ -62,7 +62,7 @@ function useCamera(options = {}) {
         await currentCamera.connect({ videoDOM: domRefs.current.videoDOM, imageDOM: domRefs.current.imageDOM }, options, () => {
           getCameras().then((cameras) => setDevices(cameras.map(applyCameraLabel)));
         });
-        flushCanvas(domRefs.current.imageDOM);
+        //flushCanvas(domRefs.current.imageDOM);
         triggerEvent('connect');
         currentCamera.getCapabilities().then(setCameraCapabilities);
       }
@@ -81,7 +81,7 @@ function useCamera(options = {}) {
           setCurrentCamera(null);
           currentCamera?.disconnect();
           triggerEvent('disconnect');
-          flushCanvas(domRefs.current.imageDOM);
+          //flushCanvas(domRefs.current.imageDOM);
         }
         if (deviceId) {
           setCurrentCameraId(deviceId);
