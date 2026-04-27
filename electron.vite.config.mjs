@@ -9,9 +9,7 @@ import svgr from 'vite-plugin-svgr';
 export default defineConfig({
   main: {
     build: {
-      rollupOptions: {
-        external: ['@brick-a-brack/napi-canon-cameras', 'sharp'],
-      },
+
       sourcemap: true,
     },
     plugins: [externalizeDepsPlugin()],
