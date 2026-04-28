@@ -2,7 +2,7 @@ import { resolve } from 'node:path';
 
 import react from '@vitejs/plugin-react';
 import mediaMinMax from 'postcss-media-minmax';
-import { defineConfig, normalizePath } from 'vite';
+import { build, defineConfig, normalizePath } from 'vite';
 import { viteStaticCopy } from 'vite-plugin-static-copy';
 import svgr from 'vite-plugin-svgr';
 
@@ -13,6 +13,7 @@ function serviceWorkerPlugin(options) {
   const virtualModuleId = `virtual:${name}`;
   const resolvedVirtualModuleId = "\0" + virtualModuleId;
   let isBuild = false;
+  let resolvedConfig;
   return {
     name,
     config(_, { command }) {
@@ -22,19 +23,17 @@ function serviceWorkerPlugin(options) {
           rollupOptions: {
             input: {
               main: resolve(__dirname, 'src/renderer/index.html'),
-              sw: options.filename
+              // SW is built separately in closeBundle to inline all dependencies
             },
             output: {
-              entryFileNames: ({ facadeModuleId }) => {
-                if (facadeModuleId?.includes(options.filename)) {
-                  return `[name].js`;
-                }
-                return "assets/[name].[hash].js";
-              }
+              entryFileNames: "assets/[name].[hash].js",
             }
           }
         }
       };
+    },
+    configResolved(config) {
+      resolvedConfig = config;
     },
     resolveId(id) {
       if (id === virtualModuleId) {
@@ -43,11 +42,32 @@ function serviceWorkerPlugin(options) {
     },
     load(id) {
       if (id === resolvedVirtualModuleId) {
-        let filename = isBuild ? options.filename.replace(".ts", ".js") : options.filename;
+        let filename = isBuild ? '/sw.js' : options.filename;
         if (!filename.startsWith("/")) filename = `/${filename}`;
         return `export const serviceWorkerFile = '${filename}'`;
       }
-    }
+    },
+    async closeBundle() {
+      if (!isBuild) return;
+      await build({
+        configFile: false,
+        root: resolvedConfig.root,
+        resolve: resolvedConfig.resolve,
+        build: {
+          rollupOptions: {
+            input: options.filename,
+            output: {
+              format: 'es',
+              inlineDynamicImports: true,
+              entryFileNames: 'sw.js',
+            },
+          },
+          outDir: resolvedConfig.build.outDir,
+          emptyOutDir: false,
+          sourcemap: resolvedConfig.build.sourcemap,
+        },
+      });
+    },
   };
 }
 
@@ -58,8 +78,7 @@ export default defineConfig({
   build: {
     cssTarget: ['chrome100'],
     sourcemap: true,
-    outDir: resolve(__dirname, 'out/web/'),
-  },
+    outDir: resolve(__dirname, 'out/web/'),  },
   worker: {
     format: 'es',
   },
