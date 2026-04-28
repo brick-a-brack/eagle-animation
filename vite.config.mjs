@@ -12,6 +12,28 @@ function serviceWorkerPlugin(options) {
   const resolvedVirtualModuleId = "\0" + virtualModuleId;
   let isBuild = false;
   let resolvedConfig;
+
+  const swBuildOptions = (watchOptions = null) => ({
+    configFile: false,
+    root: resolvedConfig.root,
+    resolve: resolvedConfig.resolve,
+    logLevel: 'warn',
+    build: {
+      rollupOptions: {
+        input: options.filename,
+        output: {
+          format: 'es',
+          inlineDynamicImports: true,
+          entryFileNames: 'sw.js',
+        },
+      },
+      outDir: resolvedConfig.build.outDir,
+      emptyOutDir: false,
+      sourcemap: resolvedConfig.build.sourcemap,
+      ...(watchOptions ? { watch: watchOptions } : {}),
+    },
+  });
+
   return {
     name,
     config(_, { command }) {
@@ -21,7 +43,7 @@ function serviceWorkerPlugin(options) {
           rollupOptions: {
             input: {
               main: resolve(__dirname, 'src/renderer/index.html'),
-              // SW is built separately in closeBundle to inline all dependencies
+              // SW is built separately to inline all dependencies
             },
             output: {
               entryFileNames: "assets/[name].[hash].js",
@@ -32,6 +54,71 @@ function serviceWorkerPlugin(options) {
     },
     configResolved(config) {
       resolvedConfig = config;
+      if (isBuild && config.build.watch) {
+        // In watch mode, start a dedicated independent watcher for the SW.
+        // Calling build() from closeBundle() is unreliable in watch mode,
+        // so we start a parallel watcher here instead.
+        build(swBuildOptions(config.build.watch)).catch(e => {
+          console.error(`[${name}] SW watch build failed:`, e.message);
+        });
+      }
+    },
+    configureServer(server) {
+      // Dev server: bundle the SW in-memory and serve it at /sw.js.
+      // Also watch the modules it depends on and rebuild when they change.
+      let swCode = null;
+      let building = false;
+      const watchedFiles = new Set([options.filename]);
+
+      const rebuild = async () => {
+        if (building) return;
+        building = true;
+        try {
+          const result = await build({
+            configFile: false,
+            root: resolvedConfig.root,
+            resolve: resolvedConfig.resolve,
+            logLevel: 'silent',
+            build: {
+              rollupOptions: {
+                input: options.filename,
+                output: { format: 'es', inlineDynamicImports: true },
+              },
+              write: false,
+              emptyOutDir: false,
+            },
+          });
+          const output = (Array.isArray(result) ? result[0] : result).output;
+          for (const chunk of output) {
+            if (chunk.type === 'chunk') {
+              // Track every non-node_modules module so we watch it
+              for (const id of (chunk.moduleIds ?? [])) {
+                if (!id.includes('node_modules')) watchedFiles.add(id);
+              }
+              if (chunk.isEntry) swCode = chunk.code;
+            }
+          }
+        } catch (e) {
+          console.error(`[${name}] SW dev build failed:`, e.message);
+        } finally {
+          building = false;
+        }
+      };
+
+      rebuild();
+
+      server.watcher.on('change', (file) => {
+        if (watchedFiles.has(file)) rebuild();
+      });
+
+      server.middlewares.use((req, res, next) => {
+        if (req.url?.split('?')[0] === '/sw.js') {
+          res.setHeader('Content-Type', 'application/javascript; charset=utf-8');
+          res.end(swCode ?? '// Service worker not ready yet, reload in a moment');
+          return;
+        }
+        next();
+      });
     },
     resolveId(id) {
       if (id === virtualModuleId) {
@@ -40,31 +127,16 @@ function serviceWorkerPlugin(options) {
     },
     load(id) {
       if (id === resolvedVirtualModuleId) {
-        let filename = isBuild ? '/sw.js' : options.filename;
-        if (!filename.startsWith("/")) filename = `/${filename}`;
-        return `export const serviceWorkerFile = '${filename}'`;
+        return `export const serviceWorkerFile = '/sw.js'`;
       }
     },
     async closeBundle() {
-      if (!isBuild) return;
-      await build({
-        configFile: false,
-        root: resolvedConfig.root,
-        resolve: resolvedConfig.resolve,
-        build: {
-          rollupOptions: {
-            input: options.filename,
-            output: {
-              format: 'es',
-              inlineDynamicImports: true,
-              entryFileNames: 'sw.js',
-            },
-          },
-          outDir: resolvedConfig.build.outDir,
-          emptyOutDir: false,
-          sourcemap: resolvedConfig.build.sourcemap,
-        },
-      });
+      if (!isBuild || resolvedConfig.build.watch) return;
+      try {
+        await build(swBuildOptions());
+      } catch (e) {
+        console.error(`[${name}] SW build failed:`, e.message);
+      }
     },
   };
 }
