@@ -90,7 +90,7 @@ if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     // Web (Web browser backend)
     if (typeof window.IPC === 'undefined') {
-      navigator.serviceWorker.register('./sw-web.js', {
+      navigator.serviceWorker.register('./sw.js', {
         type: 'module',
       });
     }
