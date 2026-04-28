@@ -2,11 +2,9 @@ import { resolve } from 'node:path';
 
 import react from '@vitejs/plugin-react';
 import mediaMinMax from 'postcss-media-minmax';
-import { build, defineConfig, normalizePath } from 'vite';
+import { build, defineConfig, loadEnv, normalizePath } from 'vite';
 import { viteStaticCopy } from 'vite-plugin-static-copy';
 import svgr from 'vite-plugin-svgr';
-
-const URL = process.env.VITE_PUBLIC_URL || '';
 
 function serviceWorkerPlugin(options) {
   const name = "vite-plugin-service-worker";
@@ -72,9 +70,16 @@ function serviceWorkerPlugin(options) {
 }
 
 // https://vitejs.dev/config/
-export default defineConfig({
+export default defineConfig(({ mode }) => {
+  const env = loadEnv(mode, process.cwd());
+  const URL = env.VITE_PUBLIC_URL || process.env.VITE_PUBLIC_URL || '';
+
+  return {
   ...(URL ? { base: URL } : {}),
   root: resolve(__dirname, 'src/renderer/'),
+  define: {
+    'import.meta.env.VITE_COMMIT_HASH': JSON.stringify(env.VITE_COMMIT_HASH),
+  },
   build: {
     cssTarget: ['chrome100'],
     sourcemap: true,
@@ -137,4 +142,5 @@ export default defineConfig({
       "Cross-Origin-Embedder-Policy": "require-corp",
     },
   },
+  };
 });
