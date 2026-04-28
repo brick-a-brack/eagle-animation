@@ -361,23 +361,12 @@ class Webcam {
     return allowedCapabilities;
   }
 
-  async connect({ videoDOM, imageDOM } = { videoDOM: false, imageDOM: false }, settings = {}, onBinded = () => {}) {
+  async connect({ videoDOM, imageDOM } = { videoDOM: false, imageDOM: false }, settings = {}) {
     this.video = videoDOM;
     this.settings = settings;
 
-    // Reset preview canvas size for preview
-    imageDOM.width = 0;
-    imageDOM.height = 0;
-
     await this.initPreview();
-
-    imageDOM.width = 0;
-    imageDOM.height = 0;
-
-    if (typeof onBinded === 'function') {
-      onBinded();
-    }
-
+    
     return true;
   }
 
@@ -420,7 +409,7 @@ class Webcam {
 
   async disconnect() {
     if (this.video) {
-      this.video.src = null;
+      this.video.src = '';
       this.video.srcObject = null;
       if (typeof this.video?.stop === 'function') {
         this.video.stop();

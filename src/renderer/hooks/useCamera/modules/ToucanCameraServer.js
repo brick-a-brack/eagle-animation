@@ -1,3 +1,27 @@
+import { min } from 'lodash';
+
+const TOUCAN_CAMERA_SERVER_URL = 'http://127.0.0.1:8080/';
+
+const EAGLE_TOUCAN_PARAMETERS_MAPPING = {
+  VIDEO_FORMAT: 'video_format', // Not supported yet by Eagle
+  BRIGHTNESS: 'brightness',
+  CONTRAST: 'contrast',
+  SATURATION: 'saturation',
+  SHARPNESS: 'sharpness',
+  ZOOM: 'zoom',
+  ZOOM_POSITION_Y: 'tilt',
+  ZOOM_POSITION_X: 'pan',
+  FOCUS_MODE: 'focus_mode',
+  FOCUS_DISTANCE: 'focus',
+  EXPOSURE_MODE: 'exposure_mode',
+  EXPOSURE_TIME: 'exposure',
+  EXPOSURE_COMPENSATION: 'backlight_compensation',
+  WHITE_BALANCE_MODE: 'white_balance_mode',
+  WHITE_BALANCE: 'white_balance',
+  COLOR_TEMPERATURE: 'colorTemperature',
+  GAIN: 'gain', // Not supported yet by Eagle
+};
+
 class ToucanCameraServer {
   constructor(deviceId = null) {
     this.deviceId = deviceId;
@@ -20,39 +44,58 @@ class ToucanCameraServer {
   }
 
   async getCapabilities() {
+    const capabilities = await fetch(`${TOUCAN_CAMERA_SERVER_URL}cameras/${this.deviceId}/parameters`, {
+      method: 'GET',
+    }).then((res) => res.json());
+
+    console.log(capabilities);
+
+    return capabilities.map((capability) => {
+      const id = Object.keys(EAGLE_TOUCAN_PARAMETERS_MAPPING).find((key) => EAGLE_TOUCAN_PARAMETERS_MAPPING[key] === capability.type) || capability.type;
+
+      // No options, use range
+      if (capability.options.length === 0) {
+        return {
+          id,
+          type: 'RANGE',
+          min: capability.min,
+          max: capability.max,
+          step: capability.step,
+          value: capability?.current || null,
+          canReset: false,
+        };
+      }
+
+      // TODO handle RANGE_SELECT // Improve server type definition
+
+      return {
+        id,
+        type: 'SELECT',
+        values: (capability?.options || []).map((e) => ({
+          label: e.label,
+          value: e.value,
+        })),
+        value: capability?.current || null,
+        canReset: false,
+      };
+    });
+
     return [];
   }
 
-  async connect({ videoDOM, imageDOM } = { videoDOM: false, imageDOM: false }, settings = {}, onBinded = () => {}) {
-    await fetch(`http://127.0.0.1:8080/cameras/${this.deviceId}/connect`, {
+  async connect({ videoDOM, imageDOM } = { videoDOM: false, imageDOM: false }, settings = {}) {
+    this.imageDOM = imageDOM;
+    this.videoDOM = videoDOM;
+
+    // Disable video stream
+    videoDOM.src = '';
+    imageDOM.src = '';
+
+    await fetch(`${TOUCAN_CAMERA_SERVER_URL}cameras/${this.deviceId}/connect`, {
       method: 'PUT',
     });
 
-this.imageDOM = imageDOM;
-this.videoDOM = videoDOM;
-
-    // Reset preview canvas size for preview
-    imageDOM.width = 0;
-    imageDOM.height = 0;
-    imageDOM.style.opacity = 0;
-
-    imageDOM.src = `http://127.0.0.1:8080/cameras/${this.deviceId}/liveview`;
-
-    imageDOM.width = imageDOM.naturalWidth;
-    imageDOM.height = imageDOM.naturalHeight;
-    imageDOM.style.opacity = 1;
-
-
-
-    videoDOM.src = '';
-    videoDOM.width = 0;
-    videoDOM.height = 0;
-    videoDOM.style.opacity = 0;
-
-
-    if (typeof onBinded === 'function') {
-      onBinded();
-    }
+    imageDOM.src = `${TOUCAN_CAMERA_SERVER_URL}cameras/${this.deviceId}/liveview`;
 
     return true;
   }
@@ -62,19 +105,17 @@ this.videoDOM = videoDOM;
   }
 
   async disconnect() {
-    await fetch(`http://127.0.0.1:8080/cameras/${this.deviceId}/disconnect`, {
+    this.imageDOM.src = '';
+    await fetch(`${TOUCAN_CAMERA_SERVER_URL}cameras/${this.deviceId}/disconnect`, {
       method: 'PUT',
     });
-
-    this.imageDOM.style.opacity = 0;
-    this.imageDOM.src = null;
   }
 }
 
 class ToucanCameraServerBrowser {
   static async getCameras() {
     try {
-      const devices = await fetch('http://127.0.0.1:8080/cameras').then((res) => res.json());
+      const devices = await fetch(`${TOUCAN_CAMERA_SERVER_URL}cameras`).then((res) => res.json());
       return devices.map((device) => ({
         deviceId: device.id,
         label: device.name,

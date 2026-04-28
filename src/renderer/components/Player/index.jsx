@@ -37,9 +37,6 @@ class Player extends Component {
       frameIndex: false, // Frame index contains the position in the animation (including duplicated frames)
     };
 
-    // Used to detect size change on canvas based preview
-    this.videoFrameObserver = null;
-
     this.resize = () => {
       this.initCanvas();
       const parentSize = this?.dom?.container?.current?.parentNode?.getBoundingClientRect();
@@ -185,25 +182,60 @@ class Player extends Component {
 
   componentDidMount() {
     const { onInit } = this.props;
+
     onInit(this.dom.video.current, this.dom.videoFrame.current);
 
-    this.dom.video.current.onloadedmetadata = () => {
+    const handleStreamLoaded = (domElement) => {
+      domElement.width = domElement.naturalWidth;
+      domElement.height = domElement.naturalHeight;
+      domElement.style.display = 'block';
+      console.log('READY', domElement);
+    }
+
+    const handleStreamError = (domElement) => {
+      domElement.width = 0;
+      domElement.height = 0;
+      domElement.style.display = 'none';
+      console.log('ERROR', domElement);
+    }
+
+    // By default video and image element are in error mode
+    handleStreamError(this.dom.video.current);
+    handleStreamError(this.dom.videoFrame.current);
+
+    // Video player events
+    this.dom.video.current.oncanplay = () => {
+      handleStreamLoaded(this.dom.video.current);
       this.resize();
     };
     this.dom.video.current.onresize = () => {
       this.resize();
     };
+    this.dom.video.current.onerror = () => {
+      handleStreamError(this.dom.video.current);
+      this.resize();
+    };
 
+    // MJPEG frame player events
+    this.dom.videoFrame.current.onload = () => {
+      handleStreamLoaded(this.dom.videoFrame.current);
+      this.resize();
+    };
+    this.dom.videoFrame.current.onresize = () => {
+      this.resize();
+    };
+    this.dom.videoFrame.current.onerror = () => {
+      handleStreamError(this.dom.videoFrame.current);
+      this.resize();
+    };
+
+    // Default sizing
     this.resize();
+
+    // Global window handler
     window.addEventListener('resize', this.resize);
 
-    this.videoFrameObserver = new MutationObserver(() => {
-      this.resize();
-    });
-    this.videoFrameObserver.observe(this.dom.videoFrame.current, {
-      attributeFilter: ['height', 'width'],
-    });
-
+    // Show camera preview as default frame
     this.showFrame(false);
   }
 
@@ -247,9 +279,6 @@ class Player extends Component {
   }
 
   componentWillUnmount() {
-    if (this.videoFrameObserver) {
-      this.videoFrameObserver.disconnect();
-    }
     window.removeEventListener('resize', this.resize);
     this.stop();
   }
@@ -267,7 +296,7 @@ class Player extends Component {
       }
     }
     if (!ratio && this.dom.videoFrame.current) {
-      const tmpRatio = this.dom.videoFrame.current.width / this.dom.videoFrame.current.height;
+      const tmpRatio = this.dom.videoFrame.current.naturalWidth / this.dom.videoFrame.current.naturalHeight;
       if (tmpRatio > 0) {
         ratio = tmpRatio;
       }
@@ -401,10 +430,16 @@ class Player extends Component {
     return (
       <div className={`${style.playerContainer} ${frameIndex === false ? style.live : ''}`}>
         <div className={style.container} ref={this.dom.container} style={{ width: `${width}px`, height: `${height}px`, opacity: ready ? 1 : 0 }}>
-          <video ref={this.dom.video} className={`${style.layout} ${reverseClassNames}`} style={{ opacity: isCameraReady && frameIndex === false ? 1 : 0 }} />
-          <div style={{ opacity: frameIndex === false ? 1 : 0 }} className={`${style.layout} ${reverseClassNames}`}>
-            <img ref={this.dom.videoFrame} className={style.layoutVideoFrame} />
-          </div>
+          <video
+            ref={this.dom.video}
+            className={`${style.layout} ${reverseClassNames}`}
+            style={{ opacity: isCameraReady && frameIndex === false ? 1 : 0 }}
+          />
+          <img
+            ref={this.dom.videoFrame}
+            className={`${style.layout} ${reverseClassNames}`}
+            style={{ opacity: isCameraReady && frameIndex === false ? 1 : 0 }}
+          />
           <canvas
             ref={this.dom.picture}
             className={style.layout}

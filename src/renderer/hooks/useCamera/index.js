@@ -87,9 +87,8 @@ function useCamera(options = {}) {
           setCurrentCameraId(deviceId);
           const camera = getCamera(deviceId);
           if (domRefs?.current?.videoDOM && domRefs?.current?.imageDOM) {
-            await camera?.connect({ videoDOM: domRefs?.current?.videoDOM, imageDOM: domRefs?.current?.imageDOM }, options, () => {
-              getCameras().then((cameras) => setDevices(cameras.map(applyCameraLabel)));
-            });
+            await camera?.connect({ videoDOM: domRefs?.current?.videoDOM, imageDOM: domRefs?.current?.imageDOM }, options);
+            await getCameras().then((cameras) => setDevices(cameras.map(applyCameraLabel)));
             triggerEvent('connect');
           }
           setCurrentCamera(camera);

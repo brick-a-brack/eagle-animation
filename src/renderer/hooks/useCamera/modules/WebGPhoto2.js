@@ -172,16 +172,17 @@ class WebGPhoto2 {
     return allowedCapabilities;
   }
 
-  async connect({ videoDOM, imageDOM } = { videoDOM: false, imageDOM: false }, settings = {}, onBinded = () => {}) {
+  async connect({ videoDOM, imageDOM } = { videoDOM: false, imageDOM: false }, settings = {}) {
     this.imageDOM = imageDOM;
     this.settings = settings;
 
     // Reset preview canvas size for preview
-    imageDOM.width = 0;
-    imageDOM.height = 0;
+    //imageDOM.width = 0;
+    //imageDOM.height = 0;
 
     videoDOM.pause();
     videoDOM.srcObject = null;
+    videoDOM.src = '';
 
     await CameraAPI.showPicker();
     await CameraInstance.connect();
@@ -193,10 +194,6 @@ class WebGPhoto2 {
     //console.log('Current configuration tree:', await CameraInstance.getConfig());
 
     await this.initPreview();
-
-    if (typeof onBinded === 'function') {
-      onBinded();
-    }
 
     return true;
   }
@@ -212,8 +209,9 @@ class WebGPhoto2 {
 
   async disconnect() {
     clearInterval(this.previewInterval);
-    this.imageDOM.width = 0;
-    this.imageDOM.height = 0;
+    this.imageDOM.src = '';
+    this.videoDOM.srcObject = null;
+    this.videoDOM.src = '';
     this.isActive = false;
   }
 }

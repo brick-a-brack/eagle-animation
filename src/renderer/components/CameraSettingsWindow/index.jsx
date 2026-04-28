@@ -84,6 +84,7 @@ const CameraSettingsWindow = ({
 
   const selectOptionsTranslations = {
     continuous: t('Automatic'),
+    auto: t('Automatic'),
     manual: t('Manual'),
     AutoAmbiencePriority: t('Automatic'),
     Cloudy: t('Cloudy'),
