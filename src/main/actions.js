@@ -7,7 +7,6 @@ import { join } from 'path-browserify';
 
 import { getEncodingProfile } from '../common/ffmpeg';
 import { CONTRIBUTE_REPOSITORY } from '../config';
-import { flushCamera, getCamera, getCameras } from './cameras';
 import { PROJECTS_PATH } from './config';
 import { uploadFile } from './core/api';
 import { setDiscordActivity } from './core/discord';

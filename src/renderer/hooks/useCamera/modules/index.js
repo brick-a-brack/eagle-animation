@@ -3,11 +3,11 @@ import { DEVICE } from '@config-web';
 
 import { Camera as WebcamCamera, CameraBrowser as WebcamCameraBrowser } from './Webcam';
 import { Camera as WebGPhoto2Camera, CameraBrowser as WebGPhoto2CameraBrowser } from './WebGPhoto2';
-import { Camera as BirdCameraServerCamera, CameraBrowser as BirdCameraServerBrowser } from './BirdCameraServer';
+import { Camera as ToucanCameraServerCamera, CameraBrowser as ToucanCameraServerBrowser } from './ToucanCameraServer';
 
 const Cameras = [
   { browser: WebcamCameraBrowser, item: WebcamCamera },
-  { browser: BirdCameraServerBrowser, item: BirdCameraServerCamera },
+  { browser: ToucanCameraServerBrowser, item: ToucanCameraServerCamera },
   ...(DEVICE === 'WEB' && isBlink() ? [{ browser: WebGPhoto2CameraBrowser, item: WebGPhoto2Camera }] : []),
 ];
 

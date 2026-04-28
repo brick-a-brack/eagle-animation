@@ -1,4 +1,4 @@
-class BirdCameraServer {
+class ToucanCameraServer {
   constructor(deviceId = null) {
     this.deviceId = deviceId;
   }
@@ -29,6 +29,7 @@ class BirdCameraServer {
     });
 
 this.imageDOM = imageDOM;
+this.videoDOM = videoDOM;
 
     // Reset preview canvas size for preview
     imageDOM.width = 0;
@@ -40,6 +41,14 @@ this.imageDOM = imageDOM;
     imageDOM.width = imageDOM.naturalWidth;
     imageDOM.height = imageDOM.naturalHeight;
     imageDOM.style.opacity = 1;
+
+
+
+    videoDOM.src = '';
+    videoDOM.width = 0;
+    videoDOM.height = 0;
+    videoDOM.style.opacity = 0;
+
 
     if (typeof onBinded === 'function') {
       onBinded();
@@ -62,7 +71,7 @@ this.imageDOM = imageDOM;
   }
 }
 
-class BirdCameraServerBrowser {
+class ToucanCameraServerBrowser {
   static async getCameras() {
     try {
       const devices = await fetch('http://127.0.0.1:8080/cameras').then((res) => res.json());
@@ -70,7 +79,7 @@ class BirdCameraServerBrowser {
         deviceId: device.id,
         label: device.name,
         type: 'WEB',
-        module: 'BIRD-CAMERA-SERVER',
+        module: 'TOUCAN-CAMERA-SERVER',
       }));
     } catch (err) {
       console.error(err);
@@ -79,5 +88,5 @@ class BirdCameraServerBrowser {
   }
 }
 
-export const Camera = BirdCameraServer;
-export const CameraBrowser = BirdCameraServerBrowser;
+export const Camera = ToucanCameraServer;
+export const CameraBrowser = ToucanCameraServerBrowser;
