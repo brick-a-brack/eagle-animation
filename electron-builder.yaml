@@ -10,11 +10,13 @@ directories:
 files:
   - package.json
   - out/**
+  - "toucan-camera-server/**"
 
 asarUnpack:
   - "**/*.node"
   - "node_modules/@img/**"
   - "node_modules/sharp/**"
+  - "toucan-camera-server/**"
 
 extraMetadata:
   main: out/main/index.js

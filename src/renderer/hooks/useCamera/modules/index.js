@@ -1,9 +1,9 @@
 import { isBlink } from '@common/isBlink';
 import { DEVICE } from '@config-web';
 
+import { Camera as ToucanCameraServerCamera, CameraBrowser as ToucanCameraServerBrowser } from './ToucanCameraServer';
 import { Camera as WebcamCamera, CameraBrowser as WebcamCameraBrowser } from './Webcam';
 import { Camera as WebGPhoto2Camera, CameraBrowser as WebGPhoto2CameraBrowser } from './WebGPhoto2';
-import { Camera as ToucanCameraServerCamera, CameraBrowser as ToucanCameraServerBrowser } from './ToucanCameraServer';
 
 const Cameras = [
   { browser: WebcamCameraBrowser, item: WebcamCamera },

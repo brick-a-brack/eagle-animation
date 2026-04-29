@@ -12,6 +12,7 @@ import icon from '../../resources/icon.png?asset';
 import { parseResizeArguments } from '../common/resizer';
 import actions from './actions';
 import { PROJECTS_PATH } from './config';
+import { runToucanCameraServer } from './core/toucan';
 
 let sendToRenderer = () => null;
 
@@ -172,6 +173,7 @@ app.whenReady().then(() => {
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit();
+    process.exit(0);
   }
 });
 
@@ -183,4 +185,7 @@ app.whenReady().then(() => {
       return actions[name](evt, args, sendToRenderer);
     });
   });
+
+  // Run Toucan Camera Server
+  runToucanCameraServer();
 });

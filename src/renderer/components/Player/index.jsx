@@ -190,14 +190,14 @@ class Player extends Component {
       domElement.height = domElement.naturalHeight;
       domElement.style.display = 'block';
       console.log('READY', domElement);
-    }
+    };
 
     const handleStreamError = (domElement) => {
       domElement.width = 0;
       domElement.height = 0;
       domElement.style.display = 'none';
       console.log('ERROR', domElement);
-    }
+    };
 
     // By default video and image element are in error mode
     handleStreamError(this.dom.video.current);
@@ -430,16 +430,8 @@ class Player extends Component {
     return (
       <div className={`${style.playerContainer} ${frameIndex === false ? style.live : ''}`}>
         <div className={style.container} ref={this.dom.container} style={{ width: `${width}px`, height: `${height}px`, opacity: ready ? 1 : 0 }}>
-          <video
-            ref={this.dom.video}
-            className={`${style.layout} ${reverseClassNames}`}
-            style={{ opacity: isCameraReady && frameIndex === false ? 1 : 0 }}
-          />
-          <img
-            ref={this.dom.videoFrame}
-            className={`${style.layout} ${reverseClassNames}`}
-            style={{ opacity: isCameraReady && frameIndex === false ? 1 : 0 }}
-          />
+          <video ref={this.dom.video} className={`${style.layout} ${reverseClassNames}`} style={{ opacity: isCameraReady && frameIndex === false ? 1 : 0 }} />
+          <img ref={this.dom.videoFrame} className={`${style.layout} ${reverseClassNames}`} style={{ opacity: isCameraReady && frameIndex === false ? 1 : 0 }} />
           <canvas
             ref={this.dom.picture}
             className={style.layout}

@@ -1,5 +1,3 @@
-import { min } from 'lodash';
-
 const TOUCAN_CAMERA_SERVER_URL = 'http://127.0.0.1:8080/';
 
 const EAGLE_TOUCAN_PARAMETERS_MAPPING = {
@@ -40,6 +38,16 @@ class ToucanCameraServer {
   }
 
   async applyCapability(key, value) {
+    console.log('Apply capability', key, value);
+
+    await fetch(`${TOUCAN_CAMERA_SERVER_URL}cameras/${this.deviceId}/settings`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ type: EAGLE_TOUCAN_PARAMETERS_MAPPING[key], value: `${value}` }),
+    });
+
     return null;
   }
 
@@ -53,34 +61,31 @@ class ToucanCameraServer {
     return capabilities.map((capability) => {
       const id = Object.keys(EAGLE_TOUCAN_PARAMETERS_MAPPING).find((key) => EAGLE_TOUCAN_PARAMETERS_MAPPING[key] === capability.type) || capability.type;
 
-      // No options, use range
-      if (capability.options.length === 0) {
-        return {
-          id,
-          type: 'RANGE',
-          min: capability.min,
-          max: capability.max,
-          step: capability.step,
-          value: capability?.current || null,
-          canReset: false,
-        };
-      }
-
-      // TODO handle RANGE_SELECT // Improve server type definition
+      const kind = capability?.kind?.toUpperCase() || 'UNKNOWN';
+      const currentValue = capability?.current || null;
 
       return {
         id,
-        type: 'SELECT',
-        values: (capability?.options || []).map((e) => ({
-          label: e.label,
-          value: e.value,
-        })),
-        value: capability?.current || null,
+        type: kind,
+        ...(['RANGE'].includes(kind)
+          ? {
+              min: capability.min,
+              max: capability.max,
+              step: capability.step,
+            }
+          : {}),
+        ...(['SELECT', 'RANGE_SELECT'].includes(kind)
+          ? {
+              values: (capability?.options || []).map((e) => ({
+                label: e.label,
+                value: e.value,
+              })),
+            }
+          : {}),
+        value: kind === 'RANGE' ? Number(currentValue) : currentValue,
         canReset: false,
       };
     });
-
-    return [];
   }
 
   async connect({ videoDOM, imageDOM } = { videoDOM: false, imageDOM: false }, settings = {}) {

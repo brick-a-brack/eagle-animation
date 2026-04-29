@@ -366,7 +366,7 @@ class Webcam {
     this.settings = settings;
 
     await this.initPreview();
-    
+
     return true;
   }
 

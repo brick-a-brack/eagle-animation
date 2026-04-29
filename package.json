@@ -29,7 +29,7 @@
     "build:win": "electron-vite build && electron-builder --win",
     "build:mac": "electron-vite build && electron-builder --mac --universal",
     "build:linux": "electron-vite build && electron-builder --linux",
-    "postinstall": "electron-builder install-app-deps",
+    "postinstall": "electron-builder install-app-deps && node scripts/install-toucan-camera-server.js",
     "extract-strings": "i18next-scanner",
     "lint": "eslint ./src/ --ext .js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --ignore-path .gitignore --fix --max-warnings 0 --no-ignore",
     "stylelint": "stylelint src/**/*.css --ignore-path .gitignore --fix",
@@ -105,6 +105,7 @@
     "stylelint-order": "^8.1.1",
     "vite": "^7.3.2",
     "vite-plugin-static-copy": "^3.3.0",
-    "vite-plugin-svgr": "^4.5.0"
+    "vite-plugin-svgr": "^4.5.0",
+    "extract-zip": "^2.0.1"
   }
 }
