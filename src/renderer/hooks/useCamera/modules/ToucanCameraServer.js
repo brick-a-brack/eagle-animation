@@ -94,8 +94,6 @@ class ToucanCameraServer {
       },
     }).then((res) => res.json());
 
-    console.log(capabilities);
-
     return capabilities.map((capability) => {
       const id = Object.keys(EAGLE_TOUCAN_PARAMETERS_MAPPING).find((key) => EAGLE_TOUCAN_PARAMETERS_MAPPING[key] === capability.type) || capability.type;
 
@@ -147,7 +145,16 @@ class ToucanCameraServer {
   }
 
   async takePicture() {
-    return { type: 'image/jpeg', buffer: null };
+    const request = await fetch(`${getApiUrl()}cameras/${this.deviceId}/capture`, {
+      method: 'POST', // TODO: Strange? Should be GET, need to investigate more on TCS side
+      headers: {
+        ...getAuthHeader(),
+      },
+    });
+
+    const capturedFrame = await request.arrayBuffer();
+
+    return { type: request.headers.get('Content-Type'), buffer: capturedFrame };
   }
 
   async disconnect() {
