@@ -4,9 +4,13 @@ import { Buffer } from 'buffer';
 import posthog from 'posthog-js';
 import React from 'react';
 import { createRoot } from 'react-dom/client';
-
 import App from './App';
 import { BUILD, IS_DEV, POSTHOG_HOST, POSTHOG_TOKEN, VERSION } from './config';
+import { EA, EAEvents } from '@core/bindings';
+
+// Bind global objects for actions
+window.EA = EA;
+window.EAEvents = EAEvents;
 
 // Catch alt key to avoid to open menu
 window.addEventListener('keydown', (e) => {
@@ -29,7 +33,7 @@ try {
       app_build: BUILD,
     });
   }
-} catch (err) {} // eslint-disable-line no-empty
+} catch (err) { } // eslint-disable-line no-empty
 
 window.track = (eventName, data = {}) => {
   try {
@@ -37,7 +41,7 @@ window.track = (eventName, data = {}) => {
       console.log(`📊 Tracking event: ${eventName}`, data);
       posthog.capture(eventName, data);
     }
-  } catch (err) {} // eslint-disable-line no-empty
+  } catch (err) { } // eslint-disable-line no-empty
 };
 
 window.trackException = (error) => {
@@ -46,44 +50,12 @@ window.trackException = (error) => {
       console.log(`📊 Tracking exception:`, error);
       posthog.captureException(error);
     }
-  } catch (err) {} // eslint-disable-line no-empty
+  } catch (err) { } // eslint-disable-line no-empty
 };
 
 globalThis.Buffer = Buffer;
 
 console.log('🚀 Build', BUILD);
-
-window.EA = async (action, data) => {
-  // IPC (Electron backend)
-  if (typeof window.IPC !== 'undefined') {
-    return window.IPC.call(action, data);
-  }
-
-  // Web (Web browser backend)
-  if (typeof window.IPC === 'undefined') {
-    return import('./actions').then(({ Actions: WebActions }) => {
-      if (WebActions[action]) {
-        return WebActions[action](null, data);
-      }
-    });
-  }
-};
-
-window.EAEvents = (name, callback = () => {}) => {
-  // IPC (Electron backend)
-  if (typeof window.IPC !== 'undefined') {
-    if (typeof callback !== 'undefined') {
-      window.IPC.stream(name, callback);
-    }
-  }
-
-  // Web (Web browser backend)
-  if (typeof window.IPC === 'undefined') {
-    import('./actions').then(({ addEventListener }) => {
-      addEventListener(name, callback);
-    });
-  }
-};
 
 // Add service worker
 if ('serviceWorker' in navigator) {

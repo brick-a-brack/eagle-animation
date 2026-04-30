@@ -283,4 +283,5 @@ export const Actions = {
     return true;
   },
   DISCORD_ACTIVITY: () => {},
+  GET_TOUCAN_CAMERA_SERVER_CONFIG : () => null,
 };

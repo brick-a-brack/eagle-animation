@@ -40,6 +40,13 @@ function createWindow() {
     mainWindow.show();
   });
 
+  // Run Toucan Camera Server once window is ready
+  mainWindow.webContents.once('did-finish-load', () => {
+    runToucanCameraServer((data) => {
+      sendToRenderer('TOUCAN_CAMERA_SERVER_CONFIG', data);
+    });
+  });
+
   mainWindow.webContents.setWindowOpenHandler((details) => {
     shell.openExternal(details.url);
     return { action: 'deny' };
@@ -185,7 +192,4 @@ app.whenReady().then(() => {
       return actions[name](evt, args, sendToRenderer);
     });
   });
-
-  // Run Toucan Camera Server
-  runToucanCameraServer();
 });

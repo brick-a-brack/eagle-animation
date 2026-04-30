@@ -3,7 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const extract = require('extract-zip');
 
-const TOUCAN_CAMERA_SERVER_VERSION = '0.0.2';
+const TOUCAN_CAMERA_SERVER_VERSION = '0.0.3';
 
 const RELEASES = {
   windows: `https://github.com/brick-a-brack/toucan-camera-server/releases/download/v${TOUCAN_CAMERA_SERVER_VERSION}/toucan-camera-server-windows.zip`,
@@ -65,10 +65,10 @@ async function main() {
 
   fs.mkdirSync(binDir, { recursive: true });
 
-  console.log(`toucan-camera-server: downloading binaries for ${platform}...`);
+  console.log(`🐦 toucan-camera-server: downloading binaries for ${platform}...`);
   await download(url, zipPath);
 
-  console.log(`toucan-camera-server: extracting to /bin/${platform}/...`);
+  console.log(`🐦 toucan-camera-server: extracting to /bin/${platform}/...`);
   await extract(zipPath, { dir: binDir });
   // Ensure the extracted binary is executable on Unix-like systems
   let extractedBinaryPath = null;
@@ -90,12 +90,12 @@ async function main() {
   }
 
   fs.unlinkSync(zipPath);
-  console.log(`toucan-camera-server: done.`);
+  console.log(`🐦 toucan-camera-server: done.`);
 }
 
 main()
   .catch((err) => {
-    console.error('toucan-camera-server: install failed:', err.message);
+    console.error('🐦 toucan-camera-server: install failed:', err.message);
     process.exit(1);
   })
   .then(() => {

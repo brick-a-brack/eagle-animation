@@ -189,14 +189,14 @@ class Player extends Component {
       domElement.width = domElement.naturalWidth;
       domElement.height = domElement.naturalHeight;
       domElement.style.display = 'block';
-      console.log('READY', domElement);
+      //console.log('READY', domElement);
     };
 
     const handleStreamError = (domElement) => {
       domElement.width = 0;
       domElement.height = 0;
       domElement.style.display = 'none';
-      console.log('ERROR', domElement);
+      //console.log('ERROR', domElement);
     };
 
     // By default video and image element are in error mode

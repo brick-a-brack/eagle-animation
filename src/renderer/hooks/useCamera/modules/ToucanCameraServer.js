@@ -1,4 +1,16 @@
-const TOUCAN_CAMERA_SERVER_URL = 'http://127.0.0.1:8080/';
+import { EA, EAEvents } from '@core/bindings';
+
+let TOUCAN_CAMERA_SERVER_CONFIG = null;
+
+EA('GET_TOUCAN_CAMERA_SERVER_CONFIG').then((config) => {
+  TOUCAN_CAMERA_SERVER_CONFIG = config;
+  console.log('🐦 Initial Toucan Camera Server config fetched', TOUCAN_CAMERA_SERVER_CONFIG);
+});
+
+EAEvents('TOUCAN_CAMERA_SERVER_CONFIG', (_, config) => {
+  TOUCAN_CAMERA_SERVER_CONFIG = config;
+  console.log('🐦 New Toucan Camera Server config received', TOUCAN_CAMERA_SERVER_CONFIG);
+});
 
 const EAGLE_TOUCAN_PARAMETERS_MAPPING = {
   VIDEO_FORMAT: 'video_format', // Not supported yet by Eagle
@@ -18,6 +30,25 @@ const EAGLE_TOUCAN_PARAMETERS_MAPPING = {
   WHITE_BALANCE: 'white_balance',
   COLOR_TEMPERATURE: 'colorTemperature',
   GAIN: 'gain', // Not supported yet by Eagle
+};
+
+// Get token from window global config
+const getToken = () => {
+  return TOUCAN_CAMERA_SERVER_CONFIG?.token || 'unknown';
+};
+
+// Generate auth header for API requests
+const getAuthHeader = () => {
+  if (getToken()) {
+    return { authorization: `Bearer ${getToken()}` };
+  }
+  return {};
+};
+
+// Generate API URL from window global config
+const getApiUrl = () => {
+  const port = TOUCAN_CAMERA_SERVER_CONFIG?.port || '8080';
+  return `http://127.0.0.1:${port}/`;
 };
 
 class ToucanCameraServer {
@@ -40,9 +71,10 @@ class ToucanCameraServer {
   async applyCapability(key, value) {
     console.log('Apply capability', key, value);
 
-    await fetch(`${TOUCAN_CAMERA_SERVER_URL}cameras/${this.deviceId}/settings`, {
+    await fetch(`${getApiUrl()}cameras/${this.deviceId}/parameters`, {
       method: 'PUT',
       headers: {
+        ...getAuthHeader(),
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ type: EAGLE_TOUCAN_PARAMETERS_MAPPING[key], value: `${value}` }),
@@ -52,8 +84,11 @@ class ToucanCameraServer {
   }
 
   async getCapabilities() {
-    const capabilities = await fetch(`${TOUCAN_CAMERA_SERVER_URL}cameras/${this.deviceId}/parameters`, {
+    const capabilities = await fetch(`${getApiUrl()}cameras/${this.deviceId}/parameters`, {
       method: 'GET',
+      headers: {
+        ...getAuthHeader(),
+      },
     }).then((res) => res.json());
 
     console.log(capabilities);
@@ -96,11 +131,14 @@ class ToucanCameraServer {
     videoDOM.src = '';
     imageDOM.src = '';
 
-    await fetch(`${TOUCAN_CAMERA_SERVER_URL}cameras/${this.deviceId}/connect`, {
+    await fetch(`${getApiUrl()}cameras/${this.deviceId}/connect`, {
       method: 'PUT',
+      headers: {
+        ...getAuthHeader(),
+      },
     });
 
-    imageDOM.src = `${TOUCAN_CAMERA_SERVER_URL}cameras/${this.deviceId}/liveview`;
+    imageDOM.src = `${getApiUrl()}cameras/${this.deviceId}/liveview?token=${getToken()}`;
 
     return true;
   }
@@ -111,8 +149,11 @@ class ToucanCameraServer {
 
   async disconnect() {
     this.imageDOM.src = '';
-    await fetch(`${TOUCAN_CAMERA_SERVER_URL}cameras/${this.deviceId}/disconnect`, {
+    await fetch(`${getApiUrl()}cameras/${this.deviceId}/disconnect`, {
       method: 'PUT',
+      headers: {
+        ...getAuthHeader(),
+      },
     });
   }
 }
@@ -120,7 +161,13 @@ class ToucanCameraServer {
 class ToucanCameraServerBrowser {
   static async getCameras() {
     try {
-      const devices = await fetch(`${TOUCAN_CAMERA_SERVER_URL}cameras`).then((res) => res.json());
+      const devices = await fetch(`${getApiUrl()}cameras`, {
+        method: 'GET',
+        headers: {
+          ...getAuthHeader(),
+        },
+      }).then((res) => res.json());
+
       return devices.map((device) => ({
         deviceId: device.id,
         label: device.name,

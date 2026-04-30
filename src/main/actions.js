@@ -14,6 +14,7 @@ import { exportProjectScene, exportSaveTemporaryBuffer, getSyncList, saveSyncLis
 import { createProject, deleteProject, getProjectData, getProjectsList, projectSave, savePicture } from './core/projects';
 import { getSettings, saveSettings } from './core/settings';
 import { selectFile, selectFolder } from './core/utils';
+import { getToucanCameraServerConfig } from './core/toucan';
 
 console.log(`💾 Eagle Animation files will be saved in the following folder: ${PROJECTS_PATH}`);
 
@@ -280,6 +281,9 @@ const actions = {
       largeImageText: applicationTitle || null,
     });
   },
+  GET_TOUCAN_CAMERA_SERVER_CONFIG: async () => {
+    return getToucanCameraServerConfig();
+  }
 };
 
 export default actions;
