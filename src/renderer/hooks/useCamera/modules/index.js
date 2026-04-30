@@ -7,7 +7,7 @@ import { Camera as WebGPhoto2Camera, CameraBrowser as WebGPhoto2CameraBrowser } 
 
 const Cameras = [
   { browser: WebcamCameraBrowser, item: WebcamCamera },
-  { browser: ToucanCameraServerBrowser, item: ToucanCameraServerCamera },
+  ...(DEVICE === 'ELECTRON' ? [{ browser: ToucanCameraServerBrowser, item: ToucanCameraServerCamera }] : []),
   ...(DEVICE === 'WEB' && isBlink() ? [{ browser: WebGPhoto2CameraBrowser, item: WebGPhoto2Camera }] : []),
 ];
 

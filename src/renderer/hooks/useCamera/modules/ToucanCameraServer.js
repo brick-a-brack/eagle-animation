@@ -1,16 +1,19 @@
+import { DEVICE } from '@config-web';
 import { EA, EAEvents } from '@core/bindings';
 
 let TOUCAN_CAMERA_SERVER_CONFIG = null;
 
-EA('GET_TOUCAN_CAMERA_SERVER_CONFIG').then((config) => {
-  TOUCAN_CAMERA_SERVER_CONFIG = config;
-  console.log('🐦 Initial Toucan Camera Server config fetched', TOUCAN_CAMERA_SERVER_CONFIG);
-});
+if (DEVICE === 'ELECTRON') {
+  EA('GET_TOUCAN_CAMERA_SERVER_CONFIG').then((config) => {
+    TOUCAN_CAMERA_SERVER_CONFIG = config;
+    console.log('🐦 Initial Toucan Camera Server config fetched', TOUCAN_CAMERA_SERVER_CONFIG);
+  });
 
-EAEvents('TOUCAN_CAMERA_SERVER_CONFIG', (_, config) => {
-  TOUCAN_CAMERA_SERVER_CONFIG = config;
-  console.log('🐦 New Toucan Camera Server config received', TOUCAN_CAMERA_SERVER_CONFIG);
-});
+  EAEvents('TOUCAN_CAMERA_SERVER_CONFIG', (_, config) => {
+    TOUCAN_CAMERA_SERVER_CONFIG = config;
+    console.log('🐦 New Toucan Camera Server config received', TOUCAN_CAMERA_SERVER_CONFIG);
+  });
+}
 
 const EAGLE_TOUCAN_PARAMETERS_MAPPING = {
   VIDEO_FORMAT: 'video_format', // Not supported yet by Eagle
