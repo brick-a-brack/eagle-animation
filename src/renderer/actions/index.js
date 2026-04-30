@@ -1,5 +1,4 @@
 import { getEncodingProfile, getFFmpegArgs, parseFFmpegLogs } from '@common/ffmpeg';
-import { isBlink } from '@common/isBlink';
 import { LS_SETTINGS } from '@config-web';
 import { extensionToMimeType } from '@core/frameTypes';
 import { fetchFile } from '@ffmpeg/util';
@@ -162,14 +161,7 @@ export const Actions = {
     return [];
   },
   APP_CAPABILITIES: async () => {
-    const capabilities = ['EXPORT_VIDEO', 'EXPORT_VIDEO_H264', 'EXPORT_VIDEO_VP8', 'EXPORT_VIDEO_PRORES', 'EXPORT_FRAMES', 'EXPORT_FRAMES_ZIP'];
-
-    // Chromium based browsers support photo mode
-    if (isBlink()) {
-      capabilities.push('LOW_FRAMERATE_QUALITY_IMPROVEMENT');
-    }
-
-    return capabilities;
+    return ['EXPORT_VIDEO', 'EXPORT_VIDEO_H264', 'EXPORT_VIDEO_VP8', 'EXPORT_VIDEO_PRORES', 'EXPORT_FRAMES', 'EXPORT_FRAMES_ZIP'];
   },
   EXPORT_SELECT_PATH: async (evt, { compress_as_zip = false }) => {
     currentDirectory = null;

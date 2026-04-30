@@ -167,7 +167,6 @@ const Animator = ({ t }) => {
     currentCameraId,
     actions: cameraActions,
   } = useCamera({
-    forceMaxQuality: !!settings?.FORCE_QUALITY,
     eventsHandlers: {
       connect: () => {
         playerRef?.current?.resize();
