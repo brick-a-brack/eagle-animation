@@ -17,8 +17,11 @@ let cachedAvailableCameras = [];
 export const getCameras = async () => {
   const availableCameras = [];
 
-  for (const camType of Cameras) {
-    const cameras = (await camType?.browser?.getCameras()) || [];
+  const camerasLists = await Promise.all(Cameras.map((camType) => camType?.browser?.getCameras() || []));
+
+  for (let i = 0; i < camerasLists.length; i++) {
+    const cameras = camerasLists[i];
+    const camType = Cameras[i];
     for (const camera of cameras) {
       availableCameras.push({
         ...camera,
