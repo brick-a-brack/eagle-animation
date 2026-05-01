@@ -1,13 +1,15 @@
 const https = require('https');
 const fs = require('fs');
 const path = require('path');
+const { execFileSync } = require('child_process');
 const extract = require('extract-zip');
 
-const TOUCAN_CAMERA_SERVER_VERSION = '0.0.4';
+const TOUCAN_CAMERA_SERVER_VERSION = '0.0.5';
 
 const RELEASES = {
   windows: `https://github.com/brick-a-brack/toucan-camera-server/releases/download/v${TOUCAN_CAMERA_SERVER_VERSION}/toucan-camera-server-windows.zip`,
   macos: `https://github.com/brick-a-brack/toucan-camera-server/releases/download/v${TOUCAN_CAMERA_SERVER_VERSION}/toucan-camera-server-macos.zip`,
+  linux: `https://github.com/brick-a-brack/toucan-camera-server/releases/download/v${TOUCAN_CAMERA_SERVER_VERSION}/toucan-camera-server-linux.tar.gz`,
 };
 
 function getPlatformKey() {
@@ -16,6 +18,8 @@ function getPlatformKey() {
       return 'windows';
     case 'darwin':
       return 'macos';
+    case 'linux':
+      return 'linux';
     default:
       return null;
   }
@@ -61,15 +65,20 @@ async function main() {
 
   const url = RELEASES[platform];
   const binDir = path.join(__dirname, '../', 'toucan-camera-server/bin', platform);
-  const zipPath = path.join(__dirname, '../', 'toucan-camera-server/', `toucan-camera-server-${platform}.zip`);
+  const archiveExt = platform === 'linux' ? 'tar.gz' : 'zip';
+  const archivePath = path.join(__dirname, '../', 'toucan-camera-server/', `toucan-camera-server-${platform}.${archiveExt}`);
 
   fs.mkdirSync(binDir, { recursive: true });
 
   console.log(`🐦 toucan-camera-server: downloading binaries for ${platform}...`);
-  await download(url, zipPath);
+  await download(url, archivePath);
 
   console.log(`🐦 toucan-camera-server: extracting to /bin/${platform}/...`);
-  await extract(zipPath, { dir: binDir });
+  if (platform === 'linux') {
+    execFileSync('tar', ['-xzf', archivePath, '-C', binDir]);
+  } else {
+    await extract(archivePath, { dir: binDir });
+  }
   // Ensure the extracted binary is executable on Unix-like systems
   let extractedBinaryPath = null;
   try {
@@ -89,7 +98,7 @@ async function main() {
     console.warn('Could not set executable permission on', extractedBinaryPath, err);
   }
 
-  fs.unlinkSync(zipPath);
+  fs.unlinkSync(archivePath);
   console.log(`🐦 toucan-camera-server: done.`);
 }
 
