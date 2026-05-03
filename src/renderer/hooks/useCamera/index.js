@@ -4,13 +4,6 @@ import { getCamera, getCameras, takePicture } from './modules';
 
 const applyCameraLabel = (e, i) => ({ ...e, label: `[${i + 1}] ${e.label || ''}` });
 
-const flushCanvas = (dom) => {
-  if (dom) {
-    const ctx = dom.getContext('2d');
-    ctx.clearRect(0, 0, dom.width, dom.height);
-  }
-};
-
 function useCamera(options = {}) {
   const capabilitiesIntervals = useRef({});
   const [devices, setDevices] = useState(null);
@@ -62,7 +55,6 @@ function useCamera(options = {}) {
         await currentCamera.connect({ videoDOM: domRefs.current.videoDOM, imageDOM: domRefs.current.imageDOM }, options, () => {
           getCameras().then((cameras) => setDevices(cameras.map(applyCameraLabel)));
         });
-        //flushCanvas(domRefs.current.imageDOM);
         triggerEvent('connect');
         currentCamera.getCapabilities().then(setCameraCapabilities);
       }
@@ -81,7 +73,6 @@ function useCamera(options = {}) {
           setCurrentCamera(null);
           currentCamera?.disconnect();
           triggerEvent('disconnect');
-          //flushCanvas(domRefs.current.imageDOM);
         }
         if (deviceId) {
           setCurrentCameraId(deviceId);

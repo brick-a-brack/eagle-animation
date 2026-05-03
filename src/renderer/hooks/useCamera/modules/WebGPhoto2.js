@@ -176,10 +176,6 @@ class WebGPhoto2 {
     this.imageDOM = imageDOM;
     this.settings = settings;
 
-    // Reset preview canvas size for preview
-    //imageDOM.width = 0;
-    //imageDOM.height = 0;
-
     videoDOM.pause();
     videoDOM.srcObject = null;
     videoDOM.src = '';
