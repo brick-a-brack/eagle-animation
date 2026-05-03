@@ -37,6 +37,8 @@ class Player extends Component {
       frameIndex: false, // Frame index contains the position in the animation (including duplicated frames)
     };
 
+    this.rafId = null;
+
     this.resize = () => {
       this.initCanvas();
       const parentSize = this?.dom?.container?.current?.parentNode?.getBoundingClientRect();
@@ -229,6 +231,26 @@ class Player extends Component {
       this.resize();
     };
 
+    const refreshFrameSize = (now) => {
+      let shouldResize = false;
+      console.log('RAF LOOP', this.dom.videoFrame.current.width, this.dom.videoFrame.current.naturalWidth)
+      if (this.dom.videoFrame.current.width !== this.dom.videoFrame.current.naturalWidth && this.dom.videoFrame.current.naturalWidth) {
+        this.dom.videoFrame.current.width = this.dom.videoFrame.current.naturalWidth;
+        shouldResize = true;
+      }
+      if (this.dom.videoFrame.current.height !== this.dom.videoFrame.current.naturalHeight && this.dom.videoFrame.current.naturalHeight) {
+        this.dom.videoFrame.current.height = this.dom.videoFrame.current.naturalHeight;
+        shouldResize = true;
+      }
+
+      if (shouldResize) {
+        this.resize();
+      }
+
+      this.rafId = requestAnimationFrame(refreshFrameSize);
+    }
+    this.rafId = requestAnimationFrame(refreshFrameSize);
+
     // Default sizing
     this.resize();
 
@@ -281,6 +303,9 @@ class Player extends Component {
   componentWillUnmount() {
     window.removeEventListener('resize', this.resize);
     this.stop();
+    if (this.rafId) {
+      cancelAnimationFrame(this.rafId);
+    }
   }
 
   getVideoRatio() {
