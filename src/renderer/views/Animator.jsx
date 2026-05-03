@@ -382,22 +382,27 @@ const Animator = ({ t }) => {
       setGridModes(false);
       window.track('animator_changed', { feature: 'grid', value: !gridStatus });
     },
-    ALTERNATIVE_GRID: () => {
+    SWITCH_GRID_MODE: () => {
       if (!gridStatus) {
         setGridStatus(true);
         setGridModes(['GRID']);
         window.track('animator_changed', { feature: 'grid', value: !gridStatus });
-      } else if (gridStatus && gridModes && gridModes.includes('GRID') && gridModes.length === 1) {
-        setGridModes(['CENTER']);
-      } else if (gridStatus && gridModes && gridModes.includes('CENTER') && gridModes.length === 1) {
-        setGridModes(['MARGINS']);
-      } else if (gridStatus && gridModes && gridModes.includes('MARGINS') && gridModes.length === 1) {
-        setGridModes(['GRID','CENTER','MARGINS']);
-      } else {
-        setGridStatus(false);
-        setGridModes(false);
-        window.track('animator_changed', { feature: 'grid', value: !gridStatus });
+        return;
       }
+      if (gridStatus && gridModes && gridModes.length === 1) {
+        if (gridModes.includes('GRID')) {
+          setGridModes(['CENTER']);
+        } else if (gridModes.includes('CENTER')) {
+          setGridModes(['MARGINS']);
+        } else if (gridModes.includes('MARGINS')) {
+          setGridModes(['GRID', 'CENTER', 'MARGINS']);
+        }
+        window.track('animator_changed', { feature: 'grid', value: gridStatus });
+        return;
+      }
+      setGridStatus(false);
+      setGridModes(false);
+      window.track('animator_changed', { feature: 'grid', value: !gridStatus });
     },
     DIFFERENCE: () => {
       setDifferenceStatus(!differenceStatus);

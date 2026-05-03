@@ -16,10 +16,9 @@ import faImageSlash from '@icons/faImageSlash';
 import faPlay from '@icons/faPlay';
 import faSliders from '@icons/faSliders';
 import faStop from '@icons/faStop';
-import { useEffect, useState} from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { withTranslation } from 'react-i18next';
-import KeyboardEventHandler from 'react-keyboard-event-handler';
 
 import * as style from './style.module.css';
 
@@ -69,19 +68,35 @@ const ControlBar = ({
     setValue('fps', fps);
   }, [fps]);
 
+  useEffect(() => {
+    const handleShiftStateChange = (e) => {
+      setIsShifting(e.shiftKey);
+    };
+
+    window.addEventListener('keydown', handleShiftStateChange);
+    window.addEventListener('keyup', handleShiftStateChange);
+
+    return () => {
+      window.removeEventListener('keydown', handleShiftStateChange);
+      window.removeEventListener('keyup', handleShiftStateChange);
+    };
+  }, []);
+
   const getGridTitle = () => {
-    if (gridStatus && isShifting && gridModes) {
-      if (gridModes.includes('GRID') && gridModes.length === 1) {
+    if (!gridStatus) {
+      return t('Enable grid');
+    }
+
+    if (isShifting && gridModes?.length === 1) {
+      if (gridModes.includes('GRID')) {
         return t('Change to center grid');
-      } else if (gridModes.includes('CENTER') && gridModes.length === 1) {
+      } else if (gridModes.includes('CENTER')) {
         return t('Change to margins grid');
-      } else if (gridModes.includes('MARGINS') && gridModes.length === 1) {
+      } else if (gridModes.includes('MARGINS')) {
         return t('Change to all grids');
       }
-      return t('Disable grid');
-    } else {
-      return gridStatus ? t('Disable grid') : t('Enable grid');
-    }  
+    }
+    return t('Disable grid');
   }
 
   return (
@@ -94,12 +109,9 @@ const ControlBar = ({
         {!isPlaying && framePosition !== false && <Button title={t('Duplicate frame')} onClick={handleAction('DUPLICATE')} icon={faImageCirclePlus} />}
         {!isPlaying && framePosition !== false && <Button title={t('Remove frame')} onClick={handleAction('DELETE_FRAME')} icon={faImageSlash} />}
 
-        <KeyboardEventHandler handleKeys={['shift']} onKeyEvent={() => setIsShifting(true)} handleEventType="keydown" handleFocusableElements/>
-        <KeyboardEventHandler handleKeys={['shift']} onKeyEvent={() => setIsShifting(false)} handleEventType="keyup" handleFocusableElements/>
-
         <Button style={{ marginLeft: 'var(--space-big)' }} title={t('Difference')} selected={differenceStatus} onClick={handleAction('DIFFERENCE')} icon={faDiamondHalfStroke} />
         {(gridModes.includes('GRID') || gridModes.includes('CENTER') || gridModes.includes('MARGINS')) && (
-          <Button title={getGridTitle()} selected={gridStatus} onClick={isShifting ? handleAction('ALTERNATIVE_GRID') : handleAction('GRID')} icon={faFrame} />
+          <Button title={getGridTitle()} selected={gridStatus} onClick={isShifting ? handleAction('SWITCH_GRID_MODE') : handleAction('GRID')} icon={faFrame} />
         )}
 
         <div className={`${style.slider} ${differenceStatus ? style.sliderDisabled : ''}`} id="onion" data-tooltip-content={t('Onion blending')}>
