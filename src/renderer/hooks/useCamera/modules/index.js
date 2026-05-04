@@ -1,13 +1,13 @@
 import { isBlink } from '@common/isBlink';
 import { DEVICE } from '@config-web';
 
-import { Camera as NativeProxyCamera, CameraBrowser as NativeProxyBrowser } from './NativeProxy';
+import { Camera as ToucanCameraServerCamera, CameraBrowser as ToucanCameraServerBrowser } from './ToucanCameraServer';
 import { Camera as WebcamCamera, CameraBrowser as WebcamCameraBrowser } from './Webcam';
 import { Camera as WebGPhoto2Camera, CameraBrowser as WebGPhoto2CameraBrowser } from './WebGPhoto2';
 
 const Cameras = [
   { browser: WebcamCameraBrowser, item: WebcamCamera },
-  ...(DEVICE === 'ELECTRON' ? [{ browser: NativeProxyBrowser, item: NativeProxyCamera }] : []),
+  ...(DEVICE === 'ELECTRON' ? [{ browser: ToucanCameraServerBrowser, item: ToucanCameraServerCamera }] : []),
   ...(DEVICE === 'WEB' && isBlink() ? [{ browser: WebGPhoto2CameraBrowser, item: WebGPhoto2Camera }] : []),
 ];
 
@@ -17,8 +17,11 @@ let cachedAvailableCameras = [];
 export const getCameras = async () => {
   const availableCameras = [];
 
-  for (const camType of Cameras) {
-    const cameras = (await camType?.browser?.getCameras()) || [];
+  const camerasLists = await Promise.all(Cameras.map((camType) => camType?.browser?.getCameras() || []));
+
+  for (let i = 0; i < camerasLists.length; i++) {
+    const cameras = camerasLists[i];
+    const camType = Cameras[i];
     for (const camera of cameras) {
       availableCameras.push({
         ...camera,

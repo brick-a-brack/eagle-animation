@@ -20,14 +20,15 @@ import { useForm } from 'react-hook-form';
 import { withTranslation } from 'react-i18next';
 
 import * as style from './style.module.css';
+import faQuestion from '@icons/faQuestion';
 
 const groupDevices = (devices, t) => {
   const output = [];
 
   const categories = {
     'WEB-WEBCAM': t('Webcams'),
-    'NATIVE-EDSDK': t('EDSDK'),
     'WEB-GPHOTO2': t('WebUSB'),
+    'WEB-TOUCAN-CAMERA-SERVER': t('Toucan Camera Server'),
   };
 
   // Categories
@@ -59,9 +60,9 @@ const CameraSettingsWindow = ({
   t,
   cameraCapabilities,
   onCapabilityChange,
-  onDevicesListRefresh = () => {},
+  onDevicesListRefresh = () => { },
   onCapabilitiesReset,
-  onSettingsChange = () => {},
+  onSettingsChange = () => { },
   appCapabilities = [],
   devices = [],
   settings = {},
@@ -84,6 +85,7 @@ const CameraSettingsWindow = ({
 
   const selectOptionsTranslations = {
     continuous: t('Automatic'),
+    auto: t('Automatic'),
     manual: t('Manual'),
     AutoAmbiencePriority: t('Automatic'),
     Cloudy: t('Cloudy'),
@@ -116,15 +118,24 @@ const CameraSettingsWindow = ({
     ISO: t('ISO'),
   };
 
-  const categories = [
-    { id: 'CAMERAS', icon: faCamera, title: t('Cameras'), capabilities: [] },
+  const basicCategories = [
     { id: 'WHITE_BALANCE', icon: faLightbulbOn, title: t('White balance'), capabilities: ['WHITE_BALANCE_MODE', 'COLOR_TEMPERATURE', 'WHITE_BALANCE'] },
     { id: 'FOCUS', icon: faFaceViewfinder, title: t('Focus'), capabilities: ['FOCUS_MODE', 'FOCUS_DISTANCE'] },
     { id: 'IMAGE_SETTINGS', icon: faDroplet, title: t('Image settings'), capabilities: ['BRIGHTNESS', 'CONTRAST', 'SATURATION', 'SHARPNESS'] },
     { id: 'EXPOSURE', icon: faAperture, title: t('Exposure'), capabilities: ['EXPOSURE_MODE', 'EXPOSURE_COMPENSATION', 'EXPOSURE_TIME', 'ISO', 'SHUTTER_SPEED', 'APERTURE'] },
     { id: 'ZOOM', icon: faMagnifyingGlass, title: t('Zoom'), capabilities: ['ZOOM', 'ZOOM_POSITION_X', 'ZOOM_POSITION_Y'] },
   ]
-    .filter((category) => category.id === 'CAMERAS' || cameraCapabilities.map((e) => e.id).some((capId) => category.capabilities.includes(capId)))
+    
+  const knownCapabilities = basicCategories.map((category) => category.capabilities).reduce((acc, val) => [...acc, ...val], [])
+  const unknownCapabilities = cameraCapabilities
+    .filter((cap) => !knownCapabilities.includes(cap.id))
+    .map((cap) => cap.id);
+
+  const categories = [
+    { id: 'CAMERAS', icon: faCamera, title: t('Cameras'), capabilities: [] },
+    ...basicCategories,
+    { id: 'UNKNOWN', icon: faQuestion, title: t('Unknown'), capabilities: unknownCapabilities },
+  ].filter((category) => category.id === 'CAMERAS' || cameraCapabilities.map((e) => e.id).some((capId) => category.capabilities.includes(capId)))
     .map((e, i) => ({ ...e, selected: selectedTab === e.id || (i === 0 && selectedTab === null) }));
 
   const selectedCategory = categories.find((e) => Boolean(e.selected));
@@ -172,16 +183,6 @@ const CameraSettingsWindow = ({
                 </div>
               )}
             </FormGroup>
-            {appCapabilities.includes('LOW_FRAMERATE_QUALITY_IMPROVEMENT') && (`${watch?.('CAMERA_ID')}` || '').startsWith('WEB-WEBCAM') && (
-              <FormGroup
-                label={t('Improve quality by reducing preview framerate')}
-                description={t('Some cameras can take better quality pictures by reducing the framerate of the preview (Restart required)')}
-              >
-                <div>
-                  <Switch register={register('FORCE_QUALITY')} />
-                </div>
-              </FormGroup>
-            )}
           </>
         )}
 

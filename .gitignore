@@ -14,6 +14,7 @@
 /out
 /binaries
 /.parcel-cache
+/toucan-camera-server
 
 # misc
 .DS_Store
