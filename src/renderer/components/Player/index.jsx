@@ -1,10 +1,10 @@
 import { getPictureLink } from '@core/resize';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import faEyeSlash from '@icons/faEyeSlash';
 import resizeToFit from 'intrinsic-scale';
 import { isEqual } from 'lodash';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import faEyeSlash from '@icons/faEyeSlash';
 
 import * as style from './style.module.css';
 
@@ -74,7 +74,7 @@ class Player extends Component {
       const startOnLiveView = this.state.frameIndex === false;
 
       const exec = (force = false) => {
-        const filteredFrames = this.frames.filter((e) => !e.hidden);
+        const filteredFrames = this.frames;
 
         let newFrameIndex = false;
 
@@ -86,6 +86,9 @@ class Player extends Component {
           newFrameIndex = false;
         } else {
           newFrameIndex = this.state.frameIndex + 1;
+          while (this?.frames[newFrameIndex]?.hidden) {
+            newFrameIndex++;
+          }
         }
 
         // Set to first frame if the loopShowLive option is enabled
@@ -206,7 +209,21 @@ class Player extends Component {
 
   componentDidUpdate(prevProps) {
     if (!isEqual(prevProps.pictures, this.props.pictures)) {
+      const previousFrame = this.frames[this.state.frameIndex];
+
+      // Recompute internal player frames
       this.computeFrames();
+
+      // If a frame was selected
+      if (previousFrame) {
+        // Get new index
+        const newFrameIndex = this.frames.findIndex((e) => e.id === previousFrame.id);
+
+        // Frame index changed
+        if (this.state.frameIndex !== newFrameIndex) {
+          this.setState({ frameIndex: newFrameIndex });
+        }
+      }
 
       // Force redraw last frame for onion skin
       if (this.state.frameIndex === false) {
@@ -283,7 +300,7 @@ class Player extends Component {
       if (videoRatio > width / height) {
         heightRatio = width / videoRatio;
       } else {
-        widthRatio = (height * videoRatio);
+        widthRatio = height * videoRatio;
       }
       marginX = (width - widthRatio) / 2;
       marginY = (height - heightRatio) / 2;
@@ -306,8 +323,8 @@ class Player extends Component {
 
     if (this.props.gridModes?.includes('MARGINS')) {
       // 90% and 80%
-      drawArea(ctx, Math.round(marginX + (0.05 * widthRatio)), Math.round(marginY + (0.05 * heightRatio)), Math.round(0.9 * widthRatio), Math.round(0.9 * heightRatio));
-      drawArea(ctx, Math.round(marginX + (0.1 * widthRatio)), Math.round(marginY + (0.1 * heightRatio)), Math.round(0.8 * widthRatio), Math.round(0.8 * heightRatio));
+      drawArea(ctx, Math.round(marginX + 0.05 * widthRatio), Math.round(marginY + 0.05 * heightRatio), Math.round(0.9 * widthRatio), Math.round(0.9 * heightRatio));
+      drawArea(ctx, Math.round(marginX + 0.1 * widthRatio), Math.round(marginY + 0.1 * heightRatio), Math.round(0.8 * widthRatio), Math.round(0.8 * heightRatio));
       // drawArea(ctx, 0.035 * width, 0.035 * height, 0.93 * width, 0.93 * height);
     }
   }
@@ -331,7 +348,7 @@ class Player extends Component {
     return this.images[link];
   }
 
-  drawFrame(src = false) {
+  async drawFrame(src = false) {
     const ctx = this.dom.picture.current.getContext('2d', { alpha: false });
     if (src === false) {
       ctx.fillStyle = 'rgba(0,0,0,0)';
@@ -339,36 +356,36 @@ class Player extends Component {
       return;
     }
 
-    this.loadImage(getPictureLink(src, { h: 720, m: 'contain' }))
-      .then((img) => {
-        ctx.fillStyle = '#000000';
-        ctx.fillRect(0, 0, this.getSize().width, this.getSize().height);
+    // Load image
+    const img = await this.loadImage(getPictureLink(src, { h: 720, m: 'contain', f: 'jpg' })).catch(() => null);
 
-        let ratioPosition = null;
-        if (this.getVideoRatio()) {
-          ratioPosition = resizeToFit('contain', { width: this.getVideoRatio(), height: 1 }, { width: this.getSize().width, height: this.getSize().height });
-        } else {
-          ratioPosition = { width: this.getSize().width, height: this.getSize().height };
-        }
+    // Draw background
+    ctx.fillStyle = '#000000';
+    ctx.fillRect(0, 0, this.getSize().width, this.getSize().height);
 
-        const imagePosition = resizeToFit('cover', { width: img.width, height: img.height }, { width: ratioPosition.width, height: ratioPosition.height });
+    // If image is loaded, draw it
+    if (img) {
+      let ratioPosition = null;
+      if (this.getVideoRatio()) {
+        ratioPosition = resizeToFit('contain', { width: this.getVideoRatio(), height: 1 }, { width: this.getSize().width, height: this.getSize().height });
+      } else {
+        ratioPosition = { width: this.getSize().width, height: this.getSize().height };
+      }
 
-        ctx.drawImage(
-          img,
-          0,
-          0,
-          img.width,
-          img.height,
-          Math.round(this.getSize().width / 2) - imagePosition.width / 2,
-          Math.round(this.getSize().height / 2) - imagePosition.height / 2,
-          imagePosition.width,
-          imagePosition.height
-        );
-      })
-      .catch(() => {
-        ctx.fillStyle = '#000000';
-        ctx.fillRect(0, 0, this.getSize().width, this.getSize().height);
-      });
+      const imagePosition = resizeToFit('cover', { width: img.width, height: img.height }, { width: ratioPosition.width, height: ratioPosition.height });
+
+      ctx.drawImage(
+        img,
+        0,
+        0,
+        img.width,
+        img.height,
+        Math.round(this.getSize().width / 2) - imagePosition.width / 2,
+        Math.round(this.getSize().height / 2) - imagePosition.height / 2,
+        imagePosition.width,
+        imagePosition.height
+      );
+    }
   }
 
   render() {
@@ -401,7 +418,11 @@ class Player extends Component {
           {this.getVideoRatio() !== null && borderTopBottom > 0 && <div className={style.borderTop} style={{ height: `${borderTopBottom * 100}%`, opacity: ratioLayerOpacity || 1 }} />}
           {this.getVideoRatio() !== null && borderTopBottom > 0 && <div className={style.borderBottom} style={{ height: `${borderTopBottom * 100}%`, opacity: ratioLayerOpacity || 1 }} />}
 
-          {frames[frameIndex]?.hidden && !this.props.isPlaying && <div className={style.hiddenLayer}><FontAwesomeIcon className={style.hiddenIcon} icon={faEyeSlash} /></div>}
+          {frames[frameIndex]?.hidden && !this.props.isPlaying && (
+            <div className={style.hiddenLayer}>
+              <FontAwesomeIcon className={style.hiddenIcon} icon={faEyeSlash} />
+            </div>
+          )}
 
           <canvas ref={this.dom.grid} className={style.layout} style={{ opacity: isCameraReady && showGrid && frameIndex === false ? 1 : 0 }} />
 

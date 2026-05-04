@@ -109,26 +109,21 @@
 }
 
 .hiddenLayer {
+    align-items: center;
+    background-color: var(--color-theme-light);
+    display: flex;
     height: 100%;
-    width: 100%;
+    justify-content: center;
     opacity: 0.7;
     position: absolute;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: var(--color-theme-light);
+    width: 100%;
 }
 
 .hiddenIcon {
+    color: var(--color-theme-extra-light);
     height: 20%;
     width: 20%;
-    color: var(--color-theme-extra-light);
 }
-
-
-
-
-
 
 @keyframes rotate {
     0% {

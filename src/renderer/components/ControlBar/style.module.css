@@ -35,5 +35,9 @@
 
 .sliderDisabled {
   cursor:not-allowed;
-  opacity: 0.2
+  opacity: 0.2;
+}
+
+.sliderDisabled *{
+  pointer-events: none;
 }

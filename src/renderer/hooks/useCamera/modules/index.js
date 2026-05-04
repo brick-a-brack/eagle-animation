@@ -186,13 +186,13 @@ const reversePicture = async (picture, reverseX = false, reverseY = false) => {
   return outputCanvas;
 };
 
-const canvasToArrayBuffer = (canvas) =>
+const canvasToArrayBuffer = (canvas, mimeType = `image/png`) =>
   new Promise((resolve) => {
     canvas?.toBlob(
       async (blob) => {
         return resolve(Buffer.from(await blob.arrayBuffer()));
       },
-      `image/png`,
+      mimeType,
       1
     );
   });
@@ -209,8 +209,13 @@ export const takePicture = async (camera, nbFramesToTake = 1, reverseX = true, r
     }
   }
 
+  // Output frame
+  let finalCanvas = bufferList?.[0];
+
   // Merge frames
-  let finalCanvas = bufferList.length > 1 ? { type: 'image/png', buffer: await mergePictures(bufferList.map((e) => e?.buffer)) } : bufferList?.[0];
+  if (bufferList.length > 1) {
+    finalCanvas = { type: 'image/png', buffer: await mergePictures(bufferList.map((e) => e?.buffer)) };
+  }
 
   // Reverse frame
   if (reverseX || reverseY) {
@@ -219,9 +224,11 @@ export const takePicture = async (camera, nbFramesToTake = 1, reverseX = true, r
 
   // Canvas to buffer
   if (finalCanvas?.buffer instanceof HTMLCanvasElement) {
-    finalCanvas.buffer = await canvasToArrayBuffer(finalCanvas.buffer);
+    finalCanvas.buffer = await canvasToArrayBuffer(finalCanvas.buffer, finalCanvas.type);
   }
 
   // Return data
-  return Buffer.from(finalCanvas?.buffer);
+  let outputBuffer = Buffer.from(finalCanvas?.buffer);
+  outputBuffer.type = finalCanvas?.type;
+  return outputBuffer;
 };

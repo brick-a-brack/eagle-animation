@@ -1,6 +1,6 @@
 .container {
   /* Height img + scollbar */
-  background: linear-gradient(0deg,var(--color-theme-light) 0%, var(--color-theme-dark) 100%);
+  background: linear-gradient(0deg, var(--color-theme-light) 0%, var(--color-theme-dark) 100%);
   box-sizing: border-box;
   overflow: scroll hidden;
   padding-left: 2px;
@@ -78,7 +78,7 @@
   color: var(--color-white);
   height: 24px;
   left: 50%;
-  opacity:0.5;
+  opacity: 0.5;
   pointer-events: none;
   position: absolute;
   top: 50%;
@@ -131,4 +131,65 @@
   pointer-events: none;
   position: absolute;
   right: 2px;
+}
+
+.masking {
+  background-color: var(--color-primary);
+  border-top-right-radius: var(--border-radius-small);
+  bottom: 0;
+  color: var(--color-white);
+  font-size: var(--font-size-7);
+  height: 14px;
+  left: 2px;
+  line-height: 14px;
+  padding: var(--space-tiny) var(--space-small);
+  pointer-events: none;
+  position: absolute;
+  width: 14px;
+}
+
+.liveLayerIcon {
+  align-items: center;
+  color: #fff;
+  display: flex;
+  height: 100%;
+  line-height: 100%;
+  place-content: center center;
+  position: absolute;
+  text-align: center;
+  width: calc(100% - 4px);
+  --fa-primary-color: var(--color-white);
+  --fa-secondary-color: var(--color-white);
+}
+
+.liveLayerIcon svg {
+  height: 40%;
+  transform: translateY(5px);
+  width: 40%;
+}
+
+.liveLayerIconBackground {
+  --fa-primary-opacity: 0.6;
+  --fa-secondary-opacity: 1;
+  --fa-secondary-color: var(--color-theme-medium);
+}
+
+.liveLayerIconForeground {
+  --fa-primary-opacity: 1;
+  --fa-secondary-opacity: 0.6;
+  --fa-primary-color: var(--color-theme-medium);
+}
+
+.liveLayerText {
+  background: var(--color-theme-medium);
+  bottom: 0;
+  box-sizing: border-box;
+  color: var(--color-white);
+  font-size: 10px;
+  overflow: hidden;
+  padding: 2px;
+  position: absolute;
+  text-align: center;
+  text-overflow: ellipsis;
+  width: calc(100% - 4px);
 }

@@ -15,6 +15,7 @@ import { ALLOWED_LETTERS } from '@config-web';
 import { ExportFrames } from '@core/Export';
 import { parseRatio } from '@core/ratio';
 import useAppCapabilities from '@hooks/useAppCapabilities';
+import useDiscordActivity from '@hooks/useDiscordActivity';
 import useProject from '@hooks/useProject';
 import useSettings from '@hooks/useSettings';
 import { useEffect, useState } from 'react';
@@ -63,6 +64,12 @@ const Export = ({ t }) => {
   const { settings } = useSettings();
   const { appCapabilities } = useAppCapabilities();
 
+  useDiscordActivity({
+    actionTitle: project?.title || null,
+    actionIcon: 'exporting',
+    description: t('Export in progress'),
+  });
+
   const form = useForm({
     mode: 'all',
     defaultValues: {
@@ -80,6 +87,7 @@ const Export = ({ t }) => {
       compressAsZip: false,
       sendMethod: 'code',
       email: '',
+      exportMaskingLayers: false,
     },
   });
 
@@ -165,7 +173,7 @@ const Export = ({ t }) => {
           return 'frames';
         }
 
-        return 'none'
+        return 'none';
       })();
 
       if (
@@ -244,16 +252,16 @@ const Export = ({ t }) => {
       data.mode === 'send'
         ? null
         : await window.EA('EXPORT_SELECT_PATH', {
-          type: data.mode === 'video' ? 'FILE' : 'FOLDER',
-          format: data.format,
-          translations: {
-            EXPORT_FRAMES: t('Export animation frames'),
-            EXPORT_VIDEO: t('Export as video'),
-            DEFAULT_FILE_NAME: t('video'),
-            EXT_NAME: t('Video file'),
-          },
-          compress_as_zip: data.mode === 'frames' ? data.compressAsZip && appCapabilities.includes('EXPORT_FRAMES_ZIP') : false,
-        });
+            type: data.mode === 'video' ? 'FILE' : 'FOLDER',
+            format: data.format,
+            translations: {
+              EXPORT_FRAMES: t('Export animation frames'),
+              EXPORT_VIDEO: t('Export as video'),
+              DEFAULT_FILE_NAME: t('video'),
+              EXT_NAME: t('Video file'),
+            },
+            compress_as_zip: data.mode === 'frames' ? data.compressAsZip && appCapabilities.includes('EXPORT_FRAMES_ZIP') : false,
+          });
 
     // Cancel if result is null, (dialog closed)
     if (data.mode !== 'send' && outputPath === null) {
@@ -276,6 +284,7 @@ const Export = ({ t }) => {
       duplicateFramesAutoNumber: data.mode === 'send' ? Math.ceil(project?.scenes?.[Number(track)]?.framerate / 2) : data.duplicateFramesAutoNumber,
       forceFileExtension: data.mode === 'frames' ? (data.framesFormat === 'original' ? undefined : data.framesFormat) : 'jpg',
       resolution,
+      exportMaskingLayers: data.mode === 'frames' && !!data?.exportMaskingLayers,
     };
 
     // Track export
@@ -302,6 +311,7 @@ const Export = ({ t }) => {
       email: data.mode === 'send' && data.sendMethod === 'email' ? data.email : '',
       public_code: data.mode === 'send' && data.sendMethod === 'code' ? newCode : '',
       event_key: settings.EVENT_KEY,
+      exportMaskingLayers: !!data?.exportMaskingLayers,
     });
 
     setIsExporting(false);
@@ -358,6 +368,14 @@ const Export = ({ t }) => {
                   <FormGroup label={t('Use project ratio')} description={t('Normalize all the frames to match the project aspect ratio')}>
                     <div>
                       <Switch register={register('matchAspectRatio')} />
+                    </div>
+                  </FormGroup>
+                )}
+
+                {watch('mode') === 'frames' && (
+                  <FormGroup label={t('Export masking layers')} description={t('Export the layers of masked frames')}>
+                    <div>
+                      <Switch register={register('exportMaskingLayers')} />
                     </div>
                   </FormGroup>
                 )}

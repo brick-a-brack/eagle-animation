@@ -5,9 +5,10 @@ import { CSS as DNDCSS } from '@dnd-kit/utilities';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import faEyeSlash from '@icons/faEyeSlash';
 import faForwardFast from '@icons/faForwardFast';
+import faLayer from '@icons/faLayer';
 import animateScrollTo from 'animated-scroll-to';
 import { useEffect, useLayoutEffect, useRef } from 'react';
-import { withTranslation } from 'react-i18next';
+import { useTranslation, withTranslation } from 'react-i18next';
 
 import * as style from './style.module.css';
 
@@ -23,6 +24,7 @@ const getPicturesKey = (pictures) => {
 
 const SortableItem = ({ img, isShortPlayBegining = false, playing = false, selected, onSelect, index }) => {
   const { setNodeRef, isDragging, transform, transition, listeners, attributes, active } = useSortable({ id: img.id });
+  const { t } = useTranslation();
   return (
     <span
       ref={setNodeRef}
@@ -41,16 +43,17 @@ const SortableItem = ({ img, isShortPlayBegining = false, playing = false, selec
       onClick={() => onSelect(img)}
       className={`${style.containerImg} ${selected ? style.selected : ''} ${!playing && style.containerImgHover} ${img.hidden ? style.isHidden : ''}`}
     >
-      <span className={style.img}>{img.link && <img alt="" className={style.imgcontent} src={getPictureLink(img.link, { w: 80, h: 80, m: 'cover' })} loading="lazy" />}</span>
+      <span className={style.img}>{img.link && <img alt="" className={style.imgcontent} src={getPictureLink(img.link, { w: 80, h: 80, m: 'cover', f: 'jpg' })} loading="lazy" />}</span>
       {img.hidden && <FontAwesomeIcon className={style.icon} icon={faEyeSlash} />}
       {isShortPlayBegining && <FontAwesomeIcon className={style.shortPlayIcon} icon={faForwardFast} />}
       {img.length > 1 && <span className={style.duplicated}>{`x${img.length}`}</span>}
+      {img.masking && <span className={style.masking}>{t('M')}</span>}
       <span className={style.title}>{`#${index + 1}`}</span>
     </span>
   );
 };
 
-const Timeline = ({ onSelect, onMove, select = false, pictures = [], playing = false, shortPlayStatus = false, shortPlayFrames = 0, t }) => {
+const Timeline = ({ onSelect, onMove, select = false, pictures = [], playing = false, shortPlayStatus = false, shortPlayFrames = 0, frameCaptureMode = false, t }) => {
   const ref = useRef(null);
 
   const sensors = useSensors(
@@ -141,6 +144,16 @@ const Timeline = ({ onSelect, onMove, select = false, pictures = [], playing = f
         >
           <span id="timeline-frame-live" className={style.img} role="button" tabIndex={0} />
           <span className={style.title}>{t('Live')}</span>
+          {['FOREGROUND', 'BACKGROUND'].includes(frameCaptureMode) && select === false && (
+            <>
+              <span
+                className={`${style.liveLayerIcon} ${frameCaptureMode === 'BACKGROUND' ? style.liveLayerIconBackground : ''}  ${frameCaptureMode === 'FOREGROUND' ? style.liveLayerIconForeground : ''}`}
+              >
+                <FontAwesomeIcon icon={faLayer} />
+              </span>
+              <span className={style.liveLayerText}>{frameCaptureMode === 'FOREGROUND' ? t('Foreground') : t('Background')}</span>
+            </>
+          )}
         </span>
       </aside>
     </DndContext>

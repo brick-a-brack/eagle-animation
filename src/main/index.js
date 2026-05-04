@@ -77,7 +77,9 @@ app.whenReady().then(() => {
     const diskPath = `${PROJECTS_PATH}/${request.url.slice('ea://api/pictures/'.length).split('?')[0]}`;
 
     // Options
-    const { w, h, m, f, q, i } = parseResizeArguments(urlObj.searchParams);
+    const args = parseResizeArguments(urlObj.searchParams);
+    const { w, h, m, q, i } = args;
+    let { f } = args;
 
     // No changes needed
     if (!w && !h && !f && !q && !m && !i) {
@@ -112,6 +114,14 @@ app.whenReady().then(() => {
           fit: m === 'cover' ? 'cover' : 'contain',
           withoutEnlargement: false,
         });
+      }
+
+      // Determine previous format to reuse it
+      if (!f) {
+        const meta = await img.metadata();
+        if (['png', 'webp', 'avif'].includes(meta?.format)) {
+          f = meta?.format;
+        }
       }
 
       // Format conversion

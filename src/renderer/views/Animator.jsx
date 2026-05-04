@@ -4,6 +4,7 @@ import HeaderBar from '@components/HeaderBar';
 import KeyboardHandler from '@components/KeyboardHandler';
 import LimitWarning from '@components/LimitWarning';
 import LoadingPage from '@components/LoadingPage';
+import MaskingWindow from '@components/MaskingWindow';
 import PageLayout from '@components/PageLayout';
 import Player from '@components/Player';
 import ProjectSettingsWindow from '@components/ProjectSettingsWindow';
@@ -13,6 +14,7 @@ import Window from '@components/Window';
 import { parseRatio } from '@core/ratio';
 import useAppCapabilities from '@hooks/useAppCapabilities';
 import useCamera from '@hooks/useCamera';
+import useDiscordActivity from '@hooks/useDiscordActivity';
 import useProject from '@hooks/useProject';
 import useSettings from '@hooks/useSettings';
 import { useEffect, useRef, useState } from 'react';
@@ -82,7 +84,6 @@ const getLastFrameId = (frames) => getPreviousFrameId(frames, false);
 
 // Get next frame id
 const getNextFrameId = (frames, frameId, skipHiddenFrames = false) => {
-
   let frameFound = false;
   for (const frame of frames) {
     if (frame.deleted) {
@@ -126,6 +127,7 @@ const Animator = ({ t }) => {
   const { settings, actions: settingsActions } = useSettings();
   const { appCapabilities } = useAppCapabilities();
   const [showCameraSettings, setShowCameraSettings] = useState(false);
+  const [maskingMode, setMaskingMode] = useState('DISABLED');
   const [showProjectSettings, setShowProjectSettings] = useState(false);
   const [isTakingPicture, setIsTakingPicture] = useState(false);
   const [loopStatus, setLoopStatus] = useState(false);
@@ -139,8 +141,24 @@ const Animator = ({ t }) => {
   const [currentFrameId, setCurrentFrameId] = useState(false);
   const [deleteOnLiveViewConfirmation, setDeleteOnLiveViewConfirmation] = useState(false);
   const [disableKeyboardShortcuts, setDisableKeyboardShortcuts] = useState(false);
+  const [showMaskingEditor, setShowMaskingEditor] = useState(false);
+  const [pendingBackgroundFrame, setPendingBackgroundFrame] = useState(false);
+  const maskingEditorRef = useRef(null);
 
   const { project, actions: projectActions } = useProject({ id });
+
+  const nbFrames = project?.scenes?.[track]?.pictures?.filter((e) => !e.deleted)?.length || 0;
+
+  useDiscordActivity({
+    actionIcon: 'animating',
+    actionTitle: project?.title || null,
+    description:
+      nbFrames === 0
+        ? t('Capture in progress')
+        : t('Captured: {{content}}', {
+          content: [t('{{count}} frame', { count: nbFrames })].join(' • '),
+        }),
+  });
 
   const {
     isCameraReady,
@@ -235,41 +253,61 @@ const Animator = ({ t }) => {
 
   const takePictures =
     (nbPicturesToTake = null) =>
-    async () => {
-      if (isTakingPicture || !currentCamera) {
-        return;
-      }
-      flushSync(() => {
-        setIsTakingPicture(true);
-      });
-
-      setStartedAt((oldValue) => (oldValue ? oldValue : new Date().getTime() / 1000));
-
-      for (let i = 0; i < (Number(nbPicturesToTake !== null ? nbPicturesToTake : settings.CAPTURE_FRAMES) || 1); i++) {
-        const nbFramesToTake = (settings.AVERAGING_ENABLED ? Number(settings.AVERAGING_VALUE) : 1) || 1;
-        try {
-          const { type, buffer } = await cameraActions.takePicture(nbFramesToTake, settings.REVERSE_X, settings.REVERSE_Y);
-
-          window.track('frame_captured', { projectId: `${id}`, trackId: `${track}`, reverseX: settings.REVERSE_X, reverseY: settings.REVERSE_Y, nbFrames: nbFramesToTake });
-
-          if (settings.SOUNDS) {
-            const isAprilFoolsDay = new Date().getDate() === 1 && new Date().getMonth() === 3;
-            playSound(isAprilFoolsDay ? soundEagle : soundShutter);
-          }
-
-          await projectActions.addFrame(track, Buffer.from(buffer), type?.includes('png') ? 'png' : 'jpg', isPlaying ? false : currentFrameId);
-        } catch (err) {
-          if (settings.SOUNDS) {
-            playSound(soundError);
-          }
-          console.error('Failed to take a picture', err);
+      async () => {
+        if (isTakingPicture || !currentCamera) {
+          return;
         }
-      }
+        flushSync(() => {
+          setIsTakingPicture(true);
+        });
 
-      flushSync(() => {
-        setIsTakingPicture(false);
-      });
-    };
+        setStartedAt((oldValue) => (oldValue ? oldValue : new Date().getTime() / 1000));
+
+        const numberOfFramesToTake = Number(nbPicturesToTake !== null ? nbPicturesToTake : settings.CAPTURE_FRAMES) || 1;
+        for (let i = 0; i < numberOfFramesToTake; i++) {
+          const nbFramesToTakeForAvg = (settings.AVERAGING_ENABLED ? Number(settings.AVERAGING_VALUE) : 1) || 1;
+          try {
+            const frame = await cameraActions.takePicture(nbFramesToTakeForAvg, settings.REVERSE_X, settings.REVERSE_Y);
+            const frameType = maskingMode === 'DISABLED' ? 'NORMAL' : pendingBackgroundFrame ? 'FOREGROUND' : 'BACKGROUND';
+
+            window.track('frame_captured', {
+              projectId: `${id}`,
+              trackId: `${track}`,
+              reverseX: settings.REVERSE_X,
+              reverseY: settings.REVERSE_Y,
+              nbFrames: nbFramesToTakeForAvg,
+              maskingMode,
+              frameType,
+            });
+
+            if (settings.SOUNDS) {
+              const isAprilFoolsDay = new Date().getDate() === 1 && new Date().getMonth() === 3;
+              playSound(isAprilFoolsDay ? soundEagle : soundShutter);
+            }
+
+            // Save frame
+            if (pendingBackgroundFrame || maskingMode === 'DISABLED') {
+              await projectActions.addFrame(track, frame, isPlaying ? false : currentFrameId, pendingBackgroundFrame || null);
+            } else if (maskingMode === 'UNIQUE' || !pendingBackgroundFrame) {
+              setPendingBackgroundFrame(frame);
+            }
+
+            // Clean background
+            if (maskingMode === 'DISABLED' || (maskingMode === 'UNIQUE' && pendingBackgroundFrame)) {
+              setPendingBackgroundFrame(null);
+            }
+          } catch (err) {
+            if (settings.SOUNDS) {
+              playSound(soundError);
+            }
+            console.error('Failed to take a picture', err);
+          }
+        }
+
+        flushSync(() => {
+          setIsTakingPicture(false);
+        });
+      };
 
   const actionsEvents = {
     PLAY: () => {
@@ -366,47 +404,57 @@ const Animator = ({ t }) => {
       playerRef.current.showFrame(newId);
     },
     ONION_LESS: () => {
-      setOnionValue(Math.max(parseFloat(onionValue) - 0.1, 0));
-      window.track('animator_changed', { feature: 'onion', value: Math.max(parseFloat(onionValue) - 0.1, 0) });
+      if (!differenceStatus && framePosition === false) {
+        setOnionValue(Math.max(parseFloat(onionValue) - 0.1, 0));
+        window.track('animator_changed', { feature: 'onion', value: Math.max(parseFloat(onionValue) - 0.1, 0) });
+      }
     },
     ONION_MORE: () => {
-      setOnionValue(Math.min(parseFloat(onionValue) + 0.1, 1));
-      window.track('animator_changed', { feature: 'onion', value: Math.min(parseFloat(onionValue) + 0.1, 1) });
+      if (!differenceStatus && framePosition === false) {
+        setOnionValue(Math.min(parseFloat(onionValue) + 0.1, 1));
+        window.track('animator_changed', { feature: 'onion', value: Math.min(parseFloat(onionValue) + 0.1, 1) });
+      }
     },
     ONION_CHANGE: (value) => {
       setOnionValue(value);
       window.track('animator_changed', { feature: 'onion', value: value });
     },
     GRID: () => {
-      setGridStatus(!gridStatus);
-      setGridModes(false);
-      window.track('animator_changed', { feature: 'grid', value: !gridStatus });
+      if (framePosition === false) {
+        setGridStatus(!gridStatus);
+        setGridModes(false);
+        window.track('animator_changed', { feature: 'grid', value: !gridStatus });
+      }
     },
     SWITCH_GRID_MODE: () => {
-      if (!gridStatus) {
-        setGridStatus(true);
-        setGridModes(['GRID']);
-        window.track('animator_changed', { feature: 'grid', value: !gridStatus });
-        return;
-      }
-      if (gridStatus && gridModes && gridModes.length === 1) {
-        if (gridModes.includes('GRID')) {
-          setGridModes(['CENTER']);
-        } else if (gridModes.includes('CENTER')) {
-          setGridModes(['MARGINS']);
-        } else if (gridModes.includes('MARGINS')) {
-          setGridModes(['GRID', 'CENTER', 'MARGINS']);
+      if (framePosition === false) {
+        if (!gridStatus) {
+          setGridStatus(true);
+          setGridModes(['GRID']);
+          window.track('animator_changed', { feature: 'grid', value: !gridStatus });
+          return;
         }
-        window.track('animator_changed', { feature: 'grid', value: gridStatus });
-        return;
+        if (gridStatus && gridModes && gridModes.length === 1) {
+          if (gridModes.includes('GRID')) {
+            setGridModes(['CENTER']);
+          } else if (gridModes.includes('CENTER')) {
+            setGridModes(['MARGINS']);
+          } else if (gridModes.includes('MARGINS')) {
+            setGridModes(['GRID', 'CENTER', 'MARGINS']);
+          }
+          window.track('animator_changed', { feature: 'grid', value: gridStatus });
+          return;
+        }
+        setGridStatus(false);
+        setGridModes(false);
+        window.track('animator_changed', { feature: 'grid', value: !gridStatus });
       }
-      setGridStatus(false);
-      setGridModes(false);
-      window.track('animator_changed', { feature: 'grid', value: !gridStatus });
     },
     DIFFERENCE: () => {
-      setDifferenceStatus(!differenceStatus);
-      window.track('animator_changed', { feature: 'difference', value: !differenceStatus });
+      if (framePosition === false) {
+        setDifferenceStatus(!differenceStatus);
+        window.track('animator_changed', { feature: 'difference', value: !differenceStatus });
+      }
     },
     FPS_CHANGE: async (v) => {
       projectActions.changeFPS(track, v || '1');
@@ -423,7 +471,7 @@ const Animator = ({ t }) => {
     PROJECT_SETTINGS: () => {
       setShowProjectSettings((v) => !v);
     },
-    MORE: () => {},
+    MORE: () => { },
     EXPORT: () => {
       navigate(`/export/${id}/${track}?back=/animator/${id}/${track}`);
     },
@@ -459,6 +507,18 @@ const Animator = ({ t }) => {
     FPS_BLUR: () => {
       setDisableKeyboardShortcuts(false);
     },
+    TOOGLE_MASKING_MODE: () => {
+      const values = ['DISABLED', 'CONTINUOUS', 'UNIQUE'];
+      const newMode = values?.[values?.indexOf(maskingMode) + 1] || values?.[0];
+      if (newMode === 'DISABLED') {
+        setPendingBackgroundFrame(null);
+      }
+      setMaskingMode(newMode);
+      window.track('animator_changed', { feature: 'masking', value: newMode });
+    },
+    MASKING_EDITOR: () => {
+      setShowMaskingEditor(true);
+    },
   };
 
   const handlePlayerInit = (videoDOM = null, imageDOM = null) => {
@@ -488,6 +548,24 @@ const Animator = ({ t }) => {
     handleAction('RATIO_CHANGE', fields?.ratio?.userValue || '');
   };
 
+  const handleCloseMaskingEditor = async () => {
+    // Get new images
+    const d = await maskingEditorRef.current.exportLayers();
+    if (d && d?.frame && d?.layers?.transparent) {
+      await projectActions.updateFrame(track, currentFrame?.id, d.frame, undefined, undefined, d.layers.transparent);
+    }
+
+    // Close editor
+    setShowMaskingEditor(false);
+
+    // Force player sync
+    setTimeout(() => {
+      playerRef.current.showFrame(currentFrame?.id);
+    }, 0);
+  };
+
+  const frameCaptureMode = maskingMode !== 'DISABLED' && !isPlaying ? (pendingBackgroundFrame ? 'FOREGROUND' : 'BACKGROUND') : null;
+
   return (
     <>
       <LoadingPage show={false} />
@@ -496,7 +574,7 @@ const Animator = ({ t }) => {
           leftActions={['BACK']}
           rightActions={[
             ...(pictures?.some((e) => !e?.hidden) &&
-            (appCapabilities.includes('EXPORT_VIDEO') || appCapabilities.includes('EXPORT_FRAMES') || (appCapabilities.includes('BACKGROUND_SYNC') && settings?.EVENT_MODE_ENABLED))
+              (appCapabilities.includes('EXPORT_VIDEO') || appCapabilities.includes('EXPORT_FRAMES') || (appCapabilities.includes('BACKGROUND_SYNC') && settings?.EVENT_MODE_ENABLED))
               ? ['EXPORT']
               : []),
           ]}
@@ -553,7 +631,9 @@ const Animator = ({ t }) => {
             framePosition={framePosition}
             frameQuantity={pictures.length}
             isCurrentFrameHidden={!!currentFrame.hidden}
+            canUseMaskingEditor={!!currentFrame.masking}
             totalAnimationFrames={totalAnimationFrames}
+            maskingMode={maskingMode}
           />
           <Timeline
             pictures={pictures}
@@ -563,10 +643,11 @@ const Animator = ({ t }) => {
             playing={isPlaying}
             shortPlayStatus={shortPlayStatus}
             shortPlayFrames={Number(settings.SHORT_PLAY) || 1}
+            frameCaptureMode={frameCaptureMode}
           />
         </div>
       </PageLayout>
-      {!showCameraSettings && !showProjectSettings && <KeyboardHandler onAction={handleAction} disabled={disableKeyboardShortcuts} />}
+      {!showCameraSettings && !showProjectSettings && !showMaskingEditor && <KeyboardHandler onAction={handleAction} disabled={disableKeyboardShortcuts} />}
       <Window isOpened={showCameraSettings} onClose={() => setShowCameraSettings(false)}>
         <CameraSettingsWindow
           cameraCapabilities={currentCameraCapabilities}
@@ -588,6 +669,19 @@ const Animator = ({ t }) => {
           onProjectDelete={() => handleAction('DELETE_PROJECT')}
         />
       </Window>
+      {!isPlaying && (
+        <Window isOpened={showMaskingEditor && !isPlaying} onClose={handleCloseMaskingEditor} isFullScreen={true}>
+          {currentFrame && currentFrame?.masking && (
+            <MaskingWindow
+              key={currentFrame.id}
+              ref={maskingEditorRef}
+              backgroundLayer={currentFrame?.masking?.background?.link || null}
+              foregroundLayer={currentFrame?.masking?.foreground?.link || null}
+              transparentLayer={currentFrame?.masking?.transparent?.link || null}
+            />
+          )}
+        </Window>
+      )}
     </>
   );
 };
