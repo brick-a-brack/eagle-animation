@@ -103,7 +103,7 @@
     "stylelint": "^17.8.0",
     "stylelint-config-standard": "^40.0.0",
     "stylelint-order": "^8.1.1",
-    "vite": "^7.3.2",
+    "vite": "^8.0.10",
     "vite-plugin-static-copy": "^3.3.0",
     "vite-plugin-svgr": "^4.5.0"
   },
