@@ -253,61 +253,61 @@ const Animator = ({ t }) => {
 
   const takePictures =
     (nbPicturesToTake = null) =>
-      async () => {
-        if (isTakingPicture || !currentCamera) {
-          return;
-        }
-        flushSync(() => {
-          setIsTakingPicture(true);
-        });
+    async () => {
+      if (isTakingPicture || !currentCamera) {
+        return;
+      }
+      flushSync(() => {
+        setIsTakingPicture(true);
+      });
 
-        setStartedAt((oldValue) => (oldValue ? oldValue : new Date().getTime() / 1000));
+      setStartedAt((oldValue) => (oldValue ? oldValue : new Date().getTime() / 1000));
 
-        const numberOfFramesToTake = Number(nbPicturesToTake !== null ? nbPicturesToTake : settings.CAPTURE_FRAMES) || 1;
-        for (let i = 0; i < numberOfFramesToTake; i++) {
-          const nbFramesToTakeForAvg = (settings.AVERAGING_ENABLED ? Number(settings.AVERAGING_VALUE) : 1) || 1;
-          try {
-            const frame = await cameraActions.takePicture(nbFramesToTakeForAvg, settings.REVERSE_X, settings.REVERSE_Y);
-            const frameType = maskingMode === 'DISABLED' ? 'NORMAL' : pendingBackgroundFrame ? 'FOREGROUND' : 'BACKGROUND';
+      const numberOfFramesToTake = Number(nbPicturesToTake !== null ? nbPicturesToTake : settings.CAPTURE_FRAMES) || 1;
+      for (let i = 0; i < numberOfFramesToTake; i++) {
+        const nbFramesToTakeForAvg = (settings.AVERAGING_ENABLED ? Number(settings.AVERAGING_VALUE) : 1) || 1;
+        try {
+          const frame = await cameraActions.takePicture(nbFramesToTakeForAvg, settings.REVERSE_X, settings.REVERSE_Y);
+          const frameType = maskingMode === 'DISABLED' ? 'NORMAL' : pendingBackgroundFrame ? 'FOREGROUND' : 'BACKGROUND';
 
-            window.track('frame_captured', {
-              projectId: `${id}`,
-              trackId: `${track}`,
-              reverseX: settings.REVERSE_X,
-              reverseY: settings.REVERSE_Y,
-              nbFrames: nbFramesToTakeForAvg,
-              maskingMode,
-              frameType,
-            });
+          window.track('frame_captured', {
+            projectId: `${id}`,
+            trackId: `${track}`,
+            reverseX: settings.REVERSE_X,
+            reverseY: settings.REVERSE_Y,
+            nbFrames: nbFramesToTakeForAvg,
+            maskingMode,
+            frameType,
+          });
 
-            if (settings.SOUNDS) {
-              const isAprilFoolsDay = new Date().getDate() === 1 && new Date().getMonth() === 3;
-              playSound(isAprilFoolsDay ? soundEagle : soundShutter);
-            }
-
-            // Save frame
-            if (pendingBackgroundFrame || maskingMode === 'DISABLED') {
-              await projectActions.addFrame(track, frame, isPlaying ? false : currentFrameId, pendingBackgroundFrame || null);
-            } else if (maskingMode === 'UNIQUE' || !pendingBackgroundFrame) {
-              setPendingBackgroundFrame(frame);
-            }
-
-            // Clean background
-            if (maskingMode === 'DISABLED' || (maskingMode === 'UNIQUE' && pendingBackgroundFrame)) {
-              setPendingBackgroundFrame(null);
-            }
-          } catch (err) {
-            if (settings.SOUNDS) {
-              playSound(soundError);
-            }
-            console.error('Failed to take a picture', err);
+          if (settings.SOUNDS) {
+            const isAprilFoolsDay = new Date().getDate() === 1 && new Date().getMonth() === 3;
+            playSound(isAprilFoolsDay ? soundEagle : soundShutter);
           }
-        }
 
-        flushSync(() => {
-          setIsTakingPicture(false);
-        });
-      };
+          // Save frame
+          if (pendingBackgroundFrame || maskingMode === 'DISABLED') {
+            await projectActions.addFrame(track, frame, isPlaying ? false : currentFrameId, pendingBackgroundFrame || null);
+          } else if (maskingMode === 'UNIQUE' || !pendingBackgroundFrame) {
+            setPendingBackgroundFrame(frame);
+          }
+
+          // Clean background
+          if (maskingMode === 'DISABLED' || (maskingMode === 'UNIQUE' && pendingBackgroundFrame)) {
+            setPendingBackgroundFrame(null);
+          }
+        } catch (err) {
+          if (settings.SOUNDS) {
+            playSound(soundError);
+          }
+          console.error('Failed to take a picture', err);
+        }
+      }
+
+      flushSync(() => {
+        setIsTakingPicture(false);
+      });
+    };
 
   const actionsEvents = {
     PLAY: () => {
