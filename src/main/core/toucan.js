@@ -1,6 +1,6 @@
 import fs from 'node:fs';
-import readline from 'node:readline';
 import path from 'node:path';
+import readline from 'node:readline';
 
 import { spawn } from 'child_process';
 
@@ -9,7 +9,6 @@ let TOUCAN_CAMERA_SERVER_CONFIG = { port: null, token: null };
 export const getToucanCameraServerConfig = () => {
   return TOUCAN_CAMERA_SERVER_CONFIG.token && TOUCAN_CAMERA_SERVER_CONFIG.port ? TOUCAN_CAMERA_SERVER_CONFIG : null;
 };
-
 
 function getPlatformKey() {
   switch (process.platform) {

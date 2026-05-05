@@ -1,12 +1,13 @@
 import './i18n';
 
+import { EA, EAEvents } from '@core/bindings';
 import { Buffer } from 'buffer';
 import posthog from 'posthog-js';
 import React from 'react';
 import { createRoot } from 'react-dom/client';
+
 import App from './App';
 import { BUILD, IS_DEV, POSTHOG_HOST, POSTHOG_TOKEN, VERSION } from './config';
-import { EA, EAEvents } from '@core/bindings';
 
 // Bind global objects for actions
 window.EA = EA;
@@ -33,7 +34,7 @@ try {
       app_build: BUILD,
     });
   }
-} catch (err) { } // eslint-disable-line no-empty
+} catch (err) {} // eslint-disable-line no-empty
 
 window.track = (eventName, data = {}) => {
   try {
@@ -41,7 +42,7 @@ window.track = (eventName, data = {}) => {
       console.log(`📊 Tracking event: ${eventName}`, data);
       posthog.capture(eventName, data);
     }
-  } catch (err) { } // eslint-disable-line no-empty
+  } catch (err) {} // eslint-disable-line no-empty
 };
 
 window.trackException = (error) => {
@@ -50,7 +51,7 @@ window.trackException = (error) => {
       console.log(`📊 Tracking exception:`, error);
       posthog.captureException(error);
     }
-  } catch (err) { } // eslint-disable-line no-empty
+  } catch (err) {} // eslint-disable-line no-empty
 };
 
 globalThis.Buffer = Buffer;

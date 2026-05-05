@@ -231,9 +231,8 @@ class Player extends Component {
       this.resize();
     };
 
-    const refreshFrameSize = (now) => {
+    const refreshFrameSize = () => {
       let shouldResize = false;
-      console.log('RAF LOOP', this.dom.videoFrame.current.width, this.dom.videoFrame.current.naturalWidth)
       if (this.dom.videoFrame.current.width !== this.dom.videoFrame.current.naturalWidth && this.dom.videoFrame.current.naturalWidth) {
         this.dom.videoFrame.current.width = this.dom.videoFrame.current.naturalWidth;
         shouldResize = true;
@@ -248,7 +247,7 @@ class Player extends Component {
       }
 
       this.rafId = requestAnimationFrame(refreshFrameSize);
-    }
+    };
     this.rafId = requestAnimationFrame(refreshFrameSize);
 
     // Default sizing

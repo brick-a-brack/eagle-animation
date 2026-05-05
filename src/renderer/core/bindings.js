@@ -14,7 +14,7 @@ export const EA = async (action, data) => {
   }
 };
 
-export const EAEvents = (name, callback = () => { }) => {
+export const EAEvents = (name, callback = () => {}) => {
   // IPC (Electron backend)
   if (typeof window.IPC !== 'undefined') {
     if (typeof callback !== 'undefined') {
@@ -29,4 +29,3 @@ export const EAEvents = (name, callback = () => { }) => {
     });
   }
 };
-

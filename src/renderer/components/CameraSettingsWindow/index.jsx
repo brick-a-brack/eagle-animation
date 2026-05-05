@@ -1,7 +1,5 @@
 import Action from '@components/Action';
 import ActionCard from '@components/ActionCard';
-import Slider from '@components/CustomSlider';
-import SliderSelect from '@components/CustomSliderSelect';
 import FormGroup from '@components/FormGroup';
 import IconTabs from '@components/IconTabs';
 import NumberInput from '@components/NumberInput';
@@ -10,17 +8,18 @@ import Switch from '@components/Switch';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import faAperture from '@icons/faAperture';
 import faCamera from '@icons/faCamera';
-import faDroplet from '@icons/faDroplet';
 import faFaceViewfinder from '@icons/faFaceViewfinder';
 import faLightbulbOn from '@icons/faLightbulbOn';
 import faMagnifyingGlass from '@icons/faMagnifyingGlass';
+import faQuestion from '@icons/faQuestion';
 import faRotate from '@icons/faRotate';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { withTranslation } from 'react-i18next';
 
+import { CameraCapabilityItem, CAPABILITIES_LABELS_TRANSLATIONS } from '../CameraCapabilityItem';
+
 import * as style from './style.module.css';
-import faQuestion from '@icons/faQuestion';
 
 const groupDevices = (devices, t) => {
   const output = [];
@@ -56,18 +55,8 @@ const groupDevices = (devices, t) => {
   return output;
 };
 
-const CameraSettingsWindow = ({
-  t,
-  cameraCapabilities,
-  onCapabilityChange,
-  onDevicesListRefresh = () => { },
-  onCapabilitiesReset,
-  onSettingsChange = () => { },
-  appCapabilities = [],
-  devices = [],
-  settings = {},
-}) => {
-  const [selectedTab, setSelectedTab] = useState(null);
+const CameraSettingsWindow = ({ t, cameraCapabilities, onCapabilityChange, onDevicesListRefresh = () => {}, onCapabilitiesReset, onSettingsChange = () => {}, devices = [], settings = {} }) => {
+  const [selectedTab, setSelectedTab] = useState('CAMERAS');
   const form = useForm({
     mode: 'all',
     defaultValues: {
@@ -83,60 +72,20 @@ const CameraSettingsWindow = ({
     onSettingsChange(values);
   }, [JSON.stringify(formValues)]);
 
-  const selectOptionsTranslations = {
-    continuous: t('Automatic'),
-    auto: t('Automatic'),
-    manual: t('Manual'),
-    AutoAmbiencePriority: t('Automatic'),
-    Cloudy: t('Cloudy'),
-    Daylight: t('Daylight'),
-    Flash: t('Flash'),
-    Fluorescent: t('Fluorescent'),
-    Shade: t('Shade'),
-    Tungsten: t('Tungsten'),
-    WhitePaper: t('Manual'),
+  const capsIcons = {
+    WHITE_BALANCE_MODE: faLightbulbOn,
+    FOCUS: faFaceViewfinder,
+    ZOOM: faMagnifyingGlass,
+    EXPOSURE: faAperture,
   };
-
-  const capsTranslations = {
-    BRIGHTNESS: t('Brightness'),
-    COLOR_TEMPERATURE: t('White balance'),
-    CONTRAST: t('Contrast'),
-    FOCUS_DISTANCE: t('Focus'),
-    FOCUS_MODE: t('Automatic focus'),
-    EXPOSURE_COMPENSATION: t('Exposure compensation'),
-    EXPOSURE_MODE: t('Automatic exposure'),
-    EXPOSURE_TIME: t('Exposure time'),
-    ZOOM_POSITION_X: t('Horizontal position'),
-    SATURATION: t('Saturation'),
-    SHARPNESS: t('Sharpness'),
-    ZOOM_POSITION_Y: t('Vertical position'),
-    WHITE_BALANCE_MODE: t('Automatic white balance'),
-    ZOOM: t('Zoom'),
-    APERTURE: t('Aperture'),
-    WHITE_BALANCE: t('White balance'),
-    SHUTTER_SPEED: t('Shutter speed'),
-    ISO: t('ISO'),
-  };
-
-  const basicCategories = [
-    { id: 'WHITE_BALANCE', icon: faLightbulbOn, title: t('White balance'), capabilities: ['WHITE_BALANCE_MODE', 'COLOR_TEMPERATURE', 'WHITE_BALANCE'] },
-    { id: 'FOCUS', icon: faFaceViewfinder, title: t('Focus'), capabilities: ['FOCUS_MODE', 'FOCUS_DISTANCE'] },
-    { id: 'IMAGE_SETTINGS', icon: faDroplet, title: t('Image settings'), capabilities: ['BRIGHTNESS', 'CONTRAST', 'SATURATION', 'SHARPNESS'] },
-    { id: 'EXPOSURE', icon: faAperture, title: t('Exposure'), capabilities: ['EXPOSURE_MODE', 'EXPOSURE_COMPENSATION', 'EXPOSURE_TIME', 'ISO', 'SHUTTER_SPEED', 'APERTURE'] },
-    { id: 'ZOOM', icon: faMagnifyingGlass, title: t('Zoom'), capabilities: ['ZOOM', 'ZOOM_POSITION_X', 'ZOOM_POSITION_Y'] },
-  ]
-    
-  const knownCapabilities = basicCategories.map((category) => category.capabilities).reduce((acc, val) => [...acc, ...val], [])
-  const unknownCapabilities = cameraCapabilities
-    .filter((cap) => !knownCapabilities.includes(cap.id))
-    .map((cap) => cap.id);
 
   const categories = [
     { id: 'CAMERAS', icon: faCamera, title: t('Cameras'), capabilities: [] },
-    ...basicCategories,
-    { id: 'UNKNOWN', icon: faQuestion, title: t('Unknown'), capabilities: unknownCapabilities },
-  ].filter((category) => category.id === 'CAMERAS' || cameraCapabilities.map((e) => e.id).some((capId) => category.capabilities.includes(capId)))
-    .map((e, i) => ({ ...e, selected: selectedTab === e.id || (i === 0 && selectedTab === null) }));
+    ...cameraCapabilities.map((e) => ({ id: e.id, icon: capsIcons[e.id] || faQuestion, title: CAPABILITIES_LABELS_TRANSLATIONS?.[e.id]?.(t) || e.id, capabilities: [e] })),
+  ].map((c) => ({
+    ...c,
+    selected: c.id === selectedTab,
+  }));
 
   const selectedCategory = categories.find((e) => Boolean(e.selected));
 
@@ -186,93 +135,9 @@ const CameraSettingsWindow = ({
           </>
         )}
 
-        {cameraCapabilities
-          .filter((cap) => selectedCategory.capabilities.includes(cap.id))
-          .map((cap) => {
-            if (cap.type === 'RANGE') {
-              return (
-                <FormGroup
-                  key={cap.id}
-                  label={capsTranslations[cap.id] || cap.id}
-                  description={t('[{{min}}, {{max}}] • {{value}}', { min: Math.round(cap.min), max: Math.round(cap.max), value: Math.round(cap.value) })}
-                >
-                  <Slider
-                    isDisabled={cap.isDisabled}
-                    min={cap.min}
-                    max={cap.max}
-                    value={cap.value}
-                    step={cap.step}
-                    onChange={(value) => {
-                      if (cap.isDisabled) {
-                        return;
-                      }
-                      onCapabilityChange(cap.id, value);
-                    }}
-                  />
-                </FormGroup>
-              );
-            }
-            if (cap.type === 'SWITCH') {
-              return (
-                <FormGroup key={cap.id} label={capsTranslations[cap.id] || cap.id}>
-                  <Switch
-                    isDisabled={cap.isDisabled}
-                    checked={cap.value === true}
-                    onChange={() => {
-                      if (cap.isDisabled) {
-                        return;
-                      }
-                      onCapabilityChange(cap.id, cap.value !== true);
-                    }}
-                  />
-                </FormGroup>
-              );
-            }
-            if (cap.type === 'SELECT') {
-              return (
-                <FormGroup key={cap.id} label={capsTranslations[cap.id] || cap.id}>
-                  <Select
-                    isDisabled={cap.isDisabled}
-                    options={cap.values.map((e) => ({ ...e, label: selectOptionsTranslations[e.label] || e.label }))}
-                    value={cap.value}
-                    onChange={(evt) => {
-                      if (cap.isDisabled) {
-                        return;
-                      }
-                      onCapabilityChange(cap.id, evt.target.value);
-                    }}
-                  />
-                </FormGroup>
-              );
-            }
-            if (cap.type === 'SELECT_RANGE') {
-              const selectedValue = cap.values?.find((v) => v.value === cap.value) || cap.values?.[0] || null;
-              return (
-                <FormGroup
-                  key={cap.id}
-                  label={capsTranslations[cap.id] || cap.id}
-                  description={t('[{{min}}, {{max}}] • {{value}}', {
-                    min: cap.values?.[0]?.label || '',
-                    max: cap?.values?.[cap?.values?.length - 1]?.label || '',
-                    value: selectedValue?.label || '',
-                  })}
-                >
-                  <SliderSelect
-                    isDisabled={cap.isDisabled}
-                    options={cap.values.map((e) => ({ ...e, label: selectOptionsTranslations[e.label] || e.label }))}
-                    value={cap.value}
-                    onChange={(evt) => {
-                      if (cap.isDisabled) {
-                        return;
-                      }
-                      onCapabilityChange(cap.id, evt.value);
-                    }}
-                  />
-                </FormGroup>
-              );
-            }
-            return null;
-          })}
+        {selectedCategory.capabilities.map((cap) => (
+          <CameraCapabilityItem key={cap.id} {...cap} onCapabilityChange={onCapabilityChange} />
+        ))}
 
         {selectedCategory.id === 'CAMERAS' && cameraCapabilities.some((cap) => cap.canReset) && (
           <FormGroup label={t('Reset camera settings')} description={t('Reset the current camera settings, all values will be reset to default')}>
