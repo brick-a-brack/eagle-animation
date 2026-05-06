@@ -288,5 +288,8 @@
   "{{count}} frame_many": "{{count}} photos",
   "{{count}} frame_other": "{{count}} photos",
   "Export in progress": "Export en cours",
-  "Ready to animate": "Prêt à animer"
+  "Ready to animate": "Prêt à animer",
+  "Change to center grid": "Changer pour la grille du centre",
+  "Change to margins grid": "Changer pour la grille des marges",
+  "Change to all grids": "Changer pour toutes les grilles"
 }
