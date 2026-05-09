@@ -137,6 +137,7 @@ const Animator = ({ t }) => {
   const [ratio, setRatio] = useState(null);
   const [onionValue, setOnionValue] = useState(1);
   const [gridStatus, setGridStatus] = useState(false);
+  const [gridModes, setGridModes] = useState(false);
   const [currentFrameId, setCurrentFrameId] = useState(false);
   const [deleteOnLiveViewConfirmation, setDeleteOnLiveViewConfirmation] = useState(false);
   const [disableKeyboardShortcuts, setDisableKeyboardShortcuts] = useState(false);
@@ -155,8 +156,8 @@ const Animator = ({ t }) => {
       nbFrames === 0
         ? t('Capture in progress')
         : t('Captured: {{content}}', {
-            content: [t('{{count}} frame', { count: nbFrames })].join(' • '),
-          }),
+          content: [t('{{count}} frame', { count: nbFrames })].join(' • '),
+        }),
   });
 
   const {
@@ -421,6 +422,31 @@ const Animator = ({ t }) => {
     GRID: () => {
       if (framePosition === false) {
         setGridStatus(!gridStatus);
+        setGridModes(false);
+        window.track('animator_changed', { feature: 'grid', value: !gridStatus });
+      }
+    },
+    SWITCH_GRID_MODE: () => {
+      if (framePosition === false) {
+        if (!gridStatus) {
+          setGridStatus(true);
+          setGridModes(['GRID']);
+          window.track('animator_changed', { feature: 'grid', value: !gridStatus });
+          return;
+        }
+        if (gridStatus && gridModes && gridModes.length === 1) {
+          if (gridModes.includes('GRID')) {
+            setGridModes(['CENTER']);
+          } else if (gridModes.includes('CENTER')) {
+            setGridModes(['MARGINS']);
+          } else if (gridModes.includes('MARGINS')) {
+            setGridModes(['GRID', 'CENTER', 'MARGINS']);
+          }
+          window.track('animator_changed', { feature: 'grid', value: gridStatus });
+          return;
+        }
+        setGridStatus(false);
+        setGridModes(false);
         window.track('animator_changed', { feature: 'grid', value: !gridStatus });
       }
     },
@@ -445,7 +471,7 @@ const Animator = ({ t }) => {
     PROJECT_SETTINGS: () => {
       setShowProjectSettings((v) => !v);
     },
-    MORE: () => {},
+    MORE: () => { },
     EXPORT: () => {
       navigate(`/export/${id}/${track}?back=/animator/${id}/${track}`);
     },
@@ -548,7 +574,7 @@ const Animator = ({ t }) => {
           leftActions={['BACK']}
           rightActions={[
             ...(pictures?.some((e) => !e?.hidden) &&
-            (appCapabilities.includes('EXPORT_VIDEO') || appCapabilities.includes('EXPORT_FRAMES') || (appCapabilities.includes('BACKGROUND_SYNC') && settings?.EVENT_MODE_ENABLED))
+              (appCapabilities.includes('EXPORT_VIDEO') || appCapabilities.includes('EXPORT_FRAMES') || (appCapabilities.includes('BACKGROUND_SYNC') && settings?.EVENT_MODE_ENABLED))
               ? ['EXPORT']
               : []),
           ]}
@@ -574,7 +600,7 @@ const Animator = ({ t }) => {
           cameraId={currentCameraId}
           cameraCapabilities={currentCameraCapabilities}
           fps={fps}
-          gridModes={settings.GRID_MODES}
+          gridModes={gridModes ? gridModes : settings.GRID_MODES}
           gridOpacity={parseFloat(settings.GRID_OPACITY)}
           gridColumns={Number(settings.GRID_COLUMNS)}
           gridLines={Number(settings.GRID_LINES)}
@@ -591,7 +617,7 @@ const Animator = ({ t }) => {
           <ControlBar
             onAction={handleAction}
             showCameraSettings={showCameraSettings}
-            gridModes={settings.GRID_MODES}
+            gridModes={gridModes ? gridModes : settings.GRID_MODES}
             gridStatus={gridStatus}
             differenceStatus={differenceStatus}
             onionValue={onionValue}

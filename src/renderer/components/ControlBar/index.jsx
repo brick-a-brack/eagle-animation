@@ -18,7 +18,7 @@ import faPen from '@icons/faPen';
 import faPlay from '@icons/faPlay';
 import faSliders from '@icons/faSliders';
 import faStop from '@icons/faStop';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { withTranslation } from 'react-i18next';
 
@@ -49,6 +49,7 @@ const ControlBar = ({
   showCameraSettings = false,
   onAction = null,
   totalAnimationFrames = 0,
+  gridModes = [],
   t,
 }) => {
   const form = useForm({
@@ -59,6 +60,8 @@ const ControlBar = ({
   });
   const { watch, register, getValues, setValue } = form;
   const formValues = watch();
+
+  const [isShifting, setIsShifting] = useState(false);
 
   const handleAction = (action, args) => () => {
     if (onAction) {
@@ -74,6 +77,37 @@ const ControlBar = ({
   useEffect(() => {
     setValue('fps', fps);
   }, [fps]);
+
+  useEffect(() => {
+    const handleShiftStateChange = (e) => {
+      setIsShifting(e.shiftKey);
+    };
+
+    window.addEventListener('keydown', handleShiftStateChange);
+    window.addEventListener('keyup', handleShiftStateChange);
+
+    return () => {
+      window.removeEventListener('keydown', handleShiftStateChange);
+      window.removeEventListener('keyup', handleShiftStateChange);
+    };
+  }, []);
+
+  const getGridTitle = () => {
+    if (!gridStatus) {
+      return t('Enable grid');
+    }
+
+    if (isShifting && gridModes?.length === 1) {
+      if (gridModes.includes('GRID')) {
+        return t('Change to center grid');
+      } else if (gridModes.includes('CENTER')) {
+        return t('Change to margins grid');
+      } else if (gridModes.includes('MARGINS')) {
+        return t('Change to all grids');
+      }
+    }
+    return t('Disable grid');
+  }
 
   return (
     <div className={style.container}>
@@ -92,17 +126,24 @@ const ControlBar = ({
           selected={differenceStatus}
           onClick={handleAction('DIFFERENCE')}
           icon={faDiamondHalfStroke}
-          disabled={framePosition !== false}
-        />
-        <Button title={gridStatus ? t('Disable grid') : t('Enable grid')} selected={gridStatus} onClick={handleAction('GRID')} icon={faFrame} disabled={framePosition !== false} />
+          disabled={framePosition !== false} />
+        {(gridModes.includes('GRID') || gridModes.includes('CENTER') || gridModes.includes('MARGINS')) && (
+          <Button
+            title={getGridTitle()}
+            selected={gridStatus}
+            onClick={isShifting ? handleAction('SWITCH_GRID_MODE') : handleAction('GRID')}
+            icon={faFrame}
+            disabled={framePosition !== false}
+          />
+        )}
 
         <div className={`${style.slider} ${differenceStatus || framePosition !== false ? style.sliderDisabled : ''}`} id="onion" data-tooltip-content={t('Onion blending')}>
-          <CustomSlider step={0.01} min={0} max={1} value={onionValue} onChange={differenceStatus || framePosition !== false ? () => {} : (value) => handleAction('ONION_CHANGE', value)()} />
+          <CustomSlider step={0.01} min={0} max={1} value={onionValue} onChange={differenceStatus || framePosition !== false ? () => { } : (value) => handleAction('ONION_CHANGE', value)()} />
         </div>
         <Button
           title={t('Masking mode ({{status}})', { status: (MASKING_MODES[maskingMode] || MASKING_MODES.DISABLED)(t) })}
           selected={maskingMode !== 'DISABLED'}
-          onClick={framePosition === false ? handleAction('TOOGLE_MASKING_MODE') : () => {}}
+          onClick={framePosition === false ? handleAction('TOOGLE_MASKING_MODE') : () => { }}
           size="mini"
           icon={faEraser}
           disabled={framePosition !== false}
