@@ -22,18 +22,16 @@ const getPicturesKey = (pictures) => {
   return JSON.stringify(data);
 };
 
-const getPlayingAnimationDuration = (img, fps, isShortPlayBeginning, shortPlayDuplicateOffset = 0) => {
-  
-  const imageLength = img.length;
-  
-  if (isShortPlayBeginning && img.length > 1 && shortPlayDuplicateOffset) {
-    return Math.floor((1000 / fps) * (imageLength - shortPlayDuplicateOffset));
-  }
-  return Math.floor((1000 / fps) * img.length);
-};
-
-const SortableItem = ({ img, isBeforeShortPlayBeginning = false, isShortPlayBeginning = false, playing = false, selected, onSelect, index, fps, shortPlayDuplicateOffset = 0 }) => {
+const SortableItem = ({ img, isBeforeShortPlayBeginning = false, isShortPlayBeginning = false, playing = false, selected, onSelect, index, fps, animationDelay = 0 }) => {
   const { setNodeRef, isDragging, transform, transition, listeners, attributes, active } = useSortable({ id: img.id });
+
+  const playingAnimationDuration = Math.floor((1000 / fps) * img.length);
+
+  const animationStyle = {
+    'animationDuration': `${playingAnimationDuration}ms`,
+    'animationDelay': `${-animationDelay}ms`,
+  };
+
   return (
     <span
       ref={setNodeRef}
@@ -58,7 +56,7 @@ const SortableItem = ({ img, isBeforeShortPlayBeginning = false, isShortPlayBegi
       {isShortPlayBeginning && <><span className={style.shortPlayBar}/><span className={style.shortPlayTriangle} /></>}
       {img.length > 1 && <span className={style.duplicated}>{`x${img.length}`}</span>}
       <span className={style.title}>{`#${index + 1}`}</span>
-      <span className={`${playing && selected && (getPlayingAnimationDuration(img, fps, isShortPlayBeginning, shortPlayDuplicateOffset) > MINIMUM_ANIMATION_DURATION) ? style.playing : ''}`} style={ getPlayingAnimationDuration(img, fps, isShortPlayBeginning, shortPlayDuplicateOffset) > MINIMUM_ANIMATION_DURATION ? { animationDuration: getPlayingAnimationDuration(img, fps, isShortPlayBeginning, shortPlayDuplicateOffset) + 'ms' } : {} }></span>
+      <span key={animationDelay} className={`${playing && selected && (playingAnimationDuration > MINIMUM_ANIMATION_DURATION) ? style.playing : ''}`} style={ playingAnimationDuration > MINIMUM_ANIMATION_DURATION ? animationStyle : {} }></span>
     </span>
   );
 };
@@ -110,21 +108,42 @@ const Timeline = ({ onSelect, onMove, select = false, pictures = [], playing = f
 
   const getIndex = (id) => pictures.findIndex((e) => `${e.id}` === `${id}`);
 
-  // Get short play picture id
-  const displayedFrames = pictures.filter((e) => !e.deleted && !e.hidden).reduce((acc, e) => [...acc, ...new Array(e.length || 1).fill(e)], []);
-  const shortPlayFrameIndex = shortPlayStatus && shortPlayFrames > 0 && displayedFrames.length > shortPlayFrames ? displayedFrames.length - shortPlayFrames : 0;
-  const shortPlayFrameId = shortPlayStatus && shortPlayFrames > 0 ? displayedFrames?.[shortPlayFrameIndex]?.id || null : null;
+  let shortPlayFrameId = null;
+  let shortPlayFrameIndex = 0;
+  let shortPlayFrameIndexInTimeline = null;
+  const displayedFrames = pictures.filter((e) => !e.deleted && !e.hidden).flatMap(e => Array.from({ length: e.length || 1 }, (_, i) => ({ ...e, duplicatedIndex: i })));
 
-  // If short play first frame is duplicated, get index of the first occurrence of this frame in displayed frames to apply correct animation duration on timeline item when playing
-  const getShortPlayDuplicateFirstFrameIndex = (id) => shortPlayStatus && shortPlayFrames > 0 ? displayedFrames.findIndex((e) => `${e.id}` === `${id}`) : null;
-  
-  // offset between first occurence of frame duplicated and short play beginning frame (in the same duplicated frame)
-  const shortPlayDuplicateOffset = getShortPlayDuplicateFirstFrameIndex(shortPlayFrameId) !== null ? shortPlayFrameIndex - getShortPlayDuplicateFirstFrameIndex(shortPlayFrameId) : 0;
-  
-  const shortPlayFrameIndexInTimeline = getIndex(shortPlayFrameId);
+  if (shortPlayStatus && shortPlayFrames > 0) {
+    // Get short play picture id
+    shortPlayFrameIndex = displayedFrames.length > shortPlayFrames ? displayedFrames.length - shortPlayFrames : 0;
+    shortPlayFrameId = displayedFrames?.[shortPlayFrameIndex]?.id || null;
+
+    shortPlayFrameIndexInTimeline = getIndex(shortPlayFrameId);
+  }
+
+  const leledezaq = displayedFrames.reduce((acc, e, i) => acc+(i <= playingFrameIndex && e.id === select ? 1 : 0), 0);
+
+  const getShortPlayDuplicatedFrameAnimationDelay = (img) => {
+
+    if (img.id !== shortPlayFrameId && img.length && img.length <= 1) {
+      return 0;
+    }
+    if (img.length > 1 && playingFrameIndex >= shortPlayFrameIndex) {
+      const firstDuplicatedFrameIndex = displayedFrames.findIndex((e) => e.id === img.id);
+
+      const frameOffsetInDuplicatedFrames = shortPlayFrameIndex - firstDuplicatedFrameIndex;
+
+      const animationDelay = (1000/fps) * (frameOffsetInDuplicatedFrames);
+      return animationDelay;
+    }
+    return 0;
+  };
 
   const isBeforeShortPlayBeginning = (index) => {
-    return (!shortPlayStatus || shortPlayFrames === 0) ? false : index < shortPlayFrameIndexInTimeline;
+    if (shortPlayFrameIndexInTimeline !== null && index < shortPlayFrameIndexInTimeline) {
+      return true;
+    }
+    return false;
   }
 
   return (
@@ -154,10 +173,10 @@ const Timeline = ({ onSelect, onMove, select = false, pictures = [], playing = f
                 img={img}
                 selected={select === img.id}
                 onSelect={onSelect}
-                isBeforeShortPlayBeginning={isBeforeShortPlayBeginning(index)}
+                isBeforeShortPlayBeginning={shortPlayStatus ? isBeforeShortPlayBeginning(index) : false}
                 isShortPlayBeginning={shortPlayFrameId === img.id}
-                shortPlayDuplicateOffset={shortPlayDuplicateOffset}
                 fps={fps}
+                animationDelay={shortPlayStatus ? getShortPlayDuplicatedFrameAnimationDelay(img) : 0}
               />
             ))}
         </SortableContext>
