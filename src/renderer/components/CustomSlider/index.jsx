@@ -2,7 +2,7 @@ import Slider from 'rc-slider';
 
 import 'rc-slider/assets/index.css';
 
-const CustomSlider = ({ step, min, max, value, isDisabled = false, maxWidth = null, onChange = () => {}, ...rest }) => (
+const CustomSlider = ({ step, min, max, value, disabled = false, maxWidth = null, onChange = () => {}, ...rest }) => (
   <Slider
     keyboard={false}
     {...rest}
@@ -10,7 +10,7 @@ const CustomSlider = ({ step, min, max, value, isDisabled = false, maxWidth = nu
     min={min}
     max={max}
     value={value}
-    style={{ maxWidth: maxWidth || '300px', padding: '0', height: '10px', ...(isDisabled ? { cursor: 'not-allowed', opacity: '0.2' } : {}) }}
+    style={{ maxWidth: maxWidth || '300px', padding: '0', height: '10px', ...(disabled ? { cursor: 'not-allowed', opacity: '0.2' } : {}) }}
     styles={{
       track: {
         backgroundColor: 'var(--color-theme-light)',
@@ -30,7 +30,7 @@ const CustomSlider = ({ step, min, max, value, isDisabled = false, maxWidth = nu
         borderColor: 'rgba(0,0,0,0)',
         opacity: '1',
         transform: 'none',
-        ...(isDisabled ? { cursor: 'not-allowed' } : {}),
+        ...(disabled ? { cursor: 'not-allowed' } : {}),
       },
     }}
     onChange={onChange}

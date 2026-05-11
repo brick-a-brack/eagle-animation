@@ -14,3 +14,6 @@ export const BUILD = `${DEVICE.toLowerCase()}-${REVISION.substring(0, 7)}`;
 
 // Letters to generate a code
 export const ALLOWED_LETTERS = 'ABCDEFGHJKLMNPQRTVWXYZ0123456789'; // ISOU removed
+
+// Forced Toucan Camera Server URL (for development purposes)
+export const TOUCAN_CAMERA_SERVER_URL = import.meta.env.VITE_TOUCAN_CAMERA_SERVER_URL || null;

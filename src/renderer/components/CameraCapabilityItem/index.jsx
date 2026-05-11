@@ -1,8 +1,10 @@
 import Slider from '@components/CustomSlider';
 import SliderSelect from '@components/CustomSliderSelect';
 import FormGroup from '@components/FormGroup';
+import RulerPicker from '@components/RulerPicker';
 import Select from '@components/Select';
 import Switch from '@components/Switch';
+import { useCallback, useMemo } from 'react';
 import { withTranslation } from 'react-i18next';
 
 export const CAPABILITIES_OPTIONS_TRANSLATIONS = {
@@ -40,15 +42,15 @@ export const CAPABILITIES_LABELS_TRANSLATIONS = {
   ISO: (t) => t('ISO'),
 };
 
-const CameraCapabilitySelectItem = ({ id, isDisabled = false, values = [], value = undefined, onCapabilityChange, t }) => {
+const CameraCapabilitySelectItem = ({ id, disabled = false, values = [], value = undefined, onCapabilityChange, t }) => {
   return (
     <FormGroup key={id} label={CAPABILITIES_LABELS_TRANSLATIONS?.[id]?.(t) || id}>
       <Select
-        isDisabled={isDisabled}
+        disabled={disabled}
         options={values.map((e) => ({ ...e, label: CAPABILITIES_OPTIONS_TRANSLATIONS?.[e.label]?.(t) || e.label }))}
         value={value}
         onChange={(evt) => {
-          if (isDisabled) {
+          if (disabled) {
             return;
           }
           onCapabilityChange(id, evt.target.value);
@@ -58,7 +60,7 @@ const CameraCapabilitySelectItem = ({ id, isDisabled = false, values = [], value
   );
 };
 
-const CameraCapabilityRangeItem = ({ id, isDisabled = false, min = undefined, max = undefined, value = undefined, step = 1, onCapabilityChange, t }) => {
+const CameraCapabilityRangeItem = ({ id, disabled = false, min = undefined, max = undefined, value = undefined, step = 1, onCapabilityChange, t }) => {
   return (
     <FormGroup
       key={id}
@@ -70,13 +72,13 @@ const CameraCapabilityRangeItem = ({ id, isDisabled = false, min = undefined, ma
       })}
     >
       <Slider
-        isDisabled={isDisabled}
+        disabled={disabled}
         min={min}
         max={max}
         value={value}
         step={step}
         onChange={(value) => {
-          if (isDisabled) {
+          if (disabled) {
             return;
           }
           onCapabilityChange(id, value);
@@ -86,7 +88,33 @@ const CameraCapabilityRangeItem = ({ id, isDisabled = false, min = undefined, ma
   );
 };
 
-const CameraCapabilitySelectRangeItem = ({ id, isDisabled = false, values = [], value, onCapabilityChange, t }) => {
+const CameraCapabilityRulerItem = ({ id, disabled = false, min = undefined, max = undefined, value = undefined, step = 1, onCapabilityChange, t }) => {
+
+  const handleChange = useCallback((value) => {
+    if (disabled) {
+      return;
+    }
+    onCapabilityChange(id, value);
+  }, [disabled, onCapabilityChange, id]);
+
+  const stops = useMemo(() => Array((max - min + 1) / step).fill(0).map((_, i) => min + i * step), [min, max, step]);
+
+  return (
+    <FormGroup
+      key={id}
+      label={CAPABILITIES_LABELS_TRANSLATIONS?.[id]?.(t) || id}
+      description={t('[{{min}}, {{max}}] • {{value}}', {
+        min: Math.round(min),
+        max: Math.round(max),
+        value: Math.round(value),
+      })}
+    >
+      <RulerPicker disabled={disabled} value={value} onChange={handleChange} stops={stops} />
+    </FormGroup>
+  );
+};
+
+const CameraCapabilitySelectRangeItem = ({ id, disabled = false, values = [], value, onCapabilityChange, t }) => {
   const selectedValue = (values || []).find((v) => v.value === value) || values?.[0] || null;
   return (
     <FormGroup
@@ -99,11 +127,11 @@ const CameraCapabilitySelectRangeItem = ({ id, isDisabled = false, values = [], 
       })}
     >
       <SliderSelect
-        isDisabled={isDisabled}
+        disabled={disabled}
         options={(values || []).map((e) => ({ ...e, label: CAPABILITIES_OPTIONS_TRANSLATIONS?.[e.label]?.(t) || e.label }))}
         value={value}
         onChange={(evt) => {
-          if (isDisabled) {
+          if (disabled) {
             return;
           }
           onCapabilityChange(id, evt.value);
@@ -113,14 +141,14 @@ const CameraCapabilitySelectRangeItem = ({ id, isDisabled = false, values = [], 
   );
 };
 
-const CameraCapabilitySwitchItem = ({ id, isDisabled = false, value, onCapabilityChange, t }) => {
+const CameraCapabilitySwitchItem = ({ id, disabled = false, value, onCapabilityChange, t }) => {
   return (
     <FormGroup key={id} label={CAPABILITIES_LABELS_TRANSLATIONS?.[id]?.(t) || id}>
       <Switch
-        isDisabled={isDisabled}
+        disabled={disabled}
         checked={value === true}
         onChange={() => {
-          if (isDisabled) {
+          if (disabled) {
             return;
           }
           onCapabilityChange(id, value !== true);
@@ -130,17 +158,21 @@ const CameraCapabilitySwitchItem = ({ id, isDisabled = false, value, onCapabilit
   );
 };
 
+const CameraCapabilityDirectionalPad = () => {
+
+}
+
 export const CameraCapabilityItem = withTranslation()(({ type, t, ...props }) => {
   if (type === 'RANGE') {
     return <CameraCapabilityRangeItem {...props} t={t} />;
   }
-  if (type === 'SWITCH') {
+  if (type === 'BOOLEAN') {
     return <CameraCapabilitySwitchItem {...props} t={t} />;
   }
   if (type === 'SELECT') {
     return <CameraCapabilitySelectItem {...props} t={t} />;
   }
-  if (type === 'SELECT_RANGE') {
+  if (type === 'RANGE_SELECT') {
     return <CameraCapabilitySelectRangeItem {...props} t={t} />;
   }
   return null;

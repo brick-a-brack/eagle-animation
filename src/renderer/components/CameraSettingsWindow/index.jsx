@@ -20,6 +20,21 @@ import { withTranslation } from 'react-i18next';
 import { CameraCapabilityItem, CAPABILITIES_LABELS_TRANSLATIONS } from '../CameraCapabilityItem';
 
 import * as style from './style.module.css';
+import faFilm from '@icons/faFilm';
+import faSun from '@icons/faSun';
+import faCircleHalfStroke from '@icons/faCircleHalfStroke';
+import faDroplet from '@icons/faDroplet';
+import faEye from '@icons/faEye';
+import faLeftRight from '@icons/faLeftRight';
+import faUpDown from '@icons/faUpDown';
+import faCrosshairs from '@icons/faCrosshairs';
+import faRulerHorizontal from '@icons/faRulerHorizontal';
+import faClock from '@icons/faClock';
+import faPlusMinus from '@icons/faPlusMinus';
+import faWandMagicSparkles from '@icons/faWandMagicSparkles';
+import faPalette from '@icons/faPalette';
+import faTemperatureHalf from '@icons/faTemperatureHalf';
+import faSignal from '@icons/faSignal';
 
 const groupDevices = (devices, t) => {
   const output = [];
@@ -55,7 +70,69 @@ const groupDevices = (devices, t) => {
   return output;
 };
 
-const CameraSettingsWindow = ({ t, cameraCapabilities, onCapabilityChange, onDevicesListRefresh = () => {}, onCapabilitiesReset, onSettingsChange = () => {}, devices = [], settings = {} }) => {
+const CameraCapabilityPage = ({ }) => {
+
+
+
+}
+
+const getCapabilitiesTabs = (capabilities, t = v => v) => {
+  let tabs = [{
+    title: t('Brightness'),
+    properties: ['brightness_auto', 'brightness'],
+    icon: faSun,
+  }, {
+    title: t('Contrast'),
+    properties: ['contrast_auto', 'contrast'],
+    icon: faCircleHalfStroke,
+  }, {
+    title: t('Saturation'),
+    properties: ['saturation_auto', 'saturation'],
+    icon: faDroplet,
+  }, {
+    title: t('Sharpness'),
+    properties: ['sharpness_auto', 'sharpness'],
+    icon: faEye,
+  }, {
+    title: t('Gamma'),
+    properties: ['gamma_auto', 'gamma'],
+    icon: faQuestion,
+  }, {
+    title: t('White Balance'),
+    properties: ['white_balance_auto', 'white_balance'],
+    icon: faPalette,
+  }, {
+    title: t('Hue'),
+    properties: ['hue_auto', 'hue'],
+    icon: faTemperatureHalf,
+  }, {
+    title: t('Exposure'),
+    properties: ['exposure_auto', 'exposure_compensation', 'exposure', 'gain_auto', 'gain'],
+    icon: faSignal,
+  }, {
+    title: t('Camera controls'),
+    properties: ['zoom_auto', 'zoom', 'tilt_auto', 'tilt', 'pan_auto', 'pan', 'roll_auto', 'roll'],
+    icon: faRulerHorizontal,
+  }, {
+    title: t('Focus'),
+    properties: ['focus_auto', 'focus'],
+    icon: faCrosshairs,
+  }];
+
+  const capabilitiesKeys = tabs.map((e) => e.properties).flat();
+  const unhandledCapabilities = capabilities.filter((cap) => !capabilitiesKeys.includes(cap.id));
+
+  tabs.push({
+    title: t('Other capabilities'),
+    properties: unhandledCapabilities.map((e) => e.id),
+    icon: faQuestion,
+  })
+
+  return tabs.map((tab) => ({ ...tab, properties: tab.properties.filter((prop) => capabilities.some((cap) => cap.id === prop)) })).filter((tab) => tab.properties.length > 0);
+
+};
+
+const CameraSettingsWindow = ({ t, cameraCapabilities, onCapabilityChange, onDevicesListRefresh = () => { }, onCapabilitiesReset, onSettingsChange = () => { }, devices = [], settings = {} }) => {
   const [selectedTab, setSelectedTab] = useState('CAMERAS');
   const form = useForm({
     mode: 'all',
@@ -65,6 +142,8 @@ const CameraSettingsWindow = ({ t, cameraCapabilities, onCapabilityChange, onDev
   });
   const { watch, register, getValues } = form;
 
+  const tabs = getCapabilitiesTabs(cameraCapabilities, t);
+
   const formValues = watch();
 
   useEffect(() => {
@@ -72,22 +151,20 @@ const CameraSettingsWindow = ({ t, cameraCapabilities, onCapabilityChange, onDev
     onSettingsChange(values);
   }, [JSON.stringify(formValues)]);
 
-  const capsIcons = {
-    WHITE_BALANCE_MODE: faLightbulbOn,
-    FOCUS: faFaceViewfinder,
-    ZOOM: faMagnifyingGlass,
-    EXPOSURE: faAperture,
-  };
-
   const categories = [
-    { id: 'CAMERAS', icon: faCamera, title: t('Cameras'), capabilities: [] },
-    ...cameraCapabilities.map((e) => ({ id: e.id, icon: capsIcons[e.id] || faQuestion, title: CAPABILITIES_LABELS_TRANSLATIONS?.[e.id]?.(t) || e.id, capabilities: [e] })),
-  ].map((c) => ({
+    { id: 'CAMERAS', icon: faCamera, title: t('Cameras'), properties: [] },
+    ...tabs.map(e => ({ icon: e.icon, title: e.title, properties: e.properties })),
+  ].map((c, i) => ({
     ...c,
-    selected: c.id === selectedTab,
+    id: `${c.id || i}`,
+    selected: `${c.id || i}` === selectedTab,
   }));
 
-  const selectedCategory = categories.find((e) => Boolean(e.selected));
+console.log('categories', categories, selectedTab)
+
+  const selectedCategory = categories.find((e) => Boolean(e.selected)) || categories[0] || null;
+
+console.log('selectedCategory', selectedCategory)
 
   return (
     <>
@@ -135,15 +212,9 @@ const CameraSettingsWindow = ({ t, cameraCapabilities, onCapabilityChange, onDev
           </>
         )}
 
-        {selectedCategory.capabilities.map((cap) => (
-          <CameraCapabilityItem key={cap.id} {...cap} onCapabilityChange={onCapabilityChange} />
+        {selectedCategory.properties.map((cap) => (
+          <CameraCapabilityItem key={cap} {...cameraCapabilities.find((c) => c.id === cap)} onCapabilityChange={onCapabilityChange} />
         ))}
-
-        {selectedCategory.id === 'CAMERAS' && cameraCapabilities.some((cap) => cap.canReset) && (
-          <FormGroup label={t('Reset camera settings')} description={t('Reset the current camera settings, all values will be reset to default')}>
-            <ActionCard title={t('Reset settings')} onClick={() => onCapabilitiesReset()} sizeAuto secondary />
-          </FormGroup>
-        )}
       </div>
     </>
   );

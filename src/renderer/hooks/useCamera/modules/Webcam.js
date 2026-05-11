@@ -246,7 +246,7 @@ class Webcam {
               ...capabilities.focusDistance,
               value: settings.focusDistance,
               canReset: true,
-              isDisabled: settings.focusMode !== 'manual',
+              disabled: settings.focusMode !== 'manual',
             },
           ]
         : []),
@@ -318,7 +318,7 @@ class Webcam {
               ...capabilities.colorTemperature,
               value: settings.colorTemperature,
               canReset: true,
-              isDisabled: settings.whiteBalanceMode !== 'manual',
+              disabled: settings.whiteBalanceMode !== 'manual',
             },
           ]
         : []),
@@ -342,7 +342,7 @@ class Webcam {
               ...capabilities.exposureCompensation,
               value: settings.exposureCompensation,
               canReset: true,
-              isDisabled: settings.exposureMode !== 'manual',
+              disabled: settings.exposureMode !== 'manual',
             },
           ]
         : []),
@@ -355,7 +355,7 @@ class Webcam {
               ...capabilities.iso,
               value: settings.iso,
               canReset: true,
-              isDisabled: settings.exposureMode !== 'manual',
+              disabled: settings.exposureMode !== 'manual',
             },
           ]
         : []),
@@ -368,7 +368,7 @@ class Webcam {
               ...capabilities.exposureTime,
               value: settings.exposureTime,
               canReset: true,
-              isDisabled: settings.exposureMode !== 'manual',
+              disabled: settings.exposureMode !== 'manual',
             },
           ]
         : []),
@@ -393,7 +393,7 @@ class Webcam {
               ...capabilities.tilt,
               value: settings.tilt,
               canReset: true,
-              isDisabled: settings.zoom === capabilities?.zoom?.min,
+              disabled: settings.zoom === capabilities?.zoom?.min,
             },
           ]
         : []),
@@ -406,7 +406,7 @@ class Webcam {
               ...capabilities.pan,
               value: settings.pan,
               canReset: true,
-              isDisabled: settings.zoom === capabilities?.zoom?.min,
+              disabled: settings.zoom === capabilities?.zoom?.min,
             },
           ]
         : []),

@@ -1,4 +1,4 @@
-import { DEVICE } from '@config-web';
+import { DEVICE, TOUCAN_CAMERA_SERVER_URL } from '@config-web';
 import { EA, EAEvents } from '@core/bindings';
 
 let TOUCAN_CAMERA_SERVER_CONFIG = null;
@@ -15,28 +15,12 @@ if (DEVICE === 'ELECTRON') {
   });
 }
 
-const EAGLE_TOUCAN_PARAMETERS_MAPPING = {
-  VIDEO_FORMAT: 'video_format', // Not supported yet by Eagle
-  BRIGHTNESS: 'brightness',
-  CONTRAST: 'contrast',
-  SATURATION: 'saturation',
-  SHARPNESS: 'sharpness',
-  ZOOM: 'zoom',
-  ZOOM_POSITION_Y: 'tilt',
-  ZOOM_POSITION_X: 'pan',
-  FOCUS_MODE: 'focus_mode',
-  FOCUS_DISTANCE: 'focus',
-  EXPOSURE_MODE: 'exposure_mode',
-  EXPOSURE_TIME: 'exposure',
-  EXPOSURE_COMPENSATION: 'backlight_compensation',
-  WHITE_BALANCE_MODE: 'white_balance_mode',
-  WHITE_BALANCE: 'white_balance',
-  COLOR_TEMPERATURE: 'colorTemperature',
-  GAIN: 'gain', // Not supported yet by Eagle
-};
-
 // Get token from window global config
 const getToken = () => {
+  if (TOUCAN_CAMERA_SERVER_URL) {
+    const url = new URL(TOUCAN_CAMERA_SERVER_URL);
+    return url.searchParams.get('token');
+  }
   return TOUCAN_CAMERA_SERVER_CONFIG?.token || 'unknown';
 };
 
@@ -50,6 +34,10 @@ const getAuthHeader = () => {
 
 // Generate API URL from window global config
 const getApiUrl = () => {
+  if (TOUCAN_CAMERA_SERVER_URL) {
+    const url = new URL(TOUCAN_CAMERA_SERVER_URL);
+    return `${url.protocol}//${url.host}/`;
+  }
   const port = TOUCAN_CAMERA_SERVER_CONFIG?.port || '8080';
   return `http://127.0.0.1:${port}/`;
 };
@@ -80,7 +68,7 @@ class ToucanCameraServer {
         ...getAuthHeader(),
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ type: EAGLE_TOUCAN_PARAMETERS_MAPPING[key], value: `${value}` }),
+      body: JSON.stringify({ type: key, value: `${value}` }),
     });
 
     return null;
@@ -95,8 +83,10 @@ class ToucanCameraServer {
     }).then((res) => res.json());
 
     return capabilities.map((capability) => {
-      const id = Object.keys(EAGLE_TOUCAN_PARAMETERS_MAPPING).find((key) => EAGLE_TOUCAN_PARAMETERS_MAPPING[key] === capability.type) || capability.type;
+  
+      console.log('Capability', capability);
 
+      const id = capability?.type || 'unknown';
       const kind = capability?.kind?.toUpperCase() || 'UNKNOWN';
       const currentValue = capability?.current || null;
 
@@ -120,6 +110,7 @@ class ToucanCameraServer {
           : {}),
         value: kind === 'RANGE' ? Number(currentValue) : currentValue,
         canReset: false,
+        disabled: capability?.disabled || false,
       };
     });
   }

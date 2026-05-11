@@ -98,7 +98,7 @@ class Player extends Component {
         const frame = (newFrameIndex === false ? filteredFrames[filteredFrames.length - 1] : filteredFrames[newFrameIndex]) || false;
         this.drawFrame(frame.link || false);
         this.setState({ frameIndex: newFrameIndex });
-        this.props.onFrameChange(newFrameIndex !== false && frame ? frame.id : false);
+        this.props.onFrameChange(newFrameIndex !== false && frame ? frame.id : false, newFrameIndex);
         return true;
       };
 
