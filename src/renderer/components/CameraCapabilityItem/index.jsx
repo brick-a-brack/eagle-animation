@@ -7,20 +7,67 @@ import Switch from '@components/Switch';
 import { useCallback, useMemo } from 'react';
 import { withTranslation } from 'react-i18next';
 
-export const CAPABILITIES_OPTIONS_TRANSLATIONS = {
-  continuous: (t) => t('Automatic'),
-  auto: (t) => t('Automatic'),
-  manual: (t) => t('Manual'),
-  AutoAmbiencePriority: (t) => t('Automatic'),
-  Cloudy: (t) => t('Cloudy'),
-  Daylight: (t) => t('Daylight'),
-  Flash: (t) => t('Flash'),
-  Fluorescent: (t) => t('Fluorescent'),
-  Shade: (t) => t('Shade'),
-  Tungsten: (t) => t('Tungsten'),
-  WhitePaper: (t) => t('Manual'),
-};
+const getCapabilitySelectLabel = (id, t) => {
+  const properId = id?.toLowerCase().replace(/ /g, '_').trim();
+  const map = {
+    continuous: t('Automatic'),
+    auto: t('Automatic'),
+    manual: t('Manual'),
+    autoambiencepriority: t('Automatic'),
+    cloudy: t('Cloudy'),
+    daylight: t('Daylight'),
+    flash: t('Flash'),
+    fluorescent: t('Fluorescent'),
+    shade: t('Shade'),
+    tungsten: t('Tungsten'),
+    whitepaper: t('Manual'),
+  }
+  return map?.[properId] || id || t('Unknown');;
+}
 
+const getCapabilityLabel = (id, t) => {
+  const properId = id?.toLowerCase().replace(/ /g, '_').trim();
+  const map = {
+    'brightness_auto': t('Auto brightness'),
+    'brightness': t('Brightness'),
+    'contrast_auto': t('Auto contrast'),
+    'contrast': t('Contrast'),
+    'saturation_auto': t('Auto saturation'),
+    'saturation': t('Saturation'),
+    'sharpness_auto': t('Auto sharpness'),
+    'sharpness': t('Sharpness'),
+    'gamma_auto': t('Auto gamma'),
+    'gamma': t('Gamma'),
+    'white_balance_auto': t('Auto white balance'),
+    'white_balance': t('White balance'),
+    'hue_auto': t('Auto hue'),
+    'hue': t('Hue'),
+    'exposure_auto': t('Auto exposure'),
+    'exposure_compensation': t('Exposure compensation'),
+    'exposure': t('Exposure'),
+    'gain_auto': t('Auto gain'),
+    'gain': t('Gain'),
+    'zoom_auto': t('Auto zoom'),
+    'zoom': t('Zoom'),
+    'tilt_auto': t('Auto tilt'),
+    'tilt': t('Tilt'),
+    'pan_auto': t('Auto pan'),
+    'pan': t('Pan'),
+    'roll_auto': t('Auto roll'),
+    'roll': t('Roll'),
+    'focus_auto': t('Auto focus'),
+    'focus': t('Focus'),
+    'live_view_zoom': t('Live view zoom'),
+    'live_view_pan': t('Live view pan'),
+    'live_view_tilt': t('Live view tilt'),
+    'live_view_roll': t('Live view roll'),
+    'iso_auto': t('Auto ISO'),
+    'iso': t('ISO'),
+  };
+  return map?.[properId] || id || t('Unknown');
+}
+
+/*
 export const CAPABILITIES_LABELS_TRANSLATIONS = {
   BRIGHTNESS: (t) => t('Brightness'),
   COLOR_TEMPERATURE: (t) => t('White balance'),
@@ -40,14 +87,14 @@ export const CAPABILITIES_LABELS_TRANSLATIONS = {
   WHITE_BALANCE: (t) => t('White balance'),
   SHUTTER_SPEED: (t) => t('Shutter speed'),
   ISO: (t) => t('ISO'),
-};
+};*/
 
 const CameraCapabilitySelectItem = ({ id, disabled = false, values = [], value = undefined, onCapabilityChange, t }) => {
   return (
-    <FormGroup key={id} label={CAPABILITIES_LABELS_TRANSLATIONS?.[id]?.(t) || id}>
+    <FormGroup key={id} label={getCapabilityLabel(id, t)}>
       <Select
         disabled={disabled}
-        options={values.map((e) => ({ ...e, label: CAPABILITIES_OPTIONS_TRANSLATIONS?.[e.label]?.(t) || e.label }))}
+        options={values.map((e) => ({ ...e, label: getCapabilitySelectLabel(e.label, t) }))}
         value={value}
         onChange={(evt) => {
           if (disabled) {
@@ -64,7 +111,7 @@ const CameraCapabilityRangeItem = ({ id, disabled = false, min = undefined, max 
   return (
     <FormGroup
       key={id}
-      label={CAPABILITIES_LABELS_TRANSLATIONS?.[id]?.(t) || id}
+      label={getCapabilityLabel(id, t)}
       description={t('[{{min}}, {{max}}] • {{value}}', {
         min: Math.round(min),
         max: Math.round(max),
@@ -102,7 +149,7 @@ const CameraCapabilityRulerItem = ({ id, disabled = false, min = undefined, max 
   return (
     <FormGroup
       key={id}
-      label={CAPABILITIES_LABELS_TRANSLATIONS?.[id]?.(t) || id}
+      label={getCapabilityLabel(id, t)}
       description={t('[{{min}}, {{max}}] • {{value}}', {
         min: Math.round(min),
         max: Math.round(max),
@@ -119,7 +166,7 @@ const CameraCapabilitySelectRangeItem = ({ id, disabled = false, values = [], va
   return (
     <FormGroup
       key={id}
-      label={CAPABILITIES_LABELS_TRANSLATIONS?.[id]?.(t) || id}
+      label={getCapabilityLabel(id, t)}
       description={t('[{{min}}, {{max}}] • {{value}}', {
         min: values?.[0]?.label || '',
         max: values?.[values?.length - 1]?.label || '',
@@ -128,7 +175,7 @@ const CameraCapabilitySelectRangeItem = ({ id, disabled = false, values = [], va
     >
       <SliderSelect
         disabled={disabled}
-        options={(values || []).map((e) => ({ ...e, label: CAPABILITIES_OPTIONS_TRANSLATIONS?.[e.label]?.(t) || e.label }))}
+        options={(values || []).map((e) => ({ ...e, label: getCapabilitySelectLabel(e.label, t) }))}
         value={value}
         onChange={(evt) => {
           if (disabled) {
@@ -143,7 +190,7 @@ const CameraCapabilitySelectRangeItem = ({ id, disabled = false, values = [], va
 
 const CameraCapabilitySwitchItem = ({ id, disabled = false, value, onCapabilityChange, t }) => {
   return (
-    <FormGroup key={id} label={CAPABILITIES_LABELS_TRANSLATIONS?.[id]?.(t) || id}>
+    <FormGroup key={id} label={getCapabilityLabel(id, t)}>
       <Switch
         disabled={disabled}
         checked={value === true}

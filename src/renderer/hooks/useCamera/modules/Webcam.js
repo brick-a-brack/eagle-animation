@@ -37,7 +37,7 @@ class Webcam {
         .catch(reject);
 
       //console.log('[CAMERA]', 'Init', this.video, this.stream);
-      window.__DEBUG_DEVICE = this.stream;
+      //window.__DEBUG_DEVICE = this.stream;
 
       // Launch preview
       if (this.video) {
@@ -92,12 +92,7 @@ class Webcam {
     return allowedResolutions;
   }
 
-  async canResetCapabilities() {
-    const capabilities = await this.getCapabilities();
-    return capabilities.length > 0;
-  }
-
-  async resetCapabilities() {
+  /*async resetCapabilities() {
     const mediaStreamTrack = this.stream.getVideoTracks()[0];
     const values = {
       brightness: 128,
@@ -129,7 +124,7 @@ class Webcam {
     }
     await Promise.all(proms);
     return null;
-  }
+  }*/
 
   async applyCapability(key, value) {
     const settings = this?.stream?.getVideoTracks()?.[0]?.getSettings() || {};
@@ -137,25 +132,25 @@ class Webcam {
     const capabilities = this?.stream?.getVideoTracks()?.[0] && typeof this.stream.getVideoTracks()[0].getCapabilities === 'function' ? this.stream.getVideoTracks()[0].getCapabilities() : {};
 
     const keyNames = {
-      FOCUS_MODE: 'focusMode',
-      FOCUS_DISTANCE: 'focusDistance',
-      BRIGHTNESS: 'brightness',
-      CONTRAST: 'contrast',
-      SATURATION: 'saturation',
-      SHARPNESS: 'sharpness',
-      WHITE_BALANCE_MODE: 'whiteBalanceMode',
-      COLOR_TEMPERATURE: 'colorTemperature',
-      EXPOSURE_MODE: 'exposureMode',
+      focus_auto: 'focusMode',
+      focus: 'focusDistance',
+      brightness: 'brightness',
+      contrast: 'contrast',
+      saturation: 'saturation',
+      sharpness: 'sharpness',
+      white_balance_auto: 'whiteBalanceMode',
+      white_balance: 'colorTemperature',
+      exposure_auto: 'exposureMode',
       EXPOSURE_COMPENSATION: 'exposureCompensation',
-      EXPOSURE_TIME: 'exposureTime',
-      ZOOM: 'zoom',
-      ZOOM_POSITION_Y: 'tilt',
-      ZOOM_POSITION_X: 'pan',
-      ISO: 'iso',
+      exposure: 'exposureTime',
+      zoom: 'zoom',
+      tilt: 'tilt',
+      pan: 'pan',
+      iso: 'iso',
     };
 
     const cap = keyNames[key] || null;
-    const parsedValue = ['FOCUS_MODE', 'WHITE_BALANCE_MODE', 'EXPOSURE_MODE'].includes(key) ? (value ? 'continuous' : 'manual') : value;
+    const parsedValue = ['focus_auto', 'white_balance_auto', 'exposure_auto'].includes(key) ? (value ? 'continuous' : 'manual') : value;
 
     const toApply = [
       {
@@ -218,7 +213,7 @@ class Webcam {
 
     const allowedCapabilities = [
       {
-        id: 'RESOLUTION',
+        id: 'resolution',
         type: 'SELECT',
         values: this._listResolutions(capabilities).map((e) => ({ label: `${e[0]}×${e[1]}`, value: `${e[0]}×${e[1]}` })) || [
           { label: `${settings.width}×${settings.height}`, value: `${settings.width}×${settings.height}` },
@@ -229,8 +224,8 @@ class Webcam {
       ...(capabilities.focusMode
         ? [
             {
-              id: 'FOCUS_MODE',
-              type: 'SWITCH',
+              id: 'focus_auto',
+              type: 'BOOLEAN',
               values: capabilities.focusMode.map((e) => ({ label: e, value: e })),
               value: settings.focusMode === 'continuous',
               canReset: true,
@@ -241,7 +236,7 @@ class Webcam {
       ...(capabilities.focusDistance
         ? [
             {
-              id: 'FOCUS_DISTANCE',
+              id: 'focus',
               type: 'RANGE',
               ...capabilities.focusDistance,
               value: settings.focusDistance,
@@ -254,7 +249,7 @@ class Webcam {
       ...(capabilities.brightness
         ? [
             {
-              id: 'BRIGHTNESS',
+              id: 'brightness',
               type: 'RANGE',
               ...capabilities.brightness,
               value: settings.brightness,
@@ -266,7 +261,7 @@ class Webcam {
       ...(capabilities.contrast
         ? [
             {
-              id: 'CONTRAST',
+              id: 'contrast',
               type: 'RANGE',
               ...capabilities.contrast,
               value: settings.contrast,
@@ -278,7 +273,7 @@ class Webcam {
       ...(capabilities.saturation
         ? [
             {
-              id: 'SATURATION',
+              id: 'saturation',
               type: 'RANGE',
               ...capabilities.saturation,
               value: settings.saturation,
@@ -290,7 +285,7 @@ class Webcam {
       ...(capabilities.sharpness
         ? [
             {
-              id: 'SHARPNESS',
+              id: 'sharpness',
               type: 'RANGE',
               ...capabilities.sharpness,
               value: settings.sharpness,
@@ -302,8 +297,8 @@ class Webcam {
       ...(capabilities.whiteBalanceMode
         ? [
             {
-              id: 'WHITE_BALANCE_MODE',
-              type: 'SWITCH',
+              id: 'white_balance_auto',
+              type: 'BOOLEAN',
               value: settings.whiteBalanceMode === 'continuous',
               canReset: true,
             },
@@ -313,7 +308,7 @@ class Webcam {
       ...(capabilities.colorTemperature
         ? [
             {
-              id: 'COLOR_TEMPERATURE',
+              id: 'white_balance',
               type: 'RANGE',
               ...capabilities.colorTemperature,
               value: settings.colorTemperature,
@@ -326,8 +321,8 @@ class Webcam {
       ...(capabilities.exposureMode
         ? [
             {
-              id: 'EXPOSURE_MODE',
-              type: 'SWITCH',
+              id: 'exposure_auto',
+              type: 'BOOLEAN',
               value: settings.exposureMode === 'continuous',
               canReset: true,
             },
@@ -350,7 +345,7 @@ class Webcam {
       ...(capabilities.iso
         ? [
             {
-              id: 'ISO',
+              id: 'iso',
               type: 'RANGE',
               ...capabilities.iso,
               value: settings.iso,
@@ -363,7 +358,7 @@ class Webcam {
       ...(capabilities.exposureTime
         ? [
             {
-              id: 'EXPOSURE_TIME',
+              id: 'exposure',
               type: 'RANGE',
               ...capabilities.exposureTime,
               value: settings.exposureTime,
@@ -376,7 +371,7 @@ class Webcam {
       ...(capabilities.zoom
         ? [
             {
-              id: 'ZOOM',
+              id: 'zoom',
               type: 'RANGE',
               ...capabilities.zoom,
               value: settings.zoom,
@@ -388,7 +383,7 @@ class Webcam {
       ...(capabilities.zoom && capabilities.tilt
         ? [
             {
-              id: 'ZOOM_POSITION_Y',
+              id: 'tilt',
               type: 'RANGE',
               ...capabilities.tilt,
               value: settings.tilt,
@@ -401,7 +396,7 @@ class Webcam {
       ...(capabilities.zoom && capabilities.pan
         ? [
             {
-              id: 'ZOOM_POSITION_X',
+              id: 'pan',
               type: 'RANGE',
               ...capabilities.pan,
               value: settings.pan,

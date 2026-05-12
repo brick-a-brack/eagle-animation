@@ -23,6 +23,7 @@ class WebGPhoto2 {
     return null;
   }
 
+  // TODO: Ko car plus un canvas, à revoir
   _drawLivePreview(dom, src) {
     return new Promise((resolve) => {
       if (!dom || !src) {
@@ -66,14 +67,6 @@ class WebGPhoto2 {
         this._drawLivePreview(this.imageDOM, URL.createObjectURL(blob)).then(resolve);
       }, 50);
     });
-  }
-
-  async canResetCapabilities() {
-    return false;
-  }
-
-  async resetCapabilities() {
-    return null;
   }
 
   async applyCapability(key, value) {

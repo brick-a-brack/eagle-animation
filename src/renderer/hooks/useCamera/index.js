@@ -108,17 +108,6 @@ function useCamera(options = {}) {
     [currentCamera]
   );
 
-  // Reset capabilities
-  const actionCapabilitesReset = useCallback(async () => {
-    setTimeout(async () => {
-      if (currentCamera) {
-        await currentCamera.resetCapabilities();
-        capabilitiesIntervals.current = {};
-        currentCamera.getCapabilities().then(setCameraCapabilities);
-      }
-    }, 0);
-  }, [currentCamera]);
-
   // Add event listener
   const actionAddEventListener = useCallback(async (name, callback) => {
     eventsRefs.current.push([name, callback]);
@@ -168,7 +157,6 @@ function useCamera(options = {}) {
       setCamera: actionSetCamera,
       refreshDevices: actionRefreshDevices,
       takePicture: actionTakePicture,
-      capabilitiesReset: actionCapabilitesReset,
       setCapability: actionSetCapability,
       addEventListener: actionAddEventListener,
       removeEventListener: actionRemoveEventListener,

@@ -51,14 +51,6 @@ class ToucanCameraServer {
     return this?.deviceId || null;
   }
 
-  async canResetCapabilities() {
-    return false;
-  }
-
-  async resetCapabilities() {
-    return null;
-  }
-
   async applyCapability(key, value) {
     console.log('Apply capability', key, value);
 

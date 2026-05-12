@@ -17,7 +17,7 @@ import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { withTranslation } from 'react-i18next';
 
-import { CameraCapabilityItem, CAPABILITIES_LABELS_TRANSLATIONS } from '../CameraCapabilityItem';
+import { CameraCapabilityItem } from '../CameraCapabilityItem';
 
 import * as style from './style.module.css';
 import faFilm from '@icons/faFilm';
@@ -110,12 +110,20 @@ const getCapabilitiesTabs = (capabilities, t = v => v) => {
     properties: ['exposure_auto', 'exposure_compensation', 'exposure', 'gain_auto', 'gain'],
     icon: faSignal,
   }, {
+    title: t('ISO'),
+    properties: ['iso_auto', 'iso'],
+    icon: faSignal,
+  }, {
     title: t('Camera controls'),
     properties: ['zoom_auto', 'zoom', 'tilt_auto', 'tilt', 'pan_auto', 'pan', 'roll_auto', 'roll'],
     icon: faRulerHorizontal,
   }, {
     title: t('Focus'),
     properties: ['focus_auto', 'focus'],
+    icon: faCrosshairs,
+  }, {
+    title: t('Live View'),
+    properties: ['live_view_zoom', 'live_view_pan', 'live_view_tilt', 'live_view_roll'],
     icon: faCrosshairs,
   }];
 
@@ -132,7 +140,7 @@ const getCapabilitiesTabs = (capabilities, t = v => v) => {
 
 };
 
-const CameraSettingsWindow = ({ t, cameraCapabilities, onCapabilityChange, onDevicesListRefresh = () => { }, onCapabilitiesReset, onSettingsChange = () => { }, devices = [], settings = {} }) => {
+const CameraSettingsWindow = ({ t, cameraCapabilities, onCapabilityChange, onDevicesListRefresh = () => { }, onSettingsChange = () => { }, devices = [], settings = {} }) => {
   const [selectedTab, setSelectedTab] = useState('CAMERAS');
   const form = useForm({
     mode: 'all',
@@ -160,11 +168,11 @@ const CameraSettingsWindow = ({ t, cameraCapabilities, onCapabilityChange, onDev
     selected: `${c.id || i}` === selectedTab,
   }));
 
-console.log('categories', categories, selectedTab)
+  console.log('categories', categories, selectedTab)
 
   const selectedCategory = categories.find((e) => Boolean(e.selected)) || categories[0] || null;
 
-console.log('selectedCategory', selectedCategory)
+  console.log('selectedCategory', selectedCategory)
 
   return (
     <>
