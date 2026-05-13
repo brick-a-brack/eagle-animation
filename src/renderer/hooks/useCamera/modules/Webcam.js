@@ -141,7 +141,7 @@ class Webcam {
       white_balance_auto: 'whiteBalanceMode',
       white_balance: 'colorTemperature',
       exposure_auto: 'exposureMode',
-      EXPOSURE_COMPENSATION: 'exposureCompensation',
+      gain: 'exposureCompensation',
       exposure: 'exposureTime',
       zoom: 'zoom',
       tilt: 'tilt',
@@ -213,7 +213,7 @@ class Webcam {
 
     const allowedCapabilities = [
       {
-        id: 'resolution',
+        id: 'video_stream_format',
         type: 'SELECT',
         values: this._listResolutions(capabilities).map((e) => ({ label: `${e[0]}×${e[1]}`, value: `${e[0]}×${e[1]}` })) || [
           { label: `${settings.width}×${settings.height}`, value: `${settings.width}×${settings.height}` },
@@ -332,7 +332,7 @@ class Webcam {
       ...(capabilities.exposureCompensation
         ? [
             {
-              id: 'EXPOSURE_COMPENSATION',
+              id: 'gain',
               type: 'RANGE',
               ...capabilities.exposureCompensation,
               value: settings.exposureCompensation,

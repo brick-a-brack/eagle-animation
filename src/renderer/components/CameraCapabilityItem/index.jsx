@@ -7,9 +7,12 @@ import Switch from '@components/Switch';
 import { useCallback, useMemo } from 'react';
 import { withTranslation } from 'react-i18next';
 
-const getCapabilitySelectLabel = (id, t) => {
-  const properId = id?.toLowerCase().replace(/ /g, '_').trim();
+const getCapabilitySelectLabel = (label, t) => {
+  const properId = label?.toLowerCase().replace(/ /g, '_').trim();
   const map = {
+    disabled: t('Disabled'),
+    '50_hz': t('50 Hz'),
+    '60_hz': t('60 Hz'),
     continuous: t('Automatic'),
     auto: t('Automatic'),
     manual: t('Manual'),
@@ -22,47 +25,51 @@ const getCapabilitySelectLabel = (id, t) => {
     tungsten: t('Tungsten'),
     whitepaper: t('Manual'),
   }
-  return map?.[properId] || id || t('Unknown');;
+  return map?.[properId] || label || t('Unknown');
 }
 
 const getCapabilityLabel = (id, t) => {
   const properId = id?.toLowerCase().replace(/ /g, '_').trim();
   const map = {
-    'brightness_auto': t('Auto brightness'),
-    'brightness': t('Brightness'),
-    'contrast_auto': t('Auto contrast'),
-    'contrast': t('Contrast'),
-    'saturation_auto': t('Auto saturation'),
-    'saturation': t('Saturation'),
-    'sharpness_auto': t('Auto sharpness'),
-    'sharpness': t('Sharpness'),
-    'gamma_auto': t('Auto gamma'),
-    'gamma': t('Gamma'),
-    'white_balance_auto': t('Auto white balance'),
-    'white_balance': t('White balance'),
-    'hue_auto': t('Auto hue'),
-    'hue': t('Hue'),
-    'exposure_auto': t('Auto exposure'),
-    'exposure_compensation': t('Exposure compensation'),
-    'exposure': t('Exposure'),
-    'gain_auto': t('Auto gain'),
-    'gain': t('Gain'),
-    'zoom_auto': t('Auto zoom'),
-    'zoom': t('Zoom'),
-    'tilt_auto': t('Auto tilt'),
-    'tilt': t('Tilt'),
-    'pan_auto': t('Auto pan'),
-    'pan': t('Pan'),
-    'roll_auto': t('Auto roll'),
-    'roll': t('Roll'),
-    'focus_auto': t('Auto focus'),
-    'focus': t('Focus'),
-    'live_view_zoom': t('Live view zoom'),
-    'live_view_pan': t('Live view pan'),
-    'live_view_tilt': t('Live view tilt'),
-    'live_view_roll': t('Live view roll'),
-    'iso_auto': t('Auto ISO'),
-    'iso': t('ISO'),
+    image_quality: t('Image quality'),
+    video_stream_format: t('Video stream format'),
+    power_line_frequency: t('Power line frequency'),
+    brightness_auto: t('Automatic brightness'),
+    brightness: t('Brightness'),
+    contrast_auto: t('Automatic contrast'),
+    contrast: t('Contrast'),
+    saturation_auto: t('Automatic saturation'),
+    saturation: t('Saturation'),
+    sharpness_auto: t('Automatic sharpness'),
+    sharpness: t('Sharpness'),
+    gamma_auto: t('Automatic gamma'),
+    gamma: t('Gamma'),
+    white_balance_auto: t('Automatic white balance'),
+    white_balance: t('White balance'),
+    hue_auto: t('Automatic hue'),
+    hue: t('Hue'),
+    exposure_auto: t('Automatic exposure'),
+    exposure_compensation: t('Exposure compensation'),
+    exposure: t('Exposure'),
+    backlight_compensation: t('Backlight compensation'),
+    gain_auto: t('Automatic gain'),
+    gain: t('Gain'),
+    zoom_auto: t('Automatic zoom'),
+    zoom: t('Zoom'),
+    tilt_auto: t('Automatic tilt'),
+    tilt: t('Tilt'),
+    pan_auto: t('Automatic pan'),
+    pan: t('Pan'),
+    roll_auto: t('Automatic roll'),
+    roll: t('Roll'),
+    focus_auto: t('Automatic focus'),
+    focus: t('Focus'),
+    live_view_zoom: t('Live view zoom'),
+    live_view_pan: t('Live view pan'),
+    live_view_tilt: t('Live view tilt'),
+    live_view_roll: t('Live view roll'),
+    iso_auto: t('Automatic ISO'),
+    iso: t('ISO'),
   };
   return map?.[properId] || id || t('Unknown');
 }

@@ -35,6 +35,8 @@ import faWandMagicSparkles from '@icons/faWandMagicSparkles';
 import faPalette from '@icons/faPalette';
 import faTemperatureHalf from '@icons/faTemperatureHalf';
 import faSignal from '@icons/faSignal';
+import faTriangle from '@icons/faTriangle';
+import faCirclesOverlap3 from '@icons/faCirclesOverlap3';
 
 const groupDevices = (devices, t) => {
   const output = [];
@@ -78,6 +80,10 @@ const CameraCapabilityPage = ({ }) => {
 
 const getCapabilitiesTabs = (capabilities, t = v => v) => {
   let tabs = [{
+    title: t('Quality'),
+    properties: ['video_stream_format', 'image_quality', 'power_line_frequency'],
+    icon: faFilm,
+  },{
     title: t('Brightness'),
     properties: ['brightness_auto', 'brightness'],
     icon: faSun,
@@ -88,27 +94,31 @@ const getCapabilitiesTabs = (capabilities, t = v => v) => {
   }, {
     title: t('Saturation'),
     properties: ['saturation_auto', 'saturation'],
-    icon: faDroplet,
+    icon: faCirclesOverlap3,
   }, {
     title: t('Sharpness'),
     properties: ['sharpness_auto', 'sharpness'],
-    icon: faEye,
+    icon: faTriangle,
   }, {
     title: t('Gamma'),
     properties: ['gamma_auto', 'gamma'],
     icon: faQuestion,
   }, {
-    title: t('White Balance'),
-    properties: ['white_balance_auto', 'white_balance'],
-    icon: faPalette,
-  }, {
     title: t('Hue'),
     properties: ['hue_auto', 'hue'],
     icon: faTemperatureHalf,
   }, {
+    title: t('White Balance'),
+    properties: ['white_balance_auto', 'white_balance'],
+    icon: faLightbulbOn,
+  }, {
+    title: t('Focus'),
+    properties: ['focus_auto', 'focus'],
+    icon: faFaceViewfinder,
+  }, {
     title: t('Exposure'),
-    properties: ['exposure_auto', 'exposure_compensation', 'exposure', 'gain_auto', 'gain'],
-    icon: faSignal,
+    properties: ['exposure_auto', 'backlight_compensation', 'exposure_compensation', 'exposure', 'gain_auto', 'gain'],
+    icon: faAperture,
   }, {
     title: t('ISO'),
     properties: ['iso_auto', 'iso'],
@@ -116,11 +126,7 @@ const getCapabilitiesTabs = (capabilities, t = v => v) => {
   }, {
     title: t('Camera controls'),
     properties: ['zoom_auto', 'zoom', 'tilt_auto', 'tilt', 'pan_auto', 'pan', 'roll_auto', 'roll'],
-    icon: faRulerHorizontal,
-  }, {
-    title: t('Focus'),
-    properties: ['focus_auto', 'focus'],
-    icon: faCrosshairs,
+    icon: faMagnifyingGlass,
   }, {
     title: t('Live View'),
     properties: ['live_view_zoom', 'live_view_pan', 'live_view_tilt', 'live_view_roll'],
