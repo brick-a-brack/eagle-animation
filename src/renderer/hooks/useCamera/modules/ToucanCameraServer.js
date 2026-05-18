@@ -122,7 +122,7 @@ class ToucanCameraServer {
       },
     });
 
-    imageDOM.src = `${getApiUrl()}cameras/${this.deviceId}/liveview?token=${getToken()}`;
+    imageDOM.src = `${getApiUrl()}cameras/${this.deviceId}/liveview?token=${getToken()}&t=${new Date().getTime()}`;
 
     return true;
   }
