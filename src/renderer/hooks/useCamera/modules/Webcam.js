@@ -5,6 +5,7 @@ class Webcam {
     this.stream = false;
     this.deviceId = deviceId;
     this.video = false;
+    this.setStream = false;
     this.width = false;
     this.height = false;
   }
@@ -40,16 +41,9 @@ class Webcam {
       //window.__DEBUG_DEVICE = this.stream;
 
       // Launch preview
-      if (this.video) {
-        this.video.srcObject = this.stream;
-        this.video.addEventListener('canplay', () => {
-          this.video.play();
-          this.width = this.video.videoWidth;
-          this.height = this.video.videoHeight;
-          resolve();
-        });
-
-        //console.log('[CAMERA]', 'Ready');
+      if (this.setStream) {
+        this.setStream('video', this.stream);
+        resolve();
       }
     });
   }
@@ -410,8 +404,8 @@ class Webcam {
     return allowedCapabilities;
   }
 
-  async connect({ videoDOM, imageDOM } = { videoDOM: false, imageDOM: false }, settings = {}) {
-    this.video = videoDOM;
+  async connect(setStream = (type, data) => {}, settings = {}) {
+    this.setStream = setStream;
     this.settings = settings;
 
     await this.initStream();

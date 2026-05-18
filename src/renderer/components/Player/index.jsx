@@ -7,6 +7,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 
 import * as style from './style.module.css';
+import LivePreviewStream from '@components/LivePreviewStream';
 
 const drawArea = (ctx, x, y, width, height) => {
   ctx.fillRect(x, y, width, 1);
@@ -21,6 +22,7 @@ class Player extends Component {
 
     this.dom = {
       container: React.createRef(),
+      livePreview: React.createRef(),
       video: React.createRef(),
       videoFrame: React.createRef(),
       picture: React.createRef(),
@@ -40,7 +42,7 @@ class Player extends Component {
     this.rafId = null;
 
     this.resize = () => {
-      this.initCanvas();
+     /* this.initCanvas();
       const parentSize = this?.dom?.container?.current?.parentNode?.getBoundingClientRect();
       if (!parentSize) {
         return;
@@ -57,7 +59,7 @@ class Player extends Component {
         heightElem = parentSize.height - 6;
         widthElem = this.getRatio() * (parentSize.height - 6); // Border should be added here
       }
-      this.setState({ width: widthElem, height: heightElem, ready: true });
+      this.setState({ width: widthElem, height: heightElem, ready: true });*/
     };
 
     this.clock = null;
@@ -113,7 +115,7 @@ class Player extends Component {
     };
 
     this.initCanvas = () => {
-      if (this.dom.picture.current) {
+      /*if (this.dom.picture.current) {
         if (this.dom.picture.current.width !== this.getSize().width) {
           this.dom.picture.current.width = this.getSize().width;
         }
@@ -148,7 +150,7 @@ class Player extends Component {
         if (shouldRedraw) {
           this.drawGrid();
         }
-      }
+      }*/
     };
 
     this.stop = () => {
@@ -182,8 +184,12 @@ class Player extends Component {
     };
   }
 
+setStream(type, data) {
+this.dom.livePreview.current.setStream(type, data);
+}
+
   componentDidMount() {
-    const { onInit } = this.props;
+   /* const { onInit } = this.props;
 
     onInit(this.dom.video.current, this.dom.videoFrame.current);
 
@@ -229,7 +235,7 @@ class Player extends Component {
     this.dom.videoFrame.current.onerror = () => {
       handleStreamError(this.dom.videoFrame.current);
       this.resize();
-    };
+    };*/
 
     const refreshFrameSize = () => {
       let shouldResize = false;
@@ -454,8 +460,7 @@ class Player extends Component {
     return (
       <div className={`${style.playerContainer} ${frameIndex === false ? style.live : ''}`}>
         <div className={style.container} ref={this.dom.container} style={{ width: `${width}px`, height: `${height}px`, opacity: ready ? 1 : 0 }}>
-          <video ref={this.dom.video} className={`${style.layout} ${reverseClassNames}`} style={{ opacity: isCameraReady && frameIndex === false ? 1 : 0 }} />
-          <img ref={this.dom.videoFrame} className={`${style.layout} ${reverseClassNames}`} style={{ opacity: isCameraReady && frameIndex === false ? 1 : 0 }} />
+          <LivePreviewStream ref={this.dom.livePreview} className={`${style.layout} ${reverseClassNames}`} style={{ opacity: isCameraReady && frameIndex === false ? 1 : 0 }} />
           <canvas
             ref={this.dom.picture}
             className={style.layout}
@@ -464,6 +469,7 @@ class Player extends Component {
               mixBlendMode: !blendMode ? 'normal' : 'difference',
             }}
           />
+
           {this.getVideoRatio() !== null && borderLeftRight > 0 && <div className={style.borderLeft} style={{ width: `${borderLeftRight * 100}%`, opacity: ratioLayerOpacity || 1 }} />}
           {this.getVideoRatio() !== null && borderLeftRight > 0 && <div className={style.borderRight} style={{ width: `${borderLeftRight * 100}%`, opacity: ratioLayerOpacity || 1 }} />}
           {this.getVideoRatio() !== null && borderTopBottom > 0 && <div className={style.borderTop} style={{ height: `${borderTopBottom * 100}%`, opacity: ratioLayerOpacity || 1 }} />}
