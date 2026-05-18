@@ -167,7 +167,6 @@ const Animator = ({ t }) => {
     currentCameraId,
     actions: cameraActions,
   } = useCamera({
-    forceMaxQuality: !!settings?.FORCE_QUALITY,
     eventsHandlers: {
       connect: () => {
         playerRef?.current?.resize();
@@ -503,10 +502,6 @@ const Animator = ({ t }) => {
     cameraActions.setCapability(id, value);
   };
 
-  const handleCapabilitiesReset = async () => {
-    cameraActions.capabilitiesReset();
-  };
-
   const handleDevicesRefresh = async () => {
     cameraActions.refreshDevices();
   };
@@ -627,7 +622,6 @@ const Animator = ({ t }) => {
           cameraCapabilities={currentCameraCapabilities}
           onCapabilityChange={handleCapabilityChange}
           onSettingsChange={handleSettingsChange}
-          onCapabilitiesReset={handleCapabilitiesReset}
           onDevicesListRefresh={handleDevicesRefresh}
           appCapabilities={appCapabilities}
           devices={devices}

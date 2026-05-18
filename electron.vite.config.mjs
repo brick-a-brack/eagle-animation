@@ -13,7 +13,7 @@ export default defineConfig(({ mode }) => {
     main: {
       build: {
         rollupOptions: {
-          external: ['@brick-a-brack/napi-canon-cameras', 'sharp'],
+          external: ['sharp'],
         },
         sourcemap: true,
       },

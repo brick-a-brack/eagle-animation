@@ -7,13 +7,13 @@ import { join } from 'path-browserify';
 
 import { getEncodingProfile } from '../common/ffmpeg';
 import { CONTRIBUTE_REPOSITORY } from '../config';
-import { flushCamera, getCamera, getCameras } from './cameras';
 import { PROJECTS_PATH } from './config';
 import { uploadFile } from './core/api';
 import { setDiscordActivity } from './core/discord';
 import { exportProjectScene, exportSaveTemporaryBuffer, getSyncList, saveSyncList } from './core/export';
 import { createProject, deleteProject, getProjectData, getProjectsList, projectSave, savePicture } from './core/projects';
 import { getSettings, saveSettings } from './core/settings';
+import { getToucanCameraServerConfig } from './core/toucan';
 import { selectFile, selectFolder } from './core/utils';
 
 console.log(`💾 Eagle Animation files will be saved in the following folder: ${PROJECTS_PATH}`);
@@ -125,54 +125,6 @@ const actions = {
     shell.openExternal(link);
     return null;
   },
-  LIST_NATIVE_CAMERAS: () => {
-    return getCameras();
-  },
-  TAKE_PICTURE_NATIVE_CAMERA: async (evt, { camera_id }) => {
-    const camera = await getCamera(camera_id);
-    if (camera) {
-      return camera.takePicture();
-    }
-    return null;
-  },
-  GET_CAPABILITIES_NATIVE_CAMERA: async (evt, { camera_id }) => {
-    const camera = await getCamera(camera_id);
-    if (camera) {
-      return camera.getCapabilities();
-    }
-    return [];
-  },
-  APPLY_CAPABILITY_NATIVE_CAMERA: async (evt, { camera_id, key, value }) => {
-    const camera = await getCamera(camera_id);
-    if (camera) {
-      camera.applyCapability(key, value);
-      return null;
-    }
-    return null;
-  },
-  RESET_CAPABILITIES_NATIVE_CAMERA: async (evt, { camera_id }) => {
-    const camera = await getCamera(camera_id);
-    if (camera) {
-      camera.resetCapabilities();
-      return camera.getCapabilities();
-    }
-    return [];
-  },
-  CONNECT_NATIVE_CAMERA: async (evt, { camera_id }, sendToRenderer) => {
-    const camera = await getCamera(camera_id);
-    if (camera) {
-      camera.connect((data) => {
-        sendToRenderer('LIVE_VIEW_DATA', { camera_id, data });
-      });
-    }
-  },
-  DISCONNECT_NATIVE_CAMERA: async (evt, { camera_id }) => {
-    const camera = await getCamera(camera_id);
-    if (camera) {
-      flushCamera(camera_id);
-      camera.disconnect();
-    }
-  },
   GET_SETTINGS: async () => {
     return getSettings(PROJECTS_PATH);
   },
@@ -209,17 +161,7 @@ const actions = {
     return syncList;
   },
   APP_CAPABILITIES: async () => {
-    const capabilities = [
-      'EXPORT_VIDEO',
-      'EXPORT_FRAMES',
-      'BACKGROUND_SYNC',
-      'LOW_FRAMERATE_QUALITY_IMPROVEMENT',
-      'EXPORT_VIDEO_H264',
-      'EXPORT_VIDEO_HEVC',
-      'EXPORT_VIDEO_PRORES',
-      'EXPORT_VIDEO_VP8',
-      'EXPORT_VIDEO_VP9',
-    ];
+    const capabilities = ['EXPORT_VIDEO', 'EXPORT_FRAMES', 'BACKGROUND_SYNC', 'EXPORT_VIDEO_H264', 'EXPORT_VIDEO_HEVC', 'EXPORT_VIDEO_PRORES', 'EXPORT_VIDEO_VP8', 'EXPORT_VIDEO_VP9'];
     return capabilities;
   },
   EXPORT_SELECT_PATH: async (
@@ -328,6 +270,9 @@ const actions = {
       smallImageText: actionTitle || null,
       largeImageText: applicationTitle || null,
     });
+  },
+  GET_TOUCAN_CAMERA_SERVER_CONFIG: async () => {
+    return getToucanCameraServerConfig();
   },
 };
 

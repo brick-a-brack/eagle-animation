@@ -2,9 +2,9 @@ import React, { Fragment } from 'react';
 
 import * as style from './style.module.css';
 
-const Select = ({ register = {}, options = [], isDisabled = false, ...rest }) => {
+const Select = ({ register = {}, options = [], disabled = false, ...rest }) => {
   return (
-    <select className={`${style.select} ${isDisabled && style.isDisabled}`} {...rest} {...register}>
+    <select className={`${style.select} ${disabled && style.disabled}`} {...rest} {...register}>
       {options.map((o, i) => (
         <Fragment key={o.id || o.value || i}>
           {o.values && (

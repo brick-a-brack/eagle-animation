@@ -13,7 +13,7 @@ class Webcam {
     return this?.deviceId || null;
   }
 
-  initPreview() {
+  initStream(width = undefined, height = undefined) {
     // eslint-disable-next-line no-async-promise-executor
     return new Promise(async (resolve, reject) => {
       // Get preview stream
@@ -21,16 +21,15 @@ class Webcam {
         .getUserMedia({
           video: {
             deviceId: this.deviceId ? { exact: this.deviceId } : undefined,
-
             ...(isFirefox()
               ? {
                   width: { min: 640, ideal: 1920, max: 99999 },
                   height: { min: 480, ideal: 1080, max: 99999 },
                 }
               : {
-                  width: 99999, // Force to get the best quality available (Chromium only)
-                  height: 99999, // Force to get the best quality available (Chromium only)
-                  frameRate: this.settings?.forceMaxQuality ? undefined : 15,
+                  width: width || 99999, // Force to get the best quality available (Chromium only)
+                  height: height || 99999, // Force to get the best quality available (Chromium only)
+                  ...(!width && !height ? { frameRate: { min: 1, ideal: 15, max: 60 } } : {}),
                 }),
           },
           audio: false,
@@ -38,7 +37,7 @@ class Webcam {
         .catch(reject);
 
       //console.log('[CAMERA]', 'Init', this.video, this.stream);
-      window.__DEBUG_DEVICE = this.stream;
+      //window.__DEBUG_DEVICE = this.stream;
 
       // Launch preview
       if (this.video) {
@@ -55,12 +54,45 @@ class Webcam {
     });
   }
 
-  async canResetCapabilities() {
-    const capabilities = await this.getCapabilities();
-    return capabilities.length > 0;
+  _listResolutions(capabilities) {
+    const allowedResolutions = [];
+    const heightCapabilities = capabilities.height || {};
+    const widthCapabilities = capabilities.width || {};
+
+    const list = [
+      ...new Set([
+        `${widthCapabilities.max}×${heightCapabilities.max}`,
+        '7680×4320',
+        '3840×2160',
+        '2560×1440',
+        '2304×1536',
+        '2304×1296',
+        '1920×1080',
+        '1600×896',
+        '1280×720',
+        '960×720',
+        '1024×576',
+        '800×600',
+        '864×480',
+        '800×448',
+        '640×480',
+
+        // The following resolutions are not supported by Firefox (Lowest is 640×480) but can be proposed by Chromium browsers
+        ...(!isFirefox() ? ['640×360', '432×240', '352×288', '320×240', '320×180', '176×144', '160×120', '160×90'] : []),
+      ]),
+    ].map((e) => e.split('×').map((e) => parseInt(e, 10)));
+
+    for (const resolution of list) {
+      const [width, height] = resolution;
+      if (width <= widthCapabilities.max && width >= widthCapabilities.min && height <= heightCapabilities.max && height >= heightCapabilities.min) {
+        allowedResolutions.push(resolution);
+      }
+    }
+
+    return allowedResolutions;
   }
 
-  async resetCapabilities() {
+  /*async resetCapabilities() {
     const mediaStreamTrack = this.stream.getVideoTracks()[0];
     const values = {
       brightness: 128,
@@ -92,7 +124,7 @@ class Webcam {
     }
     await Promise.all(proms);
     return null;
-  }
+  }*/
 
   async applyCapability(key, value) {
     const settings = this?.stream?.getVideoTracks()?.[0]?.getSettings() || {};
@@ -100,28 +132,36 @@ class Webcam {
     const capabilities = this?.stream?.getVideoTracks()?.[0] && typeof this.stream.getVideoTracks()[0].getCapabilities === 'function' ? this.stream.getVideoTracks()[0].getCapabilities() : {};
 
     const keyNames = {
-      FOCUS_MODE: 'focusMode',
-      FOCUS_DISTANCE: 'focusDistance',
-      BRIGHTNESS: 'brightness',
-      CONTRAST: 'contrast',
-      SATURATION: 'saturation',
-      SHARPNESS: 'sharpness',
-      WHITE_BALANCE_MODE: 'whiteBalanceMode',
-      COLOR_TEMPERATURE: 'colorTemperature',
-      EXPOSURE_MODE: 'exposureMode',
-      EXPOSURE_COMPENSATION: 'exposureCompensation',
-      EXPOSURE_TIME: 'exposureTime',
-      ZOOM: 'zoom',
-      ZOOM_POSITION_Y: 'tilt',
-      ZOOM_POSITION_X: 'pan',
-      ISO: 'iso',
+      focus_auto: 'focusMode',
+      focus: 'focusDistance',
+      brightness: 'brightness',
+      contrast: 'contrast',
+      saturation: 'saturation',
+      sharpness: 'sharpness',
+      white_balance_auto: 'whiteBalanceMode',
+      white_balance: 'colorTemperature',
+      exposure_auto: 'exposureMode',
+      gain: 'exposureCompensation',
+      exposure: 'exposureTime',
+      zoom: 'zoom',
+      tilt: 'tilt',
+      pan: 'pan',
+      iso: 'iso',
     };
 
     const cap = keyNames[key] || null;
-    const parsedValue = ['FOCUS_MODE', 'WHITE_BALANCE_MODE', 'EXPOSURE_MODE'].includes(key) ? (value ? 'continuous' : 'manual') : value;
+    const parsedValue = ['focus_auto', 'white_balance_auto', 'exposure_auto'].includes(key) ? (value ? 'continuous' : 'manual') : value;
 
     const toApply = [
       {
+        ...(key === 'RESOLUTION'
+          ? {
+              width: parseInt(value.split('×')[0], 10),
+              height: parseInt(value.split('×')[1], 10),
+              frameRate: { min: 1, ideal: 15, max: 60 },
+              resizeMode: 'crop-and-scale',
+            }
+          : {}),
         ...(cap === 'focusMode' ? { focusDistance: settings.focusDistance } : {}),
         ...(cap === 'focusDistance' ? { focusMode: settings.focusMode } : {}),
         ...(cap === 'exposureTime'
@@ -172,11 +212,20 @@ class Webcam {
     const capabilities = this?.stream?.getVideoTracks()?.[0] && typeof this.stream.getVideoTracks()[0].getCapabilities === 'function' ? this.stream.getVideoTracks()[0].getCapabilities() : {};
 
     const allowedCapabilities = [
+      {
+        id: 'video_stream_format',
+        type: 'SELECT',
+        values: this._listResolutions(capabilities).map((e) => ({ label: `${e[0]}×${e[1]}`, value: `${e[0]}×${e[1]}` })) || [
+          { label: `${settings.width}×${settings.height}`, value: `${settings.width}×${settings.height}` },
+        ],
+        value: `${settings.width}×${settings.height}`,
+        canReset: false,
+      },
       ...(capabilities.focusMode
         ? [
             {
-              id: 'FOCUS_MODE',
-              type: 'SWITCH',
+              id: 'focus_auto',
+              type: 'BOOLEAN',
               values: capabilities.focusMode.map((e) => ({ label: e, value: e })),
               value: settings.focusMode === 'continuous',
               canReset: true,
@@ -187,12 +236,12 @@ class Webcam {
       ...(capabilities.focusDistance
         ? [
             {
-              id: 'FOCUS_DISTANCE',
+              id: 'focus',
               type: 'RANGE',
               ...capabilities.focusDistance,
               value: settings.focusDistance,
               canReset: true,
-              isDisabled: settings.focusMode !== 'manual',
+              disabled: settings.focusMode !== 'manual',
             },
           ]
         : []),
@@ -200,7 +249,7 @@ class Webcam {
       ...(capabilities.brightness
         ? [
             {
-              id: 'BRIGHTNESS',
+              id: 'brightness',
               type: 'RANGE',
               ...capabilities.brightness,
               value: settings.brightness,
@@ -212,7 +261,7 @@ class Webcam {
       ...(capabilities.contrast
         ? [
             {
-              id: 'CONTRAST',
+              id: 'contrast',
               type: 'RANGE',
               ...capabilities.contrast,
               value: settings.contrast,
@@ -224,7 +273,7 @@ class Webcam {
       ...(capabilities.saturation
         ? [
             {
-              id: 'SATURATION',
+              id: 'saturation',
               type: 'RANGE',
               ...capabilities.saturation,
               value: settings.saturation,
@@ -236,7 +285,7 @@ class Webcam {
       ...(capabilities.sharpness
         ? [
             {
-              id: 'SHARPNESS',
+              id: 'sharpness',
               type: 'RANGE',
               ...capabilities.sharpness,
               value: settings.sharpness,
@@ -248,8 +297,8 @@ class Webcam {
       ...(capabilities.whiteBalanceMode
         ? [
             {
-              id: 'WHITE_BALANCE_MODE',
-              type: 'SWITCH',
+              id: 'white_balance_auto',
+              type: 'BOOLEAN',
               value: settings.whiteBalanceMode === 'continuous',
               canReset: true,
             },
@@ -259,12 +308,12 @@ class Webcam {
       ...(capabilities.colorTemperature
         ? [
             {
-              id: 'COLOR_TEMPERATURE',
+              id: 'white_balance',
               type: 'RANGE',
               ...capabilities.colorTemperature,
               value: settings.colorTemperature,
               canReset: true,
-              isDisabled: settings.whiteBalanceMode !== 'manual',
+              disabled: settings.whiteBalanceMode !== 'manual',
             },
           ]
         : []),
@@ -272,8 +321,8 @@ class Webcam {
       ...(capabilities.exposureMode
         ? [
             {
-              id: 'EXPOSURE_MODE',
-              type: 'SWITCH',
+              id: 'exposure_auto',
+              type: 'BOOLEAN',
               value: settings.exposureMode === 'continuous',
               canReset: true,
             },
@@ -283,12 +332,12 @@ class Webcam {
       ...(capabilities.exposureCompensation
         ? [
             {
-              id: 'EXPOSURE_COMPENSATION',
+              id: 'gain',
               type: 'RANGE',
               ...capabilities.exposureCompensation,
               value: settings.exposureCompensation,
               canReset: true,
-              isDisabled: settings.exposureMode !== 'manual',
+              disabled: settings.exposureMode !== 'manual',
             },
           ]
         : []),
@@ -296,12 +345,12 @@ class Webcam {
       ...(capabilities.iso
         ? [
             {
-              id: 'ISO',
+              id: 'iso',
               type: 'RANGE',
               ...capabilities.iso,
               value: settings.iso,
               canReset: true,
-              isDisabled: settings.exposureMode !== 'manual',
+              disabled: settings.exposureMode !== 'manual',
             },
           ]
         : []),
@@ -309,12 +358,12 @@ class Webcam {
       ...(capabilities.exposureTime
         ? [
             {
-              id: 'EXPOSURE_TIME',
+              id: 'exposure',
               type: 'RANGE',
               ...capabilities.exposureTime,
               value: settings.exposureTime,
               canReset: true,
-              isDisabled: settings.exposureMode !== 'manual',
+              disabled: settings.exposureMode !== 'manual',
             },
           ]
         : []),
@@ -322,7 +371,7 @@ class Webcam {
       ...(capabilities.zoom
         ? [
             {
-              id: 'ZOOM',
+              id: 'zoom',
               type: 'RANGE',
               ...capabilities.zoom,
               value: settings.zoom,
@@ -334,12 +383,12 @@ class Webcam {
       ...(capabilities.zoom && capabilities.tilt
         ? [
             {
-              id: 'ZOOM_POSITION_Y',
+              id: 'tilt',
               type: 'RANGE',
               ...capabilities.tilt,
               value: settings.tilt,
               canReset: true,
-              isDisabled: settings.zoom === capabilities?.zoom?.min,
+              disabled: settings.zoom === capabilities?.zoom?.min,
             },
           ]
         : []),
@@ -347,12 +396,12 @@ class Webcam {
       ...(capabilities.zoom && capabilities.pan
         ? [
             {
-              id: 'ZOOM_POSITION_X',
+              id: 'pan',
               type: 'RANGE',
               ...capabilities.pan,
               value: settings.pan,
               canReset: true,
-              isDisabled: settings.zoom === capabilities?.zoom?.min,
+              disabled: settings.zoom === capabilities?.zoom?.min,
             },
           ]
         : []),
@@ -361,22 +410,11 @@ class Webcam {
     return allowedCapabilities;
   }
 
-  async connect({ videoDOM, imageDOM } = { videoDOM: false, imageDOM: false }, settings = {}, onBinded = () => {}) {
+  async connect({ videoDOM, imageDOM } = { videoDOM: false, imageDOM: false }, settings = {}) {
     this.video = videoDOM;
     this.settings = settings;
 
-    // Reset preview canvas size for preview
-    imageDOM.width = 0;
-    imageDOM.height = 0;
-
-    await this.initPreview();
-
-    imageDOM.width = 0;
-    imageDOM.height = 0;
-
-    if (typeof onBinded === 'function') {
-      onBinded();
-    }
+    await this.initStream();
 
     return true;
   }
@@ -420,7 +458,7 @@ class Webcam {
 
   async disconnect() {
     if (this.video) {
-      this.video.src = null;
+      this.video.src = '';
       this.video.srcObject = null;
       if (typeof this.video?.stop === 'function') {
         this.video.stop();
@@ -431,6 +469,7 @@ class Webcam {
         track.stop();
         track.enabled = false;
       });
+      this.stream = null;
     }
   }
 }
