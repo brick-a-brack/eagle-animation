@@ -42,9 +42,9 @@ const groupDevices = (devices, t) => {
   const output = [];
 
   const categories = {
+    'WEB-TOUCAN-CAMERA-SERVER': t('Toucan Camera Server') + ' ' +t('(Experimental)'),
     'WEB-WEBCAM': t('Webcams'),
     'WEB-GPHOTO2': t('WebUSB'),
-    'WEB-TOUCAN-CAMERA-SERVER': t('Toucan Camera Server'),
   };
 
   // Categories
