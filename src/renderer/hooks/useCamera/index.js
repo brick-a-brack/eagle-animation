@@ -5,7 +5,6 @@ import { getCamera, getCameras, takePicture } from './modules';
 const applyCameraLabel = (e, i) => ({ ...e, label: `[${i + 1}] ${e.label || ''}` });
 
 function useCamera(options = {}) {
-  const capabilitiesIntervals = useRef({});
   const [devices, setDevices] = useState(null);
   const [currentCameraId, setCurrentCameraId] = useState(null);
   const [currentCamera, setCurrentCamera] = useState(undefined);
@@ -118,33 +117,23 @@ function useCamera(options = {}) {
     eventsRefs.current = eventsRefs.current.filter((e) => e[0] !== name || e[1] !== callback);
   }, []);
 
-  // Update camera capabilities
-  useEffect(() => {
-    const interval = setInterval(async () => {
-      if (currentCamera) {
-        let updated = false;
-        for (const id of Object.keys(capabilitiesIntervals.current || {})) {
-          if (capabilitiesIntervals.current[id] === null) {
-            continue;
-          }
-          await currentCamera.applyCapability(id, capabilitiesIntervals.current[id]);
-          capabilitiesIntervals.current[id] = null;
-          updated = true;
-        }
-        if (updated || Object.keys(capabilitiesIntervals.current || {}).reduce((acc, e) => acc || capabilitiesIntervals.current[e] !== null, false)) {
-          const newState = await currentCamera.getCapabilities();
-          setCameraCapabilities((oldState) => newState.map((e) => ({ ...e, value: oldState.find((f) => f.id === e.id)?.value })));
-        }
-      }
-    }, 100);
-    return () => clearInterval(interval);
+  // Action set capability
+  const actionSetCapability = useCallback(async (id, value) => {
+    if (currentCamera) {
+      await currentCamera?.applyCapability(id, value);
+      const newState = await currentCamera?.getCapabilities();
+      setCameraCapabilities(newState);
+    }
   }, [currentCamera]);
 
-  // Action set capability
-  const actionSetCapability = useCallback((id, value) => {
-    capabilitiesIntervals.current[id] = value;
-    setCameraCapabilities((oldState) => oldState.map((e) => (e.id === id ? { ...e, value } : e)));
-  }, []);
+  useEffect(() => {
+    return () => {
+      if (currentCamera) {
+        currentCamera?.disconnect();
+        triggerEvent('disconnect');
+      }
+    };
+  }, [currentCamera, triggerEvent]);
 
   return {
     isCameraReady: isReady,

@@ -1,9 +1,9 @@
 import { Camera as CameraAPI } from 'web-gphoto2';
 
-const CameraInstance = new CameraAPI();
-
 class WebGPhoto2 {
   constructor() {
+    this.CameraInstance = new CameraAPI();
+
     this.getSupportedOps = {
       captureAudio: false,
       captureImage: false,
@@ -13,78 +13,62 @@ class WebGPhoto2 {
       triggerCapture: false,
     };
 
+    this.lastPreviewUrl = null;
+
     this.config = null;
 
     this.imageDOM = null;
-    this.previewInterval = null;
+    this.previewTimeout = null;
   }
 
   get id() {
     return null;
   }
 
-  // TODO: Ko car plus un canvas, à revoir
-  _drawLivePreview(dom, src) {
-    return new Promise((resolve) => {
-      if (!dom || !src) {
-        return resolve(false);
-      }
-
-      const ctx = dom.getContext('2d');
-      const img = new Image();
-      const parent = this;
-      img.addEventListener('error', () => {
-        ctx.clearRect(0, 0, dom.width, dom.height);
-        resolve(true);
-      });
-      img.addEventListener(
-        'load',
-        function () {
-          if (!parent.isActive) {
-            return;
-          }
-          if (dom.width !== this.naturalWidth) {
-            dom.width = this.naturalWidth;
-          }
-          if (dom.height !== this.naturalHeight) {
-            dom.height = this.naturalHeight;
-          }
-          ctx.drawImage(img, 0, 0, img.naturalWidth, img.naturalHeight, 0, 0, img.naturalWidth, img.naturalHeight);
-          resolve(true);
-        },
-        false
-      );
-      img.src = src;
-    });
-  }
-
   initPreview() {
-    return new Promise((resolve) => {
-      this.isActive = true;
-      clearInterval(this.previewInterval);
-      this.previewInterval = setInterval(async () => {
-        const blob = await CameraInstance.capturePreviewAsBlob();
-        this._drawLivePreview(this.imageDOM, URL.createObjectURL(blob)).then(resolve);
-      }, 50);
-    });
+    this.isActive = true;
+    clearTimeout(this.previewTimeout);
+
+    const refreshFrame = async () => {
+      const blob = await this.CameraInstance.capturePreviewAsBlob();
+      const newUrl = URL.createObjectURL(blob);
+      this.imageDOM.src = newUrl;
+
+      if (this.lastPreviewUrl) {
+        URL.revokeObjectURL(this.lastPreviewUrl);
+      }
+      this.lastPreviewUrl = newUrl;
+      this.previewTimeout = setTimeout(refreshFrame, 30);
+    };
+
+    refreshFrame();
   }
 
   async applyCapability(key, value) {
-    if (key === 'APERTURE') {
-      await CameraInstance.setConfigValue('aperture', value);
+    if (key === 'aperture') {
+      await this.CameraInstance.setConfigValue('aperture', value);
     }
 
-    if (key === 'WHITE_BALANCE') {
-      await CameraInstance.setConfigValue('whitebalance', value);
+    if (key === 'white_balance') {
+      await this.CameraInstance.setConfigValue('whitebalance', value);
     }
 
-    if (key === 'SHUTTER_SPEED') {
-      await CameraInstance.setConfigValue('shutterspeed', value);
+    if (key === 'shutter_speed') {
+      await this.CameraInstance.setConfigValue('shutterspeed', value);
     }
 
-    if (key === 'ISO') {
-      await CameraInstance.setConfigValue('iso', value);
+    if (key === 'iso') {
+      await this.CameraInstance.setConfigValue('iso', value);
     }
+
+    if (key === 'iso_auto') {
+      const iso = this?.config?.children?.imgsettings?.children?.iso || null;
+      const newValue = iso?.choices?.find((e) => !!(e?.toLowerCase() === 'auto') === !!value);
+      await this.CameraInstance.setConfigValue('iso', newValue);
+    }
+
+    // Refresh config
+    this.config = await this.CameraInstance.getConfig();
 
     return null;
   }
@@ -99,8 +83,8 @@ class WebGPhoto2 {
       ...(aperture && aperture?.choices?.length > 1
         ? [
             {
-              id: 'APERTURE',
-              type: 'SELECT_RANGE',
+              id: 'aperture',
+              type: 'RANGE_SELECT',
               values: (aperture?.choices || []).map((e) => ({
                 label: e,
                 value: e,
@@ -114,7 +98,7 @@ class WebGPhoto2 {
       ...(whitebalance && whitebalance?.choices?.length > 1
         ? [
             {
-              id: 'WHITE_BALANCE',
+              id: 'white_balance',
               type: 'SELECT',
               values: (whitebalance?.choices || []).map((e) => ({
                 label: e,
@@ -129,8 +113,8 @@ class WebGPhoto2 {
       ...(shutterspeed && shutterspeed?.choices?.length > 1
         ? [
             {
-              id: 'SHUTTER_SPEED',
-              type: 'SELECT_RANGE',
+              id: 'shutter_speed',
+              type: 'RANGE_SELECT',
               values: (shutterspeed?.choices || [])
                 .reverse()
                 .filter((e) => e !== 'bulb')
@@ -144,11 +128,22 @@ class WebGPhoto2 {
           ]
         : []),
 
+      ...(iso && iso?.choices?.some((e) => e?.toLowerCase() === 'auto')
+        ? [
+            {
+              id: 'iso_auto',
+              type: 'BOOLEAN',
+              value: iso?.value?.toLowerCase() === 'auto',
+              canReset: false,
+            },
+          ]
+        : []),
+
       ...(iso && iso?.choices?.length > 1
         ? [
             {
-              id: 'ISO',
-              type: 'SELECT_RANGE',
+              id: 'iso',
+              type: 'RANGE_SELECT',
               values: (iso?.choices || [])
                 .filter((e) => e?.toLowerCase() !== 'auto')
                 .map((e) => ({
@@ -157,6 +152,7 @@ class WebGPhoto2 {
                 })),
               value: iso?.value || null,
               canReset: false,
+              disabled: iso?.value?.toLowerCase() === 'auto',
             },
           ]
         : []),
@@ -169,18 +165,18 @@ class WebGPhoto2 {
     this.imageDOM = imageDOM;
     this.settings = settings;
 
-    videoDOM.pause();
-    videoDOM.srcObject = null;
+    // Disable video stream
     videoDOM.src = '';
+    imageDOM.src = '';
 
     await CameraAPI.showPicker();
-    await CameraInstance.connect();
+    await this.CameraInstance.connect();
 
-    this.getSupportedOps = await CameraInstance.getSupportedOps();
-    this.config = await CameraInstance.getConfig();
+    this.getSupportedOps = await this.CameraInstance.getSupportedOps();
+    this.config = await this.CameraInstance.getConfig();
 
-    //console.log('Operations supported by the camera:', await CameraInstance.getSupportedOps());
-    //console.log('Current configuration tree:', await CameraInstance.getConfig());
+    // console.log('Operations supported by the camera:', await this.CameraInstance.getSupportedOps());
+    // console.log('Current configuration tree:', await this.CameraInstance.getConfig());
 
     await this.initPreview();
 
@@ -192,16 +188,24 @@ class WebGPhoto2 {
       throw new Error('Capture image is not supported by this camera');
     }
 
-    const file = await CameraInstance.captureImageAsFile();
+    const file = await this.CameraInstance.captureImageAsFile();
     return { type: file.type, buffer: Buffer.from(await file.arrayBuffer()) };
   }
 
   async disconnect() {
-    clearInterval(this.previewInterval);
-    this.imageDOM.src = '';
-    this.videoDOM.srcObject = null;
-    this.videoDOM.src = '';
+    clearTimeout(this.previewTimeout);
+    if (this.imageDOM) {
+      this.imageDOM.src = '';
+    }
+    if (this.videoDOM) {
+      this.videoDOM.srcObject = null;
+      this.videoDOM.src = '';
+    }
     this.isActive = false;
+
+    // Disconnect don't seem to work properly if we want to reconnect, can crash the browser
+    // await this.CameraInstance.disconnect();
+    // this.CameraInstance = new CameraAPI();
   }
 }
 
@@ -210,7 +214,6 @@ class WebGPhoto2Browser {
     return [
       {
         deviceId: 'GPHOTO',
-        type: 'WEB',
         module: 'GPHOTO2',
         label: 'Connect an external USB camera',
       },

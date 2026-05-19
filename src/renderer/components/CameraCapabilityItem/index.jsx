@@ -4,7 +4,7 @@ import FormGroup from '@components/FormGroup';
 import RulerPicker from '@components/RulerPicker';
 import Select from '@components/Select';
 import Switch from '@components/Switch';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import { withTranslation } from 'react-i18next';
 
 const getCapabilitySelectLabel = (label, t) => {
@@ -212,22 +212,38 @@ const CameraCapabilitySwitchItem = ({ id, disabled = false, value, onCapabilityC
   );
 };
 
-const CameraCapabilityDirectionalPad = () => {
+export const CameraCapabilityItem = withTranslation()(({ type, t, value, onCapabilityChange, ...props }) => {
+  const [stateValue, setStateValue] = useState(value);
+  const ref = useRef({ timeout: null, value: null });
 
-}
+  const handleChange = useCallback((id, value) => {
+    ref.current.value = value;
+    setStateValue(value);
 
-export const CameraCapabilityItem = withTranslation()(({ type, t, ...props }) => {
+    if (!ref.current.timeout) {
+      ref.current.timeout = setTimeout(() => {
+        ref.current.timeout = null;
+        onCapabilityChange(id, ref?.current?.value);
+      }, 100);
+    };
+
+  }, [value, onCapabilityChange]);
+
   if (type === 'RANGE') {
-    return <CameraCapabilityRangeItem {...props} t={t} />;
+    //return <CameraCapabilityRulerItem {...props} onCapabilityChange={handleChange} value={stateValue} t={t} />;
+    return <CameraCapabilityRangeItem {...props} onCapabilityChange={handleChange} value={stateValue} t={t} />;
   }
   if (type === 'BOOLEAN') {
-    return <CameraCapabilitySwitchItem {...props} t={t} />;
+    return <CameraCapabilitySwitchItem {...props} onCapabilityChange={handleChange} value={stateValue} t={t} />;
   }
   if (type === 'SELECT') {
-    return <CameraCapabilitySelectItem {...props} t={t} />;
+    return <CameraCapabilitySelectItem {...props} onCapabilityChange={handleChange} value={stateValue} t={t} />;
   }
   if (type === 'RANGE_SELECT') {
-    return <CameraCapabilitySelectRangeItem {...props} t={t} />;
+    return <CameraCapabilitySelectRangeItem {...props} onCapabilityChange={handleChange} value={stateValue} t={t} />;
   }
+
+  console.warn('🐛 A capability type is not supported', type);
+
   return null;
 });

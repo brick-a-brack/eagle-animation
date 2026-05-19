@@ -25,7 +25,7 @@ export const getCameras = async () => {
     for (const camera of cameras) {
       availableCameras.push({
         ...camera,
-        id: `${camera.type}-${camera.module}-${camera.deviceId}`,
+        id: `${camera.module}-${camera.deviceId}`,
         entityClass: camType?.item || null,
       });
     }

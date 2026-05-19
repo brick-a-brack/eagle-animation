@@ -199,7 +199,6 @@ export default function RulerPicker({ value, onChange, stops = [], labelCount = 
     const id = setInterval(() => {
       const s = stateRef.current;
       if (s.pendingValue !== null) {
-        console.log('PUSH', s.pendingValue);
         onChangeRef.current?.(s.pendingValue);
         s.pendingValue = null;
       }

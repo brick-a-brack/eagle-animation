@@ -154,7 +154,7 @@ class Webcam {
 
     const toApply = [
       {
-        ...(key === 'RESOLUTION'
+        ...(key === 'video_stream_format'
           ? {
               width: parseInt(value.split('×')[0], 10),
               height: parseInt(value.split('×')[1], 10),
@@ -482,7 +482,6 @@ class WebcamBrowser {
         .filter((stream) => stream.kind === 'videoinput')
         .map((stream) => ({
           deviceId: stream.deviceId,
-          type: 'WEB',
           module: 'WEBCAM',
           label: stream.label || 'Untitled',
         }));

@@ -42,9 +42,9 @@ const groupDevices = (devices, t) => {
   const output = [];
 
   const categories = {
-    'WEB-TOUCAN-CAMERA-SERVER': t('Toucan Camera Server') + ' ' +t('(Experimental)'),
-    'WEB-WEBCAM': t('Webcams'),
-    'WEB-GPHOTO2': t('WebUSB'),
+    'TOUCAN-CAMERA-SERVER': t('Toucan Camera Server') + ' ' +t('(Experimental)'),
+    'WEBCAM': t('Webcams'),
+    'GPHOTO2': t('WebUSB'),
   };
 
   // Categories
@@ -174,11 +174,7 @@ const CameraSettingsWindow = ({ t, cameraCapabilities, onCapabilityChange, onDev
     selected: `${c.id || i}` === selectedTab,
   }));
 
-  console.log('categories', categories, selectedTab)
-
   const selectedCategory = categories.find((e) => Boolean(e.selected)) || categories[0] || null;
-
-  console.log('selectedCategory', selectedCategory)
 
   return (
     <>

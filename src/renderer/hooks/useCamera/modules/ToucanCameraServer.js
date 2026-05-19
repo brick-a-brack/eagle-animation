@@ -75,9 +75,6 @@ class ToucanCameraServer {
     }).then((res) => res.json());
 
     return capabilities.map((capability) => {
-  
-      console.log('Capability', capability);
-
       const id = capability?.type || 'unknown';
       const kind = capability?.kind?.toUpperCase() || 'UNKNOWN';
       const currentValue = capability?.current || null;
@@ -164,7 +161,6 @@ class ToucanCameraServerBrowser {
       return devices.map((device) => ({
         deviceId: device.id,
         label: device.name,
-        type: 'WEB',
         module: 'TOUCAN-CAMERA-SERVER',
       }));
     } catch (err) {
