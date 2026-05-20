@@ -96,7 +96,7 @@ const ControlBar = ({
         />
         <Button title={gridStatus ? t('Disable grid') : t('Enable grid')} selected={gridStatus} onClick={handleAction('GRID')} icon={faFrame} disabled={framePosition !== false} />
 
-        <div className={`${style.slider} ${differenceStatus || framePosition !== false ? style.sliderDisabled : ''}`} id="onion" data-tooltip-content={t('Onion blending')}>
+        <div className={`${style.slider} ${differenceStatus || framePosition !== false ? style.sliderDisabled : ''}`} id="onion" data-tooltip-id="onion">
           <CustomSlider step={0.01} min={0} max={1} value={onionValue} onChange={differenceStatus || framePosition !== false ? () => {} : (value) => handleAction('ONION_CHANGE', value)()} />
         </div>
         <Button
@@ -124,8 +124,7 @@ const ControlBar = ({
           tag={t('FPS')}
           register={register('fps')}
         />
-        <Tooltip anchorId="onion" />
-        <Tooltip anchorId={`preview-indicator`} />
+        <Tooltip id="onion" content={t('Onion blending')}/>
       </div>
     </div>
   );

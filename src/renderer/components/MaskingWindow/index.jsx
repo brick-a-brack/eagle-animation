@@ -67,21 +67,21 @@ const MaskingWindow = forwardRef(function MaskingWindow({ backgroundLayer = null
         </div>
 
         <div className={style.navbarItemLeft}>
-          <div className={style.navbarItemRange} id="size" data-tooltip-content={t('Brush size')}>
+          <div className={style.navbarItemRange} data-tooltip-id="size">
             <div className={style.roundSize1} />
             <CustomSlider step={1} min={1} max={100} value={brushSize} onChange={setBrushSize} maxWidth="150px" />
             <div className={style.roundSize2} />
           </div>
-          <Tooltip anchorId="size" />
+          <Tooltip id="size" content={t('Brush size')} />
         </div>
 
         <div className={style.navbarItemRight}>
-          <div className={style.navbarItemRange} id="blur" data-tooltip-content={t('Blur size')}>
+          <div className={style.navbarItemRange} data-tooltip-id="blur">
             <div className={style.roundBlur1} />
             <CustomSlider step={1} min={1} max={100} value={brushBlurSize} onChange={setBrushBlurSize} maxWidth="150px" />
             <div className={style.roundBlur2} />
           </div>
-          <Tooltip anchorId="blur" />
+          <Tooltip id="blur" content={t('Blur size')} />
         </div>
 
         <div className={`${style.navbarItemRight} ${style.navbarItemSmall}`}>
