@@ -410,7 +410,7 @@ class Webcam {
     return allowedCapabilities;
   }
 
-  async connect({ videoDOM, imageDOM } = { videoDOM: false, imageDOM: false }, settings = {}) {
+  async connect({ videoDOM /*, imageDOM */ } = { videoDOM: false, imageDOM: false }, settings = {}) {
     this.video = videoDOM;
     this.settings = settings;
 

@@ -1,4 +1,5 @@
 import { useCallback, useRef, useState } from 'react';
+
 import styles from './style.module.css';
 
 const REPEAT_MS = 120;
@@ -115,13 +116,7 @@ const DirectionalPad = ({ pan, tilt, roll, onCapabilityChange, onCenter }) => {
       <PadBtn dir="up" />
       <PadBtn dir="roll-right" />
       <PadBtn dir="left" />
-      <button
-        type="button"
-        className={`${styles.dbtn} ${styles.center}`}
-        onClick={() => onCenter?.()}
-        aria-label="Center"
-        title="Center"
-      >
+      <button type="button" className={`${styles.dbtn} ${styles.center}`} onClick={() => onCenter?.()} aria-label="Center" title="Center">
         <CenterIcon />
       </button>
       <PadBtn dir="right" />

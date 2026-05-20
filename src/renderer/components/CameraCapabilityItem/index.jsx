@@ -34,9 +34,9 @@ const getCapabilitySelectLabel = (label, t) => {
     'tiny jpeg': t('Tiny JPEG'),
     'raw + large fine jpeg': t('RAW + Large Fine JPEG'),
     raw: t('RAW'),
-  }
+  };
   return map?.[properId] || label || t('Unknown');
-}
+};
 
 const getCapabilityLabel = (id, t) => {
   const properId = id?.toLowerCase().replace(/ /g, '_').trim();
@@ -84,7 +84,7 @@ const getCapabilityLabel = (id, t) => {
     aperture: t('Aperture'),
   };
   return map?.[properId] || id || t('Unknown');
-}
+};
 
 const CameraCapabilitySelectItem = ({ id, disabled = false, values = [], value = undefined, onCapabilityChange, t }) => {
   return (
@@ -133,15 +133,23 @@ const CameraCapabilityRangeItem = ({ id, disabled = false, min = undefined, max 
 };
 
 const CameraCapabilityRulerItem = ({ id, disabled = false, min = undefined, max = undefined, value = undefined, step = 1, onCapabilityChange, t }) => {
+  const handleChange = useCallback(
+    (value) => {
+      if (disabled) {
+        return;
+      }
+      onCapabilityChange(id, value);
+    },
+    [disabled, onCapabilityChange, id]
+  );
 
-  const handleChange = useCallback((value) => {
-    if (disabled) {
-      return;
-    }
-    onCapabilityChange(id, value);
-  }, [disabled, onCapabilityChange, id]);
-
-  const stops = useMemo(() => Array((max - min + 1) / step).fill(0).map((_, i) => min + i * step), [min, max, step]);
+  const stops = useMemo(
+    () =>
+      Array((max - min + 1) / step)
+        .fill(0)
+        .map((_, i) => min + i * step),
+    [min, max, step]
+  );
 
   return (
     <FormGroup
@@ -206,22 +214,26 @@ export const CameraCapabilityItem = withTranslation()(({ type, t, value, onCapab
   const [stateValue, setStateValue] = useState(value);
   const ref = useRef({ timeout: null, value: null });
 
-  const handleChange = useCallback((id, value) => {
-    ref.current.value = value;
-    setStateValue(value);
+  const handleChange = useCallback(
+    (id, value) => {
+      ref.current.value = value;
+      setStateValue(value);
 
-    if (!ref.current.timeout) {
-      ref.current.timeout = setTimeout(() => {
-        ref.current.timeout = null;
-        onCapabilityChange(id, ref?.current?.value);
-      }, 100);
-    };
-
-  }, [value, onCapabilityChange]);
+      if (!ref.current.timeout) {
+        ref.current.timeout = setTimeout(() => {
+          ref.current.timeout = null;
+          onCapabilityChange(id, ref?.current?.value);
+        }, 100);
+      }
+    },
+    [value, onCapabilityChange]
+  );
 
   if (type === 'RANGE') {
-    //return <CameraCapabilityRulerItem {...props} onCapabilityChange={handleChange} value={stateValue} t={t} />;
     return <CameraCapabilityRangeItem {...props} onCapabilityChange={handleChange} value={stateValue} t={t} />;
+  }
+  if (type === 'RULER') {
+    return <CameraCapabilityRulerItem {...props} onCapabilityChange={handleChange} value={stateValue} t={t} />;
   }
   if (type === 'BOOLEAN') {
     return <CameraCapabilitySwitchItem {...props} onCapabilityChange={handleChange} value={stateValue} t={t} />;

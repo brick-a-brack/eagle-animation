@@ -1,10 +1,11 @@
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-import styles from "./style.module.css";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+
+import styles from './style.module.css';
 
 const PX_PER_STOP = 10;
 
 function formatValue(v) {
-  if (v >= 10000) return v.toLocaleString("fr-FR").replace(/ /g, " ");
+  if (v >= 10000) return v.toLocaleString('fr-FR').replace(/ /g, ' '); // eslint-disable-line no-irregular-whitespace
   return String(v);
 }
 
@@ -19,7 +20,10 @@ function findIndex(v, stops) {
   let bestDiff = Infinity;
   for (let i = 0; i < stops.length; i++) {
     const d = Math.abs(stops[i] - v);
-    if (d < bestDiff) { bestDiff = d; best = i; }
+    if (d < bestDiff) {
+      bestDiff = d;
+      best = i;
+    }
   }
   return best;
 }
@@ -28,7 +32,7 @@ function evenLabelIndices(count, labelCount) {
   if (count === 0) return [];
   if (labelCount <= 1) return [0];
   const n = Math.min(labelCount, count);
-  return Array.from({ length: n }, (_, i) => Math.round(i * (count - 1) / (n - 1)));
+  return Array.from({ length: n }, (_, i) => Math.round((i * (count - 1)) / (n - 1)));
 }
 
 export default function RulerPicker({ value, onChange, stops = [], labelCount = Math.round(stops.length / 5), className }) {
@@ -65,25 +69,18 @@ export default function RulerPicker({ value, onChange, stops = [], labelCount = 
   const [, force] = useState(0);
   const rerender = () => force((n) => n + 1);
 
-  const labelIndices = useMemo(
-    () => new Set(evenLabelIndices(majorStops.length, labelCount)),
-    [majorStops.length, labelCount]
-  );
+  const labelIndices = useMemo(() => new Set(evenLabelIndices(majorStops.length, labelCount)), [majorStops.length, labelCount]);
 
   const ticks = useMemo(
-    () => majorStops.map((_, i) => ({
-      x: i * PX_PER_STOP,
-      cls: labelIndices.has(i) ? styles.major : styles.medium,
-    })),
+    () =>
+      majorStops.map((_, i) => ({
+        x: i * PX_PER_STOP,
+        cls: labelIndices.has(i) ? styles.major : styles.medium,
+      })),
     [majorStops, labelIndices]
   );
 
-  const labels = useMemo(
-    () => majorStops
-      .filter((_, i) => labelIndices.has(i))
-      .map((v, j) => ({ v, x: [...labelIndices][j] * PX_PER_STOP })),
-    [majorStops, labelIndices]
-  );
+  const labels = useMemo(() => majorStops.filter((_, i) => labelIndices.has(i)).map((v, j) => ({ v, x: [...labelIndices][j] * PX_PER_STOP })), [majorStops, labelIndices]);
 
   const indexToOffset = (idx, center) => center - idx * PX_PER_STOP;
   const offsetToIndex = (o, center) => {
@@ -112,12 +109,18 @@ export default function RulerPicker({ value, onChange, stops = [], labelCount = 
 
   const cancelMomentum = () => {
     const s = stateRef.current;
-    if (s.rafId) { cancelAnimationFrame(s.rafId); s.rafId = null; }
+    if (s.rafId) {
+      cancelAnimationFrame(s.rafId);
+      s.rafId = null;
+    }
   };
 
   const cancelSnap = () => {
     const s = stateRef.current;
-    if (s.snapId) { cancelAnimationFrame(s.snapId); s.snapId = null; }
+    if (s.snapId) {
+      cancelAnimationFrame(s.snapId);
+      s.snapId = null;
+    }
   };
 
   const animateOffset = (from, to, duration = 200) => {
@@ -179,9 +182,8 @@ export default function RulerPicker({ value, onChange, stops = [], labelCount = 
       applyTransform();
     };
     recompute();
-    window.addEventListener("resize", recompute);
-    return () => window.removeEventListener("resize", recompute);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    window.addEventListener('resize', recompute);
+    return () => window.removeEventListener('resize', recompute);
   }, [totalWidth]);
 
   useEffect(() => {
@@ -190,7 +192,6 @@ export default function RulerPicker({ value, onChange, stops = [], labelCount = 
     s.currentIndex = currentIndex;
     cancelMomentum();
     animateOffset(s.offset, indexToOffset(currentIndex, s.viewportCenter));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentIndex]);
 
   // Commit la valeur en attente à intervalle fixe — évite de déclencher onChange
@@ -235,7 +236,9 @@ export default function RulerPicker({ value, onChange, stops = [], labelCount = 
     const s = stateRef.current;
     if (!s.dragging) return;
     s.dragging = false;
-    try { sliderRef.current?.releasePointerCapture(e.pointerId); } catch (_) {}
+    try {
+      sliderRef.current?.releasePointerCapture(e.pointerId);
+    } catch (_) {} // eslint-disable-line no-empty
     if (performance.now() - s.lastT > 80) s.velocity = 0;
     if (Math.abs(s.velocity) < 0.05) snapToNearest();
     else runMomentum();
@@ -256,8 +259,8 @@ export default function RulerPicker({ value, onChange, stops = [], labelCount = 
     const el = sliderRef.current;
     if (!el) return;
     const handler = (e) => onWheelRef.current(e);
-    el.addEventListener("wheel", handler, { passive: false });
-    return () => el.removeEventListener("wheel", handler);
+    el.addEventListener('wheel', handler, { passive: false });
+    return () => el.removeEventListener('wheel', handler);
   }, []);
 
   const dragging = stateRef.current.dragging;
@@ -265,7 +268,7 @@ export default function RulerPicker({ value, onChange, stops = [], labelCount = 
   return (
     <div
       ref={sliderRef}
-      className={[styles.slider, dragging ? styles.dragging : "", className || ""].join(" ").trim()}
+      className={[styles.slider, dragging ? styles.dragging : '', className || ''].join(' ').trim()}
       onPointerDown={onPointerDown}
       onPointerMove={onPointerMove}
       onPointerUp={onPointerUp}

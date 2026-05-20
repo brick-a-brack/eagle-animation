@@ -118,13 +118,16 @@ function useCamera(options = {}) {
   }, []);
 
   // Action set capability
-  const actionSetCapability = useCallback(async (id, value) => {
-    if (currentCamera) {
-      await currentCamera?.applyCapability(id, value);
-      const newState = await currentCamera?.getCapabilities();
-      setCameraCapabilities(newState);
-    }
-  }, [currentCamera]);
+  const actionSetCapability = useCallback(
+    async (id, value) => {
+      if (currentCamera) {
+        await currentCamera?.applyCapability(id, value);
+        const newState = await currentCamera?.getCapabilities();
+        setCameraCapabilities(newState);
+      }
+    },
+    [currentCamera]
+  );
 
   useEffect(() => {
     return () => {

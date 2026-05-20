@@ -53,7 +53,7 @@ class ToucanCameraServer {
 
   async applyCapability(key, value) {
     console.log(`📷 Set ${key}=${value}`);
-  
+
     await fetch(`${getApiUrl()}cameras/${this.deviceId}/parameters`, {
       method: 'PUT',
       headers: {
@@ -104,7 +104,7 @@ class ToucanCameraServer {
     });
   }
 
-  async connect({ videoDOM, imageDOM } = { videoDOM: false, imageDOM: false }, settings = {}) {
+  async connect({ videoDOM, imageDOM } = { videoDOM: false, imageDOM: false } /*, settings = {} */) {
     this.imageDOM = imageDOM;
     this.videoDOM = videoDOM;
 
