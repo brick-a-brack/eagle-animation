@@ -137,54 +137,21 @@ const mergePictures = async (pictures = []) => {
 };
 
 const reversePicture = async (picture, reverseX = false, reverseY = false) => {
-  // Convert to canvas
-  let canvas = picture;
-  if (!(canvas instanceof HTMLCanvasElement)) {
-    canvas = await convertBufferToCanvas(canvas);
+  let source = picture;
+  if (!(source instanceof HTMLCanvasElement)) {
+    source = await convertBufferToCanvas(source);
   }
-
-  const imageData = {
-    width: canvas.width,
-    height: canvas.height,
-    data: canvas.getContext('2d', { alpha: false }).getImageData(0, 0, canvas.width, canvas.height).data,
-  };
-
-  // Define final width and height
-  const width = imageData.width;
-  const height = imageData.height;
-  const dataArray = new Uint8ClampedArray(width * height * 4);
-
-  for (let x = 0; x < width; x++) {
-    for (let y = 0; y < height; y++) {
-      // Source pixels indexes
-      const sourceRedIdx = y * (width * 4) + x * 4;
-      const sourceGreenIdx = y * (width * 4) + x * 4 + 1;
-      const sourceBlueIdx = y * (width * 4) + x * 4 + 2;
-      const sourceAlphaIdx = y * (width * 4) + x * 4 + 3;
-
-      // Destination pixels indexes
-      const outX = reverseX ? width - x : x;
-      const outY = reverseY ? height - y : y;
-      const destRedIdx = outY * (width * 4) + outX * 4;
-      const destGreenIdx = outY * (width * 4) + outX * 4 + 1;
-      const destBlueIdx = outY * (width * 4) + outX * 4 + 2;
-      const destAlphaIdx = outY * (width * 4) + outX * 4 + 3;
-
-      // Transfer data
-      dataArray[destRedIdx] = imageData.data[sourceRedIdx];
-      dataArray[destGreenIdx] = imageData.data[sourceGreenIdx];
-      dataArray[destBlueIdx] = imageData.data[sourceBlueIdx];
-      dataArray[destAlphaIdx] = imageData.data[sourceAlphaIdx];
-    }
-  }
-
-  const imgValues = new ImageData(dataArray, width, height);
 
   const outputCanvas = document.createElement('canvas');
-  outputCanvas.width = width;
-  outputCanvas.height = height;
+  outputCanvas.width = source.width;
+  outputCanvas.height = source.height;
   const ctx = outputCanvas.getContext('2d', { alpha: false });
-  ctx.putImageData(imgValues, 0, 0, 0, 0, width, height);
+
+  ctx.save();
+  ctx.scale(reverseX ? -1 : 1, reverseY ? -1 : 1);
+  ctx.translate(reverseX ? -source.width : 0, reverseY ? -source.height : 0);
+  ctx.drawImage(source, 0, 0);
+  ctx.restore();
 
   return outputCanvas;
 };
