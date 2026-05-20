@@ -37,6 +37,9 @@ import faTemperatureHalf from '@icons/faTemperatureHalf';
 import faSignal from '@icons/faSignal';
 import faTriangle from '@icons/faTriangle';
 import faCirclesOverlap3 from '@icons/faCirclesOverlap3';
+import faIso from '@icons/faIso';
+import faExposure from '@icons/faExposure';
+import faShutterSpeed from '@icons/faShutterSpeed';
 
 const groupDevices = (devices, t) => {
   const output = [];
@@ -116,13 +119,21 @@ const getCapabilitiesTabs = (capabilities, t = v => v) => {
     properties: ['focus_auto', 'focus'],
     icon: faFaceViewfinder,
   }, {
+    title: t('Aperture'),
+    properties: ['aperture'],
+    icon: faAperture,
+  },  {
     title: t('Exposure'),
     properties: ['exposure_auto', 'backlight_compensation', 'exposure_compensation', 'exposure', 'gain_auto', 'gain'],
-    icon: faAperture,
+    icon: faExposure,
+  },  {
+    title: t('Shutter speed'),
+    properties: ['shutter_speed'],
+    icon: faShutterSpeed,
   }, {
     title: t('ISO'),
     properties: ['iso_auto', 'iso'],
-    icon: faSignal,
+    icon: faIso,
   }, {
     title: t('Camera controls'),
     properties: ['zoom_auto', 'zoom', 'tilt_auto', 'tilt', 'pan_auto', 'pan', 'roll_auto', 'roll'],

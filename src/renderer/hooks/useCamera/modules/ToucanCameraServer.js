@@ -52,8 +52,8 @@ class ToucanCameraServer {
   }
 
   async applyCapability(key, value) {
-    console.log('Apply capability', key, value);
-
+    console.log(`📷 Set ${key}=${value}`);
+  
     await fetch(`${getApiUrl()}cameras/${this.deviceId}/parameters`, {
       method: 'PUT',
       headers: {

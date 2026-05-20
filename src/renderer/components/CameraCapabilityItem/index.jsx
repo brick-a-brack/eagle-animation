@@ -24,6 +24,16 @@ const getCapabilitySelectLabel = (label, t) => {
     shade: t('Shade'),
     tungsten: t('Tungsten'),
     whitepaper: t('Manual'),
+    'large fine jpeg': t('Large Fine JPEG'),
+    'large normal jpeg': t('Large Normal JPEG'),
+    'medium fine jpeg': t('Medium Fine JPEG'),
+    'medium normal jpeg': t('Medium Normal JPEG'),
+    'small fine jpeg': t('Small Fine JPEG'),
+    'small normal jpeg': t('Small Normal JPEG'),
+    'smaller jpeg"': t('Smaller JPEG"'),
+    'tiny jpeg': t('Tiny JPEG'),
+    'raw + large fine jpeg': t('RAW + Large Fine JPEG'),
+    raw: t('RAW'),
   }
   return map?.[properId] || label || t('Unknown');
 }
@@ -70,31 +80,11 @@ const getCapabilityLabel = (id, t) => {
     live_view_roll: t('Live view roll'),
     iso_auto: t('Automatic ISO'),
     iso: t('ISO'),
+    shutter_speed: t('Shutter speed'),
+    aperture: t('Aperture'),
   };
   return map?.[properId] || id || t('Unknown');
 }
-
-/*
-export const CAPABILITIES_LABELS_TRANSLATIONS = {
-  BRIGHTNESS: (t) => t('Brightness'),
-  COLOR_TEMPERATURE: (t) => t('White balance'),
-  CONTRAST: (t) => t('Contrast'),
-  FOCUS_DISTANCE: (t) => t('Focus'),
-  FOCUS_MODE: (t) => t('Automatic focus'),
-  EXPOSURE_COMPENSATION: (t) => t('Exposure compensation'),
-  EXPOSURE_MODE: (t) => t('Automatic exposure'),
-  EXPOSURE_TIME: (t) => t('Exposure time'),
-  ZOOM_POSITION_X: (t) => t('Horizontal position'),
-  SATURATION: (t) => t('Saturation'),
-  SHARPNESS: (t) => t('Sharpness'),
-  ZOOM_POSITION_Y: (t) => t('Vertical position'),
-  WHITE_BALANCE_MODE: (t) => t('Automatic white balance'),
-  ZOOM: (t) => t('Zoom'),
-  APERTURE: (t) => t('Aperture'),
-  WHITE_BALANCE: (t) => t('White balance'),
-  SHUTTER_SPEED: (t) => t('Shutter speed'),
-  ISO: (t) => t('ISO'),
-};*/
 
 const CameraCapabilitySelectItem = ({ id, disabled = false, values = [], value = undefined, onCapabilityChange, t }) => {
   return (

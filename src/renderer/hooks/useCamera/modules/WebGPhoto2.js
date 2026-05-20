@@ -1,5 +1,21 @@
 import { Camera as CameraAPI } from 'web-gphoto2';
 
+const wait = (delay) => new Promise((resolve) => setTimeout(resolve, delay));
+
+const retry = async (func, { retries = 0, delay = 0 }) => {
+  for (let attempt = 0; attempt <= retries; attempt++) {
+    try {
+      const data = await func();
+      return data;
+    } catch (err) {
+      if (attempt === retries) {
+        throw err;
+      }
+    }
+    await wait(delay);
+  }
+};
+
 class WebGPhoto2 {
   constructor() {
     this.CameraInstance = new CameraAPI();
@@ -14,9 +30,7 @@ class WebGPhoto2 {
     };
 
     this.lastPreviewUrl = null;
-
     this.config = null;
-
     this.imageDOM = null;
     this.previewTimeout = null;
   }
@@ -45,26 +59,36 @@ class WebGPhoto2 {
   }
 
   async applyCapability(key, value) {
+    if (key === 'image_quality') {
+      console.log(`📷 Set imageformat=${value}`);
+      await retry(() => this.CameraInstance.setConfigValue('imageformat', value), { retries: 5, delay: 50 });
+    }
+
     if (key === 'aperture') {
-      await this.CameraInstance.setConfigValue('aperture', value);
+      console.log(`📷 Set aperture=${value}`);
+      await retry(() => this.CameraInstance.setConfigValue('aperture', value), { retries: 5, delay: 50 });
     }
 
     if (key === 'white_balance') {
-      await this.CameraInstance.setConfigValue('whitebalance', value);
+      console.log(`📷 Set whitebalance=${value}`);
+      await retry(() => this.CameraInstance.setConfigValue('whitebalance', value), { retries: 5, delay: 50 });
     }
 
     if (key === 'shutter_speed') {
-      await this.CameraInstance.setConfigValue('shutterspeed', value);
+      console.log(`📷 Set shutterspeed=${value}`);
+      await retry(() => this.CameraInstance.setConfigValue('shutterspeed', value), { retries: 5, delay: 50 });
     }
 
     if (key === 'iso') {
-      await this.CameraInstance.setConfigValue('iso', value);
+      console.log(`📷 Set iso=${value}`);
+      await retry(() => this.CameraInstance.setConfigValue('iso', value), { retries: 5, delay: 50 });
     }
 
     if (key === 'iso_auto') {
       const iso = this?.config?.children?.imgsettings?.children?.iso || null;
       const newValue = iso?.choices?.find((e) => !!(e?.toLowerCase() === 'auto') === !!value);
-      await this.CameraInstance.setConfigValue('iso', newValue);
+      console.log(`📷 Set iso=${newValue}`);
+      await retry(() => this.CameraInstance.setConfigValue('iso', newValue), { retries: 5, delay: 50 });
     }
 
     // Refresh config
@@ -78,8 +102,26 @@ class WebGPhoto2 {
     const shutterspeed = this?.config?.children?.capturesettings?.children?.shutterspeed || null;
     const iso = this?.config?.children?.imgsettings?.children?.iso || null;
     const whitebalance = this?.config?.children?.imgsettings?.children?.whitebalance || null;
+    const imagequality = this?.config?.children?.imgsettings?.children?.imageformat || null;
 
     const allowedCapabilities = [
+      ...(imagequality && imagequality?.choices?.length > 1
+        ? [
+            {
+              id: 'image_quality',
+              type: 'SELECT',
+              values: (imagequality?.choices || [])
+                .filter((e) => !e.split(' ').some((z) => z.toLowerCase() === 'raw'))
+                .map((e) => ({
+                  label: e,
+                  value: e,
+                })),
+              value: imagequality?.value,
+              canReset: false,
+            },
+          ]
+        : []),
+
       ...(aperture && aperture?.choices?.length > 1
         ? [
             {
@@ -177,6 +219,62 @@ class WebGPhoto2 {
 
     // console.log('Operations supported by the camera:', await this.CameraInstance.getSupportedOps());
     // console.log('Current configuration tree:', await this.CameraInstance.getConfig());
+
+    // Set default drive mode
+    try {
+      const driveMode = this?.config?.children?.capturesettings?.children?.drivemode || null;
+      if (driveMode) {
+        const newValue = driveMode?.choices?.find((e) => e?.toLowerCase() === 'single') || driveMode?.choices?.[0] || null;
+        if (newValue !== null) {
+          console.log(`📷 Set drivemode=${newValue}`);
+          await retry(() => this.CameraInstance.setConfigValue('drivemode', newValue), { retries: 5, delay: 50 });
+        }
+      }
+    } catch (err) {
+      console.warn(err);
+    }
+
+    // Set default aspect ratio
+    try {
+      const aspectRatio = this?.config?.children?.capturesettings?.children?.aspectratio || null;
+      if (aspectRatio) {
+        const newValue = aspectRatio?.choices?.find((e) => e?.toLowerCase() === '3:2') || aspectRatio?.choices?.[0] || null;
+        if (newValue !== null) {
+          console.log(`📷 Set aspectratio=${newValue}`);
+          await retry(() => this.CameraInstance.setConfigValue('aspectratio', newValue), { retries: 5, delay: 50 });
+        }
+      }
+    } catch (err) {
+      console.warn(err);
+    }
+
+    // Set default live view size
+    try {
+      const liveViewSize = this?.config?.children?.capturesettings?.children?.liveviewsize || null;
+      if (liveViewSize) {
+        const newValue = liveViewSize?.choices?.find((e) => e?.toLowerCase() === 'large') || liveViewSize?.choices?.[0] || null;
+        if (newValue !== null) {
+          console.log(`📷 Set liveviewsize=${newValue}`);
+          await retry(() => this.CameraInstance.setConfigValue('liveviewsize', newValue), { retries: 5, delay: 50 });
+        }
+      }
+    } catch (err) {
+      console.warn(err);
+    }
+
+    // Set storage to RAM
+    try {
+      const captureTarget = this?.config?.children?.settings?.children?.capturetarget || null;
+      if (captureTarget) {
+        const newValue = captureTarget?.choices?.find((e) => e?.toLowerCase().includes('ram')) || captureTarget?.choices?.[0] || null;
+        if (newValue !== null) {
+          console.log(`📷 Set capturetarget=${newValue}`);
+          await retry(() => this.CameraInstance.setConfigValue('capturetarget', newValue), { retries: 5, delay: 50 });
+        }
+      }
+    } catch (err) {
+      console.warn(err);
+    }
 
     await this.initPreview();
 
