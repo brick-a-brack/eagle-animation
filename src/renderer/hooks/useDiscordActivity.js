@@ -1,7 +1,12 @@
+import { IS_DEV } from '@config-web';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
 function useDiscordActivity(options = { description: null, actionIcon: null, actionTitle: null }) {
+  if (IS_DEV) {
+    return null;
+  }
+
   const { t } = useTranslation();
   useEffect(() => {
     (async () => {
