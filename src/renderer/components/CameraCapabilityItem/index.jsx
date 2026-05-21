@@ -11,6 +11,7 @@ const getCapabilitySelectLabel = (label, t) => {
   const properId = label?.toLowerCase().replace(/ /g, '_').trim();
   const map = {
     disabled: t('Disabled'),
+    off: t('Disabled'),
     '50_hz': t('50 Hz'),
     '60_hz': t('60 Hz'),
     continuous: t('Automatic'),
@@ -23,6 +24,9 @@ const getCapabilitySelectLabel = (label, t) => {
     fluorescent: t('Fluorescent'),
     shade: t('Shade'),
     tungsten: t('Tungsten'),
+    incandescent: t('Incandescent'),
+    warm_fluorescent: t('Warm Fluorescent'),
+    twilight: t('Twilight'),
     whitepaper: t('Manual'),
     large_fine_jpeg: t('Large Fine JPEG'),
     large_normal_jpeg: t('Large Normal JPEG'),
@@ -49,6 +53,7 @@ const getCapabilitySelectLabel = (label, t) => {
     '6x': t('6x'),
     '10x': t('10x'),
     '15x': t('15x'),
+    photo_resolution: t('Photo resolution'),
   };
   return map?.[properId] || label || t('Unknown');
 };
@@ -96,6 +101,8 @@ const getCapabilityLabel = (id, t) => {
     iso_auto: t('Automatic ISO'),
     iso: t('ISO'),
     shutter_speed: t('Shutter speed'),
+    shutter_speed_auto: t('Automatic shutter speed'),
+    aperture_auto: t('Automatic aperture'),
     aperture: t('Aperture'),
   };
   return map?.[properId] || id || t('Unknown');

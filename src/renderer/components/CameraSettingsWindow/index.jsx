@@ -68,7 +68,7 @@ const getCapabilitiesTabs = (capabilities, t = (v) => v) => {
   let tabs = [
     {
       title: t('Quality'),
-      properties: ['video_stream_format', 'image_quality', 'power_line_frequency'],
+      properties: ['video_stream_format', 'photo_resolution', 'image_quality', 'power_line_frequency'],
       icon: faFilm,
     },
     {
@@ -113,7 +113,7 @@ const getCapabilitiesTabs = (capabilities, t = (v) => v) => {
     },
     {
       title: t('Aperture'),
-      properties: ['aperture'],
+      properties: ['aperture_auto', 'aperture'],
       icon: faAperture,
     },
     {
@@ -123,7 +123,7 @@ const getCapabilitiesTabs = (capabilities, t = (v) => v) => {
     },
     {
       title: t('Shutter speed'),
-      properties: ['shutter_speed'],
+      properties: ['shutter_speed_auto', 'shutter_speed'],
       icon: faShutterSpeed,
     },
     {
