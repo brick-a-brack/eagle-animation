@@ -199,6 +199,9 @@ const CameraSettingsWindow = ({ t, cameraCapabilities, onCapabilityChange, onDev
                 ]}
                 register={register('CAMERA_ID')}
               />
+              <Action title={t('Remote cameras')} className={style.refreshIcon} onClick={() => onDevicesListRefresh()}>
+                <FontAwesomeIcon icon={faRotate} />
+              </Action>
               <Action title={t('Refresh camera list')} className={style.refreshIcon} onClick={() => onDevicesListRefresh()}>
                 <FontAwesomeIcon icon={faRotate} />
               </Action>
