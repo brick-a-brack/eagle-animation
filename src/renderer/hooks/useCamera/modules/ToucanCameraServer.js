@@ -126,7 +126,7 @@ class ToucanCameraServer {
 
   async takePicture() {
     const request = await fetch(`${getApiUrl()}cameras/${this.deviceId}/capture`, {
-      method: 'POST', // TODO: Strange? Should be GET, need to investigate more on TCS side
+      method: 'POST',
       headers: {
         ...getAuthHeader(),
       },
