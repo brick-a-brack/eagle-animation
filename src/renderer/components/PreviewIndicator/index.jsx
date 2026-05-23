@@ -1,10 +1,8 @@
+import Tooltip from '@components/Tooltip';
 import { useState } from 'react';
 import { withTranslation } from 'react-i18next';
 
-import Tooltip from '@components/Tooltip';
-
 import * as style from './style.module.css';
-
 
 const PreviewIndicator = ({ framePosition = false, frameQuantity = 0, animationFrameQuantity = 0, fps = 12, t }) => {
   const [mode, setMode] = useState(0);
@@ -19,26 +17,30 @@ const PreviewIndicator = ({ framePosition = false, frameQuantity = 0, animationF
   // Current frame / Number of frames
   if (mode === 0) {
     label = t('Current / Number of frames');
-    childrenComponent = (<>
-      {framePosition === false && <span className={style.live}>{t('Live')}</span>}
-      {framePosition !== false && <span>{framePosition}</span>}
-      <span className={style.separator}>{' / '}</span>
-      <span>{frameQuantity}</span>
-    </>);
+    childrenComponent = (
+      <>
+        {framePosition === false && <span className={style.live}>{t('Live')}</span>}
+        {framePosition !== false && <span>{framePosition}</span>}
+        <span className={style.separator}>{' / '}</span>
+        <span>{frameQuantity}</span>
+      </>
+    );
   }
 
   // Total of capture frames -> Outputed frames
   if (mode === 1) {
     label = t('Captured → Exportable frames');
-    childrenComponent = (<>
-      <span>{frameQuantity}</span>
-      {animationFrameQuantity !== frameQuantity && (
-        <>
-          <span className={style.separator}>{' → '}</span>
-          <span>{animationFrameQuantity}</span>
-        </>
-      )}
-    </>);
+    childrenComponent = (
+      <>
+        <span>{frameQuantity}</span>
+        {animationFrameQuantity !== frameQuantity && (
+          <>
+            <span className={style.separator}>{' → '}</span>
+            <span>{animationFrameQuantity}</span>
+          </>
+        )}
+      </>
+    );
   }
 
   // Duration
@@ -48,13 +50,14 @@ const PreviewIndicator = ({ framePosition = false, frameQuantity = 0, animationF
     const minutes = Math.floor((duration % 3600) / 60);
     const seconds = duration % 60;
     label = t('Animation duration');
-    childrenComponent = (<>
-      {hours > 0 && <span>{hours.toString().padStart(2, '0')}</span>}
-      {hours > 0 && <span className={style.separator}>{':'}</span>}
-      <span>{minutes.toString().padStart(2, '0')}</span>
-      <span className={style.separator}>{':'}</span>
-      <span>{seconds.toString().padStart(2, '0')}</span>
-    </>
+    childrenComponent = (
+      <>
+        {hours > 0 && <span>{hours.toString().padStart(2, '0')}</span>}
+        {hours > 0 && <span className={style.separator}>{':'}</span>}
+        <span>{minutes.toString().padStart(2, '0')}</span>
+        <span className={style.separator}>{':'}</span>
+        <span>{seconds.toString().padStart(2, '0')}</span>
+      </>
     );
   }
 
@@ -62,14 +65,14 @@ const PreviewIndicator = ({ framePosition = false, frameQuantity = 0, animationF
     return null;
   }
 
-  return <>
-    <div onClick={handleModeChange} className={style.progress} data-tooltip-id="preview-indicator">
-      {childrenComponent}
-    </div>
-    {label && <Tooltip id="preview-indicator" content={label} />}
-  </>;
+  return (
+    <>
+      <div onClick={handleModeChange} className={style.progress} data-tooltip-id="preview-indicator">
+        {childrenComponent}
+      </div>
+      {label && <Tooltip id="preview-indicator" content={label} />}
+    </>
+  );
 };
-
-
 
 export default withTranslation()(PreviewIndicator);

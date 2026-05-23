@@ -124,7 +124,7 @@ const ControlBar = ({
           tag={t('FPS')}
           register={register('fps')}
         />
-        <Tooltip id="onion" content={t('Onion blending')}/>
+        <Tooltip id="onion" content={t('Onion blending')} />
       </div>
     </div>
   );

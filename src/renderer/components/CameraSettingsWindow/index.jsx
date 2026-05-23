@@ -2,9 +2,12 @@ import Action from '@components/Action';
 import FormGroup from '@components/FormGroup';
 import IconTabs from '@components/IconTabs';
 import NumberInput from '@components/NumberInput';
+import PeersList from '@components/PeersList';
 import Select from '@components/Select';
 import Switch from '@components/Switch';
+import Window from '@components/Window';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import usePeers from '@hooks/usePeers';
 import faAperture from '@icons/faAperture';
 import faCamera from '@icons/faCamera';
 import faCircleHalfStroke from '@icons/faCircleHalfStroke';
@@ -16,6 +19,7 @@ import faFilm from '@icons/faFilm';
 import faIso from '@icons/faIso';
 import faLightbulbOn from '@icons/faLightbulbOn';
 import faMagnifyingGlass from '@icons/faMagnifyingGlass';
+import faMobileSignalOut from '@icons/faMobileSignalOut';
 import faQuestion from '@icons/faQuestion';
 import faRotate from '@icons/faRotate';
 import faShutterSpeed from '@icons/faShutterSpeed';
@@ -29,10 +33,6 @@ import { withTranslation } from 'react-i18next';
 import { CameraCapabilityItem } from '../CameraCapabilityItem';
 
 import * as style from './style.module.css';
-import usePeers from '@hooks/usePeers';
-import PeersList from '@components/PeersList';
-import Window from '@components/Window';
-import faMobileSignalOut from '@icons/faMobileSignalOut';
 
 const groupDevices = (devices, t) => {
   const output = [];
@@ -164,17 +164,17 @@ const RemoteCameraSettingsWindow = withTranslation()(({ onDevicesListRefresh }) 
   const handleConnect = async (...args) => {
     await actions.add(...args);
     onDevicesListRefresh();
-  }
+  };
 
   const handleDelete = async (...args) => {
     await actions.remove(...args);
     onDevicesListRefresh();
-  }
+  };
 
-  return <PeersList peers={peers} onConnect={handleConnect} onDelete={handleDelete} />
+  return <PeersList peers={peers} onConnect={handleConnect} onDelete={handleDelete} />;
 });
 
-const BasicCameraSettingsTab = withTranslation()(({ t, onDevicesListRefresh = () => { }, onSettingsChange = () => { }, devices = [], settings = {} }) => {
+const BasicCameraSettingsTab = withTranslation()(({ t, onDevicesListRefresh = () => {}, onSettingsChange = () => {}, devices = [], settings = {} }) => {
   const form = useForm({
     mode: 'all',
     defaultValues: {
@@ -242,7 +242,7 @@ const BasicCameraSettingsTab = withTranslation()(({ t, onDevicesListRefresh = ()
   );
 });
 
-const CameraSettingsWindow = ({ t, cameraCapabilities, onCapabilityChange, onDevicesListRefresh = () => { }, onSettingsChange = () => { }, devices = [], settings = {} }) => {
+const CameraSettingsWindow = ({ t, cameraCapabilities, onCapabilityChange, onDevicesListRefresh = () => {}, onSettingsChange = () => {}, devices = [], settings = {} }) => {
   const [selectedTab, setSelectedTab] = useState('CAMERAS');
 
   const tabs = getCapabilitiesTabs(cameraCapabilities, t);
@@ -259,14 +259,7 @@ const CameraSettingsWindow = ({ t, cameraCapabilities, onCapabilityChange, onDev
     <>
       <IconTabs tabs={categories} onClick={(e) => setSelectedTab(e.id)} />
       <div className={style.actions}>
-        {selectedCategory.id === 'CAMERAS' && (
-          <BasicCameraSettingsTab
-            onDevicesListRefresh={onDevicesListRefresh}
-            onSettingsChange={onSettingsChange}
-            devices={devices}
-            settings={settings}
-          />
-        )}
+        {selectedCategory.id === 'CAMERAS' && <BasicCameraSettingsTab onDevicesListRefresh={onDevicesListRefresh} onSettingsChange={onSettingsChange} devices={devices} settings={settings} />}
 
         {selectedCategory.properties.map((cap) => (
           <CameraCapabilityItem key={cap} {...cameraCapabilities.find((c) => c.id === cap)} onCapabilityChange={onCapabilityChange} />

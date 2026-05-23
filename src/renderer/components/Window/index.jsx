@@ -1,11 +1,11 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import faXmark from '@icons/faXmark';
-import { createPortal } from 'react-dom';
 import { useLayoutEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 
 import * as style from './style.module.css';
 
-const Window = ({ children, onClose = () => { }, isOpened = false, isFullScreen = false, zIndex = 0 }) => {
+const Window = ({ children, onClose = () => {}, isOpened = false, isFullScreen = false, zIndex = 0 }) => {
   const ref = useRef();
   const mouseDownTarget = useRef();
 
@@ -38,11 +38,7 @@ const Window = ({ children, onClose = () => { }, isOpened = false, isFullScreen 
         mouseDownTarget.current = event.target;
       }}
     >
-      <div
-        className={`${style.window} ${isFullScreen ? style.fullscreen : ''}`}
-        ref={ref}
-        data-window-root="true"
-      >
+      <div className={`${style.window} ${isFullScreen ? style.fullscreen : ''}`} ref={ref} data-window-root="true">
         <div>
           <div
             className={style.close}
