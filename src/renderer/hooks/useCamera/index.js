@@ -4,15 +4,7 @@ import { getCamera, getCameras, takePicture } from './modules';
 
 const applyCameraLabel = (e, i) => ({ ...e, label: `[${i + 1}] ${e.label || ''}` });
 
-const flushCanvas = (dom) => {
-  if (dom) {
-    const ctx = dom.getContext('2d');
-    ctx.clearRect(0, 0, dom.width, dom.height);
-  }
-};
-
 function useCamera(options = {}) {
-  const capabilitiesIntervals = useRef({});
   const [devices, setDevices] = useState(null);
   const [currentCameraId, setCurrentCameraId] = useState(null);
   const [currentCamera, setCurrentCamera] = useState(undefined);
@@ -62,7 +54,6 @@ function useCamera(options = {}) {
         await currentCamera.connect({ videoDOM: domRefs.current.videoDOM, imageDOM: domRefs.current.imageDOM }, options, () => {
           getCameras().then((cameras) => setDevices(cameras.map(applyCameraLabel)));
         });
-        flushCanvas(domRefs.current.imageDOM);
         triggerEvent('connect');
         currentCamera.getCapabilities().then(setCameraCapabilities);
       }
@@ -81,15 +72,13 @@ function useCamera(options = {}) {
           setCurrentCamera(null);
           currentCamera?.disconnect();
           triggerEvent('disconnect');
-          flushCanvas(domRefs.current.imageDOM);
         }
         if (deviceId) {
           setCurrentCameraId(deviceId);
           const camera = getCamera(deviceId);
           if (domRefs?.current?.videoDOM && domRefs?.current?.imageDOM) {
-            await camera?.connect({ videoDOM: domRefs?.current?.videoDOM, imageDOM: domRefs?.current?.imageDOM }, options, () => {
-              getCameras().then((cameras) => setDevices(cameras.map(applyCameraLabel)));
-            });
+            await camera?.connect({ videoDOM: domRefs?.current?.videoDOM, imageDOM: domRefs?.current?.imageDOM }, options);
+            await getCameras().then((cameras) => setDevices(cameras.map(applyCameraLabel)));
             triggerEvent('connect');
           }
           setCurrentCamera(camera);
@@ -118,17 +107,6 @@ function useCamera(options = {}) {
     [currentCamera]
   );
 
-  // Reset capabilities
-  const actionCapabilitesReset = useCallback(async () => {
-    setTimeout(async () => {
-      if (currentCamera) {
-        await currentCamera.resetCapabilities();
-        capabilitiesIntervals.current = {};
-        currentCamera.getCapabilities().then(setCameraCapabilities);
-      }
-    }, 0);
-  }, [currentCamera]);
-
   // Add event listener
   const actionAddEventListener = useCallback(async (name, callback) => {
     eventsRefs.current.push([name, callback]);
@@ -139,33 +117,26 @@ function useCamera(options = {}) {
     eventsRefs.current = eventsRefs.current.filter((e) => e[0] !== name || e[1] !== callback);
   }, []);
 
-  // Update camera capabilities
-  useEffect(() => {
-    const interval = setInterval(async () => {
-      if (currentCamera) {
-        let updated = false;
-        for (const id of Object.keys(capabilitiesIntervals.current || {})) {
-          if (capabilitiesIntervals.current[id] === null) {
-            continue;
-          }
-          await currentCamera.applyCapability(id, capabilitiesIntervals.current[id]);
-          capabilitiesIntervals.current[id] = null;
-          updated = true;
-        }
-        if (updated || Object.keys(capabilitiesIntervals.current || {}).reduce((acc, e) => acc || capabilitiesIntervals.current[e] !== null, false)) {
-          const newState = await currentCamera.getCapabilities();
-          setCameraCapabilities((oldState) => newState.map((e) => ({ ...e, value: oldState.find((f) => f.id === e.id)?.value })));
-        }
-      }
-    }, 100);
-    return () => clearInterval(interval);
-  }, [currentCamera]);
-
   // Action set capability
-  const actionSetCapability = useCallback((id, value) => {
-    capabilitiesIntervals.current[id] = value;
-    setCameraCapabilities((oldState) => oldState.map((e) => (e.id === id ? { ...e, value } : e)));
-  }, []);
+  const actionSetCapability = useCallback(
+    async (id, value) => {
+      if (currentCamera) {
+        await currentCamera?.applyCapability(id, value);
+        const newState = await currentCamera?.getCapabilities();
+        setCameraCapabilities(newState);
+      }
+    },
+    [currentCamera]
+  );
+
+  useEffect(() => {
+    return () => {
+      if (currentCamera) {
+        currentCamera?.disconnect();
+        triggerEvent('disconnect');
+      }
+    };
+  }, [currentCamera, triggerEvent]);
 
   return {
     isCameraReady: isReady,
@@ -178,7 +149,6 @@ function useCamera(options = {}) {
       setCamera: actionSetCamera,
       refreshDevices: actionRefreshDevices,
       takePicture: actionTakePicture,
-      capabilitiesReset: actionCapabilitesReset,
       setCapability: actionSetCapability,
       addEventListener: actionAddEventListener,
       removeEventListener: actionRemoveEventListener,

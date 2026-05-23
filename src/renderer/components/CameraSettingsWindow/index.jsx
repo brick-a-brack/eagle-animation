@@ -1,23 +1,37 @@
 import Action from '@components/Action';
-import ActionCard from '@components/ActionCard';
-import Slider from '@components/CustomSlider';
-import SliderSelect from '@components/CustomSliderSelect';
 import FormGroup from '@components/FormGroup';
 import IconTabs from '@components/IconTabs';
 import NumberInput from '@components/NumberInput';
+import PeersList from '@components/PeersList';
 import Select from '@components/Select';
 import Switch from '@components/Switch';
+import Window from '@components/Window';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import usePeers from '@hooks/usePeers';
 import faAperture from '@icons/faAperture';
 import faCamera from '@icons/faCamera';
-import faDroplet from '@icons/faDroplet';
+import faCircleHalfStroke from '@icons/faCircleHalfStroke';
+import faCirclesOverlap3 from '@icons/faCirclesOverlap3';
+import faCrosshairs from '@icons/faCrosshairs';
+import faExposure from '@icons/faExposure';
 import faFaceViewfinder from '@icons/faFaceViewfinder';
+import faFilm from '@icons/faFilm';
+import faIso from '@icons/faIso';
 import faLightbulbOn from '@icons/faLightbulbOn';
 import faMagnifyingGlass from '@icons/faMagnifyingGlass';
+import faMobileSignalOut from '@icons/faMobileSignalOut';
+import faQuestion from '@icons/faQuestion';
 import faRotate from '@icons/faRotate';
+import faShutterSpeed from '@icons/faShutterSpeed';
+import faSun from '@icons/faSun';
+import faTemperatureHalf from '@icons/faTemperatureHalf';
+import faTriangle from '@icons/faTriangle';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { withTranslation } from 'react-i18next';
+import useAppCapabilities from '@hooks/useAppCapabilities';
+
+import { CameraCapabilityItem } from '../CameraCapabilityItem';
 
 import * as style from './style.module.css';
 
@@ -25,9 +39,9 @@ const groupDevices = (devices, t) => {
   const output = [];
 
   const categories = {
-    'WEB-WEBCAM': t('Webcams'),
-    'NATIVE-EDSDK': t('EDSDK'),
-    'WEB-GPHOTO2': t('WebUSB'),
+    'TOUCAN-CAMERA-SERVER': t('Toucan Camera Server') + ' ' + t('(Experimental)'),
+    WEBCAM: t('Webcams'),
+    GPHOTO2: t('WebUSB'),
   };
 
   // Categories
@@ -55,25 +69,122 @@ const groupDevices = (devices, t) => {
   return output;
 };
 
-const CameraSettingsWindow = ({
-  t,
-  cameraCapabilities,
-  onCapabilityChange,
-  onDevicesListRefresh = () => {},
-  onCapabilitiesReset,
-  onSettingsChange = () => {},
-  appCapabilities = [],
-  devices = [],
-  settings = {},
-}) => {
-  const [selectedTab, setSelectedTab] = useState(null);
+const getCapabilitiesTabs = (capabilities, t = (v) => v) => {
+  let tabs = [
+    {
+      title: t('Quality'),
+      properties: ['video_stream_format', 'photo_resolution', 'image_quality', 'power_line_frequency'],
+      icon: faFilm,
+    },
+    {
+      title: t('Brightness'),
+      properties: ['brightness_auto', 'brightness'],
+      icon: faSun,
+    },
+    {
+      title: t('Contrast'),
+      properties: ['contrast_auto', 'contrast'],
+      icon: faCircleHalfStroke,
+    },
+    {
+      title: t('Saturation'),
+      properties: ['saturation_auto', 'saturation'],
+      icon: faCirclesOverlap3,
+    },
+    {
+      title: t('Sharpness'),
+      properties: ['sharpness_auto', 'sharpness'],
+      icon: faTriangle,
+    },
+    {
+      title: t('Gamma'),
+      properties: ['gamma_auto', 'gamma'],
+      icon: faQuestion,
+    },
+    {
+      title: t('Hue'),
+      properties: ['hue_auto', 'hue'],
+      icon: faTemperatureHalf,
+    },
+    {
+      title: t('White Balance'),
+      properties: ['white_balance_auto', 'white_balance'],
+      icon: faLightbulbOn,
+    },
+    {
+      title: t('Focus'),
+      properties: ['focus_auto', 'focus'],
+      icon: faFaceViewfinder,
+    },
+    {
+      title: t('Aperture'),
+      properties: ['aperture_auto', 'aperture'],
+      icon: faAperture,
+    },
+    {
+      title: t('Exposure'),
+      properties: ['exposure_auto', 'backlight_compensation', 'exposure_compensation', 'exposure', 'gain_auto', 'gain'],
+      icon: faExposure,
+    },
+    {
+      title: t('Shutter speed'),
+      properties: ['shutter_speed_auto', 'shutter_speed'],
+      icon: faShutterSpeed,
+    },
+    {
+      title: t('ISO'),
+      properties: ['iso_auto', 'iso'],
+      icon: faIso,
+    },
+    {
+      title: t('Camera controls'),
+      properties: ['zoom_auto', 'zoom', 'tilt_auto', 'tilt', 'pan_auto', 'pan', 'roll_auto', 'roll'],
+      icon: faMagnifyingGlass,
+    },
+    {
+      title: t('Live View'),
+      properties: ['live_view_zoom', 'live_view_pan', 'live_view_tilt', 'live_view_roll'],
+      icon: faCrosshairs,
+    },
+  ];
+
+  const capabilitiesKeys = tabs.map((e) => e.properties).flat();
+  const unhandledCapabilities = capabilities.filter((cap) => !capabilitiesKeys.includes(cap.id));
+
+  tabs.push({
+    title: t('Other capabilities'),
+    properties: unhandledCapabilities.map((e) => e.id),
+    icon: faQuestion,
+  });
+
+  return tabs.map((tab) => ({ ...tab, properties: tab.properties.filter((prop) => capabilities.some((cap) => cap.id === prop)) })).filter((tab) => tab.properties.length > 0);
+};
+
+const RemoteCameraSettingsWindow = withTranslation()(({ onDevicesListRefresh }) => {
+  const { peers, actions } = usePeers();
+  const handleConnect = async (...args) => {
+    await actions.add(...args);
+    onDevicesListRefresh();
+  };
+
+  const handleDelete = async (...args) => {
+    await actions.remove(...args);
+    onDevicesListRefresh();
+  };
+
+  return <PeersList peers={peers} onConnect={handleConnect} onDelete={handleDelete} />;
+});
+
+const BasicCameraSettingsTab = withTranslation()(({ t, onDevicesListRefresh = () => { }, onSettingsChange = () => { }, devices = [], settings = {} }) => {
   const form = useForm({
     mode: 'all',
     defaultValues: {
       ...settings,
     },
   });
+  const { appCapabilities } = useAppCapabilities()
   const { watch, register, getValues } = form;
+  const [isPeerDevicesListOpen, setIsPeerDevicesListOpen] = useState(false);
 
   const formValues = watch();
 
@@ -82,202 +193,79 @@ const CameraSettingsWindow = ({
     onSettingsChange(values);
   }, [JSON.stringify(formValues)]);
 
-  const selectOptionsTranslations = {
-    continuous: t('Automatic'),
-    manual: t('Manual'),
-    AutoAmbiencePriority: t('Automatic'),
-    Cloudy: t('Cloudy'),
-    Daylight: t('Daylight'),
-    Flash: t('Flash'),
-    Fluorescent: t('Fluorescent'),
-    Shade: t('Shade'),
-    Tungsten: t('Tungsten'),
-    WhitePaper: t('Manual'),
-  };
+  return (
+    <>
+      <FormGroup label={t('Camera')} description={t('The camera device to use to take frames')}>
+        <Select
+          options={[
+            { value: '', label: t('Choose a camera'), disabled: true },
+            ...groupDevices(
+              devices.map((e) => ({ value: e.id, label: e.label })),
+              t
+            ),
+          ]}
+          register={register('CAMERA_ID')}
+        />
+        <Action title={t('Refresh camera list')} className={style.refreshIcon} onClick={() => onDevicesListRefresh()}>
+          <FontAwesomeIcon icon={faRotate} />
+        </Action>
 
-  const capsTranslations = {
-    BRIGHTNESS: t('Brightness'),
-    COLOR_TEMPERATURE: t('White balance'),
-    CONTRAST: t('Contrast'),
-    FOCUS_DISTANCE: t('Focus'),
-    FOCUS_MODE: t('Automatic focus'),
-    EXPOSURE_COMPENSATION: t('Exposure compensation'),
-    EXPOSURE_MODE: t('Automatic exposure'),
-    EXPOSURE_TIME: t('Exposure time'),
-    ZOOM_POSITION_X: t('Horizontal position'),
-    SATURATION: t('Saturation'),
-    SHARPNESS: t('Sharpness'),
-    ZOOM_POSITION_Y: t('Vertical position'),
-    WHITE_BALANCE_MODE: t('Automatic white balance'),
-    ZOOM: t('Zoom'),
-    APERTURE: t('Aperture'),
-    WHITE_BALANCE: t('White balance'),
-    SHUTTER_SPEED: t('Shutter speed'),
-    ISO: t('ISO'),
-  };
+        {appCapabilities.includes('REMOTE_CAMERAS') && <Action title={t('Remote cameras')} className={style.refreshIcon} onClick={() => setIsPeerDevicesListOpen(true)}>
+          <FontAwesomeIcon icon={faMobileSignalOut} />
+        </Action>}
+      </FormGroup>
+      <FormGroup label={t('Frames to capture')} description={t('Number of frames to capture')}>
+        <NumberInput register={register('CAPTURE_FRAMES')} min={1} />
+      </FormGroup>
 
-  const categories = [
-    { id: 'CAMERAS', icon: faCamera, title: t('Cameras'), capabilities: [] },
-    { id: 'WHITE_BALANCE', icon: faLightbulbOn, title: t('White balance'), capabilities: ['WHITE_BALANCE_MODE', 'COLOR_TEMPERATURE', 'WHITE_BALANCE'] },
-    { id: 'FOCUS', icon: faFaceViewfinder, title: t('Focus'), capabilities: ['FOCUS_MODE', 'FOCUS_DISTANCE'] },
-    { id: 'IMAGE_SETTINGS', icon: faDroplet, title: t('Image settings'), capabilities: ['BRIGHTNESS', 'CONTRAST', 'SATURATION', 'SHARPNESS'] },
-    { id: 'EXPOSURE', icon: faAperture, title: t('Exposure'), capabilities: ['EXPOSURE_MODE', 'EXPOSURE_COMPENSATION', 'EXPOSURE_TIME', 'ISO', 'SHUTTER_SPEED', 'APERTURE'] },
-    { id: 'ZOOM', icon: faMagnifyingGlass, title: t('Zoom'), capabilities: ['ZOOM', 'ZOOM_POSITION_X', 'ZOOM_POSITION_Y'] },
-  ]
-    .filter((category) => category.id === 'CAMERAS' || cameraCapabilities.map((e) => e.id).some((capId) => category.capabilities.includes(capId)))
-    .map((e, i) => ({ ...e, selected: selectedTab === e.id || (i === 0 && selectedTab === null) }));
+      <FormGroup label={t('Reverse horizontally')} description={t('Reverse the camera horizontally')}>
+        <Switch register={register('REVERSE_X')} />
+      </FormGroup>
 
-  const selectedCategory = categories.find((e) => Boolean(e.selected));
+      <FormGroup label={t('Reverse vertically')} description={t('Reverse the camera vertically')}>
+        <Switch register={register('REVERSE_Y')} />
+      </FormGroup>
+
+      <FormGroup label={t('Frame averaging')} description={t('Frame averaging will take several frames to remove picture noise, camera must be perfectly stable')}>
+        <div style={{ display: 'inline-block' }}>
+          <Switch register={register('AVERAGING_ENABLED')} />
+        </div>
+        {watch('AVERAGING_ENABLED') && (
+          <div style={{ display: 'inline-block', marginLeft: 'var(--space-big)' }}>
+            <NumberInput register={register('AVERAGING_VALUE')} min={2} max={10} />
+          </div>
+        )}
+      </FormGroup>
+
+      {appCapabilities.includes('REMOTE_CAMERAS') && <Window title={t('Remote cameras')} isOpened={isPeerDevicesListOpen} onClose={() => setIsPeerDevicesListOpen(false)} zIndex={1}>
+        <RemoteCameraSettingsWindow onDevicesListRefresh={onDevicesListRefresh} />
+      </Window>}
+    </>
+  );
+});
+
+const CameraSettingsWindow = ({ t, cameraCapabilities, onCapabilityChange, onDevicesListRefresh = () => { }, onSettingsChange = () => { }, devices = [], settings = {} }) => {
+  const [selectedTab, setSelectedTab] = useState('CAMERAS');
+
+  const tabs = getCapabilitiesTabs(cameraCapabilities, t);
+
+  const categories = [{ id: 'CAMERAS', icon: faCamera, title: t('Cameras'), properties: [] }, ...tabs.map((e) => ({ icon: e.icon, title: e.title, properties: e.properties }))].map((c, i) => ({
+    ...c,
+    id: `${c.id || i}`,
+    selected: `${c.id || i}` === selectedTab,
+  }));
+
+  const selectedCategory = categories.find((e) => Boolean(e.selected)) || categories[0] || null;
 
   return (
     <>
       <IconTabs tabs={categories} onClick={(e) => setSelectedTab(e.id)} />
       <div className={style.actions}>
-        {selectedCategory.id === 'CAMERAS' && (
-          <>
-            <FormGroup label={t('Camera')} description={t('The camera device to use to take frames')}>
-              <Select
-                options={[
-                  { value: '', label: t('Choose a camera'), disabled: true },
-                  ...groupDevices(
-                    devices.map((e) => ({ value: e.id, label: e.label })),
-                    t
-                  ),
-                ]}
-                register={register('CAMERA_ID')}
-              />
-              <Action title={t('Refresh camera list')} className={style.refreshIcon} onClick={() => onDevicesListRefresh()}>
-                <FontAwesomeIcon icon={faRotate} />
-              </Action>
-            </FormGroup>
-            <FormGroup label={t('Frames to capture')} description={t('Number of frames to capture')}>
-              <NumberInput register={register('CAPTURE_FRAMES')} min={1} />
-            </FormGroup>
+        {selectedCategory.id === 'CAMERAS' && <BasicCameraSettingsTab onDevicesListRefresh={onDevicesListRefresh} onSettingsChange={onSettingsChange} devices={devices} settings={settings} />}
 
-            <FormGroup label={t('Reverse horizontally')} description={t('Reverse the camera horizontally')}>
-              <Switch register={register('REVERSE_X')} />
-            </FormGroup>
-
-            <FormGroup label={t('Reverse vertically')} description={t('Reverse the camera vertically')}>
-              <Switch register={register('REVERSE_Y')} />
-            </FormGroup>
-
-            <FormGroup label={t('Frame averaging')} description={t('Frame averaging will take several frames to remove picture noise, camera must be perfectly stable')}>
-              <div style={{ display: 'inline-block' }}>
-                <Switch register={register('AVERAGING_ENABLED')} />
-              </div>
-              {watch('AVERAGING_ENABLED') && (
-                <div style={{ display: 'inline-block', marginLeft: 'var(--space-big)' }}>
-                  <NumberInput register={register('AVERAGING_VALUE')} min={2} max={10} />
-                </div>
-              )}
-            </FormGroup>
-            {appCapabilities.includes('LOW_FRAMERATE_QUALITY_IMPROVEMENT') && (`${watch?.('CAMERA_ID')}` || '').startsWith('WEB-WEBCAM') && (
-              <FormGroup
-                label={t('Improve quality by reducing preview framerate')}
-                description={t('Some cameras can take better quality pictures by reducing the framerate of the preview (Restart required)')}
-              >
-                <div>
-                  <Switch register={register('FORCE_QUALITY')} />
-                </div>
-              </FormGroup>
-            )}
-          </>
-        )}
-
-        {cameraCapabilities
-          .filter((cap) => selectedCategory.capabilities.includes(cap.id))
-          .map((cap) => {
-            if (cap.type === 'RANGE') {
-              return (
-                <FormGroup
-                  key={cap.id}
-                  label={capsTranslations[cap.id] || cap.id}
-                  description={t('[{{min}}, {{max}}] • {{value}}', { min: Math.round(cap.min), max: Math.round(cap.max), value: Math.round(cap.value) })}
-                >
-                  <Slider
-                    isDisabled={cap.isDisabled}
-                    min={cap.min}
-                    max={cap.max}
-                    value={cap.value}
-                    step={cap.step}
-                    onChange={(value) => {
-                      if (cap.isDisabled) {
-                        return;
-                      }
-                      onCapabilityChange(cap.id, value);
-                    }}
-                  />
-                </FormGroup>
-              );
-            }
-            if (cap.type === 'SWITCH') {
-              return (
-                <FormGroup key={cap.id} label={capsTranslations[cap.id] || cap.id}>
-                  <Switch
-                    isDisabled={cap.isDisabled}
-                    checked={cap.value === true}
-                    onChange={() => {
-                      if (cap.isDisabled) {
-                        return;
-                      }
-                      onCapabilityChange(cap.id, cap.value !== true);
-                    }}
-                  />
-                </FormGroup>
-              );
-            }
-            if (cap.type === 'SELECT') {
-              return (
-                <FormGroup key={cap.id} label={capsTranslations[cap.id] || cap.id}>
-                  <Select
-                    isDisabled={cap.isDisabled}
-                    options={cap.values.map((e) => ({ ...e, label: selectOptionsTranslations[e.label] || e.label }))}
-                    value={cap.value}
-                    onChange={(evt) => {
-                      if (cap.isDisabled) {
-                        return;
-                      }
-                      onCapabilityChange(cap.id, evt.target.value);
-                    }}
-                  />
-                </FormGroup>
-              );
-            }
-            if (cap.type === 'SELECT_RANGE') {
-              const selectedValue = cap.values?.find((v) => v.value === cap.value) || cap.values?.[0] || null;
-              return (
-                <FormGroup
-                  key={cap.id}
-                  label={capsTranslations[cap.id] || cap.id}
-                  description={t('[{{min}}, {{max}}] • {{value}}', {
-                    min: cap.values?.[0]?.label || '',
-                    max: cap?.values?.[cap?.values?.length - 1]?.label || '',
-                    value: selectedValue?.label || '',
-                  })}
-                >
-                  <SliderSelect
-                    isDisabled={cap.isDisabled}
-                    options={cap.values.map((e) => ({ ...e, label: selectOptionsTranslations[e.label] || e.label }))}
-                    value={cap.value}
-                    onChange={(evt) => {
-                      if (cap.isDisabled) {
-                        return;
-                      }
-                      onCapabilityChange(cap.id, evt.value);
-                    }}
-                  />
-                </FormGroup>
-              );
-            }
-            return null;
-          })}
-
-        {selectedCategory.id === 'CAMERAS' && cameraCapabilities.some((cap) => cap.canReset) && (
-          <FormGroup label={t('Reset camera settings')} description={t('Reset the current camera settings, all values will be reset to default')}>
-            <ActionCard title={t('Reset settings')} onClick={() => onCapabilitiesReset()} sizeAuto secondary />
-          </FormGroup>
-        )}
+        {selectedCategory.properties.map((cap) => (
+          <CameraCapabilityItem key={cap} {...cameraCapabilities.find((c) => c.id === cap)} onCapabilityChange={onCapabilityChange} />
+        ))}
       </div>
     </>
   );

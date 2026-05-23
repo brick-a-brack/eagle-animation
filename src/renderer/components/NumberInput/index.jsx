@@ -76,7 +76,19 @@ const NumberInput = ({ register = {}, className = '', tag = '', step = 1, style 
         -
       </button>
       <label className={styleCss.field}>
-        <input min={min} max={max} type="number" className={`${styleCss.input} ${className}`} {...rest} {...register} onBlur={handleBlur} onFocus={handleFocus} />
+        <input
+          min={min}
+          max={max}
+          type="number"
+          className={`${styleCss.input} ${className}`}
+          {...rest}
+          {...register}
+          onBlur={handleBlur}
+          onFocus={handleFocus}
+          onKeyDown={(evt) => {
+            evt.stopPropagation();
+          }}
+        />
         {tag && <span className={styleCss.tag}>{tag}</span>}
       </label>
       <button

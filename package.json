@@ -1,7 +1,7 @@
 {
   "name": "@brick-a-brack/eagle-animation",
   "description": "EagleAnimation is an awesome, modern, free and open-source animation software",
-  "version": "2.13.1",
+  "version": "2.14.0",
   "private": false,
   "author": {
     "name": "Brick à Brack",
@@ -29,7 +29,7 @@
     "build:win": "electron-vite build && electron-builder --win",
     "build:mac": "electron-vite build && electron-builder --mac --universal",
     "build:linux": "electron-vite build && electron-builder --linux",
-    "postinstall": "electron-builder install-app-deps",
+    "postinstall": "electron-builder install-app-deps && node scripts/install-toucan-camera-server.js",
     "extract-strings": "i18next-scanner",
     "lint": "eslint ./src/ --ext .js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --ignore-path .gitignore --fix --max-warnings 0 --no-ignore",
     "stylelint": "stylelint src/**/*.css --ignore-path .gitignore --fix",
@@ -92,6 +92,7 @@
     "eslint": "8.57.0",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-simple-import-sort": "^13.0.0",
+    "extract-zip": "^2.0.1",
     "globals": "^17.6.0",
     "husky": "^9.1.7",
     "i18next-scanner": "^4.6.0",
@@ -104,8 +105,5 @@
     "vite": "^7.3.2",
     "vite-plugin-static-copy": "^3.3.0",
     "vite-plugin-svgr": "^4.5.0"
-  },
-  "optionalDependencies": {
-    "@brick-a-brack/napi-canon-cameras": "0.1.5"
   }
 }
