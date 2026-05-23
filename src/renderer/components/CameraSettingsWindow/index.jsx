@@ -166,7 +166,12 @@ const RemoteCameraSettingsWindow = withTranslation()(({ onDevicesListRefresh }) 
     onDevicesListRefresh();
   }
 
-  return <PeersList peers={peers} onConnect={handleConnect} onDelete={actions.remove} />
+  const handleDelete = async (...args) => {
+    await actions.remove(...args);
+    onDevicesListRefresh();
+  }
+
+  return <PeersList peers={peers} onConnect={handleConnect} onDelete={handleDelete} />
 });
 
 const BasicCameraSettingsTab = withTranslation()(({ t, onDevicesListRefresh = () => { }, onSettingsChange = () => { }, devices = [], settings = {} }) => {

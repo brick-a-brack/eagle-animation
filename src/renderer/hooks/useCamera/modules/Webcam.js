@@ -92,41 +92,6 @@ class Webcam {
     return allowedResolutions;
   }
 
-  // todo CLEAN
-  /*async resetCapabilities() {
-    const mediaStreamTrack = this.stream.getVideoTracks()[0];
-    const values = {
-      brightness: 128,
-      contrast: 128,
-      colorTemperature: 2200,
-      exposureCompensation: 0,
-      exposureMode: 'continuous',
-      exposureTime: 625,
-      focusDistance: 0,
-      focusMode: 'continuous',
-      pan: 0,
-      iso: 100,
-      saturation: 128,
-      sharpness: 128,
-      tilt: 0,
-      whiteBalanceMode: 'continuous',
-      zoom: 100,
-    };
-
-    const proms = [];
-    for (const key in values) {
-      proms.push(
-        mediaStreamTrack
-          .applyConstraints({
-            advanced: [{ [key]: values[key] }],
-          })
-          .catch(console.error)
-      );
-    }
-    await Promise.all(proms);
-    return null;
-  }*/
-
   async applyCapability(key, value) {
     console.log(`📷 Set ${key}=${value}`);
 

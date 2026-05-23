@@ -30,9 +30,9 @@ class ToucanCameraServer {
       headers: {
         ...getAuthHeader(),
       },
-    }).then((res) => res.json());
+    }).then((res) => res.json()).catch(() => []);
 
-    return capabilities.map((capability) => {
+    return (Array.isArray(capabilities) ? capabilities : []).map((capability) => {
       const id = capability?.type || 'unknown';
       const kind = capability?.kind?.toUpperCase() || 'UNKNOWN';
       const currentValue = capability?.current || null;

@@ -94,8 +94,6 @@ app.whenReady().then(() => {
       return net.fetch(url.pathToFileURL(diskPath).toString());
     }
 
-    // TODO Shortcut cache here
-
     try {
       // Create a Sharp instance
       const inputBuf = await readFile(diskPath);
