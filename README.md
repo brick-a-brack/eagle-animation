@@ -62,7 +62,7 @@ Some variables can be configured using a `.env` file, values with a "\*" are req
 
 ### Build process
 
-- Run `npm i --legacy-peer-deps` to install dependencies (`--legacy-peer-deps` is required because we use an old dependency).
+- Run `npm i` to install dependencies.
 - Update `src/config.js` file if needed.
 - Run `npm run build:win`, `npm run build:linux`, `npm run build:mac` and `npm run build:web` to build release files.
 

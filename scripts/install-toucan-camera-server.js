@@ -4,12 +4,12 @@ const path = require('path');
 const { execFileSync } = require('child_process');
 const extract = require('extract-zip');
 
-const TOUCAN_CAMERA_SERVER_VERSION = '0.0.5';
+const TOUCAN_CAMERA_SERVER_VERSION = '0.0.7';
 
 const RELEASES = {
   windows: `https://github.com/brick-a-brack/toucan-camera-server/releases/download/v${TOUCAN_CAMERA_SERVER_VERSION}/toucan-camera-server-windows.zip`,
   macos: `https://github.com/brick-a-brack/toucan-camera-server/releases/download/v${TOUCAN_CAMERA_SERVER_VERSION}/toucan-camera-server-macos.zip`,
-  linux: `https://github.com/brick-a-brack/toucan-camera-server/releases/download/v${TOUCAN_CAMERA_SERVER_VERSION}/toucan-camera-server-linux.tar.gz`,
+  linux: `https://github.com/brick-a-brack/toucan-camera-server/releases/download/v${TOUCAN_CAMERA_SERVER_VERSION}/toucan-camera-server-linux.zip`,
 };
 
 function getPlatformKey() {
@@ -65,8 +65,7 @@ async function main() {
 
   const url = RELEASES[platform];
   const binDir = path.join(__dirname, '../', 'toucan-camera-server/bin', platform);
-  const archiveExt = platform === 'linux' ? 'tar.gz' : 'zip';
-  const archivePath = path.join(__dirname, '../', 'toucan-camera-server/', `toucan-camera-server-${platform}.${archiveExt}`);
+  const archivePath = path.join(__dirname, '../', 'toucan-camera-server/', `toucan-camera-server-${platform}.zip`);
 
   fs.mkdirSync(binDir, { recursive: true });
 
@@ -74,11 +73,7 @@ async function main() {
   await download(url, archivePath);
 
   console.log(`🐦 toucan-camera-server: extracting to /bin/${platform}/...`);
-  if (platform === 'linux') {
-    execFileSync('tar', ['-xzf', archivePath, '-C', binDir]);
-  } else {
-    await extract(archivePath, { dir: binDir });
-  }
+  await extract(archivePath, { dir: binDir });
   // Ensure the extracted binary is executable on Unix-like systems
   let extractedBinaryPath = null;
   try {
@@ -88,7 +83,7 @@ async function main() {
       fs.chmodSync(extractedBinaryPath, 0o755);
       if (process.platform === 'darwin') {
         try {
-          require('child_process').execFileSync('xattr', ['-d', 'com.apple.quarantine', extractedBinaryPath]);
+          execFileSync('xattr', ['-d', 'com.apple.quarantine', extractedBinaryPath]);
         } catch (e) {
           // ignore if xattr not available or fails
         }
