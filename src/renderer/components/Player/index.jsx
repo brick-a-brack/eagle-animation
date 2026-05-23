@@ -188,15 +188,19 @@ class Player extends Component {
     onInit(this.dom.video.current, this.dom.videoFrame.current);
 
     const handleStreamLoaded = (domElement) => {
-      domElement.width = domElement.naturalWidth;
-      domElement.height = domElement.naturalHeight;
-      domElement.style.display = 'block';
+      if (domElement) {
+        domElement.width = domElement.naturalWidth;
+        domElement.height = domElement.naturalHeight;
+        domElement.style.display = 'block';
+      }
     };
 
     const handleStreamError = (domElement) => {
-      domElement.width = 0;
-      domElement.height = 0;
-      domElement.style.display = 'none';
+      if (domElement) {
+        domElement.width = 0;
+        domElement.height = 0;
+        domElement.style.display = 'none';
+      }
     };
 
     // By default video and image element are in error mode
