@@ -32,6 +32,7 @@ import * as style from './style.module.css';
 import usePeers from '@hooks/usePeers';
 import PeersList from '@components/PeersList';
 import Window from '@components/Window';
+import faMobileSignalOut from '@icons/faMobileSignalOut';
 
 const groupDevices = (devices, t) => {
   const output = [];
@@ -158,9 +159,14 @@ const getCapabilitiesTabs = (capabilities, t = (v) => v) => {
   return tabs.map((tab) => ({ ...tab, properties: tab.properties.filter((prop) => capabilities.some((cap) => cap.id === prop)) })).filter((tab) => tab.properties.length > 0);
 };
 
-const RemoteCameraSettingsTab = withTranslation()(() => {
+const RemoteCameraSettingsWindow = withTranslation()(({ onDevicesListRefresh }) => {
   const { peers, actions } = usePeers();
-  return <PeersList peers={peers} onConnect={actions.add} onDelete={actions.remove} />
+  const handleConnect = async (...args) => {
+    await actions.add(...args);
+    onDevicesListRefresh();
+  }
+
+  return <PeersList peers={peers} onConnect={handleConnect} onDelete={actions.remove} />
 });
 
 const BasicCameraSettingsTab = withTranslation()(({ t, onDevicesListRefresh = () => { }, onSettingsChange = () => { }, devices = [], settings = {} }) => {
@@ -180,14 +186,8 @@ const BasicCameraSettingsTab = withTranslation()(({ t, onDevicesListRefresh = ()
     onSettingsChange(values);
   }, [JSON.stringify(formValues)]);
 
-console.log('isPeerDevicesListOpen', isPeerDevicesListOpen)
-
   return (
     <>
-    <Window title={t('Remote cameras')} isOpened={isPeerDevicesListOpen} onClose={() => setIsPeerDevicesListOpen(false)}>
-      <RemoteCameraSettingsTab />
-    </Window>
-
       <FormGroup label={t('Camera')} description={t('The camera device to use to take frames')}>
         <Select
           options={[
@@ -199,11 +199,12 @@ console.log('isPeerDevicesListOpen', isPeerDevicesListOpen)
           ]}
           register={register('CAMERA_ID')}
         />
-        <Action title={t('Remote cameras')} className={style.refreshIcon} onClick={() => setIsPeerDevicesListOpen(true)}>
-          <FontAwesomeIcon icon={faRotate} />
-        </Action>
         <Action title={t('Refresh camera list')} className={style.refreshIcon} onClick={() => onDevicesListRefresh()}>
           <FontAwesomeIcon icon={faRotate} />
+        </Action>
+
+        <Action title={t('Remote cameras')} className={style.refreshIcon} onClick={() => setIsPeerDevicesListOpen(true)}>
+          <FontAwesomeIcon icon={faMobileSignalOut} />
         </Action>
       </FormGroup>
       <FormGroup label={t('Frames to capture')} description={t('Number of frames to capture')}>
@@ -228,6 +229,10 @@ console.log('isPeerDevicesListOpen', isPeerDevicesListOpen)
           </div>
         )}
       </FormGroup>
+
+      <Window title={t('Remote cameras')} isOpened={isPeerDevicesListOpen} onClose={() => setIsPeerDevicesListOpen(false)} zIndex={1}>
+        <RemoteCameraSettingsWindow onDevicesListRefresh={onDevicesListRefresh} />
+      </Window>
     </>
   );
 });
