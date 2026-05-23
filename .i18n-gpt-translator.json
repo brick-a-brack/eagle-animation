@@ -3,5 +3,5 @@
   "sourceLngs": ["fr", "en"],
   "destinationLngs": ["de", "es", "it", "pt", "pl", "eo", "bg", "cs", "da", "el", "hr", "lv", "lt", "hu", "nl", "ro", "sk", "sl", "fi", "sv",  "ru"],
   "context": "EagleAnimation is an awesome, free and open-source stop motion animation software. It is available for Windows, macOS and Linux.",
-  "doNotEdit": ["Brick à Brack", "Brickfilms.com", "Eagle Animation"]
+  "doNotEdit": ["Brick à Brack", "Brickfilms.com", "Eagle Animation", "Toucan Camera", "Toucan Camera Server"]
 }
