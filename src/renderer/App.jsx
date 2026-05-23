@@ -8,13 +8,10 @@ import ShortcutsView from '@views/Shortcuts';
 import SyncListView from '@views/SyncList';
 import { MemoryRouter as Router, Route, Routes } from 'react-router-dom';
 
-import { WindowProvider } from './contexts/WindowContext';
-
 const App = () => (
   <CustomErrorBoundary>
     <Container>
       <Router>
-        <WindowProvider>
           <Routes>
             <Route exact path="/" element={<HomeView />} />
             <Route exact path="/settings" element={<SettingsView />} />
@@ -24,7 +21,6 @@ const App = () => (
             <Route exact path="/sync-list" element={<SyncListView />} />
             <Route path="*" element={null} />
           </Routes>
-        </WindowProvider>
       </Router>
     </Container>
   </CustomErrorBoundary>
