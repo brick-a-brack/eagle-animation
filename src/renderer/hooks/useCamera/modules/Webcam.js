@@ -92,6 +92,7 @@ class Webcam {
     return allowedResolutions;
   }
 
+  // todo CLEAN
   /*async resetCapabilities() {
     const mediaStreamTrack = this.stream.getVideoTracks()[0];
     const values = {
@@ -127,6 +128,8 @@ class Webcam {
   }*/
 
   async applyCapability(key, value) {
+    console.log(`📷 Set ${key}=${value}`);
+
     const settings = this?.stream?.getVideoTracks()?.[0]?.getSettings() || {};
     const mediaStreamTrack = this.stream.getVideoTracks()[0];
     const capabilities = this?.stream?.getVideoTracks()?.[0] && typeof this.stream.getVideoTracks()[0].getCapabilities === 'function' ? this.stream.getVideoTracks()[0].getCapabilities() : {};
