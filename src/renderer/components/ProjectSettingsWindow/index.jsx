@@ -85,6 +85,7 @@ const ProjectSettingsWindow = ({ t, onProjectSettingsChange = () => {}, onProjec
       <FormGroup label={t('Delete')} description={t('Delete the project and all photos taken')}>
         <ActionCard onClick={onProjectDelete} title={t('Delete')} sizeAuto secondary />
       </FormGroup>
+      
     </div>
   );
 };

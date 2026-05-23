@@ -10,14 +10,14 @@ const Select = ({ register = {}, options = [], disabled = false, ...rest }) => {
           {o.values && (
             <optgroup label={o.label} id={o.id}>
               {o.values.map((v) => (
-                <option key={v.value} value={v.value} disabled={v.disabled || false}>
+                <option key={v.value} value={v.value || ''} disabled={v.disabled || false}>
                   {v.label}
                 </option>
               ))}
             </optgroup>
           )}
           {!o.values && (
-            <option key={o.value} value={o.value} disabled={o.disabled || false}>
+            <option key={o.value} value={o.value || ''} disabled={o.disabled || false}>
               {o.label}
             </option>
           )}

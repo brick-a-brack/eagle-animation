@@ -2,6 +2,8 @@
     display: flex;
     flex-direction: column;
     gap: var(--space-big);
+    margin: 0 var(--space-huge);
+    width: calc(100% - 2 * var(--space-huge));
 }
 
 .list {

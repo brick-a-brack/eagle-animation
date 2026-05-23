@@ -42,7 +42,7 @@
   pointer-events: all;
 }
 
-.opened .window {
+.opened > .window {
   opacity: 1;
   transform: translate(0%, 0%);
 }

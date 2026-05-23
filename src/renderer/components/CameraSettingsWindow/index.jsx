@@ -29,6 +29,9 @@ import { withTranslation } from 'react-i18next';
 import { CameraCapabilityItem } from '../CameraCapabilityItem';
 
 import * as style from './style.module.css';
+import usePeers from '@hooks/usePeers';
+import PeersList from '@components/PeersList';
+import Window from '@components/Window';
 
 const groupDevices = (devices, t) => {
   const output = [];
@@ -155,8 +158,12 @@ const getCapabilitiesTabs = (capabilities, t = (v) => v) => {
   return tabs.map((tab) => ({ ...tab, properties: tab.properties.filter((prop) => capabilities.some((cap) => cap.id === prop)) })).filter((tab) => tab.properties.length > 0);
 };
 
-const CameraSettingsWindow = ({ t, cameraCapabilities, onCapabilityChange, onDevicesListRefresh = () => {}, onSettingsChange = () => {}, devices = [], settings = {} }) => {
-  const [selectedTab, setSelectedTab] = useState('CAMERAS');
+const RemoteCameraSettingsTab = withTranslation()(() => {
+  const { peers, actions } = usePeers();
+  return <PeersList peers={peers} onConnect={actions.add} onDelete={actions.remove} />
+});
+
+const BasicCameraSettingsTab = withTranslation()(({ t, onDevicesListRefresh = () => { }, onSettingsChange = () => { }, devices = [], settings = {} }) => {
   const form = useForm({
     mode: 'all',
     defaultValues: {
@@ -164,8 +171,7 @@ const CameraSettingsWindow = ({ t, cameraCapabilities, onCapabilityChange, onDev
     },
   });
   const { watch, register, getValues } = form;
-
-  const tabs = getCapabilitiesTabs(cameraCapabilities, t);
+  const [isPeerDevicesListOpen, setIsPeerDevicesListOpen] = useState(false);
 
   const formValues = watch();
 
@@ -173,6 +179,63 @@ const CameraSettingsWindow = ({ t, cameraCapabilities, onCapabilityChange, onDev
     const values = getValues();
     onSettingsChange(values);
   }, [JSON.stringify(formValues)]);
+
+console.log('isPeerDevicesListOpen', isPeerDevicesListOpen)
+
+  return (
+    <>
+    <Window title={t('Remote cameras')} isOpened={isPeerDevicesListOpen} onClose={() => setIsPeerDevicesListOpen(false)}>
+      <RemoteCameraSettingsTab />
+    </Window>
+
+      <FormGroup label={t('Camera')} description={t('The camera device to use to take frames')}>
+        <Select
+          options={[
+            { value: '', label: t('Choose a camera'), disabled: true },
+            ...groupDevices(
+              devices.map((e) => ({ value: e.id, label: e.label })),
+              t
+            ),
+          ]}
+          register={register('CAMERA_ID')}
+        />
+        <Action title={t('Remote cameras')} className={style.refreshIcon} onClick={() => setIsPeerDevicesListOpen(true)}>
+          <FontAwesomeIcon icon={faRotate} />
+        </Action>
+        <Action title={t('Refresh camera list')} className={style.refreshIcon} onClick={() => onDevicesListRefresh()}>
+          <FontAwesomeIcon icon={faRotate} />
+        </Action>
+      </FormGroup>
+      <FormGroup label={t('Frames to capture')} description={t('Number of frames to capture')}>
+        <NumberInput register={register('CAPTURE_FRAMES')} min={1} />
+      </FormGroup>
+
+      <FormGroup label={t('Reverse horizontally')} description={t('Reverse the camera horizontally')}>
+        <Switch register={register('REVERSE_X')} />
+      </FormGroup>
+
+      <FormGroup label={t('Reverse vertically')} description={t('Reverse the camera vertically')}>
+        <Switch register={register('REVERSE_Y')} />
+      </FormGroup>
+
+      <FormGroup label={t('Frame averaging')} description={t('Frame averaging will take several frames to remove picture noise, camera must be perfectly stable')}>
+        <div style={{ display: 'inline-block' }}>
+          <Switch register={register('AVERAGING_ENABLED')} />
+        </div>
+        {watch('AVERAGING_ENABLED') && (
+          <div style={{ display: 'inline-block', marginLeft: 'var(--space-big)' }}>
+            <NumberInput register={register('AVERAGING_VALUE')} min={2} max={10} />
+          </div>
+        )}
+      </FormGroup>
+    </>
+  );
+});
+
+const CameraSettingsWindow = ({ t, cameraCapabilities, onCapabilityChange, onDevicesListRefresh = () => { }, onSettingsChange = () => { }, devices = [], settings = {} }) => {
+  const [selectedTab, setSelectedTab] = useState('CAMERAS');
+
+  const tabs = getCapabilitiesTabs(cameraCapabilities, t);
 
   const categories = [{ id: 'CAMERAS', icon: faCamera, title: t('Cameras'), properties: [] }, ...tabs.map((e) => ({ icon: e.icon, title: e.title, properties: e.properties }))].map((c, i) => ({
     ...c,
@@ -187,48 +250,12 @@ const CameraSettingsWindow = ({ t, cameraCapabilities, onCapabilityChange, onDev
       <IconTabs tabs={categories} onClick={(e) => setSelectedTab(e.id)} />
       <div className={style.actions}>
         {selectedCategory.id === 'CAMERAS' && (
-          <>
-            <FormGroup label={t('Camera')} description={t('The camera device to use to take frames')}>
-              <Select
-                options={[
-                  { value: '', label: t('Choose a camera'), disabled: true },
-                  ...groupDevices(
-                    devices.map((e) => ({ value: e.id, label: e.label })),
-                    t
-                  ),
-                ]}
-                register={register('CAMERA_ID')}
-              />
-              <Action title={t('Remote cameras')} className={style.refreshIcon} onClick={() => onDevicesListRefresh()}>
-                <FontAwesomeIcon icon={faRotate} />
-              </Action>
-              <Action title={t('Refresh camera list')} className={style.refreshIcon} onClick={() => onDevicesListRefresh()}>
-                <FontAwesomeIcon icon={faRotate} />
-              </Action>
-            </FormGroup>
-            <FormGroup label={t('Frames to capture')} description={t('Number of frames to capture')}>
-              <NumberInput register={register('CAPTURE_FRAMES')} min={1} />
-            </FormGroup>
-
-            <FormGroup label={t('Reverse horizontally')} description={t('Reverse the camera horizontally')}>
-              <Switch register={register('REVERSE_X')} />
-            </FormGroup>
-
-            <FormGroup label={t('Reverse vertically')} description={t('Reverse the camera vertically')}>
-              <Switch register={register('REVERSE_Y')} />
-            </FormGroup>
-
-            <FormGroup label={t('Frame averaging')} description={t('Frame averaging will take several frames to remove picture noise, camera must be perfectly stable')}>
-              <div style={{ display: 'inline-block' }}>
-                <Switch register={register('AVERAGING_ENABLED')} />
-              </div>
-              {watch('AVERAGING_ENABLED') && (
-                <div style={{ display: 'inline-block', marginLeft: 'var(--space-big)' }}>
-                  <NumberInput register={register('AVERAGING_VALUE')} min={2} max={10} />
-                </div>
-              )}
-            </FormGroup>
-          </>
+          <BasicCameraSettingsTab
+            onDevicesListRefresh={onDevicesListRefresh}
+            onSettingsChange={onSettingsChange}
+            devices={devices}
+            settings={settings}
+          />
         )}
 
         {selectedCategory.properties.map((cap) => (
