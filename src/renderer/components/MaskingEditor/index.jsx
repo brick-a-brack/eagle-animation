@@ -89,6 +89,7 @@ class MaskingEditor extends Component {
       const ctx = canvas.getContext('2d');
       if (src) {
         const img = new Image();
+        img.crossOrigin = 'anonymous';
         img.addEventListener('error', reject);
         img.addEventListener('load', () => {
           canvas.width = img.width || defaultWidth || 0;

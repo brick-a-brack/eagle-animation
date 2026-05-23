@@ -16,7 +16,7 @@ import { runToucanCameraServer } from './core/toucan';
 
 let sendToRenderer = () => null;
 
-protocol.registerSchemesAsPrivileged([{ scheme: 'ea', privileges: { bypassCSP: true, standard: true, secure: true, supportFetchAPI: true } }]);
+protocol.registerSchemesAsPrivileged([{ scheme: 'ea', privileges: { bypassCSP: true, corsEnabled: true, standard: true, secure: true, supportFetchAPI: true } }]);
 
 function createWindow() {
   // Create the browser window.
@@ -93,6 +93,8 @@ app.whenReady().then(() => {
     if (!w && !h && !f && !q && !m && !i) {
       return net.fetch(url.pathToFileURL(diskPath).toString());
     }
+
+    // TODO Shortcut cache here
 
     try {
       // Create a Sharp instance
