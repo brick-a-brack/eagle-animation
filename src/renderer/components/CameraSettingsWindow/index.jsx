@@ -29,6 +29,7 @@ import faTriangle from '@icons/faTriangle';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { withTranslation } from 'react-i18next';
+import useAppCapabilities from '@hooks/useAppCapabilities';
 
 import { CameraCapabilityItem } from '../CameraCapabilityItem';
 
@@ -174,13 +175,14 @@ const RemoteCameraSettingsWindow = withTranslation()(({ onDevicesListRefresh }) 
   return <PeersList peers={peers} onConnect={handleConnect} onDelete={handleDelete} />;
 });
 
-const BasicCameraSettingsTab = withTranslation()(({ t, onDevicesListRefresh = () => {}, onSettingsChange = () => {}, devices = [], settings = {} }) => {
+const BasicCameraSettingsTab = withTranslation()(({ t, onDevicesListRefresh = () => { }, onSettingsChange = () => { }, devices = [], settings = {} }) => {
   const form = useForm({
     mode: 'all',
     defaultValues: {
       ...settings,
     },
   });
+  const { appCapabilities } = useAppCapabilities()
   const { watch, register, getValues } = form;
   const [isPeerDevicesListOpen, setIsPeerDevicesListOpen] = useState(false);
 
@@ -208,9 +210,9 @@ const BasicCameraSettingsTab = withTranslation()(({ t, onDevicesListRefresh = ()
           <FontAwesomeIcon icon={faRotate} />
         </Action>
 
-        <Action title={t('Remote cameras')} className={style.refreshIcon} onClick={() => setIsPeerDevicesListOpen(true)}>
+        {appCapabilities.includes('REMOTE_CAMERAS') && <Action title={t('Remote cameras')} className={style.refreshIcon} onClick={() => setIsPeerDevicesListOpen(true)}>
           <FontAwesomeIcon icon={faMobileSignalOut} />
-        </Action>
+        </Action>}
       </FormGroup>
       <FormGroup label={t('Frames to capture')} description={t('Number of frames to capture')}>
         <NumberInput register={register('CAPTURE_FRAMES')} min={1} />
@@ -235,14 +237,14 @@ const BasicCameraSettingsTab = withTranslation()(({ t, onDevicesListRefresh = ()
         )}
       </FormGroup>
 
-      <Window title={t('Remote cameras')} isOpened={isPeerDevicesListOpen} onClose={() => setIsPeerDevicesListOpen(false)} zIndex={1}>
+      {appCapabilities.includes('REMOTE_CAMERAS') && <Window title={t('Remote cameras')} isOpened={isPeerDevicesListOpen} onClose={() => setIsPeerDevicesListOpen(false)} zIndex={1}>
         <RemoteCameraSettingsWindow onDevicesListRefresh={onDevicesListRefresh} />
-      </Window>
+      </Window>}
     </>
   );
 });
 
-const CameraSettingsWindow = ({ t, cameraCapabilities, onCapabilityChange, onDevicesListRefresh = () => {}, onSettingsChange = () => {}, devices = [], settings = {} }) => {
+const CameraSettingsWindow = ({ t, cameraCapabilities, onCapabilityChange, onDevicesListRefresh = () => { }, onSettingsChange = () => { }, devices = [], settings = {} }) => {
   const [selectedTab, setSelectedTab] = useState('CAMERAS');
 
   const tabs = getCapabilitiesTabs(cameraCapabilities, t);
