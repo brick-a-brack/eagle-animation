@@ -38,7 +38,7 @@ const PeersList = ({ t, peers = [], onConnect = () => {}, onDelete = () => {} })
       await onConnect(cleanHost, cleanToken || null);
       reset({ host: '', token: '' });
     } catch (err) {
-      setSubmitError(err?.message || t('Connection failed'));
+      setSubmitError(err?.message || true);
     }
   };
 
