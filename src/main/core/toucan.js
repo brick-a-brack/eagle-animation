@@ -16,6 +16,8 @@ function getPlatformKey() {
       return 'windows';
     case 'darwin':
       return 'macos';
+    case 'linux':
+      return 'linux';
     default:
       return null;
   }
@@ -23,6 +25,10 @@ function getPlatformKey() {
 
 const findBinaryPath = () => {
   const platform = getPlatformKey();
+  if (!platform) {
+    return null;
+  }
+
   const binaryName = platform === 'windows' ? 'toucan-camera-server.exe' : 'toucan-camera-server';
 
   const allowedPaths = [
