@@ -44,11 +44,23 @@ class WebGPhoto2 {
     clearTimeout(this.previewTimeout);
 
     const refreshFrame = async () => {
+      // Stop the loop once disconnected: clearTimeout alone can't cancel an
+      // in-flight async iteration that would otherwise re-arm the timeout.
+      if (!this.isActive) {
+        return;
+      }
+
       const blob = await this.CameraInstance.capturePreviewAsBlob();
+
+      // We may have been disconnected while awaiting the frame.
+      if (!this.isActive) {
+        return;
+      }
+
       const newUrl = URL.createObjectURL(blob);
 
       if (this.setStream) {
-        this.setStream('image', newUrl);
+        this.setStream('frame', newUrl);
       }
 
       if (this.lastPreviewUrl) {
@@ -290,8 +302,16 @@ class WebGPhoto2 {
   }
 
   async disconnect() {
-    clearTimeout(this.previewTimeout);
+    // Stop the preview loop first so it can't keep pushing frames over the
+    // shared setStream callback once another camera takes over.
     this.isActive = false;
+    clearTimeout(this.previewTimeout);
+    this.setStream = null;
+
+    if (this.lastPreviewUrl) {
+      URL.revokeObjectURL(this.lastPreviewUrl);
+      this.lastPreviewUrl = null;
+    }
 
     // Disconnect don't seem to work properly if we want to reconnect, can crash the browser
     // await this.CameraInstance.disconnect();

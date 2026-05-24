@@ -6,23 +6,32 @@ class PreviewStream extends Component {
     this.canvasRef = createRef();
     this._videoEl = null;
     this._imgEl = null;
+    this._frameEl = null;
+    this._frameSeq = 0;
+    this._frameShownSeq = -1;
     this._streamType = null;
     this._currentRatio = null;
     this._rafId = null;
   }
 
+  // type:
+  //  - 'image': a self-refreshing image stream (e.g. an MJPEG URL set once)
+  //  - 'frame': a single live-view frame pushed repeatedly (e.g. gphoto2 blobs)
+  //  - 'video': a MediaStream
   setStream(type, data) {
     this.props.onStreamChange?.(type, data);
 
-    this._flushCanvas();
-
     if (type === 'image') {
+      this._flushCanvas();
       this._destroyImgEl();
       this._imgEl = new Image();
       this._imgEl.onerror = () => this._flushCanvas();
       this._imgEl.src = data;
       this._streamType = 'image';
+    } else if (type === 'frame') {
+      this._pushFrame(data);
     } else if (type === 'video') {
+      this._flushCanvas();
       this._destroyVideoEl();
       this._videoEl = document.createElement('video');
       this._videoEl.muted = true;
@@ -32,8 +41,34 @@ class PreviewStream extends Component {
       this._videoEl.play();
       this._streamType = 'video';
     } else {
-      this._streamType = null;
+      this._flushCanvas();
     }
+  }
+
+  // Push a single live-view frame. Unlike 'image', we never clear the canvas
+  // between frames: the previously decoded frame keeps being drawn until the
+  // new one has finished loading, then we swap. This avoids the blank flicker
+  // that comes from flushing the canvas while the next frame decodes.
+  _pushFrame(data) {
+    if (this._streamType !== 'frame') {
+      // Switching into frame mode from another stream: clean leftover state.
+      this._destroyImgEl();
+      this._destroyVideoEl();
+      this._streamType = 'frame';
+    }
+
+    const seq = ++this._frameSeq;
+    const img = new Image();
+    img.onload = () => {
+      // Drop frames decoded after we left frame mode, or out of order
+      // (a newer frame already won the race).
+      if (this._streamType !== 'frame' || seq <= this._frameShownSeq) return;
+      this._frameShownSeq = seq;
+      this._frameEl = img;
+    };
+    // Ignore a failed frame and keep showing the last good one.
+    img.onerror = () => {};
+    img.src = data;
   }
 
   getStreamRatio() {
@@ -56,6 +91,11 @@ class PreviewStream extends Component {
         if (canvas.height !== this._imgEl.naturalHeight) canvas.height = this._imgEl.naturalHeight;
         ctx.drawImage(this._imgEl, 0, 0);
         this._notifyRatioChange(this._imgEl.naturalWidth / this._imgEl.naturalHeight);
+      } else if (this._streamType === 'frame' && this._frameEl?.complete && this._frameEl?.naturalWidth) {
+        if (canvas.width !== this._frameEl.naturalWidth) canvas.width = this._frameEl.naturalWidth;
+        if (canvas.height !== this._frameEl.naturalHeight) canvas.height = this._frameEl.naturalHeight;
+        ctx.drawImage(this._frameEl, 0, 0);
+        this._notifyRatioChange(this._frameEl.naturalWidth / this._frameEl.naturalHeight);
       } else if (this._streamType === 'video' && this._videoEl?.readyState >= this._videoEl?.HAVE_CURRENT_DATA) {
         if (canvas.width !== this._videoEl.videoWidth) canvas.width = this._videoEl.videoWidth;
         if (canvas.height !== this._videoEl.videoHeight) canvas.height = this._videoEl.videoHeight;
@@ -86,10 +126,19 @@ class PreviewStream extends Component {
     this._videoEl = null;
   }
 
+  _destroyFrameEl() {
+    if (!this._frameEl) return;
+    this._frameEl.onload = null;
+    this._frameEl.onerror = null;
+    this._frameEl = null;
+    this._frameShownSeq = -1;
+  }
+
   _flushCanvas() {
     const canvas = this.canvasRef.current;
     if (!canvas) return;
     canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
+    this._destroyFrameEl();
     this._streamType = null;
     this._currentRatio = null;
   }
@@ -102,6 +151,7 @@ class PreviewStream extends Component {
     cancelAnimationFrame(this._rafId);
     this._destroyImgEl();
     this._destroyVideoEl();
+    this._destroyFrameEl();
   }
 
   render() {

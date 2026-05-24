@@ -6,7 +6,6 @@ import resizeToFit from 'intrinsic-scale';
 import { isEqual } from 'lodash';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { flushSync } from 'react-dom';
 
 import * as style from './style.module.css';
 
@@ -56,7 +55,7 @@ class Player extends Component {
         heightElem = parentSize.height - 6;
         widthElem = this.getRatio() * (parentSize.height - 6); // Border should be added here
       }
-      flushSync(() => this.setState({ width: widthElem, height: heightElem, ready: true }));
+      this.setState({ width: widthElem, height: heightElem, ready: true });
     };
 
     this.clock = null;

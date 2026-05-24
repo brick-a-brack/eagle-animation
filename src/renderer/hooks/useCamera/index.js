@@ -7,7 +7,6 @@ const applyCameraLabel = (e, i) => ({ ...e, label: `[${i + 1}] ${e.label || ''}`
 function useCamera(options = {}) {
   const [devices, setDevices] = useState(null);
   const [currentCameraId, setCurrentCameraId] = useState(null);
-  const [currentCamera, setCurrentCamera] = useState(undefined);
   const [isReady, setIsReady] = useState(false);
   const [cameraCapabilities, setCameraCapabilities] = useState([]);
   const setStreamRef = useRef(null);
@@ -15,6 +14,11 @@ function useCamera(options = {}) {
     ...(typeof options?.eventsHandlers?.connect === 'function' ? [['connect', options?.eventsHandlers?.connect]] : []),
     ...(typeof options?.eventsHandlers?.disconnect === 'function' ? [['disconnect', options?.eventsHandlers?.disconnect]] : []),
   ]);
+
+  // Derived from currentCameraId. getCamera() caches its instances, so this
+  // returns a stable reference for a given id across renders (safe to use in
+  // effect/callback dependency arrays) — no need to keep it in a state.
+  const currentCamera = currentCameraId ? getCamera(currentCameraId) : null;
 
   // Load cameras list at setup
   useEffect(() => {
@@ -64,8 +68,6 @@ function useCamera(options = {}) {
       const deviceId = cameras.find((e) => e.id === cameraId)?.id || cameras?.[0]?.id || null;
       if (deviceId !== currentCameraId) {
         if (currentCamera) {
-          setCurrentCameraId(null);
-          setCurrentCamera(null);
           try {
             currentCamera?.disconnect();
           } catch (e) {
@@ -81,11 +83,9 @@ function useCamera(options = {}) {
             await getCameras().then((cameras) => setDevices(cameras.map(applyCameraLabel)));
             triggerEvent('connect');
           }
-          setCurrentCamera(camera);
           camera?.getCapabilities().then(setCameraCapabilities);
         } else {
           setCurrentCameraId(null);
-          setCurrentCamera(null);
           setCameraCapabilities([]);
         }
       }
@@ -141,8 +141,6 @@ function useCamera(options = {}) {
       }
     };
   }, [currentCamera, triggerEvent]);
-
-  console.log(currentCameraId, devices);
 
   const isCurrentCameraConnected = currentCameraId && devices && devices.some((e) => `${e.id}` === `${currentCameraId}`);
 

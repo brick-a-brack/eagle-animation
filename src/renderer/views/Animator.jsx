@@ -200,12 +200,19 @@ const Animator = ({ t }) => {
 
   // Select default camera
   useEffect(() => {
-    if (devices?.length > 0 && !currentCameraId) {
-      const defaultCamera = devices.find((device) => device.id === settings.CAMERA_ID) || devices[0];
+    if (devices?.length > 0 && settings && !currentCameraId) {
+      const availableDevices = devices.filter((device) => !!device?.id);
+      const defaultCamera =
+        availableDevices.find((device) => device.id === settings.CAMERA_ID) || availableDevices[0] || null;
+
+      if (!defaultCamera) {
+        return;
+      }
+
       cameraActions.setCamera(defaultCamera.id);
       settingsActions.setSettings({ CAMERA_ID: defaultCamera.id });
     }
-  }, [devices]);
+  }, [devices, settings, currentCameraId]);
 
   // Shortcut if informations are not ready
   if (!project || !settings || !devices) {
