@@ -83,8 +83,6 @@ export const ImageRoute = async (request) => {
     return net.fetch(url.pathToFileURL(diskPath).toString());
   }
 
-  console.log('Cache key:', cacheKey, 'Cached file:', cachedFile, 'Enabled cache:', c);
-
   // Use cached data if available
   if (c && (await pathExists(cachedFile))) {
     const cachedBuffer = await readFile(cachedFile);
