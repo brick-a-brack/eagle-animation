@@ -63,6 +63,11 @@ export const runToucanCameraServer = (callback = () => {}) => {
     }
   };
 
+  if (import.meta.env.VITE_TOUCAN_CAMERA_SERVER_URL) {
+    console.log(`🐦 Using existing toucan-camera-server at ${import.meta.env.VITE_TOUCAN_CAMERA_SERVER_URL}`);
+    return null;
+  }
+
   const binaryPath = findBinaryPath();
   if (!binaryPath) {
     console.log(`🐦 Binary not found for toucan-camera-server`);
