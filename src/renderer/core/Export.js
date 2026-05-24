@@ -83,6 +83,7 @@ export const ExportFrames = async (
               }
             : {}),
           ...(typeof opts.forceFileExtension !== 'undefined' ? { f: computedExtension } : {}),
+          c: false,
         })
       ).then((res) => res.arrayBuffer());
 

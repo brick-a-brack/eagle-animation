@@ -12,6 +12,7 @@ export const getPictureLink = (url = '', args = {}) => {
     ...(args.m ? { m: args.m } : {}),
     ...(args.f ? { f } : {}),
     ...(args.f && q ? { q } : {}),
+    ...(args.c !== undefined && !args.c ? { c: 'false' } : { c: 'true' }),
   }).toString();
 
   return `${url}?${params}`;

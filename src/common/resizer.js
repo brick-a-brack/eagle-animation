@@ -1,4 +1,5 @@
 export const parseResizeArguments = (params) => {
+  const c = params.get('c') || params.get('cache') || null;
   const w = params.get('w') || params.get('width') || null;
   const h = params.get('h') || params.get('height') || null;
   const f = params.get('f') || params.get('format') || null;
@@ -13,5 +14,6 @@ export const parseResizeArguments = (params) => {
     q: infos !== 'json' ? (q ? Math.max(0, Math.min(100, parseInt(q, 10))) : null) : null,
     m: ['cover', 'contain'].includes(mode?.toLowerCase() || '') ? mode?.toLowerCase() : null,
     i: infos === 'json' ? 'json' : null,
+    c: c === '1' || c?.toLowerCase() === 'true',
   };
 };
