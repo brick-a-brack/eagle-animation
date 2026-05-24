@@ -101,7 +101,7 @@ Some features are device-dependent or platform-limited. Here's a summary table.
 | Workshop features     | 🟢               | 🔴            | 🔴                     |
 
 1. Including Chromium-based browsers (Edge, Brave, Opera, Arc, etc.).
-2. Webcam settings are only supported on Windows.
+2. Webcam settings are only supported on Windows and Linux.
 3. Canon support on Windows, additional devices supported on macOS and Linux.
 4. Using WebUSB, can require advanced configuration on Windows.
 
