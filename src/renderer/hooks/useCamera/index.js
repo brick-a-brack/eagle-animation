@@ -10,7 +10,7 @@ function useCamera(options = {}) {
   const [currentCamera, setCurrentCamera] = useState(undefined);
   const [isReady, setIsReady] = useState(false);
   const [cameraCapabilities, setCameraCapabilities] = useState([]);
-  const domRefs = useRef(null);
+  const setStreamRef = useRef(null);
   const eventsRefs = useRef([
     ...(typeof options?.eventsHandlers?.connect === 'function' ? [['connect', options?.eventsHandlers?.connect]] : []),
     ...(typeof options?.eventsHandlers?.disconnect === 'function' ? [['disconnect', options?.eventsHandlers?.disconnect]] : []),
@@ -42,16 +42,12 @@ function useCamera(options = {}) {
     getCameras().then((cameras) => setDevices(cameras.map(applyCameraLabel)));
   }, []);
 
-  // Action to set DOM refs
-  const actionSetDomRefs = useCallback(
-    async ({ videoDOM, imageDOM }) => {
-      if (!domRefs.current) {
-        domRefs.current = {};
-      }
-      domRefs.current.videoDOM = videoDOM;
-      domRefs.current.imageDOM = imageDOM;
+  // Action to set stream callback
+  const actionSetStream = useCallback(
+    async (setStream) => {
+      setStreamRef.current = setStream;
       if (currentCamera) {
-        await currentCamera.connect({ videoDOM: domRefs.current.videoDOM, imageDOM: domRefs.current.imageDOM }, options, () => {
+        await currentCamera.connect({ setStream: setStreamRef.current }, options, () => {
           getCameras().then((cameras) => setDevices(cameras.map(applyCameraLabel)));
         });
         triggerEvent('connect');
@@ -70,14 +66,18 @@ function useCamera(options = {}) {
         if (currentCamera) {
           setCurrentCameraId(null);
           setCurrentCamera(null);
-          currentCamera?.disconnect();
+          try {
+            currentCamera?.disconnect();
+          } catch (e) {
+            console.error(e);
+          }
           triggerEvent('disconnect');
         }
         if (deviceId) {
           setCurrentCameraId(deviceId);
           const camera = getCamera(deviceId);
-          if (domRefs?.current?.videoDOM && domRefs?.current?.imageDOM) {
-            await camera?.connect({ videoDOM: domRefs?.current?.videoDOM, imageDOM: domRefs?.current?.imageDOM }, options);
+          if (setStreamRef?.current) {
+            await camera?.connect({ setStream: setStreamRef.current }, options);
             await getCameras().then((cameras) => setDevices(cameras.map(applyCameraLabel)));
             triggerEvent('connect');
           }
@@ -132,20 +132,28 @@ function useCamera(options = {}) {
   useEffect(() => {
     return () => {
       if (currentCamera) {
-        currentCamera?.disconnect();
+        try {
+          currentCamera?.disconnect();
+        } catch (e) {
+          console.error(e);
+        }
         triggerEvent('disconnect');
       }
     };
   }, [currentCamera, triggerEvent]);
 
+  console.log(currentCameraId, devices);
+
+  const isCurrentCameraConnected = currentCameraId && devices && devices.some((e) => `${e.id}` === `${currentCameraId}`);
+
   return {
-    isCameraReady: isReady,
+    isCameraReady: isCurrentCameraConnected && isReady,
     devices,
-    currentCameraId,
-    currentCameraCapabilities: cameraCapabilities || [],
-    currentCamera: (isReady ? currentCamera : null) || null,
+    currentCameraId: isCurrentCameraConnected ? currentCameraId : null,
+    currentCameraCapabilities: isCurrentCameraConnected ? cameraCapabilities || [] : [],
+    currentCamera: (isCurrentCameraConnected && isReady ? currentCamera : null) || null,
     actions: {
-      setDomRefs: actionSetDomRefs,
+      setStream: actionSetStream,
       setCamera: actionSetCamera,
       refreshDevices: actionRefreshDevices,
       takePicture: actionTakePicture,

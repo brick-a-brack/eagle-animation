@@ -31,7 +31,7 @@ class WebGPhoto2 {
 
     this.lastPreviewUrl = null;
     this.config = null;
-    this.imageDOM = null;
+    this.setStream = null;
     this.previewTimeout = null;
   }
 
@@ -46,7 +46,10 @@ class WebGPhoto2 {
     const refreshFrame = async () => {
       const blob = await this.CameraInstance.capturePreviewAsBlob();
       const newUrl = URL.createObjectURL(blob);
-      this.imageDOM.src = newUrl;
+
+      if (this.setStream) {
+        this.setStream('image', newUrl);
+      }
 
       if (this.lastPreviewUrl) {
         URL.revokeObjectURL(this.lastPreviewUrl);
@@ -203,13 +206,9 @@ class WebGPhoto2 {
     return allowedCapabilities;
   }
 
-  async connect({ videoDOM, imageDOM } = { videoDOM: false, imageDOM: false }, settings = {}) {
-    this.imageDOM = imageDOM;
+  async connect({ setStream } = {}, settings = {}) {
+    this.setStream = setStream;
     this.settings = settings;
-
-    // Disable video stream
-    videoDOM.src = '';
-    imageDOM.src = '';
 
     await CameraAPI.showPicker();
     await this.CameraInstance.connect();
@@ -292,13 +291,6 @@ class WebGPhoto2 {
 
   async disconnect() {
     clearTimeout(this.previewTimeout);
-    if (this.imageDOM) {
-      this.imageDOM.src = '';
-    }
-    if (this.videoDOM) {
-      this.videoDOM.srcObject = null;
-      this.videoDOM.src = '';
-    }
     this.isActive = false;
 
     // Disconnect don't seem to work properly if we want to reconnect, can crash the browser

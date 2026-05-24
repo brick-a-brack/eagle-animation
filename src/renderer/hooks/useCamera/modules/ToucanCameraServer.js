@@ -64,13 +64,8 @@ class ToucanCameraServer {
     });
   }
 
-  async connect({ videoDOM, imageDOM } = { videoDOM: false, imageDOM: false } /*, settings = {} */) {
-    this.imageDOM = imageDOM;
-    this.videoDOM = videoDOM;
-
-    // Disable video stream
-    videoDOM.src = '';
-    imageDOM.src = '';
+  async connect({ setStream } = {} /*, settings = {} */) {
+    this.setStream = setStream;
 
     await fetch(`${getApiUrl()}cameras/${this.deviceId}/connect`, {
       method: 'PUT',
@@ -79,7 +74,10 @@ class ToucanCameraServer {
       },
     });
 
-    imageDOM.src = `${getApiUrl()}cameras/${this.deviceId}/liveview?token=${getToken()}&t=${new Date().getTime()}`;
+    const url = `${getApiUrl()}cameras/${this.deviceId}/liveview?token=${getToken()}&t=${new Date().getTime()}`;
+    if (setStream) {
+      setStream('image', url);
+    }
 
     return true;
   }
@@ -98,7 +96,7 @@ class ToucanCameraServer {
   }
 
   async disconnect() {
-    this.imageDOM.src = '';
+    this.setStream = null;
     await fetch(`${getApiUrl()}cameras/${this.deviceId}/disconnect`, {
       method: 'PUT',
       headers: {

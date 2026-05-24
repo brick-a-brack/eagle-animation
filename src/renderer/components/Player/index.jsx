@@ -1,3 +1,4 @@
+import PreviewStream from '@components/PreviewStream';
 import { getPictureLink } from '@core/resize';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import faEyeSlash from '@icons/faEyeSlash';
@@ -5,6 +6,7 @@ import resizeToFit from 'intrinsic-scale';
 import { isEqual } from 'lodash';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import { flushSync } from 'react-dom';
 
 import * as style from './style.module.css';
 
@@ -21,8 +23,7 @@ class Player extends Component {
 
     this.dom = {
       container: React.createRef(),
-      video: React.createRef(),
-      videoFrame: React.createRef(),
+      previewStream: React.createRef(),
       picture: React.createRef(),
       grid: React.createRef(),
     };
@@ -36,8 +37,6 @@ class Player extends Component {
       ready: false,
       frameIndex: false, // Frame index contains the position in the animation (including duplicated frames)
     };
-
-    this.rafId = null;
 
     this.resize = () => {
       this.initCanvas();
@@ -57,7 +56,7 @@ class Player extends Component {
         heightElem = parentSize.height - 6;
         widthElem = this.getRatio() * (parentSize.height - 6); // Border should be added here
       }
-      this.setState({ width: widthElem, height: heightElem, ready: true });
+      flushSync(() => this.setState({ width: widthElem, height: heightElem, ready: true }));
     };
 
     this.clock = null;
@@ -185,80 +184,10 @@ class Player extends Component {
   componentDidMount() {
     const { onInit } = this.props;
 
-    onInit(this.dom.video.current, this.dom.videoFrame.current);
+    onInit((type, data) => this.dom.previewStream.current?.setStream(type, data));
 
-    const handleStreamLoaded = (domElement) => {
-      if (domElement) {
-        domElement.width = domElement.naturalWidth;
-        domElement.height = domElement.naturalHeight;
-        domElement.style.display = 'block';
-      }
-    };
-
-    const handleStreamError = (domElement) => {
-      if (domElement) {
-        domElement.width = 0;
-        domElement.height = 0;
-        domElement.style.display = 'none';
-      }
-    };
-
-    // By default video and image element are in error mode
-    handleStreamError(this.dom.video.current);
-    handleStreamError(this.dom.videoFrame.current);
-
-    // Video player events
-    this.dom.video.current.oncanplay = () => {
-      handleStreamLoaded(this.dom.video.current);
-      this.resize();
-    };
-    this.dom.video.current.onresize = () => {
-      this.resize();
-    };
-    this.dom.video.current.onerror = () => {
-      handleStreamError(this.dom.video.current);
-      this.resize();
-    };
-
-    // MJPEG frame player events
-    this.dom.videoFrame.current.onload = () => {
-      handleStreamLoaded(this.dom.videoFrame.current);
-      this.resize();
-    };
-    this.dom.videoFrame.current.onresize = () => {
-      this.resize();
-    };
-    this.dom.videoFrame.current.onerror = () => {
-      handleStreamError(this.dom.videoFrame.current);
-      this.resize();
-    };
-
-    const refreshFrameSize = () => {
-      let shouldResize = false;
-      if (this.dom.videoFrame.current.width !== this.dom.videoFrame.current.naturalWidth && this.dom.videoFrame.current.naturalWidth) {
-        this.dom.videoFrame.current.width = this.dom.videoFrame.current.naturalWidth;
-        shouldResize = true;
-      }
-      if (this.dom.videoFrame.current.height !== this.dom.videoFrame.current.naturalHeight && this.dom.videoFrame.current.naturalHeight) {
-        this.dom.videoFrame.current.height = this.dom.videoFrame.current.naturalHeight;
-        shouldResize = true;
-      }
-
-      if (shouldResize) {
-        this.resize();
-      }
-
-      this.rafId = requestAnimationFrame(refreshFrameSize);
-    };
-    this.rafId = requestAnimationFrame(refreshFrameSize);
-
-    // Default sizing
     this.resize();
-
-    // Global window handler
     window.addEventListener('resize', this.resize);
-
-    // Show camera preview as default frame
     this.showFrame(false);
   }
 
@@ -304,9 +233,6 @@ class Player extends Component {
   componentWillUnmount() {
     window.removeEventListener('resize', this.resize);
     this.stop();
-    if (this.rafId) {
-      cancelAnimationFrame(this.rafId);
-    }
   }
 
   getVideoRatio() {
@@ -314,19 +240,7 @@ class Player extends Component {
   }
 
   getRatio() {
-    let ratio = null;
-    if (!ratio && this.dom.video.current && (this.dom.video.current.src || this.dom.video.current.srcObject)) {
-      const tmpRatio = this.dom.video.current.videoWidth / this.dom.video.current.videoHeight;
-      if (tmpRatio > 0) {
-        ratio = tmpRatio;
-      }
-    }
-    if (!ratio && this.dom.videoFrame.current) {
-      const tmpRatio = this.dom.videoFrame.current.naturalWidth / this.dom.videoFrame.current.naturalHeight;
-      if (tmpRatio > 0) {
-        ratio = tmpRatio;
-      }
-    }
+    const ratio = this.dom.previewStream.current?.getStreamRatio() || null;
     return ratio > 0 ? ratio : 16 / 9;
   }
 
@@ -456,8 +370,12 @@ class Player extends Component {
     return (
       <div className={`${style.playerContainer} ${frameIndex === false ? style.live : ''}`}>
         <div className={style.container} ref={this.dom.container} style={{ width: `${width}px`, height: `${height}px`, opacity: ready ? 1 : 0 }}>
-          <video ref={this.dom.video} className={`${style.layout} ${reverseClassNames}`} style={{ opacity: isCameraReady && frameIndex === false ? 1 : 0 }} />
-          <img ref={this.dom.videoFrame} className={`${style.layout} ${reverseClassNames}`} style={{ opacity: isCameraReady && frameIndex === false ? 1 : 0 }} />
+          <PreviewStream
+            ref={this.dom.previewStream}
+            className={`${style.layout} ${reverseClassNames}`}
+            style={{ opacity: isCameraReady && frameIndex === false ? 1 : 0 }}
+            onRatioChange={this.resize}
+          />
           <canvas
             ref={this.dom.picture}
             className={style.layout}

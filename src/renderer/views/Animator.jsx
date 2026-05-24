@@ -200,10 +200,12 @@ const Animator = ({ t }) => {
 
   // Select default camera
   useEffect(() => {
-    if (settings?.CAMERA_ID) {
-      cameraActions.setCamera(settings?.CAMERA_ID || null);
+    if (devices?.length > 0 && !currentCameraId) {
+      const defaultCamera = devices.find((device) => device.id === settings.CAMERA_ID) || devices[0];
+      cameraActions.setCamera(defaultCamera.id);
+      settingsActions.setSettings({ CAMERA_ID: defaultCamera.id });
     }
-  }, [settings?.CAMERA_ID]);
+  }, [devices]);
 
   // Shortcut if informations are not ready
   if (!project || !settings || !devices) {
@@ -233,6 +235,9 @@ const Animator = ({ t }) => {
   };
 
   const handleSettingsChange = async (values) => {
+    if (values.CAMERA_ID !== settings.CAMERA_ID) {
+      cameraActions.setCamera(values.CAMERA_ID || null);
+    }
     settingsActions.setSettings(values);
   };
 
@@ -494,8 +499,8 @@ const Animator = ({ t }) => {
     },
   };
 
-  const handlePlayerInit = (videoDOM = null, imageDOM = null) => {
-    cameraActions.setDomRefs({ videoDOM, imageDOM });
+  const handlePlayerInit = (setStream) => {
+    cameraActions.setStream(setStream);
   };
 
   const handleCapabilityChange = async (id, value) => {

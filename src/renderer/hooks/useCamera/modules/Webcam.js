@@ -4,7 +4,8 @@ class Webcam {
   constructor(deviceId = null) {
     this.stream = false;
     this.deviceId = deviceId;
-    this.video = false;
+    this.setStream = null;
+    this._captureVideo = null;
     this.width = false;
     this.height = false;
   }
@@ -16,7 +17,6 @@ class Webcam {
   initStream(width = undefined, height = undefined) {
     // eslint-disable-next-line no-async-promise-executor
     return new Promise(async (resolve, reject) => {
-      // Get preview stream
       this.stream = await navigator.mediaDevices
         .getUserMedia({
           video: {
@@ -27,8 +27,8 @@ class Webcam {
                   height: { min: 480, ideal: 1080, max: 99999 },
                 }
               : {
-                  width: width || 99999, // Force to get the best quality available (Chromium only)
-                  height: height || 99999, // Force to get the best quality available (Chromium only)
+                  width: width || 99999,
+                  height: height || 99999,
                   ...(!width && !height ? { frameRate: { min: 1, ideal: 15, max: 60 } } : {}),
                 }),
           },
@@ -36,21 +36,19 @@ class Webcam {
         })
         .catch(reject);
 
-      //console.log('[CAMERA]', 'Init', this.video, this.stream);
-      //window.__DEBUG_DEVICE = this.stream;
-
-      // Launch preview
-      if (this.video) {
-        this.video.srcObject = this.stream;
-        this.video.addEventListener('canplay', () => {
-          this.video.play();
-          this.width = this.video.videoWidth;
-          this.height = this.video.videoHeight;
-          resolve();
-        });
-
-        //console.log('[CAMERA]', 'Ready');
-      }
+      // Internal video element used only for capture fallback
+      this._captureVideo = document.createElement('video');
+      this._captureVideo.muted = true;
+      this._captureVideo.srcObject = this.stream;
+      this._captureVideo.addEventListener('canplay', () => {
+        this._captureVideo.play();
+        this.width = this._captureVideo.videoWidth;
+        this.height = this._captureVideo.videoHeight;
+        if (this.setStream) {
+          this.setStream('video', this.stream);
+        }
+        resolve();
+      });
     });
   }
 
@@ -378,8 +376,8 @@ class Webcam {
     return allowedCapabilities;
   }
 
-  async connect({ videoDOM /*, imageDOM */ } = { videoDOM: false, imageDOM: false }, settings = {}) {
-    this.video = videoDOM;
+  async connect({ setStream } = {}, settings = {}) {
+    this.setStream = setStream;
     this.settings = settings;
 
     await this.initStream();
@@ -416,21 +414,18 @@ class Webcam {
       return { type: 'image/png', buffer: canvas };
     } else {
       const canvas = document.createElement('canvas');
-      canvas.width = this.video.videoWidth;
-      canvas.height = this.video.videoHeight;
+      canvas.width = this._captureVideo.videoWidth;
+      canvas.height = this._captureVideo.videoHeight;
       const context = canvas.getContext('2d', { alpha: false });
-      context.drawImage(this.video, 0, 0, canvas.width, canvas.height);
+      context.drawImage(this._captureVideo, 0, 0, canvas.width, canvas.height);
       return { type: 'image/png', buffer: canvas };
     }
   }
 
   async disconnect() {
-    if (this.video) {
-      this.video.src = '';
-      this.video.srcObject = null;
-      if (typeof this.video?.stop === 'function') {
-        this.video.stop();
-      }
+    if (this._captureVideo) {
+      this._captureVideo.srcObject = null;
+      this._captureVideo = null;
     }
     if (this.stream) {
       this.stream.getTracks().forEach((track) => {
