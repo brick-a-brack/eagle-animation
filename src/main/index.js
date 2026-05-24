@@ -7,8 +7,8 @@ import { app, BrowserWindow, ipcMain, protocol, shell } from 'electron';
 
 import icon from '../../resources/icon.png?asset';
 import actions from './actions';
-import { runToucanCameraServer } from './core/toucan';
 import { ImageRoute } from './core/routes';
+import { runToucanCameraServer } from './core/toucan';
 
 let sendToRenderer = () => null;
 
