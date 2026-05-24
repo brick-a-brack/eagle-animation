@@ -34,3 +34,5 @@ debug.log
 .env.test.local
 .env.production.local
 
+# Claude files
+.claude/settings.local.json
