@@ -133,7 +133,6 @@ const Animator = ({ t }) => {
   const [loopStatus, setLoopStatus] = useState(false);
   const [shortPlayStatus, setShortPlayStatus] = useState(false);
   const [differenceStatus, setDifferenceStatus] = useState(false);
-  const [fps, setFps] = useState(12);
   const [ratio, setRatio] = useState(null);
   const [onionValue, setOnionValue] = useState(1);
   const [gridStatus, setGridStatus] = useState(false);
@@ -147,6 +146,7 @@ const Animator = ({ t }) => {
   const { project, actions: projectActions } = useProject({ id });
 
   const nbFrames = project?.scenes?.[track]?.pictures?.filter((e) => !e.deleted)?.length || 0;
+  const fps = Math.min(60, Math.max(1, Number(project?.scenes?.[track]?.framerate) || 1));
 
   useDiscordActivity({
     actionIcon: 'animating',
@@ -184,12 +184,6 @@ const Animator = ({ t }) => {
     })();
   }, [currentFrameId]);
 
-  // Sync framerate when project change
-  useEffect(() => {
-    (() => {
-      setFps(project?.scenes?.[track]?.framerate);
-    })();
-  }, [project?.scenes?.[track]?.framerate]);
 
   // Sync ratio when project change
   useEffect(() => {
@@ -521,7 +515,6 @@ const Animator = ({ t }) => {
   const handleProjectSettingsChange = async (fields) => {
     projectActions.rename(fields.title || '');
     if (fields.fps) {
-      setFps(fields.fps);
       handleAction('FPS_CHANGE', fields.fps);
     }
 
