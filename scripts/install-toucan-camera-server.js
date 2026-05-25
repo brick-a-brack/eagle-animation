@@ -4,7 +4,7 @@ const path = require('path');
 const { execFileSync } = require('child_process');
 const extract = require('extract-zip');
 
-const TOUCAN_CAMERA_SERVER_VERSION = '0.0.7';
+const TOUCAN_CAMERA_SERVER_VERSION = '0.0.8';
 
 const RELEASES = {
   windows: `https://github.com/brick-a-brack/toucan-camera-server/releases/download/v${TOUCAN_CAMERA_SERVER_VERSION}/toucan-camera-server-windows.zip`,
