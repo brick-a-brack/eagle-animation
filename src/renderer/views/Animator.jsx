@@ -163,16 +163,7 @@ const Animator = ({ t }) => {
     currentCamera,
     currentCameraId,
     actions: cameraActions,
-  } = useCamera({
-    eventsHandlers: {
-      connect: () => {
-        playerRef?.current?.resize();
-      },
-      disconnect: () => {
-        playerRef?.current?.resize();
-      },
-    },
-  });
+  } = useCamera();
 
   // Disable frame deletion confirmation if we change the current frame
   useEffect(() => {
