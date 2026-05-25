@@ -75,10 +75,12 @@ class PreviewStream extends Component {
     return this._currentRatio;
   }
 
+  // Returns true if the ratio changed (parent needs to resize before drawing).
   _notifyRatioChange(newRatio) {
-    if (this._currentRatio === newRatio) return;
+    if (this._currentRatio === newRatio) return false;
     this._currentRatio = newRatio;
     this.props.onRatioChange?.(newRatio);
+    return true;
   }
 
   _tick() {
@@ -89,19 +91,26 @@ class PreviewStream extends Component {
       if (this._streamType === 'image' && this._imgEl?.complete && this._imgEl?.naturalWidth) {
         if (canvas.width !== this._imgEl.naturalWidth) canvas.width = this._imgEl.naturalWidth;
         if (canvas.height !== this._imgEl.naturalHeight) canvas.height = this._imgEl.naturalHeight;
-        ctx.drawImage(this._imgEl, 0, 0);
-        this._notifyRatioChange(this._imgEl.naturalWidth / this._imgEl.naturalHeight);
+        // Notify ratio change before drawing: if the ratio changed this frame, skip the draw
+        // so the parent container resizes first and we avoid a one-frame size mismatch.
+        if (!this._notifyRatioChange(this._imgEl.naturalWidth / this._imgEl.naturalHeight)) {
+          ctx.drawImage(this._imgEl, 0, 0);
+        }
       } else if (this._streamType === 'frame' && this._frameEl?.complete && this._frameEl?.naturalWidth) {
         if (canvas.width !== this._frameEl.naturalWidth) canvas.width = this._frameEl.naturalWidth;
         if (canvas.height !== this._frameEl.naturalHeight) canvas.height = this._frameEl.naturalHeight;
-        ctx.drawImage(this._frameEl, 0, 0);
-        this._notifyRatioChange(this._frameEl.naturalWidth / this._frameEl.naturalHeight);
+        if (!this._notifyRatioChange(this._frameEl.naturalWidth / this._frameEl.naturalHeight)) {
+          ctx.drawImage(this._frameEl, 0, 0);
+        }
       } else if (this._streamType === 'video' && this._videoEl?.readyState >= this._videoEl?.HAVE_CURRENT_DATA) {
         if (canvas.width !== this._videoEl.videoWidth) canvas.width = this._videoEl.videoWidth;
         if (canvas.height !== this._videoEl.videoHeight) canvas.height = this._videoEl.videoHeight;
-        ctx.drawImage(this._videoEl, 0, 0);
         if (this._videoEl.videoWidth && this._videoEl.videoHeight) {
-          this._notifyRatioChange(this._videoEl.videoWidth / this._videoEl.videoHeight);
+          if (!this._notifyRatioChange(this._videoEl.videoWidth / this._videoEl.videoHeight)) {
+            ctx.drawImage(this._videoEl, 0, 0);
+          }
+        } else {
+          ctx.drawImage(this._videoEl, 0, 0);
         }
       } else {
         canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
