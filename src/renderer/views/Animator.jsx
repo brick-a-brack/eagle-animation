@@ -137,7 +137,6 @@ const Animator = ({ t }) => {
   const [gridStatus, setGridStatus] = useState(false);
   const [currentFrameId, setCurrentFrameId] = useState(false);
   const [deleteOnLiveViewConfirmation, setDeleteOnLiveViewConfirmation] = useState(false);
-  const [disableKeyboardShortcuts, setDisableKeyboardShortcuts] = useState(false);
   const [showMaskingEditor, setShowMaskingEditor] = useState(false);
   const [pendingBackgroundFrame, setPendingBackgroundFrame] = useState(false);
   const maskingEditorRef = useRef(null);
@@ -473,12 +472,6 @@ const Animator = ({ t }) => {
       navigate(`/`);
       window.track('project_deleted', { projectId: id });
     },
-    FPS_FOCUS: () => {
-      setDisableKeyboardShortcuts(true);
-    },
-    FPS_BLUR: () => {
-      setDisableKeyboardShortcuts(false);
-    },
     TOOGLE_MASKING_MODE: () => {
       const values = ['DISABLED', 'CONTINUOUS', 'UNIQUE'];
       const newMode = values?.[values?.indexOf(maskingMode) + 1] || values?.[0];
@@ -613,7 +606,7 @@ const Animator = ({ t }) => {
           />
         </div>
       </PageLayout>
-      {!showCameraSettings && !showProjectSettings && !showMaskingEditor && <KeyboardHandler onAction={handleAction} disabled={disableKeyboardShortcuts} />}
+      {!showCameraSettings && !showProjectSettings && !showMaskingEditor && <KeyboardHandler onAction={handleAction}  />}
       <Window isOpened={showCameraSettings} onClose={() => setShowCameraSettings(false)}>
         <CameraSettingsWindow
           cameraCapabilities={currentCameraCapabilities}
