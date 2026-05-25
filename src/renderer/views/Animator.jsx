@@ -126,9 +126,8 @@ const Animator = ({ t }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const { settings, actions: settingsActions } = useSettings();
   const { appCapabilities } = useAppCapabilities();
-  const [showCameraSettings, setShowCameraSettings] = useState(false);
+  const [activeWindow, setActiveWindow] = useState(null);
   const [maskingMode, setMaskingMode] = useState('DISABLED');
-  const [showProjectSettings, setShowProjectSettings] = useState(false);
   const [isTakingPicture, setIsTakingPicture] = useState(false);
   const [loopStatus, setLoopStatus] = useState(false);
   const [shortPlayStatus, setShortPlayStatus] = useState(false);
@@ -137,7 +136,6 @@ const Animator = ({ t }) => {
   const [gridStatus, setGridStatus] = useState(false);
   const [currentFrameId, setCurrentFrameId] = useState(false);
   const [deleteOnLiveViewConfirmation, setDeleteOnLiveViewConfirmation] = useState(false);
-  const [showMaskingEditor, setShowMaskingEditor] = useState(false);
   const [pendingBackgroundFrame, setPendingBackgroundFrame] = useState(false);
   const maskingEditorRef = useRef(null);
 
@@ -334,7 +332,7 @@ const Animator = ({ t }) => {
     },
     CAMERA_SETTINGS: () => {
       playerRef.current.showFrame(false);
-      setShowCameraSettings(!showCameraSettings);
+      setActiveWindow((v) => (v === 'camera' ? null : 'camera'));
     },
     DELETE_FRAME: async () => {
       if (pictures.length === 0) {
@@ -440,7 +438,7 @@ const Animator = ({ t }) => {
       navigate(`/settings?back=/animator/${id}/${track}`);
     },
     PROJECT_SETTINGS: () => {
-      setShowProjectSettings((v) => !v);
+      setActiveWindow((v) => (v === 'project' ? null : 'project'));
     },
     MORE: () => {},
     EXPORT: () => {
@@ -482,7 +480,7 @@ const Animator = ({ t }) => {
       window.track('animator_changed', { feature: 'masking', value: newMode });
     },
     MASKING_EDITOR: () => {
-      setShowMaskingEditor(true);
+      setActiveWindow('masking');
     },
   };
 
@@ -515,7 +513,7 @@ const Animator = ({ t }) => {
     }
 
     // Close editor
-    setShowMaskingEditor(false);
+    setActiveWindow(null);
 
     // Force player sync
     setTimeout(() => {
@@ -575,7 +573,7 @@ const Animator = ({ t }) => {
           )}
           <ControlBar
             onAction={handleAction}
-            showCameraSettings={showCameraSettings}
+            showCameraSettings={activeWindow === 'camera'}
             gridModes={settings.GRID_MODES}
             gridStatus={gridStatus}
             differenceStatus={differenceStatus}
@@ -606,8 +604,8 @@ const Animator = ({ t }) => {
           />
         </div>
       </PageLayout>
-      {!showCameraSettings && !showProjectSettings && !showMaskingEditor && <KeyboardHandler onAction={handleAction}  />}
-      <Window isOpened={showCameraSettings} onClose={() => setShowCameraSettings(false)}>
+      {activeWindow === null && <KeyboardHandler onAction={handleAction} />}
+      <Window isOpened={activeWindow === 'camera'} onClose={() => setActiveWindow(null)}>
         <CameraSettingsWindow
           cameraCapabilities={currentCameraCapabilities}
           onCapabilityChange={handleCapabilityChange}
@@ -618,7 +616,7 @@ const Animator = ({ t }) => {
           settings={settings}
         />
       </Window>
-      <Window isOpened={showProjectSettings} onClose={() => setShowProjectSettings(false)}>
+      <Window isOpened={activeWindow === 'project'} onClose={() => setActiveWindow(null)}>
         <ProjectSettingsWindow
           fps={fps}
           title={project?.title || ''}
@@ -628,7 +626,7 @@ const Animator = ({ t }) => {
         />
       </Window>
       {!isPlaying && (
-        <Window isOpened={showMaskingEditor && !isPlaying} onClose={handleCloseMaskingEditor} isFullScreen={true}>
+        <Window isOpened={activeWindow === 'masking' && !isPlaying} onClose={handleCloseMaskingEditor} isFullScreen={true}>
           {currentFrame && currentFrame?.masking && (
             <MaskingWindow
               key={currentFrame.id}
