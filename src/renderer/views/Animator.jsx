@@ -133,7 +133,6 @@ const Animator = ({ t }) => {
   const [loopStatus, setLoopStatus] = useState(false);
   const [shortPlayStatus, setShortPlayStatus] = useState(false);
   const [differenceStatus, setDifferenceStatus] = useState(false);
-  const [ratio, setRatio] = useState(null);
   const [onionValue, setOnionValue] = useState(1);
   const [gridStatus, setGridStatus] = useState(false);
   const [currentFrameId, setCurrentFrameId] = useState(false);
@@ -147,6 +146,7 @@ const Animator = ({ t }) => {
 
   const nbFrames = project?.scenes?.[track]?.pictures?.filter((e) => !e.deleted)?.length || 0;
   const fps = Math.min(60, Math.max(1, Number(project?.scenes?.[track]?.framerate) || 1));
+  const ratio = project?.scenes?.[track]?.ratio ? parseRatio(project?.scenes?.[track]?.ratio) : null;
 
   useDiscordActivity({
     actionIcon: 'animating',
@@ -184,13 +184,6 @@ const Animator = ({ t }) => {
     })();
   }, [currentFrameId]);
 
-
-  // Sync ratio when project change
-  useEffect(() => {
-    (() => {
-      setRatio(project?.scenes?.[track]?.ratio ? parseRatio(project?.scenes?.[track]?.ratio) : null);
-    })();
-  }, [project?.scenes?.[track]?.ratio]);
 
   // Select default camera
   useEffect(() => {
@@ -518,7 +511,6 @@ const Animator = ({ t }) => {
       handleAction('FPS_CHANGE', fields.fps);
     }
 
-    setRatio(fields.ratio);
     handleAction('RATIO_CHANGE', fields?.ratio?.userValue || '');
   };
 
