@@ -36,12 +36,11 @@ This error occurs because Eagle Animation files are not signed. You can fix the 
 
 ### What languages does Eagle Animation support?
 
-Eagle Animation is available in English, French, German, Spanish, Italian, Portuguese, Polish, Esperanto, Bulgarian, Czech, Danish, Greek, Croatian, Latvian, Hungarian, Dutch, Romanian, Slovak,
-Lithuanian, Slovenian, Finnish, Swedish and Russian.
+Eagle Animation is available in English, French, German, Spanish, Italian, Portuguese, Polish, Esperanto, Bulgarian, Czech, Danish, Greek, Croatian, Latvian, Hungarian, Dutch, Romanian, Slovak, Lithuanian, Slovenian, Finnish, Swedish and Russian.
 
 ### Is Eagle Animation compatible with my camera?
 
-Eagle Animation is compatible with all webcams detected by your device and also supports DSLR cameras on the Windows version.
+Eagle Animation is compatible webcams and some DSLR cameras on the desktop version.
 
 ### Is there a mobile version of Eagle Animation?
 
