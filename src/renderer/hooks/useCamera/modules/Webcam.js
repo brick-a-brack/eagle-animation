@@ -423,16 +423,26 @@ class Webcam {
   }
 
   async disconnect() {
-    if (this._captureVideo) {
-      this._captureVideo.srcObject = null;
-      this._captureVideo = null;
-    }
+    // Stop the capture tracks first…
     if (this.stream) {
       this.stream.getTracks().forEach((track) => {
         track.stop();
         track.enabled = false;
       });
       this.stream = null;
+    }
+
+    // Clear object
+    if (this._captureVideo) {
+      this._captureVideo.pause();
+      this._captureVideo.srcObject = null;
+      this._captureVideo = null;
+    }
+
+    // Release the display element owned by PreviewStream too.
+    if (this.setStream) {
+      this.setStream(null);
+      this.setStream = null;
     }
   }
 }
