@@ -339,5 +339,7 @@
   "Failed to connect to the device": "Αποτυχία σύνδεσης με τη συσκευή",
   "Connect": "Σύνδεση",
   "Toucan Camera": "Toucan Camera",
-  "Disconnect": "Αποσύνδεση"
+  "Disconnect": "Αποσύνδεση",
+  "Importing frames, please wait...": "Εισαγωγή καρέ, παρακαλώ περιμένετε...",
+  "Drop images here to import": "Αφήστε τις εικόνες εδώ για να τις εισάγετε"
 }

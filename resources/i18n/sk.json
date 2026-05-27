@@ -346,5 +346,7 @@
   "Failed to connect to the device": "Nepodarilo sa pripojiť k zariadeniu",
   "Connect": "Pripojiť",
   "Toucan Camera": "Toucan Camera",
-  "Disconnect": "Odpojiť"
+  "Disconnect": "Odpojiť",
+  "Importing frames, please wait...": "Importovanie snímok, prosím, počkajte...",
+  "Drop images here to import": "Sem vložte obrázky na importovanie"
 }

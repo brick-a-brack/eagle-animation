@@ -354,5 +354,7 @@
   "Failed to connect to the device": "Malsukcesis konekti al la aparato",
   "Connect": "Konekti",
   "Toucan Camera": "Toucan Camera",
-  "Disconnect": "Malconnecti"
+  "Disconnect": "Malconnecti",
+  "Importing frames, please wait...": "Importado de kadroj, bonvolu atendi...",
+  "Drop images here to import": "Metu bildojn ĉi tie por importi"
 }

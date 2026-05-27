@@ -346,5 +346,7 @@
   "Failed to connect to the device": "Не удалось подключиться к устройству",
   "Connect": "Подключиться",
   "Toucan Camera": "Toucan Camera",
-  "Disconnect": "Отключиться"
+  "Disconnect": "Отключиться",
+  "Importing frames, please wait...": "Импортирование кадров, пожалуйста, подождите...",
+  "Drop images here to import": "Перетащите изображения сюда для импорта"
 }

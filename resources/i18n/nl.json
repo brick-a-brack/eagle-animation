@@ -339,5 +339,7 @@
   "Failed to connect to the device": "Verbinden met het apparaat is mislukt",
   "Connect": "Verbinden",
   "Toucan Camera": "Toucan Camera",
-  "Disconnect": "Ontkoppelen"
+  "Disconnect": "Ontkoppelen",
+  "Importing frames, please wait...": "Beelden importeren, even geduld...",
+  "Drop images here to import": "Sleep afbeeldingen hier om te importeren"
 }

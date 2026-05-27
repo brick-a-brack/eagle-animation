@@ -339,5 +339,7 @@
   "Failed to connect to the device": "Fejl ved tilslutning til enheden",
   "Connect": "Tilslut",
   "Toucan Camera": "Toucan Camera",
-  "Disconnect": "Frakobl"
+  "Disconnect": "Frakobl",
+  "Importing frames, please wait...": "Importer rammer, vent venligst...",
+  "Drop images here to import": "Træk billeder her for at importere"
 }

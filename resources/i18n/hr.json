@@ -343,5 +343,7 @@
   "Failed to connect to the device": "Neuspjela veza s uređajem",
   "Connect": "Poveži",
   "Toucan Camera": "Toucan Camera",
-  "Disconnect": "Prekini vezu"
+  "Disconnect": "Prekini vezu",
+  "Importing frames, please wait...": "Učitavanje okvira, molimo pričekajte...",
+  "Drop images here to import": "Ovdje ispustite slike za uvoz"
 }

@@ -339,5 +339,7 @@
   "Failed to connect to the device": "A csatlakozás az eszközhöz meghiúsult",
   "Connect": "Csatlakozás",
   "Toucan Camera": "Toucan Camera",
-  "Disconnect": "Különválás"
+  "Disconnect": "Különválás",
+  "Importing frames, please wait...": "Képkockák importálása, kérem várjon...",
+  "Drop images here to import": "Húzza ide a képeket az importáláshoz"
 }

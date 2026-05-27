@@ -343,5 +343,7 @@
   "Failed to connect to the device": "Conectare eșuată la dispozitiv",
   "Connect": "Conectare",
   "Toucan Camera": "Toucan Camera",
-  "Disconnect": "Deconectare"
+  "Disconnect": "Deconectare",
+  "Importing frames, please wait...": "Importarea cadrelor, vă rugăm să așteptați...",
+  "Drop images here to import": "Trageți imaginile aici pentru a le importa"
 }

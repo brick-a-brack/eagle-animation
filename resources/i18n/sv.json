@@ -339,5 +339,7 @@
   "Failed to connect to the device": "Misslyckades med att ansluta till enheten",
   "Connect": "Anslut",
   "Toucan Camera": "Toucan Camera",
-  "Disconnect": "Koppla bort"
+  "Disconnect": "Koppla bort",
+  "Importing frames, please wait...": "Importerar bilder, vänligen vänta...",
+  "Drop images here to import": "Dra och släpp bilder här för att importera"
 }

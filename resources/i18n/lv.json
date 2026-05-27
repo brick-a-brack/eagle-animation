@@ -343,5 +343,7 @@
   "Failed to connect to the device": "Neizdevās pieslēgties ierīcei",
   "Connect": "Pieslēgties",
   "Toucan Camera": "Toucan Camera",
-  "Disconnect": "Atvienoties"
+  "Disconnect": "Atvienoties",
+  "Importing frames, please wait...": "Ievadīt kadri, lūdzu, gaidiet...",
+  "Drop images here to import": "Nolieciet attēlus šeit, lai importētu"
 }

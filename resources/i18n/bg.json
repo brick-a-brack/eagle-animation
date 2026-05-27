@@ -339,5 +339,7 @@
   "Failed to connect to the device": "Неуспешно свързване с устройството",
   "Connect": "Свържи се",
   "Toucan Camera": "Toucan Camera",
-  "Disconnect": "Прекъсни връзката"
+  "Disconnect": "Прекъсни връзката",
+  "Importing frames, please wait...": "Импортиране на кадри, моля изчакайте...",
+  "Drop images here to import": "Пуснете изображения тук, за да ги импортирате"
 }

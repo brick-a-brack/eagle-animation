@@ -339,5 +339,7 @@
   "Failed to connect to the device": "Yhteyden muodostaminen laitteeseen epäonnistui",
   "Connect": "Yhdistä",
   "Toucan Camera": "Toucan Camera",
-  "Disconnect": "Katkaise yhteys"
+  "Disconnect": "Katkaise yhteys",
+  "Importing frames, please wait...": "Kehysten tuonti, ole hyvä ja odota...",
+  "Drop images here to import": "Vedä kuvat tänne tuodaksesi ne"
 }

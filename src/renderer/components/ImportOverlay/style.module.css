@@ -1,0 +1,109 @@
+.dropZone {
+    align-items: center;
+    animation: fadeIn 0.15s ease-out;
+    background: rgb(0 0 0 / 70%);
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    justify-content: center;
+    left: 0;
+    overflow: hidden;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 99999999;
+}
+
+.dropZoneInner {
+    align-items: center;
+    border: 3px dashed var(--color-primary);
+    border-radius: var(--border-radius-big);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-big);
+    justify-content: center;
+    padding: calc(var(--space-huge) * 3);
+    pointer-events: none;
+}
+
+.dropIcon {
+    color: var(--color-white);
+    font-size: 4rem;
+}
+
+.dropText {
+    color: var(--color-white);
+    font-size: var(--font-size-2);
+    text-align: center;
+    user-select: none;
+}
+
+.importOverlay {
+    align-items: center;
+    animation: fadeIn 0.2s ease-out;
+    background: rgb(0 0 0 / 95%);
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    justify-content: center;
+    left: 0;
+    overflow: hidden;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 99999999;
+}
+
+.loader {
+    animation: 1s linear infinite rotate;
+    background: var(--color-primary);
+    height: 48px;
+    width: 48px;
+}
+
+.progress {
+    color: var(--color-white);
+    font-size: var(--font-size-4);
+    margin-top: calc(24px + var(--space-huge));
+    text-align: center;
+    user-select: none;
+    width: 100%;
+}
+
+.info {
+    color: var(--color-white);
+    font-size: var(--font-size-4);
+    margin-top: var(--space-big);
+    text-align: center;
+    user-select: none;
+    width: 90%;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes rotate {
+    0% {
+        border-radius: 10%;
+        transform: rotate(0deg) scale(0.2);
+    }
+
+    50% {
+        border-radius: 50%;
+        transform: rotate(180deg) scale(1.5);
+    }
+
+    100% {
+        border-radius: 10%;
+        transform: rotate(360deg) scale(0.2);
+    }
+}

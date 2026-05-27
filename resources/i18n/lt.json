@@ -365,5 +365,7 @@
   "Failed to connect to the device": "Nepavyko prisijungti prie įrenginio",
   "Connect": "Prisijungti",
   "Toucan Camera": "Toucan Camera",
-  "Disconnect": "Atsijungti"
+  "Disconnect": "Atsijungti",
+  "Importing frames, please wait...": "Importuojami kadrai, prašome palaukti...",
+  "Drop images here to import": "Nukelkite vaizdus čia, kad importuotumėte"
 }

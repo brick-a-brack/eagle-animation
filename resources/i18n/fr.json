@@ -356,5 +356,7 @@
   "Failed to connect to the device": "Échec de la connexion à l'appareil",
   "Connect": "Se connecter",
   "Toucan Camera": "Toucan Camera",
-  "Disconnect": "Se déconnecter"
+  "Disconnect": "Se déconnecter",
+  "Importing frames, please wait...": "Importation des images, veuillez patienter...",
+  "Drop images here to import": "Déposez les images ici pour les importer"
 }
