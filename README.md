@@ -32,7 +32,11 @@ without ads!_ 🎥
 ### How to fix: "Eagle Animation" is damaged and can't be opened. You should move it to Trash.
 
 This error occurs because Eagle Animation files are not signed. You can fix the issue by following these instructions:
-[https://www.youtube.com/watch?v=ceGovao817g](https://www.youtube.com/watch?v=ceGovao817g).
+- Install the app using the .dmg file like any other app
+- Open a terminal
+- Type `xattr -c "/Applications/Eagle Animation.app"` and press enter
+
+Video details: [https://www.youtube.com/watch?v=ceGovao817g](https://www.youtube.com/watch?v=ceGovao817g).
 
 ### What languages does Eagle Animation support?
 
@@ -58,7 +62,7 @@ Some variables can be configured using a `.env` file, values with a "\*" are req
 
 | **Name**                      | **Description**                                                                                         | **Example**                                |
 | ----------------------------- | ------------------------------------------------------------------------------------------------------- | ------------------------------------------ |
-| VITE_PUBLIC_URL               | The full url of the assets server, must be ended by a slash "/". If it is not defined, we will use "/". | `https://app.eagle-animation.com/`         |
+| VITE_PUBLIC_URL               | The full URL of the assets server, must end with a slash "/". If it is not defined, we will use "/". | `https://app.eagle-animation.com/`         |
 | VITE_COMMIT_HASH              | The hash of the current git commit, if it is not provided, the bundle will be flagged as "local".       | `cda02bf88498ce97d947fb357a6e4f459812122a` |
 | VITE_TOUCAN_CAMERA_SERVER_URL | Used for development, to choose the Toucan Camera Server instance.                                      | `http://192.168.1.14:8040/?token=RH6EH3`   |
 

@@ -41,6 +41,11 @@ class PreviewStream extends Component {
       this._videoEl.play();
       this._streamType = 'video';
     } else {
+      // Clear stream (e.g. setStream(null) on disconnect): fully release the
+      // backing elements so no <video> keeps holding the MediaStream. This is
+      // what frees the webcam device on Linux (see Webcam.disconnect).
+      this._destroyImgEl();
+      this._destroyVideoEl();
       this._flushCanvas();
     }
   }
