@@ -40,7 +40,7 @@ const SortableItem = ({ img, isShortPlayBegining = false, playing = false, selec
         transform: active ? DNDCSS.Transform.toString({ ...transform, y: 0, scaleX: 1, scaleY: 1 }) : undefined,
         transition: active ? transition : undefined,
       }}
-      onClick={() => onSelect(img)}
+      onClick={() => onSelect(img?.id)}
       className={`${style.containerImg} ${selected ? style.selected : ''} ${!playing && style.containerImgHover} ${img.hidden ? style.isHidden : ''}`}
     >
       <span className={style.img}>{img.link && <img alt="" className={style.imgcontent} src={getPictureLink(img.link, { w: 80, h: 80, m: 'cover', f: 'jpg' })} loading="lazy" />}</span>
@@ -53,7 +53,32 @@ const SortableItem = ({ img, isShortPlayBegining = false, playing = false, selec
   );
 };
 
-const Timeline = ({ onSelect, onMove, select = false, pictures = [], playing = false, shortPlayStatus = false, shortPlayFrames = 0, frameCaptureMode = false, t }) => {
+const LiveItem = ({ select, onSelect, frameCaptureMode }) => {
+  const { t } = useTranslation();
+  return (
+    <span
+      className={`${style.containerImg} ${style.camera} ${select === false ? style.selected : ''}`}
+      onClick={() => {
+        onSelect(false);
+      }}
+    >
+      <span id="timeline-frame-live" className={style.img} role="button" tabIndex={0} />
+      <span className={style.title}>{t('Live')}</span>
+      {['FOREGROUND', 'BACKGROUND'].includes(frameCaptureMode) && select === false && (
+        <>
+          <span
+            className={`${style.liveLayerIcon} ${frameCaptureMode === 'BACKGROUND' ? style.liveLayerIconBackground : ''}  ${frameCaptureMode === 'FOREGROUND' ? style.liveLayerIconForeground : ''}`}
+          >
+            <FontAwesomeIcon icon={faLayer} />
+          </span>
+          <span className={style.liveLayerText}>{frameCaptureMode === 'FOREGROUND' ? t('Foreground') : t('Background')}</span>
+        </>
+      )}
+    </span>
+  );
+};
+
+const Timeline = ({ onSelect, onMove, select = false, pictures = [], playing = false, shortPlayStatus = false, shortPlayFrames = 0, frameCaptureMode = false }) => {
   const ref = useRef(null);
 
   const sensors = useSensors(
@@ -106,21 +131,21 @@ const Timeline = ({ onSelect, onMove, select = false, pictures = [], playing = f
   const shortPlayFrameId = shortPlayStatus && shortPlayFrames > 0 ? displayedFrames?.[shortPlayFrameIndex]?.id || null : null;
 
   return (
-    <DndContext
-      sensors={sensors}
-      onDragEnd={({ active, over }) => {
-        const evt = {
-          oldIndex: getIndex(active.id),
-          newIndex: over ? getIndex(over.id) : pictures.length,
-        };
-        if (active && over && active.id === over.id) {
-          onSelect(pictures[evt.oldIndex]);
-        } else {
-          onMove(evt);
-        }
-      }}
-    >
-      <aside className={`${style.container}`} ref={ref}>
+    <aside className={`${style.container}`} ref={ref}>
+      <DndContext
+        sensors={sensors}
+        onDragEnd={({ active, over }) => {
+          const evt = {
+            oldIndex: getIndex(active.id),
+            newIndex: over ? getIndex(over.id) : pictures.length,
+          };
+          if (active && over && active.id === over.id) {
+            onSelect(pictures[evt.oldIndex]);
+          } else {
+            onMove(evt);
+          }
+        }}
+      >
         <SortableContext items={pictures} strategy={horizontalListSortingStrategy}>
           {pictures
             .filter((e) => !e.deleted)
@@ -136,27 +161,9 @@ const Timeline = ({ onSelect, onMove, select = false, pictures = [], playing = f
               />
             ))}
         </SortableContext>
-        <span
-          className={`${style.containerImg} ${style.camera} ${select === false ? style.selected : ''}`}
-          onClick={() => {
-            onSelect(false);
-          }}
-        >
-          <span id="timeline-frame-live" className={style.img} role="button" tabIndex={0} />
-          <span className={style.title}>{t('Live')}</span>
-          {['FOREGROUND', 'BACKGROUND'].includes(frameCaptureMode) && select === false && (
-            <>
-              <span
-                className={`${style.liveLayerIcon} ${frameCaptureMode === 'BACKGROUND' ? style.liveLayerIconBackground : ''}  ${frameCaptureMode === 'FOREGROUND' ? style.liveLayerIconForeground : ''}`}
-              >
-                <FontAwesomeIcon icon={faLayer} />
-              </span>
-              <span className={style.liveLayerText}>{frameCaptureMode === 'FOREGROUND' ? t('Foreground') : t('Background')}</span>
-            </>
-          )}
-        </span>
-      </aside>
-    </DndContext>
+      </DndContext>
+      <LiveItem select={select} onSelect={onSelect} frameCaptureMode={frameCaptureMode} />
+    </aside>
   );
 };
 

@@ -212,8 +212,8 @@ const Animator = ({ t }) => {
     }
   };
 
-  const handleSelectFrame = (selectedFrame) => {
-    playerRef.current.showFrame(selectedFrame === false ? false : selectedFrame.id);
+  const handleSelectFrame = (selectedFrameId) => {
+    playerRef.current.showFrame(selectedFrameId === false ? false : selectedFrameId);
   };
 
   const handleSettingsChange = async (values) => {
