@@ -1,7 +1,6 @@
 .container {
     position: relative;
-    display: inline-flex;
-    align-items: center;
+    width: 260px;
 }
 
 .button {
@@ -11,13 +10,14 @@
     border-radius: 6px;
     color: var(--color-white);
     cursor: pointer;
-    display: inline-flex;
-    font-size: var(--font-size-2);
-    font-weight: 500;
+    display: flex;
     gap: var(--space-medium);
-    line-height: var(--line-size-2);
-    padding: 6px 10px;
+        padding: 0px 6px;
+    text-align: left;
     transition: border-color 0.15s ease-in-out, background 0.15s ease-in-out;
+    justify-content: space-between;
+    width: 100%;
+    height: 40px;
 }
 
 .button:hover {
@@ -25,15 +25,36 @@
     border-color: var(--color-primary);
 }
 
-.label {
-    max-width: 180px;
+.buttonContent {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    max-width: 200px;
+}
+
+.projectLabel {
+    color: var(--color-white);
+    font-size: var(--font-size-8);
+    font-weight: 400;
+    line-height: 1.3;
+    opacity: 0.55;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.sceneLabel {
+    font-size: var(--font-size-6);
+    font-weight: 600;
+    line-height: 1.3;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
 
 .chevron {
-    font-size: 0.7em;
+    font-size: 0.65em;
+    opacity: 0.7;
     transition: transform 0.15s ease-in-out;
 }
 
@@ -44,15 +65,55 @@
 .panel {
     background: var(--color-theme-dark);
     border: 1px solid var(--color-theme-light);
-    border-radius: 6px;
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
     left: 0;
     margin-top: 6px;
-    min-width: 220px;
-    padding: 4px;
+    padding: 8px;
     position: absolute;
+    right: 0;
     top: 100%;
     z-index: 10;
+}
+
+.sectionHeader {
+    color: var(--color-white);
+    font-size: var(--font-size-8);
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    opacity: 0.45;
+    padding: 2px 8px 4px;
+    text-transform: uppercase;
+}
+
+.projectRow {
+    align-items: center;
+    border-radius: 4px;
+    display: flex;
+    gap: 4px;
+    padding: 2px 0 2px 4px;
+    justify-content: space-between;
+}
+
+.projectInput {
+    appearance: textfield;
+    background: transparent;
+    border: none;
+    color: var(--color-white);
+    field-sizing: content;
+    flex: 1;
+    font-size: var(--font-size-4);
+    font-weight: 600;
+    line-height: var(--line-size-4);
+    max-width: 180px;
+    min-width: 80px;
+    outline: none;
+    padding: 4px 6px;
+}
+
+.projectInput:focus {
+    background: var(--color-theme-light);
+    border-radius: 4px;
 }
 
 .row {
@@ -72,23 +133,48 @@
 }
 
 .rowSelect {
+    align-items: center;
     background: transparent;
     border: none;
     color: var(--color-white);
     cursor: pointer;
+    display: flex;
     flex: 1;
-    font-size: var(--font-size-2);
-    line-height: var(--line-size-2);
-    padding: 8px 10px;
+    gap: var(--space-medium);
+    justify-content: space-between;
+    padding: 7px 10px;
     text-align: left;
 }
 
 .rowTitle {
-    display: block;
-    max-width: 180px;
+    flex-shrink: 1;
+    font-size: var(--font-size-5);
+    font-weight: 500;
+    max-width: 160px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+}
+
+.rowMeta {
+    align-items: center;
+    display: flex;
+    flex-shrink: 0;
+    gap: 4px;
+}
+
+.metaTag {
+    background: var(--color-theme-medium);
+    border-radius: 3px;
+    color: var(--color-white);
+    font-size: var(--font-size-9);
+    font-weight: 500;
+    opacity: 0.7;
+    padding: 1px 5px;
+}
+
+.rowActive .metaTag {
+    background: var(--color-theme-dark);
 }
 
 .rowGear {
@@ -98,9 +184,10 @@
     color: var(--color-white);
     cursor: pointer;
     display: inline-flex;
+    flex-shrink: 0;
     height: 30px;
     justify-content: center;
-    opacity: 0.6;
+    opacity: 0.5;
     transition: opacity 0.15s ease-in-out, color 0.15s ease-in-out;
     width: 30px;
 }
@@ -113,7 +200,7 @@
 .separator {
     background: var(--color-theme-light);
     height: 1px;
-    margin: 4px 6px;
+    margin: 6px 4px;
 }
 
 .createButton {
@@ -124,11 +211,10 @@
     color: var(--color-white);
     cursor: pointer;
     display: flex;
-    font-size: var(--font-size-2);
+    font-size: var(--font-size-5);
     font-weight: 500;
     gap: var(--space-medium);
-    line-height: var(--line-size-2);
-    padding: 8px 10px;
+    padding: 7px 10px;
     transition: background 0.15s ease-in-out, color 0.15s ease-in-out;
     width: 100%;
 }

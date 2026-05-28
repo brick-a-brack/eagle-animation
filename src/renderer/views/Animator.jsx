@@ -9,7 +9,6 @@ import MaskingWindow from '@components/MaskingWindow';
 import PageLayout from '@components/PageLayout';
 import Player from '@components/Player';
 import ProjectSettingsWindow from '@components/ProjectSettingsWindow';
-import ProjectTitle from '@components/ProjectTitle';
 import SceneSelector from '@components/SceneSelector';
 import SceneSettingsWindow from '@components/SceneSettingsWindow';
 import Timeline from '@components/Timeline';
@@ -569,11 +568,12 @@ const Animator = ({ t }) => {
           ]}
           onAction={handleAction}
         >
-          <div style={{ alignItems: 'center', display: 'flex', gap: 'var(--space-big)' }}>
-            <ProjectTitle title={project?.title} onTitleChange={(title) => projectActions.rename(title || '')} onEdit={() => handleAction('PROJECT_SETTINGS')} />
-            <SceneSelector
-              scenes={visibleScenes.map((s) => ({ id: s.id, index: s.index, title: s.title }))}
+          <SceneSelector
+              scenes={visibleScenes.map((s) => ({ id: s.id, index: s.index, title: s.title, framerate: s.framerate, ratio: s.ratio }))}
               currentTrack={track}
+              projectTitle={project?.title}
+              onProjectTitleChange={(title) => projectActions.rename(title || '')}
+              onEditProject={() => handleAction('PROJECT_SETTINGS')}
               onSelect={(newIndex) => {
                 if (Number(newIndex) !== Number(track)) {
                   navigate(`/animator/${id}/${newIndex}`);
@@ -585,7 +585,6 @@ const Animator = ({ t }) => {
                 setActiveWindow('scene');
               }}
             />
-          </div>
         </HeaderBar>
         <Player
           t={t}
