@@ -1,0 +1,139 @@
+.container {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+}
+
+.button {
+    align-items: center;
+    background: transparent;
+    border: 1px solid var(--color-theme-light);
+    border-radius: 6px;
+    color: var(--color-white);
+    cursor: pointer;
+    display: inline-flex;
+    font-size: var(--font-size-2);
+    font-weight: 500;
+    gap: var(--space-medium);
+    line-height: var(--line-size-2);
+    padding: 6px 10px;
+    transition: border-color 0.15s ease-in-out, background 0.15s ease-in-out;
+}
+
+.button:hover {
+    background: var(--color-theme-light);
+    border-color: var(--color-primary);
+}
+
+.label {
+    max-width: 180px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.chevron {
+    font-size: 0.7em;
+    transition: transform 0.15s ease-in-out;
+}
+
+.chevronOpen {
+    transform: rotate(180deg);
+}
+
+.panel {
+    background: var(--color-theme-dark);
+    border: 1px solid var(--color-theme-light);
+    border-radius: 6px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+    left: 0;
+    margin-top: 6px;
+    min-width: 220px;
+    padding: 4px;
+    position: absolute;
+    top: 100%;
+    z-index: 10;
+}
+
+.row {
+    align-items: center;
+    border-radius: 4px;
+    display: flex;
+    justify-content: space-between;
+    transition: background 0.15s ease-in-out;
+}
+
+.row:hover {
+    background: var(--color-theme-light);
+}
+
+.rowActive {
+    background: var(--color-theme-light);
+}
+
+.rowSelect {
+    background: transparent;
+    border: none;
+    color: var(--color-white);
+    cursor: pointer;
+    flex: 1;
+    font-size: var(--font-size-2);
+    line-height: var(--line-size-2);
+    padding: 8px 10px;
+    text-align: left;
+}
+
+.rowTitle {
+    display: block;
+    max-width: 180px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.rowGear {
+    align-items: center;
+    background: transparent;
+    border: none;
+    color: var(--color-white);
+    cursor: pointer;
+    display: inline-flex;
+    height: 30px;
+    justify-content: center;
+    opacity: 0.6;
+    transition: opacity 0.15s ease-in-out, color 0.15s ease-in-out;
+    width: 30px;
+}
+
+.rowGear:hover {
+    color: var(--color-primary);
+    opacity: 1;
+}
+
+.separator {
+    background: var(--color-theme-light);
+    height: 1px;
+    margin: 4px 6px;
+}
+
+.createButton {
+    align-items: center;
+    background: transparent;
+    border: none;
+    border-radius: 4px;
+    color: var(--color-white);
+    cursor: pointer;
+    display: flex;
+    font-size: var(--font-size-2);
+    font-weight: 500;
+    gap: var(--space-medium);
+    line-height: var(--line-size-2);
+    padding: 8px 10px;
+    transition: background 0.15s ease-in-out, color 0.15s ease-in-out;
+    width: 100%;
+}
+
+.createButton:hover {
+    background: var(--color-theme-light);
+    color: var(--color-primary);
+}

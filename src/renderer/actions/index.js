@@ -42,6 +42,8 @@ const computeProject = async (data) => {
     copiedData?.project?.scenes?.map(async (scene) => {
       return {
         ...scene,
+        id: scene.id || crypto.randomUUID(),
+        deleted: scene.deleted || false,
         pictures: await Promise.all(
           scene.pictures.map(async (picture) => ({
             ...picture,

@@ -10,6 +10,8 @@ import PageLayout from '@components/PageLayout';
 import Player from '@components/Player';
 import ProjectSettingsWindow from '@components/ProjectSettingsWindow';
 import ProjectTitle from '@components/ProjectTitle';
+import SceneSelector from '@components/SceneSelector';
+import SceneSettingsWindow from '@components/SceneSettingsWindow';
 import Timeline from '@components/Timeline';
 import Window from '@components/Window';
 import { parseRatio } from '@core/ratio';
@@ -138,6 +140,7 @@ const Animator = ({ t }) => {
   const [currentFrameId, setCurrentFrameId] = useState(false);
   const [deleteOnLiveViewConfirmation, setDeleteOnLiveViewConfirmation] = useState(false);
   const [pendingBackgroundFrame, setPendingBackgroundFrame] = useState(false);
+  const [sceneEditingIndex, setSceneEditingIndex] = useState(Number(track) || 0);
   const maskingEditorRef = useRef(null);
 
   const { project, actions: projectActions } = useProject({ id });
@@ -166,6 +169,16 @@ const Animator = ({ t }) => {
     })();
   }, [currentFrameId]);
 
+  // Reset per-scene local state when switching scenes
+  useEffect(() => {
+    setCurrentFrameId(false);
+    setPendingBackgroundFrame(false);
+    setDeleteOnLiveViewConfirmation(false);
+    if (playerRef.current) {
+      playerRef.current.showFrame(false);
+    }
+  }, [track]);
+
   // Select default camera
   useEffect(() => {
     if (devices?.length > 0 && settings && !currentCameraId) {
@@ -193,10 +206,15 @@ const Animator = ({ t }) => {
   }
 
   // ---- RUNTIME LOGIC
-  const pictures = project.scenes[track].pictures.filter((e) => !e.deleted);
+  const pictures = (project.scenes[track]?.pictures || []).filter((e) => !e.deleted);
   const framePosition = currentFrameId === false ? false : pictures.findIndex((p) => p.id === currentFrameId) + 1 || 1;
   const currentFrame = currentFrameId === false ? false : pictures.find((p) => p.id === currentFrameId) || false;
   const totalAnimationFrames = pictures.reduce((acc, e) => acc + (!e.deleted && !e.hidden ? e.length || 1 : 0), 0);
+
+  const visibleScenes = project.scenes.map((s, index) => ({ ...s, index })).filter((s) => !s.deleted);
+  const editingScene = project.scenes[sceneEditingIndex] || null;
+  const editingFps = Math.min(60, Math.max(1, Number(editingScene?.framerate) || 1));
+  const editingRatio = editingScene?.ratio ? parseRatio(editingScene.ratio) : null;
 
   const handleAction = (action, args = null) => {
     if (actionsEvents[action]) {
@@ -425,6 +443,29 @@ const Animator = ({ t }) => {
     PROJECT_SETTINGS: () => {
       setActiveWindow((v) => (v === 'project' ? null : 'project'));
     },
+    ADD_SCENE: async () => {
+      const newIndex = project.scenes.length;
+      const currentFps = project?.scenes?.[track]?.framerate || 12;
+      await projectActions.addScene(t('Scene') + ' #' + (newIndex + 1), currentFps);
+      window.track('scene_added', { projectId: `${id}`, trackId: `${newIndex}` });
+      navigate(`/animator/${id}/${newIndex}`);
+    },
+    DELETE_SCENE: async () => {
+      const indexToDelete = Number(sceneEditingIndex);
+      const aliveOthers = project.scenes.filter((s, i) => i !== indexToDelete && !s.deleted);
+      if (aliveOthers.length === 0) {
+        return;
+      }
+      projectActions.deleteScene(indexToDelete);
+      setActiveWindow(null);
+      window.track('scene_deleted', { projectId: `${id}`, trackId: `${indexToDelete}` });
+      if (Number(track) === indexToDelete) {
+        const survivor = project.scenes.findIndex((s, i) => i !== indexToDelete && !s.deleted);
+        if (survivor !== -1) {
+          navigate(`/animator/${id}/${survivor}`);
+        }
+      }
+    },
     MORE: () => {},
     EXPORT: () => {
       navigate(`/export/${id}/${track}?back=/animator/${id}/${track}`);
@@ -483,11 +524,17 @@ const Animator = ({ t }) => {
 
   const handleProjectSettingsChange = async (fields) => {
     projectActions.rename(fields.title || '');
-    if (fields.fps) {
-      handleAction('FPS_CHANGE', fields.fps);
-    }
+  };
 
-    handleAction('RATIO_CHANGE', fields?.ratio?.userValue || '');
+  const handleSceneSettingsChange = async (fields) => {
+    projectActions.renameScene(sceneEditingIndex, fields.title || '');
+    if (fields.fps) {
+      projectActions.changeFPS(sceneEditingIndex, fields.fps);
+      if (Number(sceneEditingIndex) === Number(track) && isPlaying) {
+        playerRef?.current?.stop();
+      }
+    }
+    projectActions.changeRatio(sceneEditingIndex, fields?.ratio?.userValue || null);
   };
 
   const handleCloseMaskingEditor = async () => {
@@ -522,7 +569,23 @@ const Animator = ({ t }) => {
           ]}
           onAction={handleAction}
         >
-          <ProjectTitle title={project?.title} onTitleChange={(title) => projectActions.rename(title || '')} onEdit={() => handleAction('PROJECT_SETTINGS')} />
+          <div style={{ alignItems: 'center', display: 'flex', gap: 'var(--space-big)' }}>
+            <ProjectTitle title={project?.title} onTitleChange={(title) => projectActions.rename(title || '')} onEdit={() => handleAction('PROJECT_SETTINGS')} />
+            <SceneSelector
+              scenes={visibleScenes.map((s) => ({ id: s.id, index: s.index, title: s.title }))}
+              currentTrack={track}
+              onSelect={(newIndex) => {
+                if (Number(newIndex) !== Number(track)) {
+                  navigate(`/animator/${id}/${newIndex}`);
+                }
+              }}
+              onCreate={() => handleAction('ADD_SCENE')}
+              onEditScene={(sceneIndex) => {
+                setSceneEditingIndex(sceneIndex);
+                setActiveWindow('scene');
+              }}
+            />
+          </div>
         </HeaderBar>
         <Player
           t={t}
@@ -605,12 +668,16 @@ const Animator = ({ t }) => {
             />
           </Window>
           <Window isOpened={activeWindow === 'project'} onClose={() => setActiveWindow(null)}>
-            <ProjectSettingsWindow
-              fps={fps}
-              title={project?.title || ''}
-              ratio={ratio?.userValue || null}
-              onProjectSettingsChange={handleProjectSettingsChange}
-              onProjectDelete={() => handleAction('DELETE_PROJECT')}
+            <ProjectSettingsWindow title={project?.title || ''} onProjectSettingsChange={handleProjectSettingsChange} onProjectDelete={() => handleAction('DELETE_PROJECT')} />
+          </Window>
+          <Window isOpened={activeWindow === 'scene'} onClose={() => setActiveWindow(null)}>
+            <SceneSettingsWindow
+              title={editingScene?.title || ''}
+              fps={editingFps}
+              ratio={editingRatio?.userValue || null}
+              canDelete={visibleScenes.length > 1}
+              onSceneSettingsChange={handleSceneSettingsChange}
+              onSceneDelete={() => handleAction('DELETE_SCENE')}
             />
           </Window>
           <Window isOpened={activeWindow === 'masking' && !isPlaying} onClose={handleCloseMaskingEditor} isFullScreen={true}>

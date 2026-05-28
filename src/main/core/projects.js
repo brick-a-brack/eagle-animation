@@ -22,9 +22,11 @@ export const generateProjectObject = (name) => ({
   deleted: false,
   scenes: [
     {
+      id: randomUUID(),
       title: 'SHOT #1',
       framerate: DEFAULT_FPS,
       pictures: [],
+      deleted: false,
     },
   ],
 });

@@ -137,6 +137,50 @@ function useProject(options) {
     });
   }, []);
 
+  // Action add scene (appended at the end, new index = previous scenes.length)
+  const actionAddScene = useCallback(async (title, framerate = 12) => {
+    setProjectData((oldData) => {
+      let d = structuredClone(oldData);
+      d.project.scenes.push({
+        id: v4(),
+        title: title || '',
+        framerate: Number(framerate) || 12,
+        pictures: [],
+        deleted: false,
+      });
+      return d;
+    });
+  }, []);
+
+  // Action rename scene
+  const actionRenameScene = useCallback(async (trackId, title) => {
+    const sceneId = Number(trackId);
+    setProjectData((oldData) => {
+      let d = structuredClone(oldData);
+      if (d.project.scenes[sceneId]) {
+        d.project.scenes[sceneId].title = title || '';
+      }
+      return d;
+    });
+  }, []);
+
+  // Action delete scene (soft delete — keeps disk files & stable indices)
+  const actionDeleteScene = useCallback(async (trackId) => {
+    const sceneId = Number(trackId);
+    setProjectData((oldData) => {
+      let d = structuredClone(oldData);
+      if (!d.project.scenes[sceneId]) {
+        return d;
+      }
+      const aliveOthers = d.project.scenes.filter((s, i) => i !== sceneId && !s.deleted);
+      if (aliveOthers.length === 0) {
+        return d;
+      }
+      d.project.scenes[sceneId].deleted = true;
+      return d;
+    });
+  }, []);
+
   // Action delete frame
   const actionMoveFrame = useCallback(async (trackId, frameId, beforeFrameId = false) => {
     const sceneId = Number(trackId);
@@ -302,6 +346,9 @@ function useProject(options) {
       moveFrame: actionMoveFrame,
       addFrame: actionAddFrame,
       updateFrame: actionUpdateFrame,
+      addScene: actionAddScene,
+      renameScene: actionRenameScene,
+      deleteScene: actionDeleteScene,
     },
   };
 }
