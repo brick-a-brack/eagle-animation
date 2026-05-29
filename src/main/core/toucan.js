@@ -5,9 +5,35 @@ import readline from 'node:readline';
 import { spawn } from 'child_process';
 
 let TOUCAN_CAMERA_SERVER_CONFIG = { port: null, token: null };
+let TOUCAN_CHILD_PROCESS = null;
+let TOUCAN_IS_SHUTTING_DOWN = false;
 
 export const getToucanCameraServerConfig = () => {
   return TOUCAN_CAMERA_SERVER_CONFIG.token && TOUCAN_CAMERA_SERVER_CONFIG.port ? TOUCAN_CAMERA_SERVER_CONFIG : null;
+};
+
+export const stopToucanCameraServer = () => {
+  TOUCAN_IS_SHUTTING_DOWN = true;
+  const child = TOUCAN_CHILD_PROCESS;
+  TOUCAN_CHILD_PROCESS = null;
+  if (!child || child.exitCode !== null || child.signalCode !== null) {
+    return;
+  }
+  try {
+    child.kill('SIGTERM');
+  } catch {
+    // ignore
+  }
+  // SIGKILL fallback if it didn't exit cleanly within 1s
+  setTimeout(() => {
+    try {
+      if (child.exitCode === null && child.signalCode === null) {
+        child.kill('SIGKILL');
+      }
+    } catch {
+      // ignore
+    }
+  }, 1000).unref?.();
 };
 
 function getPlatformKey() {
@@ -75,17 +101,21 @@ export const runToucanCameraServer = (callback = () => {}) => {
   }
   console.log(`🐦 Starting toucan-camera-server from ${binaryPath}...`);
 
-  let process;
   const startServer = () => {
-    process = spawn(binaryPath, [], {
+    if (TOUCAN_IS_SHUTTING_DOWN) {
+      return;
+    }
+
+    const child = spawn(binaryPath, [], {
       stdio: ['ignore', 'pipe', 'pipe'],
       detached: false,
     });
+    TOUCAN_CHILD_PROCESS = child;
 
-    console.log(`🐦 toucan-camera-server started with PID ${process.pid}`);
+    console.log(`🐦 toucan-camera-server started with PID ${child.pid}`);
 
-    const stdoutReader = readline.createInterface({ input: process.stdout });
-    const stderrReader = readline.createInterface({ input: process.stderr });
+    const stdoutReader = readline.createInterface({ input: child.stdout });
+    const stderrReader = readline.createInterface({ input: child.stderr });
 
     stdoutReader.on('line', (line) => {
       console.log(line);
@@ -96,23 +126,29 @@ export const runToucanCameraServer = (callback = () => {}) => {
       handleLogLine(line);
     });
 
-    // Relaunch if crashed
-    process.on('exit', (code, signal) => {
+    child.on('exit', (code, signal) => {
       TOUCAN_CAMERA_SERVER_CONFIG.token = null;
       TOUCAN_CAMERA_SERVER_CONFIG.port = null;
       callback(getToucanCameraServerConfig());
       stdoutReader.close();
       stderrReader.close();
+      if (TOUCAN_CHILD_PROCESS === child) {
+        TOUCAN_CHILD_PROCESS = null;
+      }
+      if (TOUCAN_IS_SHUTTING_DOWN) {
+        console.log(`🐦 toucan-camera-server exited with code ${code} (signal: ${signal})`);
+        return;
+      }
       console.log(`🐦 toucan-camera-server exited with code ${code} (signal: ${signal}), restarting in 2 seconds...`);
       setTimeout(() => startServer(), 2000);
     });
 
-    process.on('error', (err) => {
+    child.on('error', (err) => {
       console.error(`Error starting toucan-camera-server:`, err);
     });
   };
 
   startServer();
 
-  return process;
+  return TOUCAN_CHILD_PROCESS;
 };
