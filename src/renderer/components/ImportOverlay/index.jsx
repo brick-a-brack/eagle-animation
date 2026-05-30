@@ -5,7 +5,7 @@ import { withTranslation } from 'react-i18next';
 
 import * as style from './style.module.css';
 
-const SUPPORTED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/avif', 'image/svg+xml'];
+const SUPPORTED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/avif', 'image/gif'];
 
 const extractLastNumber = (filename) => {
   const matches = filename.match(/\d+/g);
