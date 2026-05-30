@@ -183,6 +183,10 @@ const Animator = ({ t }) => {
 
   const handleImportPicture = useCallback((blob) => projectActions.addFrame(track, blob), [projectActions, track]);
 
+  const handleSelectFrame = useCallback((selectedFrameId) => {
+    playerRef.current.showFrame(selectedFrameId === false ? false : selectedFrameId);
+  }, []);
+
   // Shortcut if informations are not ready
   if (!project || !settings || !devices) {
     return (
@@ -204,10 +208,6 @@ const Animator = ({ t }) => {
     } else {
       console.log('💥 Unsupported event', action, args);
     }
-  };
-
-  const handleSelectFrame = (selectedFrameId) => {
-    playerRef.current.showFrame(selectedFrameId === false ? false : selectedFrameId);
   };
 
   const handleSettingsChange = async (values) => {
