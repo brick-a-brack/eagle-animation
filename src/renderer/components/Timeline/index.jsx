@@ -117,10 +117,28 @@ const Timeline = ({ onSelect, onMove, select = false, pictures = [], playing = f
 
   const getIndex = (id) => pictures.findIndex((e) => `${e.id}` === `${id}`);
 
-  // Get short play picture id
-  const displayedFrames = pictures.filter((e) => !e.deleted && !e.hidden).reduce((acc, e) => [...acc, ...new Array(e.length || 1).fill(e)], []);
-  const shortPlayFrameIndex = shortPlayStatus && shortPlayFrames > 0 && displayedFrames.length > shortPlayFrames ? displayedFrames.length - shortPlayFrames : 0;
-  const shortPlayFrameId = shortPlayStatus && shortPlayFrames > 0 ? displayedFrames?.[shortPlayFrameIndex]?.id || null : null;
+  // Get short play picture id: id of the frame at position (totalVisibleSlots - shortPlayFrames)
+  // in the expanded sequence (each picture occupies `length || 1` slots). Falls back to first visible.
+  let shortPlayFrameId = null;
+  if (shortPlayStatus && shortPlayFrames > 0) {
+    let total = 0;
+    for (let i = 0; i < pictures.length; i++) {
+      const p = pictures[i];
+      if (!p.deleted && !p.hidden) total += p.length || 1;
+    }
+    const target = total > shortPlayFrames ? total - shortPlayFrames : 0;
+    let position = 0;
+    for (let i = 0; i < pictures.length; i++) {
+      const p = pictures[i];
+      if (p.deleted || p.hidden) continue;
+      const len = p.length || 1;
+      if (position + len > target) {
+        shortPlayFrameId = p.id;
+        break;
+      }
+      position += len;
+    }
+  }
 
   return (
     <aside className={`${style.container}`} ref={ref}>
