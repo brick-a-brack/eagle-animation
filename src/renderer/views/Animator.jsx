@@ -459,7 +459,8 @@ const Animator = ({ t }) => {
       const newIndex = project.scenes.length;
       const newVisualIndex = project.scenes.filter((s) => !s.deleted).length + 1; // To be displayed
       const currentFps = project?.scenes?.[track]?.framerate || 12;
-      await projectActions.addScene(t('Untitled scene #{{index}}', { index: newVisualIndex}), currentFps);
+      const currentRatio = project?.scenes?.[track]?.ratio || null;
+      await projectActions.addScene(t('Untitled scene #{{index}}', { index: newVisualIndex}), currentFps, currentRatio);
       window.track('scene_added', { projectId: `${id}`, trackId: `${newIndex}` });
       navigate(`/animator/${id}/${newIndex}`);
     },
@@ -583,7 +584,7 @@ const Animator = ({ t }) => {
           onAction={handleAction}
         >
           <SceneSelector
-              scenes={visibleScenes.map((s) => ({ id: s.id, index: s.index, title: s.title, framerate: s.framerate, ratio: s.ratio }))}
+              scenes={visibleScenes.map((s) => ({ id: s.id, index: s.index, title: s.title, framerate: s.framerate, pictureCount: s.pictures?.filter((p) => !p.deleted).length ?? 0 }))}
               currentTrack={track}
               disabled={isPlaying}
               projectTitle={project?.title}
@@ -687,6 +688,7 @@ const Animator = ({ t }) => {
           </Window>
           <Window isOpened={activeWindow === 'scene'} onClose={() => setActiveWindow(null)}>
             <SceneSettingsWindow
+              key={sceneEditingIndex}
               title={editingScene?.title || ''}
               fps={editingFps}
               ratio={editingRatio?.userValue || null}

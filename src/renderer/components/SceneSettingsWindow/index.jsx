@@ -46,6 +46,11 @@ const SceneSettingsWindow = ({ t, onSceneSettingsChange = () => {}, onSceneDelet
   }, [title]);
 
   useEffect(() => {
+    setValue('ratio', ratio ? (RATIOS.find((e) => e.value === ratio) ? ratio : 'custom') : '');
+    setValue('customRatio', RATIOS.find((e) => e.value === ratio) ? '1.75' : ratio);
+  }, [ratio]);
+
+  useEffect(() => {
     const values = getValues();
     let ratio = null;
     if (values.ratio === 'custom') {

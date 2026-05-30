@@ -1,6 +1,7 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import faChevronDown from '@icons/faChevronDown';
 import faGear from '@icons/faGear';
+import faImages from '@icons/faImages';
 import faPlus from '@icons/faPlus';
 import faSlidersUp from '@icons/faSlidersUp';
 import { useEffect, useRef, useState } from 'react';
@@ -59,37 +60,39 @@ const SceneSelector = ({
 
       <div className={`${style.panel} ${isOpen ? style.panelOpen : ''}`} aria-hidden={!isOpen}>
         <div className={style.sectionHeader}>{t('Project')}</div>
-          <div className={style.projectRow}>
-            <input
-              className={style.projectInput}
-              type="text"
-              defaultValue={projectTitle.slice(0, 25)}
-              maxLength={25}
-              placeholder={t('Untitled project')}
-              spellCheck="false"
-              onChange={(e) => onProjectTitleChange(e.target.value)}
-              onKeyDown={(e) => e.stopPropagation()}
-            />
-            <button
-              type="button"
-              className={style.rowGear}
-              onClick={(e) => {
-                e.stopPropagation();
-                setIsOpen(false);
-                onEditProject();
-              }}
-              title={t('Project settings')}
-            >
-              <FontAwesomeIcon icon={faSlidersUp} />
-            </button>
-          </div>
+        <div className={style.projectRow}>
+          <input
+            className={style.projectInput}
+            type="text"
+            value={projectTitle.slice(0, 25)}
+            maxLength={25}
+            placeholder={t('Untitled project')}
+            spellCheck="false"
+            onChange={(e) => onProjectTitleChange(e.target.value)}
+            onKeyDown={(e) => e.stopPropagation()}
+          />
+          <button
+            type="button"
+            className={style.rowGear}
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsOpen(false);
+              onEditProject();
+            }}
+            title={t('Project settings')}
+          >
+            <FontAwesomeIcon icon={faSlidersUp} />
+          </button>
+        </div>
 
-          <div className={style.separator} />
+        <div className={style.separator} />
 
-          <div className={style.sectionHeader}>{t('Scenes')}</div>
-          {scenes.map((s, i) => (
+        <div className={style.sectionHeader}>{t('Scenes')}</div>
+        <div className={style.scrollable}>
+          {scenes.map((s) => (
             <div key={s.id || s.index} className={`${style.row} ${s.index === Number(currentTrack) ? style.rowActive : ''}`}>
               <button
+                title={s.title || t('Untitled scene')}
                 type="button"
                 className={style.rowSelect}
                 onClick={() => {
@@ -99,8 +102,8 @@ const SceneSelector = ({
               >
                 <span className={style.rowTitle}>{s.title || t('Untitled scene')}</span>
                 <div className={style.rowMeta}>
+                  {s.pictureCount > 0 && <span className={style.metaTag}>{s.pictureCount} <FontAwesomeIcon icon={faImages} style={{ position: 'relative', top: '-1px' }} /></span>}
                   {s.framerate && <span className={style.metaTag}>{s.framerate} FPS</span>}
-                  {s.ratio && s.ratio.includes(':') && <span className={style.metaTag}>{s.ratio}</span>}
                 </div>
               </button>
               <button
@@ -117,19 +120,20 @@ const SceneSelector = ({
               </button>
             </div>
           ))}
+        </div>
 
-          <div className={style.separator} />
-          <button
-            type="button"
-            className={style.createButton}
-            onClick={() => {
-              setIsOpen(false);
-              onCreate();
-            }}
-          >
-            <FontAwesomeIcon icon={faPlus} />
-            <span>{t('New scene')}</span>
-          </button>
+        <div className={style.separator} />
+        <button
+          type="button"
+          className={style.createButton}
+          onClick={() => {
+            setIsOpen(false);
+            onCreate();
+          }}
+        >
+          <FontAwesomeIcon icon={faPlus} />
+          <span>{t('New scene')}</span>
+        </button>
       </div>
     </div>
   );

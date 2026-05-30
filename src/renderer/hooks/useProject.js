@@ -138,13 +138,14 @@ function useProject(options) {
   }, []);
 
   // Action add scene (appended at the end, new index = previous scenes.length)
-  const actionAddScene = useCallback(async (title, framerate = 12) => {
+  const actionAddScene = useCallback(async (title, framerate = 12, ratio = null) => {
     setProjectData((oldData) => {
       let d = structuredClone(oldData);
       d.project.scenes.push({
         id: v4(),
         title: title || '',
         framerate: Number(framerate) || 12,
+        ratio: ratio || null,
         pictures: [],
         deleted: false,
       });
