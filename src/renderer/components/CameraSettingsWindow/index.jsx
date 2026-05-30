@@ -22,6 +22,7 @@ import faLightbulbOn from '@icons/faLightbulbOn';
 import faMagnifyingGlass from '@icons/faMagnifyingGlass';
 import faMobileSignalOut from '@icons/faMobileSignalOut';
 import faQuestion from '@icons/faQuestion';
+import faGamma from '@icons/faGamma';
 import faRotate from '@icons/faRotate';
 import faShutterSpeed from '@icons/faShutterSpeed';
 import faSun from '@icons/faSun';
@@ -99,7 +100,7 @@ const getCapabilitiesTabs = (capabilities, t = (v) => v) => {
     {
       title: t('Gamma'),
       properties: ['gamma_auto', 'gamma'],
-      icon: faQuestion,
+      icon: faGamma,
     },
     {
       title: t('Hue'),
