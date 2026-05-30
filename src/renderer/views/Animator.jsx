@@ -687,6 +687,7 @@ const Animator = ({ t }) => {
           </Window>
           <Window isOpened={activeWindow === 'scene'} onClose={() => setActiveWindow(null)}>
             <SceneSettingsWindow
+              key={sceneEditingIndex}
               title={editingScene?.title || ''}
               fps={editingFps}
               ratio={editingRatio?.userValue || null}
