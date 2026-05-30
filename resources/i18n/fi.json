@@ -341,5 +341,17 @@
   "Toucan Camera": "Toucan Camera",
   "Disconnect": "Katkaise yhteys",
   "Importing frames, please wait...": "Kehysten tuonti, ole hyvä ja odota...",
-  "Drop images here to import": "Vedä kuvat tänne tuodaksesi ne"
+  "Drop images here to import": "Vedä kuvat tänne tuodaksesi ne",
+  "Untitled scene": "Nimetön kohtaus",
+  "Project": "Projekti",
+  "Scenes": "Kohtaukset",
+  "Scene settings": "Kohtauksen asetukset",
+  "New scene": "Uusi kohtaus",
+  "Scene title": "Kohtauksen otsikko",
+  "The title of this scene": "Tämän kohtauksen otsikko",
+  "Delete scene": "Poista kohtaus",
+  "Delete the scene and all its photos": "Poista kohtaus ja kaikki sen valokuvat",
+  "Use camera compatibility mode": "Käytä kameran yhteensopivuustilaa",
+  "Disables DSLR and remote cameras, may limit available camera settings": "Poistaa DSLR- ja etäkamerat käytöstä, voi rajoittaa käytettävissä olevia kameran asetuksia",
+  "Untitled scene #{{index}}": "Nimetön kohtaus #{{index}}"
 }

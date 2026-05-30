@@ -356,5 +356,17 @@
   "Toucan Camera": "Toucan Camera",
   "Disconnect": "Malconnecti",
   "Importing frames, please wait...": "Importado de kadroj, bonvolu atendi...",
-  "Drop images here to import": "Metu bildojn ĉi tie por importi"
+  "Drop images here to import": "Metu bildojn ĉi tie por importi",
+  "Untitled scene": "Sen titolo sceno",
+  "Project": "Projekto",
+  "Scenes": "Scenoj",
+  "Scene settings": "Scenaj agordoj",
+  "New scene": "Nova sceno",
+  "Scene title": "Titolo de la sceno",
+  "The title of this scene": "La titolo de ĉi tiu sceno",
+  "Delete scene": "Forigi la scenon",
+  "Delete the scene and all its photos": "Forigi la scenon kaj ĉiujn ĝiajn fotojn",
+  "Use camera compatibility mode": "Uzi la kameran kongruecan reĝimon",
+  "Disables DSLR and remote cameras, may limit available camera settings": "Malŝaltas DSLR kaj malproksimajn kameron, povas limigi disponeblajn kamerajn agordojn",
+  "Untitled scene #{{index}}": "Sen titolo sceno #{{index}}"
 }

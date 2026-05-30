@@ -348,5 +348,17 @@
   "Toucan Camera": "Toucan Camera",
   "Disconnect": "Odpojit",
   "Importing frames, please wait...": "Importování snímků, prosím čekejte...",
-  "Drop images here to import": "Přetáhněte sem obrázky pro import"
+  "Drop images here to import": "Přetáhněte sem obrázky pro import",
+  "Untitled scene": "Scéna bez názvu",
+  "Project": "Projekt",
+  "Scenes": "Scény",
+  "Scene settings": "Nastavení scény",
+  "New scene": "Nová scéna",
+  "Scene title": "Název scény",
+  "The title of this scene": "Název této scény",
+  "Delete scene": "Smazat scénu",
+  "Delete the scene and all its photos": "Smazat scénu a všechny její fotografie",
+  "Use camera compatibility mode": "Použít režim kompatibility kamery",
+  "Disables DSLR and remote cameras, may limit available camera settings": "Deaktivuje DSLR a vzdálené kamery, může omezit dostupná nastavení kamery",
+  "Untitled scene #{{index}}": "Scéna bez názvu #{{index}}"
 }

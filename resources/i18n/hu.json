@@ -341,5 +341,17 @@
   "Toucan Camera": "Toucan Camera",
   "Disconnect": "Különválás",
   "Importing frames, please wait...": "Képkockák importálása, kérem várjon...",
-  "Drop images here to import": "Húzza ide a képeket az importáláshoz"
+  "Drop images here to import": "Húzza ide a képeket az importáláshoz",
+  "Untitled scene": "Cím nélküli jelenet",
+  "Project": "Projekt",
+  "Scenes": "Jelenetek",
+  "Scene settings": "Jelenet beállításai",
+  "New scene": "Új jelenet",
+  "Scene title": "A jelenet címe",
+  "The title of this scene": "Ennek a jelenetnek a címe",
+  "Delete scene": "Jelenet törlése",
+  "Delete the scene and all its photos": "A jelenet és az összes fényképének törlése",
+  "Use camera compatibility mode": "Használja a kamera kompatibilitási módot",
+  "Disables DSLR and remote cameras, may limit available camera settings": "Letiltja a DSLR és távoli kamerákat, korlátozhatja a rendelkezésre álló kamera beállításokat",
+  "Untitled scene #{{index}}": "Cím nélküli jelenet #{{index}}"
 }

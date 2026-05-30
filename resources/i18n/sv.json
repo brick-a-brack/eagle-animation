@@ -341,5 +341,17 @@
   "Toucan Camera": "Toucan Camera",
   "Disconnect": "Koppla bort",
   "Importing frames, please wait...": "Importerar bilder, vänligen vänta...",
-  "Drop images here to import": "Dra och släpp bilder här för att importera"
+  "Drop images here to import": "Dra och släpp bilder här för att importera",
+  "Untitled scene": "Obenämnd scen",
+  "Project": "Projekt",
+  "Scenes": "Scener",
+  "Scene settings": "Sceninställningar",
+  "New scene": "Ny scen",
+  "Scene title": "Scenens titel",
+  "The title of this scene": "Titeln på denna scen",
+  "Delete scene": "Ta bort scen",
+  "Delete the scene and all its photos": "Ta bort scenen och alla dess foton",
+  "Use camera compatibility mode": "Använd kamerakompatibilitetsläge",
+  "Disables DSLR and remote cameras, may limit available camera settings": "Inaktiverar DSLR- och fjärrkameror, kan begränsa tillgängliga kamerainställningar",
+  "Untitled scene #{{index}}": "Obenämnd scen #{{index}}"
 }

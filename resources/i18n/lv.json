@@ -335,7 +335,7 @@
   "Remote cameras": "Attālinātās kameras",
   "Connection failed": "Savienojums neizdevās",
   "No devices connected": "Nav pievienotu ierīču",
-  "{{count}} device connected_zero": "__NOT_TRANSLATED__",
+  "{{count}} device connected_zero": "{{count}} pieslēgtais ierīce",
   "{{count}} device connected_one": "{{count}} pieslēgtais ierīce",
   "{{count}} device connected_other": "{{count}} pieslēgtās ierīces",
   "Device address": "Ierīces adrese",
@@ -345,5 +345,17 @@
   "Toucan Camera": "Toucan Camera",
   "Disconnect": "Atvienoties",
   "Importing frames, please wait...": "Ievadīt kadri, lūdzu, gaidiet...",
-  "Drop images here to import": "Nolieciet attēlus šeit, lai importētu"
+  "Drop images here to import": "Nolieciet attēlus šeit, lai importētu",
+  "Untitled scene": "Nenosaukta aina",
+  "Project": "Projekts",
+  "Scenes": "Ainas",
+  "Scene settings": "Ainas iestatījumi",
+  "New scene": "Jauna aina",
+  "Scene title": "Ainas nosaukums",
+  "The title of this scene": "Šīs ainas nosaukums",
+  "Delete scene": "Dzēst ainu",
+  "Delete the scene and all its photos": "Dzēst ainu un visas tās fotogrāfijas",
+  "Use camera compatibility mode": "Izmantot kameras saderības režīmu",
+  "Disables DSLR and remote cameras, may limit available camera settings": "Atspējo DSLR un attālinātās kameras, var ierobežot pieejamos kameras iestatījumus",
+  "Untitled scene #{{index}}": "Nenosaukta aina #{{index}}"
 }

@@ -341,5 +341,17 @@
   "Toucan Camera": "Toucan Camera",
   "Disconnect": "Frakobl",
   "Importing frames, please wait...": "Importer rammer, vent venligst...",
-  "Drop images here to import": "Træk billeder her for at importere"
+  "Drop images here to import": "Træk billeder her for at importere",
+  "Untitled scene": "Uden titel scene",
+  "Project": "Projekt",
+  "Scenes": "Scener",
+  "Scene settings": "Sceneindstillinger",
+  "New scene": "Ny scene",
+  "Scene title": "Scene titel",
+  "The title of this scene": "Titlen på denne scene",
+  "Delete scene": "Slet scene",
+  "Delete the scene and all its photos": "Slet scenen og alle dens fotos",
+  "Use camera compatibility mode": "Brug kamerakompatibilitetsmode",
+  "Disables DSLR and remote cameras, may limit available camera settings": "Deaktiverer DSLR- og fjernkameraer, kan begrænse tilgængelige kamerainstillinger",
+  "Untitled scene #{{index}}": "Uden titel scene #{{index}}"
 }

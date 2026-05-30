@@ -341,5 +341,17 @@
   "Toucan Camera": "Toucan Camera",
   "Disconnect": "Ontkoppelen",
   "Importing frames, please wait...": "Beelden importeren, even geduld...",
-  "Drop images here to import": "Sleep afbeeldingen hier om te importeren"
+  "Drop images here to import": "Sleep afbeeldingen hier om te importeren",
+  "Untitled scene": "Ongetitelde scène",
+  "Project": "Project",
+  "Scenes": "Scènes",
+  "Scene settings": "Scène-instellingen",
+  "New scene": "Nieuwe scène",
+  "Scene title": "Titel van de scène",
+  "The title of this scene": "De titel van deze scène",
+  "Delete scene": "Verwijder de scène",
+  "Delete the scene and all its photos": "Verwijder de scène en al zijn foto's",
+  "Use camera compatibility mode": "Gebruik de compatibiliteitsmodus van de camera",
+  "Disables DSLR and remote cameras, may limit available camera settings": "Deactiveert DSLR- en afstandscamera's, kan beschikbare camera-instellingen beperken",
+  "Untitled scene #{{index}}": "Ongetitelde scène #{{index}}"
 }

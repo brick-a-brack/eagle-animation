@@ -341,5 +341,17 @@
   "Toucan Camera": "Toucan Camera",
   "Disconnect": "Прекъсни връзката",
   "Importing frames, please wait...": "Импортиране на кадри, моля изчакайте...",
-  "Drop images here to import": "Пуснете изображения тук, за да ги импортирате"
+  "Drop images here to import": "Пуснете изображения тук, за да ги импортирате",
+  "Untitled scene": "Без заглавие",
+  "Project": "Проект",
+  "Scenes": "Сцени",
+  "Scene settings": "Настройки на сцената",
+  "New scene": "Нова сцена",
+  "Scene title": "Заглавие на сцената",
+  "The title of this scene": "Заглавието на тази сцена",
+  "Delete scene": "Изтрий сцената",
+  "Delete the scene and all its photos": "Изтрий сцената и всичките й снимки",
+  "Use camera compatibility mode": "Използвай режим на съвместимост на камерата",
+  "Disables DSLR and remote cameras, may limit available camera settings": "Деактивира DSLR и дистанционни камери, може да ограничи наличните настройки на камерата",
+  "Untitled scene #{{index}}": "Без заглавие #{{index}}"
 }

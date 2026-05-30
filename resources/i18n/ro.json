@@ -345,5 +345,17 @@
   "Toucan Camera": "Toucan Camera",
   "Disconnect": "Deconectare",
   "Importing frames, please wait...": "Importarea cadrelor, vă rugăm să așteptați...",
-  "Drop images here to import": "Trageți imaginile aici pentru a le importa"
+  "Drop images here to import": "Trageți imaginile aici pentru a le importa",
+  "Untitled scene": "Scenă fără titlu",
+  "Project": "Proiect",
+  "Scenes": "Scene",
+  "Scene settings": "Setări scenă",
+  "New scene": "Scenă nouă",
+  "Scene title": "Titlul scenei",
+  "The title of this scene": "Titlul acestei scene",
+  "Delete scene": "Șterge scena",
+  "Delete the scene and all its photos": "Șterge scena și toate fotografiile sale",
+  "Use camera compatibility mode": "Utilizează modul de compatibilitate a camerei",
+  "Disables DSLR and remote cameras, may limit available camera settings": "Dezactivează camerele DSLR și cele la distanță, poate limita setările disponibile ale camerei",
+  "Untitled scene #{{index}}": "Scenă fără titlu #{{index}}"
 }

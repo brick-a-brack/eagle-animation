@@ -367,5 +367,17 @@
   "Toucan Camera": "Toucan Camera",
   "Disconnect": "Atsijungti",
   "Importing frames, please wait...": "Importuojami kadrai, prašome palaukti...",
-  "Drop images here to import": "Nukelkite vaizdus čia, kad importuotumėte"
+  "Drop images here to import": "Nukelkite vaizdus čia, kad importuotumėte",
+  "Untitled scene": "Be pavadinimo scena",
+  "Project": "Projektas",
+  "Scenes": "Scenos",
+  "Scene settings": "Scenos nustatymai",
+  "New scene": "Nauja scena",
+  "Scene title": "Scenos pavadinimas",
+  "The title of this scene": "Šios scenos pavadinimas",
+  "Delete scene": "Ištrinti sceną",
+  "Delete the scene and all its photos": "Ištrinti sceną ir visas jos nuotraukas",
+  "Use camera compatibility mode": "Naudoti kameros suderinamumo režimą",
+  "Disables DSLR and remote cameras, may limit available camera settings": "Išjungia DSLR ir nuotolines kameras, gali apriboti prieinamus kameros nustatymus",
+  "Untitled scene #{{index}}": "Be pavadinimo scena #{{index}}"
 }

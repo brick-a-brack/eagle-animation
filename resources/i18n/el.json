@@ -341,5 +341,17 @@
   "Toucan Camera": "Toucan Camera",
   "Disconnect": "Αποσύνδεση",
   "Importing frames, please wait...": "Εισαγωγή καρέ, παρακαλώ περιμένετε...",
-  "Drop images here to import": "Αφήστε τις εικόνες εδώ για να τις εισάγετε"
+  "Drop images here to import": "Αφήστε τις εικόνες εδώ για να τις εισάγετε",
+  "Untitled scene": "Ανώνυμη σκηνή",
+  "Project": "Έργο",
+  "Scenes": "Σκηνές",
+  "Scene settings": "Ρυθμίσεις σκηνής",
+  "New scene": "Νέα σκηνή",
+  "Scene title": "Τίτλος σκηνής",
+  "The title of this scene": "Ο τίτλος αυτής της σκηνής",
+  "Delete scene": "Διαγραφή σκηνής",
+  "Delete the scene and all its photos": "Διαγραφή της σκηνής και όλων των φωτογραφιών της",
+  "Use camera compatibility mode": "Χρήση λειτουργίας συμβατότητας κάμερας",
+  "Disables DSLR and remote cameras, may limit available camera settings": "Απενεργοποιεί τις DSLR και τις απομακρυσμένες κάμερες, μπορεί να περιορίσει τις διαθέσιμες ρυθμίσεις κάμερας",
+  "Untitled scene #{{index}}": "Ανώνυμη σκηνή #{{index}}"
 }

@@ -345,5 +345,17 @@
   "Toucan Camera": "Toucan Camera",
   "Disconnect": "Prekini vezu",
   "Importing frames, please wait...": "Učitavanje okvira, molimo pričekajte...",
-  "Drop images here to import": "Ovdje ispustite slike za uvoz"
+  "Drop images here to import": "Ovdje ispustite slike za uvoz",
+  "Untitled scene": "Nepodijeljena scena",
+  "Project": "Projekt",
+  "Scenes": "Scene",
+  "Scene settings": "Postavke scene",
+  "New scene": "Nova scena",
+  "Scene title": "Naslov scene",
+  "The title of this scene": "Naslov ove scene",
+  "Delete scene": "Izbriši scenu",
+  "Delete the scene and all its photos": "Izbriši scenu i sve njezine fotografije",
+  "Use camera compatibility mode": "Koristi način kompatibilnosti kamere",
+  "Disables DSLR and remote cameras, may limit available camera settings": "Onemogućuje DSLR i daljinske kamere, može ograničiti dostupne postavke kamere",
+  "Untitled scene #{{index}}": "Nepodijeljena scena #{{index}}"
 }

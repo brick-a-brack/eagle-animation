@@ -359,5 +359,17 @@
   "Toucan Camera": "Toucan Camera",
   "Disconnect": "Desconectar",
   "Importing frames, please wait...": "Importando quadros, por favor aguarde...",
-  "Drop images here to import": "Solte as imagens aqui para importar"
+  "Drop images here to import": "Solte as imagens aqui para importar",
+  "Untitled scene": "Cena sem título",
+  "Project": "Projeto",
+  "Scenes": "Cenas",
+  "Scene settings": "Configurações da cena",
+  "New scene": "Nova cena",
+  "Scene title": "Título da cena",
+  "The title of this scene": "O título desta cena",
+  "Delete scene": "Excluir cena",
+  "Delete the scene and all its photos": "Excluir a cena e todas as suas fotos",
+  "Use camera compatibility mode": "Usar modo de compatibilidade da câmera",
+  "Disables DSLR and remote cameras, may limit available camera settings": "Desativa câmeras DSLR e remotas, pode limitar as configurações de câmera disponíveis",
+  "Untitled scene #{{index}}": "Cena sem título #{{index}}"
 }
