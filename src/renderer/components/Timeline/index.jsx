@@ -7,24 +7,16 @@ import faEyeSlash from '@icons/faEyeSlash';
 import faForwardFast from '@icons/faForwardFast';
 import faLayer from '@icons/faLayer';
 import animateScrollTo from 'animated-scroll-to';
-import { useEffect, useLayoutEffect, useRef } from 'react';
+import { memo, useCallback, useEffect, useLayoutEffect, useMemo, useRef } from 'react';
 import { useTranslation, withTranslation } from 'react-i18next';
 
 import * as style from './style.module.css';
 
-const getPicturesKey = (pictures) => {
-  const data = structuredClone(pictures);
-  for (let i = 0; i < pictures.length; i++) {
-    delete data[i].thumbnail;
-    delete data[i].preview;
-    delete data[i].resolution;
-  }
-  return JSON.stringify(data);
-};
+const MOUSE_OPTIONS = { activationConstraint: { distance: 0 } };
+const TOUCH_OPTIONS = { activationConstraint: { delay: 250, tolerance: 5 } };
 
-const SortableItem = ({ img, isShortPlayBegining = false, playing = false, selected, onSelect, index }) => {
-  const { setNodeRef, isDragging, transform, transition, listeners, attributes, active } = useSortable({ id: img.id });
-  const { t } = useTranslation();
+const SortableItem = memo(({ id, link = '', hidden = false, length = 0, hasMasking = false, maskingLabel = '', isShortPlayBegining = false, onSelect, index }) => {
+  const { setNodeRef, isDragging, transform, transition, listeners, attributes, active } = useSortable({ id });
   return (
     <span
       ref={setNodeRef}
@@ -32,7 +24,7 @@ const SortableItem = ({ img, isShortPlayBegining = false, playing = false, selec
       {...listeners}
       role="button"
       tabIndex={0}
-      id={`timeline-frame-${img.id}`}
+      id={`timeline-frame-${id}`}
       style={{
         opacity: isDragging ? 1 : undefined,
         zIndex: isDragging ? 999 : undefined,
@@ -40,18 +32,18 @@ const SortableItem = ({ img, isShortPlayBegining = false, playing = false, selec
         transform: active ? DNDCSS.Transform.toString({ ...transform, y: 0, scaleX: 1, scaleY: 1 }) : undefined,
         transition: active ? transition : undefined,
       }}
-      onClick={() => onSelect(img?.id)}
-      className={`${style.containerImg} ${selected ? style.selected : ''} ${!playing && style.containerImgHover} ${img.hidden ? style.isHidden : ''}`}
+      onClick={() => onSelect(id)}
+      className={`${style.containerImg} ${hidden ? style.isHidden : ''}`}
     >
-      <span className={style.img}>{img.link && <img alt="" className={style.imgcontent} src={getPictureLink(img.link, { w: 80, h: 80, m: 'cover', f: 'jpg' })} loading="lazy" />}</span>
-      {img.hidden && <FontAwesomeIcon className={style.icon} icon={faEyeSlash} />}
+      <span className={style.img}>{link && <img alt="" className={style.imgcontent} src={getPictureLink(link, { w: 80, h: 80, m: 'cover', f: 'jpg' })} loading="lazy" />}</span>
+      {hidden && <FontAwesomeIcon className={style.icon} icon={faEyeSlash} />}
       {isShortPlayBegining && <FontAwesomeIcon className={style.shortPlayIcon} icon={faForwardFast} />}
-      {img.length > 1 && <span className={style.duplicated}>{`x${img.length}`}</span>}
-      {img.masking && <span className={style.masking}>{t('M')}</span>}
+      {length > 1 && <span className={style.duplicated}>{`x${length}`}</span>}
+      {hasMasking && <span className={style.masking}>{maskingLabel}</span>}
       <span className={style.title}>{`#${index + 1}`}</span>
     </span>
   );
-};
+});
 
 const LiveItem = ({ select, onSelect, frameCaptureMode }) => {
   const { t } = useTranslation();
@@ -78,22 +70,57 @@ const LiveItem = ({ select, onSelect, frameCaptureMode }) => {
   );
 };
 
+// Memoized inner list: receives ONLY stable props. Never re-renders on play tick
+// (no `select`/`playing`), so neither DndContext nor SortableContext re-emit context.
+const SortableList = memo(({ sortableItemIds, visiblePictures, maskingLabel, shortPlayFrameId, onSelect, onDragEnd, sensors }) => {
+  return (
+    <DndContext sensors={sensors} onDragEnd={onDragEnd}>
+      <SortableContext items={sortableItemIds} strategy={horizontalListSortingStrategy}>
+        {visiblePictures.map((img, index) => (
+          <SortableItem
+            key={`timeline-item-${img.id}`}
+            index={index}
+            id={img.id}
+            link={img.link || ''}
+            hidden={!!img.hidden}
+            length={img.length || 0}
+            hasMasking={!!img.masking}
+            maskingLabel={maskingLabel}
+            onSelect={onSelect}
+            isShortPlayBegining={shortPlayFrameId === img.id}
+          />
+        ))}
+      </SortableContext>
+    </DndContext>
+  );
+});
+
 const Timeline = ({ onSelect, onMove, select = false, pictures = [], playing = false, shortPlayStatus = false, shortPlayFrames = 0, frameCaptureMode = false }) => {
   const ref = useRef(null);
+  const { t } = useTranslation();
+  const maskingLabel = t('M');
 
-  const sensors = useSensors(
-    useSensor(MouseSensor, {
-      activationConstraint: {
-        distance: 0,
-      },
-    }),
-    useSensor(TouchSensor, {
-      activationConstraint: {
-        delay: 250,
-        tolerance: 5,
-      },
-    })
-  );
+  // Latest-ref pattern: keep callbacks/data accessible from stable handlers without re-creating them.
+  const latestRef = useRef({ pictures, onSelect, onMove });
+  latestRef.current = { pictures, onSelect, onMove };
+
+  // Stable handlers — same identity for the entire Timeline lifetime.
+  const stableOnSelect = useCallback((id) => latestRef.current.onSelect(id), []);
+  const stableOnDragEnd = useCallback(({ active, over }) => {
+    const { pictures, onSelect, onMove } = latestRef.current;
+    const getIdx = (id) => pictures.findIndex((e) => `${e.id}` === `${id}`);
+    const evt = {
+      oldIndex: getIdx(active.id),
+      newIndex: over ? getIdx(over.id) : pictures.length,
+    };
+    if (active && over && active.id === over.id) {
+      onSelect(pictures[evt.oldIndex]);
+    } else {
+      onMove(evt);
+    }
+  }, []);
+
+  const sensors = useSensors(useSensor(MouseSensor, MOUSE_OPTIONS), useSensor(TouchSensor, TOUCH_OPTIONS));
 
   useEffect(() => {
     const callback = function (e) {
@@ -104,65 +131,85 @@ const Timeline = ({ onSelect, onMove, select = false, pictures = [], playing = f
     };
     window.addEventListener('keydown', callback, false);
     return () => window.removeEventListener('keydown', callback, false);
-  });
+  }, []);
 
-  const picturesKey = getPicturesKey(pictures);
+  // Comprehensive signature: any prop displayed by SortableItem is captured here.
+  // Re-renders of the memoized inner list happen only when this string actually changes.
+  let picturesKey = '';
+  for (let i = 0; i < pictures.length; i++) {
+    const p = pictures[i];
+    picturesKey += p.id + ',' + (p.hidden ? 1 : 0) + ',' + (p.masking ? 1 : 0) + ',' + (p.length || 0) + ',' + (p.link || '') + ';';
+  }
 
+  const sortableItemIds = useMemo(() => pictures.map((p) => p.id), [picturesKey]); // eslint-disable-line react-hooks/exhaustive-deps
+  const visiblePictures = useMemo(() => pictures.filter((e) => !e.deleted), [picturesKey]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Imperative .selected class toggling: avoids passing `select` as a prop to SortableItem,
+  // which would defeat memoization. Runs after each pictures/select change, before paint.
+  const prevSelectedElRef = useRef(null);
   useLayoutEffect(() => {
-    const key = select === false ? '#timeline-frame-live' : `#timeline-frame-${select}`;
-    if (document.querySelector(key)) {
-      animateScrollTo(document.querySelector(key), {
+    if (prevSelectedElRef.current) prevSelectedElRef.current.classList.remove(style.selected);
+    const el = select === false ? document.getElementById('timeline-frame-live') : document.getElementById(`timeline-frame-${select}`);
+    if (el) el.classList.add(style.selected);
+    prevSelectedElRef.current = el;
+  }, [select, picturesKey]);
+
+  const prevScrollRef = useRef({ key: null, select: null });
+  useLayoutEffect(() => {
+    const target = select === false ? '#timeline-frame-live' : `#timeline-frame-${select}`;
+    if (document.querySelector(target)) {
+      const isPicturesChange = picturesKey !== prevScrollRef.current.key;
+      const isSelectChange = select !== prevScrollRef.current.select;
+      // Skip entirely if nothing changed (handles StrictMode double-invocation).
+      if (!isPicturesChange && !isSelectChange) return;
+      prevScrollRef.current = { key: picturesKey, select };
+      // Instant on first mount and content changes (loading, add, delete, reorder);
+      // animated only when user navigates (select changed, content stable).
+      const instant = playing || isPicturesChange;
+      animateScrollTo(document.querySelector(target), {
         elementToScroll: ref.current,
         horizontal: true,
-        speed: playing ? 0 : 1000,
+        speed: instant ? 0 : 1000,
         minDuration: 0,
-        maxDuration: playing ? 0 : 1500,
+        maxDuration: instant ? 0 : 1500,
         cancelOnUserAction: false,
-        horizontalOffset: (-window.innerWidth + document.querySelector(key).getBoundingClientRect().width) / 2,
+        horizontalOffset: (-window.innerWidth + document.querySelector(target).getBoundingClientRect().width) / 2,
       });
     }
   }, [select, picturesKey, playing]);
 
-  const getIndex = (id) => pictures.findIndex((e) => `${e.id}` === `${id}`);
-
-  // Get short play picture id
-  const displayedFrames = pictures.filter((e) => !e.deleted && !e.hidden).reduce((acc, e) => [...acc, ...new Array(e.length || 1).fill(e)], []);
-  const shortPlayFrameIndex = shortPlayStatus && shortPlayFrames > 0 && displayedFrames.length > shortPlayFrames ? displayedFrames.length - shortPlayFrames : 0;
-  const shortPlayFrameId = shortPlayStatus && shortPlayFrames > 0 ? displayedFrames?.[shortPlayFrameIndex]?.id || null : null;
+  // Short play id: same O(n) walk as before.
+  const shortPlayFrameId = useMemo(() => {
+    if (!shortPlayStatus || shortPlayFrames <= 0) return null;
+    let total = 0;
+    for (let i = 0; i < pictures.length; i++) {
+      const p = pictures[i];
+      if (!p.deleted && !p.hidden) total += p.length || 1;
+    }
+    const target = total > shortPlayFrames ? total - shortPlayFrames : 0;
+    let position = 0;
+    for (let i = 0; i < pictures.length; i++) {
+      const p = pictures[i];
+      if (p.deleted || p.hidden) continue;
+      const len = p.length || 1;
+      if (position + len > target) return p.id;
+      position += len;
+    }
+    return null;
+  }, [picturesKey, shortPlayStatus, shortPlayFrames]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <aside className={`${style.container}`} ref={ref}>
-      <DndContext
+    <aside className={`${style.container} ${playing ? style.playing : ''}`} ref={ref}>
+      <SortableList
+        sortableItemIds={sortableItemIds}
+        visiblePictures={visiblePictures}
+        maskingLabel={maskingLabel}
+        shortPlayFrameId={shortPlayFrameId}
+        onSelect={stableOnSelect}
+        onDragEnd={stableOnDragEnd}
         sensors={sensors}
-        onDragEnd={({ active, over }) => {
-          const evt = {
-            oldIndex: getIndex(active.id),
-            newIndex: over ? getIndex(over.id) : pictures.length,
-          };
-          if (active && over && active.id === over.id) {
-            onSelect(pictures[evt.oldIndex]);
-          } else {
-            onMove(evt);
-          }
-        }}
-      >
-        <SortableContext items={pictures} strategy={horizontalListSortingStrategy}>
-          {pictures
-            .filter((e) => !e.deleted)
-            .map((img, index) => (
-              <SortableItem
-                key={`timeline-item-${img.id}`}
-                index={index}
-                playing={playing}
-                img={img}
-                selected={select === img.id}
-                onSelect={onSelect}
-                isShortPlayBegining={shortPlayFrameId === img.id}
-              />
-            ))}
-        </SortableContext>
-      </DndContext>
-      <LiveItem select={select} onSelect={onSelect} frameCaptureMode={frameCaptureMode} />
+      />
+      <LiveItem select={select} onSelect={stableOnSelect} frameCaptureMode={frameCaptureMode} />
     </aside>
   );
 };

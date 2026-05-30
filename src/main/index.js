@@ -8,7 +8,7 @@ import { app, BrowserWindow, ipcMain, protocol, shell } from 'electron';
 import icon from '../../resources/icon.png?asset';
 import actions from './actions';
 import { ImageRoute } from './core/routes';
-import { runToucanCameraServer } from './core/toucan';
+import { runToucanCameraServer, stopToucanCameraServer } from './core/toucan';
 
 let sendToRenderer = () => null;
 
@@ -89,11 +89,26 @@ app.whenReady().then(() => {
 // for applications and their menu bar to stay active until the user quits
 // explicitly with Cmd + Q.
 app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
+  if (process.platform !== 'darwin' || is.dev) {
     app.quit();
-    process.exit(0);
   }
 });
+
+// Make sure the toucan camera server is killed before Electron exits,
+// otherwise it keeps holding the webcam handle (visible as an active
+// camera indicator in the parent terminal / VS Code).
+app.on('before-quit', () => {
+  stopToucanCameraServer();
+});
+
+const handleTerminationSignal = (signal) => {
+  stopToucanCameraServer();
+  app.quit();
+  // Give Electron a moment to tear down, then force-exit if needed.
+  setTimeout(() => process.exit(signal === 'SIGINT' ? 130 : 143), 1500).unref?.();
+};
+process.on('SIGINT', () => handleTerminationSignal('SIGINT'));
+process.on('SIGTERM', () => handleTerminationSignal('SIGTERM'));
 
 // In this file you can include the rest of your app"s specific main process
 // code. You can also put them in separate files and require them here.

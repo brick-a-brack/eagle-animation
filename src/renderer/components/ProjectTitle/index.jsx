@@ -4,7 +4,7 @@ import { withTranslation } from 'react-i18next';
 
 import * as style from './style.module.css';
 
-const ProjectTitle = ({ title = '', onTitleChange = () => {}, onEdit = () => {}, t }) => {
+const ProjectTitle = ({ title = '', onTitleChange = () => {}, onEdit = () => {}, disabled = false, t }) => {
   return (
     <div className={style.title}>
       <input
@@ -21,7 +21,7 @@ const ProjectTitle = ({ title = '', onTitleChange = () => {}, onEdit = () => {},
           e.stopPropagation();
         }}
       />
-      <div className={style.action} onClick={onEdit}>
+      <div className={`${style.action} ${disabled ? style.actionDisabled : ''}`} onClick={onEdit}>
         <FontAwesomeIcon icon={faSlidersUp} />
       </div>
     </div>
