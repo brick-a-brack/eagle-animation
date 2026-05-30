@@ -42,10 +42,10 @@ export const GetFrameResolutions = async (frames) => {
   }
   const resolutions = await Promise.all(
     frames.map((frame) => {
-      const metaLinkUrl = new URL(frame.metaLink);
+      const metaLinkUrl = new URL(frame.metaLink, window.location.origin);
       metaLinkUrl.searchParams.set('c', 'true');
       return GetFrameResolutionsLimit(() =>
-        fetch(metaLinkUrl.toString())
+        fetch(metaLinkUrl.pathname + metaLinkUrl.search)
           .then((res) => res.json())
           .catch(() => ({ width: null, height: null }))
       );

@@ -32,6 +32,8 @@ const computeProject = (data) => {
   const copiedData = structuredClone(data);
   const scenes = copiedData.project.scenes.map((scene, i) => ({
     ...scene,
+    id: scene.id || randomUUID(),
+    deleted: scene.deleted || false,
     pictures: scene.pictures.map((picture) => ({
       ...picture,
       link: getPictureLink(copiedData._id, i, picture.filename),
