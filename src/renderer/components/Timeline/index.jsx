@@ -154,17 +154,26 @@ const Timeline = ({ onSelect, onMove, select = false, pictures = [], playing = f
     prevSelectedElRef.current = el;
   }, [select, picturesKey]);
 
+  const prevScrollRef = useRef({ key: null, select: null });
   useLayoutEffect(() => {
-    const key = select === false ? '#timeline-frame-live' : `#timeline-frame-${select}`;
-    if (document.querySelector(key)) {
-      animateScrollTo(document.querySelector(key), {
+    const target = select === false ? '#timeline-frame-live' : `#timeline-frame-${select}`;
+    if (document.querySelector(target)) {
+      const isPicturesChange = picturesKey !== prevScrollRef.current.key;
+      const isSelectChange = select !== prevScrollRef.current.select;
+      // Skip entirely if nothing changed (handles StrictMode double-invocation).
+      if (!isPicturesChange && !isSelectChange) return;
+      prevScrollRef.current = { key: picturesKey, select };
+      // Instant on first mount and content changes (loading, add, delete, reorder);
+      // animated only when user navigates (select changed, content stable).
+      const instant = playing || isPicturesChange;
+      animateScrollTo(document.querySelector(target), {
         elementToScroll: ref.current,
         horizontal: true,
-        speed: playing ? 0 : 1000,
+        speed: instant ? 0 : 1000,
         minDuration: 0,
-        maxDuration: playing ? 0 : 1500,
+        maxDuration: instant ? 0 : 1500,
         cancelOnUserAction: false,
-        horizontalOffset: (-window.innerWidth + document.querySelector(key).getBoundingClientRect().width) / 2,
+        horizontalOffset: (-window.innerWidth + document.querySelector(target).getBoundingClientRect().width) / 2,
       });
     }
   }, [select, picturesKey, playing]);
