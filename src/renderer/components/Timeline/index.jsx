@@ -12,9 +12,8 @@ import { useTranslation, withTranslation } from 'react-i18next';
 
 import * as style from './style.module.css';
 
-const SortableItem = ({ id, link = '', hidden = false, length = 0, hasMasking = false, isShortPlayBegining = false, playing = false, selected = false, onSelect, index }) => {
+const SortableItem = ({ id, link = '', hidden = false, length = 0, hasMasking = false, maskingLabel = '', isShortPlayBegining = false, playing = false, selected = false, onSelect, index }) => {
   const { setNodeRef, isDragging, transform, transition, listeners, attributes, active } = useSortable({ id });
-  const { t } = useTranslation();
   return (
     <span
       ref={setNodeRef}
@@ -37,7 +36,7 @@ const SortableItem = ({ id, link = '', hidden = false, length = 0, hasMasking = 
       {hidden && <FontAwesomeIcon className={style.icon} icon={faEyeSlash} />}
       {isShortPlayBegining && <FontAwesomeIcon className={style.shortPlayIcon} icon={faForwardFast} />}
       {length > 1 && <span className={style.duplicated}>{`x${length}`}</span>}
-      {hasMasking && <span className={style.masking}>{t('M')}</span>}
+      {hasMasking && <span className={style.masking}>{maskingLabel}</span>}
       <span className={style.title}>{`#${index + 1}`}</span>
     </span>
   );
@@ -70,6 +69,8 @@ const LiveItem = ({ select, onSelect, frameCaptureMode }) => {
 
 const Timeline = ({ onSelect, onMove, select = false, pictures = [], playing = false, shortPlayStatus = false, shortPlayFrames = 0, frameCaptureMode = false }) => {
   const ref = useRef(null);
+  const { t } = useTranslation();
+  const maskingLabel = t('M');
 
   const sensors = useSensors(
     useSensor(MouseSensor, {
@@ -150,6 +151,7 @@ const Timeline = ({ onSelect, onMove, select = false, pictures = [], playing = f
                 hidden={!!img.hidden}
                 length={img.length || 0}
                 hasMasking={!!img.masking}
+                maskingLabel={maskingLabel}
                 selected={select === img.id}
                 onSelect={onSelect}
                 isShortPlayBegining={shortPlayFrameId === img.id}
