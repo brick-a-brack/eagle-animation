@@ -22,6 +22,7 @@ import faLightbulbOn from '@icons/faLightbulbOn';
 import faMagnifyingGlass from '@icons/faMagnifyingGlass';
 import faMobileSignalOut from '@icons/faMobileSignalOut';
 import faQuestion from '@icons/faQuestion';
+import faGamma from '@icons/faGamma';
 import faRotate from '@icons/faRotate';
 import faShutterSpeed from '@icons/faShutterSpeed';
 import faSun from '@icons/faSun';
@@ -39,7 +40,7 @@ const groupDevices = (devices, t) => {
   const output = [];
 
   const categories = {
-    'TOUCAN-CAMERA-SERVER': t('Toucan Camera Server') + ' ' + t('(Experimental)'),
+    'TOUCAN-CAMERA-SERVER': t('Cameras'),
     WEBCAM: t('Webcams'),
     GPHOTO2: t('WebUSB'),
   };
@@ -99,7 +100,7 @@ const getCapabilitiesTabs = (capabilities, t = (v) => v) => {
     {
       title: t('Gamma'),
       properties: ['gamma_auto', 'gamma'],
-      icon: faQuestion,
+      icon: faGamma,
     },
     {
       title: t('Hue'),
@@ -175,18 +176,29 @@ const RemoteCameraSettingsWindow = withTranslation()(({ onDevicesListRefresh }) 
   return <PeersList peers={peers} onConnect={handleConnect} onDelete={handleDelete} />;
 });
 
-const BasicCameraSettingsTab = withTranslation()(({ t, onDevicesListRefresh = () => {}, onSettingsChange = () => {}, devices = [], settings = {} }) => {
+const BasicCameraSettingsTab = withTranslation()(({ t, onDevicesListRefresh = () => {}, onSettingsChange = () => {}, devices = [], settings = {}, currentCameraId = null }) => {
   const form = useForm({
     mode: 'all',
     defaultValues: {
       ...settings,
+      CAMERA_ID: currentCameraId || settings?.CAMERA_ID || null,
     },
   });
   const { appCapabilities } = useAppCapabilities();
-  const { watch, register, getValues } = form;
+  const { watch, register, getValues, setValue } = form;
   const [isPeerDevicesListOpen, setIsPeerDevicesListOpen] = useState(false);
 
   const formValues = watch();
+
+  // Keep CAMERA_ID in sync with the actually-selected camera from useCamera,
+  // not with settings (which may lag behind, e.g. when the default camera was
+  // just auto-selected). Without this the Select would stay empty while the
+  // camera is actually streaming.
+  useEffect(() => {
+    if (currentCameraId && currentCameraId !== getValues('CAMERA_ID')) {
+      setValue('CAMERA_ID', currentCameraId);
+    }
+  }, [currentCameraId, getValues, setValue]);
 
   useEffect(() => {
     const values = getValues();
@@ -210,7 +222,7 @@ const BasicCameraSettingsTab = withTranslation()(({ t, onDevicesListRefresh = ()
           <FontAwesomeIcon icon={faRotate} />
         </Action>
 
-        {appCapabilities.includes('REMOTE_CAMERAS') && (
+        {appCapabilities.includes('REMOTE_CAMERAS') && !settings?.COMPATIBILITY_MODE_CAMERAS && (
           <Action title={t('Remote cameras')} className={style.refreshIcon} onClick={() => setIsPeerDevicesListOpen(true)}>
             <FontAwesomeIcon icon={faMobileSignalOut} />
           </Action>
@@ -239,7 +251,7 @@ const BasicCameraSettingsTab = withTranslation()(({ t, onDevicesListRefresh = ()
         )}
       </FormGroup>
 
-      {appCapabilities.includes('REMOTE_CAMERAS') && (
+      {appCapabilities.includes('REMOTE_CAMERAS') && !settings?.COMPATIBILITY_MODE_CAMERAS && (
         <Window title={t('Remote cameras')} isOpened={isPeerDevicesListOpen} onClose={() => setIsPeerDevicesListOpen(false)} zIndex={1}>
           <RemoteCameraSettingsWindow onDevicesListRefresh={onDevicesListRefresh} />
         </Window>
@@ -248,7 +260,7 @@ const BasicCameraSettingsTab = withTranslation()(({ t, onDevicesListRefresh = ()
   );
 });
 
-const CameraSettingsWindow = ({ t, cameraCapabilities, onCapabilityChange, onDevicesListRefresh = () => {}, onSettingsChange = () => {}, devices = [], settings = {} }) => {
+const CameraSettingsWindow = ({ t, cameraCapabilities, onCapabilityChange, onDevicesListRefresh = () => {}, onSettingsChange = () => {}, devices = [], settings = {}, currentCameraId = null }) => {
   const [selectedTab, setSelectedTab] = useState('CAMERAS');
 
   const tabs = getCapabilitiesTabs(cameraCapabilities, t);
@@ -265,7 +277,9 @@ const CameraSettingsWindow = ({ t, cameraCapabilities, onCapabilityChange, onDev
     <>
       <IconTabs tabs={categories} onClick={(e) => setSelectedTab(e.id)} />
       <div className={style.actions}>
-        {selectedCategory.id === 'CAMERAS' && <BasicCameraSettingsTab onDevicesListRefresh={onDevicesListRefresh} onSettingsChange={onSettingsChange} devices={devices} settings={settings} />}
+        {selectedCategory.id === 'CAMERAS' && (
+          <BasicCameraSettingsTab onDevicesListRefresh={onDevicesListRefresh} onSettingsChange={onSettingsChange} devices={devices} settings={settings} currentCameraId={currentCameraId} />
+        )}
 
         {selectedCategory.properties.map((cap) => (
           <CameraCapabilityItem key={cap} {...cameraCapabilities.find((c) => c.id === cap)} onCapabilityChange={onCapabilityChange} />

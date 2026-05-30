@@ -7,13 +7,13 @@ import Input from '@components/Input';
 import NumberInput from '@components/NumberInput';
 import Select from '@components/Select';
 import Switch from '@components/Switch';
-import { LANGUAGES } from '@config-web';
+import { DEVICE, LANGUAGES } from '@config-web';
 import useAppCapabilities from '@hooks/useAppCapabilities';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { withTranslation } from 'react-i18next';
 
-const SettingsForm = ({ settings = {}, onUpdate = () => {}, t }) => {
+const SettingsForm = ({ settings = {}, onUpdate = () => { }, t }) => {
   const { appCapabilities } = useAppCapabilities();
   const form = useForm({
     mode: 'all',
@@ -63,6 +63,15 @@ const SettingsForm = ({ settings = {}, onUpdate = () => {}, t }) => {
             <Switch register={register('SOUNDS')} />
           </div>
         </FormGroup>
+        {DEVICE === 'ELECTRON' && (
+          <FormGroup
+            label={t('Use camera compatibility mode')}
+            description={t('Disables DSLR and remote cameras, may limit available camera settings')}>
+            <div>
+              <Switch register={register('COMPATIBILITY_MODE_CAMERAS')} />
+            </div>
+          </FormGroup>
+        )}
         <Heading h={1}>{t('Ratio')}</Heading>
         <FormGroup label={t('Ratio opacity')} description={t('The opacity of aspect ratio layer')}>
           <CustomSlider
