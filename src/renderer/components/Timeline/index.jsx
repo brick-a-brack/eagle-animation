@@ -15,9 +15,8 @@ import * as style from './style.module.css';
 const MOUSE_OPTIONS = { activationConstraint: { distance: 0 } };
 const TOUCH_OPTIONS = { activationConstraint: { delay: 250, tolerance: 5 } };
 
-const SortableItemImpl = ({ id, link = '', hidden = false, length = 0, hasMasking = false, maskingLabel = '', isShortPlayBegining = false, onSelect, index }) => {
+const SortableItem = memo(({ id, link = '', hidden = false, length = 0, hasMasking = false, maskingLabel = '', isShortPlayBegining = false, onSelect, index }) => {
   const { setNodeRef, isDragging, transform, transition, listeners, attributes, active } = useSortable({ id });
-  console.log('render SortableItem', id);
   return (
     <span
       ref={setNodeRef}
@@ -44,9 +43,7 @@ const SortableItemImpl = ({ id, link = '', hidden = false, length = 0, hasMaskin
       <span className={style.title}>{`#${index + 1}`}</span>
     </span>
   );
-};
-
-const SortableItem = memo(SortableItemImpl);
+});
 
 const LiveItem = ({ select, onSelect, frameCaptureMode }) => {
   const { t } = useTranslation();

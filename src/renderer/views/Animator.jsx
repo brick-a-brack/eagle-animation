@@ -522,7 +522,7 @@ const Animator = ({ t }) => {
           ]}
           onAction={handleAction}
         >
-          <ProjectTitle title={project?.title} onTitleChange={(title) => projectActions.rename(title || '')} onEdit={() => handleAction('PROJECT_SETTINGS')} />
+          <ProjectTitle title={project?.title} onTitleChange={(title) => projectActions.rename(title || '')} onEdit={() => handleAction('PROJECT_SETTINGS')} disabled={isPlaying} />
         </HeaderBar>
         <Player
           t={t}
