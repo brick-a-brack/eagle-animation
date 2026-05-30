@@ -15,9 +15,13 @@ const ProjectSettingsWindow = ({ t, onProjectSettingsChange = () => {}, onProjec
       title,
     },
   });
-  const { watch, register, getValues, control } = form;
+  const { watch, register, getValues, setValue, control } = form;
 
   const formValues = watch();
+
+  useEffect(() => {
+    setValue('title', title);
+  }, [title]);
 
   useEffect(() => {
     const values = getValues();
