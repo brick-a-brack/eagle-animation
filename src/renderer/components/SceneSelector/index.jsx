@@ -18,9 +18,14 @@ const SceneSelector = ({
   projectTitle = '',
   onProjectTitleChange = () => { },
   onEditProject = () => { },
+  disabled = false,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef(null);
+
+  useEffect(() => {
+    if (disabled && isOpen) setIsOpen(false);
+  }, [disabled, isOpen]);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -44,7 +49,7 @@ const SceneSelector = ({
 
   return (
     <div className={style.container} ref={containerRef}>
-      <button type="button" className={style.button} onClick={() => setIsOpen((v) => !v)}>
+      <button type="button" className={style.button} onClick={() => setIsOpen((v) => !v)} disabled={disabled}>
         <div className={style.buttonContent}>
           <span className={style.projectLabel}>{projectTitle || t('Untitled project')}</span>
           <span className={style.sceneLabel}>{currentScene?.title || t('Scene #{{index}}', { index: Number(currentTrack) + 1 })}</span>

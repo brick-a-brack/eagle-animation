@@ -571,6 +571,7 @@ const Animator = ({ t }) => {
           <SceneSelector
               scenes={visibleScenes.map((s) => ({ id: s.id, index: s.index, title: s.title, framerate: s.framerate, ratio: s.ratio }))}
               currentTrack={track}
+              disabled={isPlaying}
               projectTitle={project?.title}
               onProjectTitleChange={(title) => projectActions.rename(title || '')}
               onEditProject={() => handleAction('PROJECT_SETTINGS')}
