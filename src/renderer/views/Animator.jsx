@@ -459,7 +459,8 @@ const Animator = ({ t }) => {
       const newIndex = project.scenes.length;
       const newVisualIndex = project.scenes.filter((s) => !s.deleted).length + 1; // To be displayed
       const currentFps = project?.scenes?.[track]?.framerate || 12;
-      await projectActions.addScene(t('Untitled scene #{{index}}', { index: newVisualIndex}), currentFps);
+      const currentRatio = project?.scenes?.[track]?.ratio || null;
+      await projectActions.addScene(t('Untitled scene #{{index}}', { index: newVisualIndex}), currentFps, currentRatio);
       window.track('scene_added', { projectId: `${id}`, trackId: `${newIndex}` });
       navigate(`/animator/${id}/${newIndex}`);
     },
