@@ -5,18 +5,19 @@ import { Camera as ToucanCameraServerCamera, CameraBrowser as ToucanCameraServer
 import { Camera as WebcamCamera, CameraBrowser as WebcamCameraBrowser } from './Webcam';
 import { Camera as WebGPhoto2Camera, CameraBrowser as WebGPhoto2CameraBrowser } from './WebGPhoto2';
 
-const Cameras = [
-  ...(DEVICE === 'ELECTRON' ? [{ browser: ToucanCameraServerBrowser, item: ToucanCameraServerCamera }] : []),
-  { browser: WebcamCameraBrowser, item: WebcamCamera },
+const getCameraModules = (compatibilityMode = false) => [
+  ...(DEVICE === 'ELECTRON' && !compatibilityMode ? [{ browser: ToucanCameraServerBrowser, item: ToucanCameraServerCamera }] : []),
+  ...(DEVICE !== 'ELECTRON' || compatibilityMode ? [{ browser: WebcamCameraBrowser, item: WebcamCamera }] : []),
   ...(DEVICE === 'WEB' && isBlink() ? [{ browser: WebGPhoto2CameraBrowser, item: WebGPhoto2Camera }] : []),
 ];
 
 let cachedCameras = {};
 let cachedAvailableCameras = [];
 
-export const getCameras = async () => {
+export const getCameras = async (compatibilityMode = false) => {
   const availableCameras = [];
 
+  const Cameras = getCameraModules(compatibilityMode);
   const camerasLists = await Promise.all(Cameras.map((camType) => camType?.browser?.getCameras() || []));
 
   for (let i = 0; i < camerasLists.length; i++) {
@@ -30,6 +31,12 @@ export const getCameras = async () => {
       });
     }
   }
+
+  availableCameras.sort((a, b) => {
+    if (a.module === 'GPHOTO2' && b.module !== 'GPHOTO2') return 1;
+    if (a.module !== 'GPHOTO2' && b.module === 'GPHOTO2') return -1;
+    return a.id.localeCompare(b.id);
+  });
 
   cachedAvailableCameras = availableCameras;
   return availableCameras;

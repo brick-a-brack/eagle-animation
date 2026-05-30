@@ -5,6 +5,7 @@ import { getCamera, getCameras, takePicture } from './modules';
 const applyCameraLabel = (e, i) => ({ ...e, label: `[${i + 1}] ${e.label || ''}` });
 
 function useCamera(options = {}) {
+  const compatibilityMode = !!options?.compatibilityMode;
   const [devices, setDevices] = useState(null);
   const [currentCameraId, setCurrentCameraId] = useState(null);
   const [isReady, setIsReady] = useState(false);
@@ -20,10 +21,22 @@ function useCamera(options = {}) {
   // effect/callback dependency arrays) — no need to keep it in a state.
   const currentCamera = currentCameraId ? getCamera(currentCameraId) : null;
 
-  // Load cameras list at setup
+  // Load cameras list at setup; refresh when compatibility mode toggles.
+  // We invalidate the current devices list (and selection) while the new one is
+  // being fetched so consumers don't keep using a list that no longer matches
+  // the active mode (which would lead to wrong default-camera fallbacks).
   useEffect(() => {
-    getCameras().then((cameras) => setDevices(cameras.map(applyCameraLabel)));
-  }, []);
+    let cancelled = false;
+    setDevices(null);
+    setCurrentCameraId(null);
+    getCameras(compatibilityMode).then((cameras) => {
+      if (cancelled) return;
+      setDevices(cameras.map(applyCameraLabel));
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [compatibilityMode]);
 
   // Trigger event
   const triggerEvent = useCallback((name, data = null) => {
@@ -43,8 +56,8 @@ function useCamera(options = {}) {
 
   // Action refresh devices list
   const actionRefreshDevices = useCallback(() => {
-    getCameras().then((cameras) => setDevices(cameras.map(applyCameraLabel)));
-  }, []);
+    getCameras(compatibilityMode).then((cameras) => setDevices(cameras.map(applyCameraLabel)));
+  }, [compatibilityMode]);
 
   // Action to set stream callback
   const actionSetStream = useCallback(
@@ -52,20 +65,20 @@ function useCamera(options = {}) {
       setStreamRef.current = setStream;
       if (currentCamera) {
         await currentCamera.connect({ setStream: setStreamRef.current }, options, () => {
-          getCameras().then((cameras) => setDevices(cameras.map(applyCameraLabel)));
+          getCameras(compatibilityMode).then((cameras) => setDevices(cameras.map(applyCameraLabel)));
         });
         triggerEvent('connect');
         currentCamera.getCapabilities().then(setCameraCapabilities);
       }
     },
-    [currentCamera, options, triggerEvent]
+    [currentCamera, options, triggerEvent, compatibilityMode]
   );
 
   // Action set camera
   const actionSetCamera = useCallback(
     async (cameraId) => {
-      const cameras = await getCameras();
-      const deviceId = cameras.find((e) => e.id === cameraId)?.id || cameras?.[0]?.id || null;
+      const cameras = await getCameras(compatibilityMode);
+      const deviceId = cameras.find((e) => e.id === cameraId)?.id || (!cameraId ? cameras?.[0]?.id || null : null);
       if (deviceId !== currentCameraId) {
         if (currentCamera) {
           try {
@@ -80,7 +93,7 @@ function useCamera(options = {}) {
           const camera = getCamera(deviceId);
           if (setStreamRef?.current) {
             await camera?.connect({ setStream: setStreamRef.current }, options);
-            await getCameras().then((cameras) => setDevices(cameras.map(applyCameraLabel)));
+            await getCameras(compatibilityMode).then((cameras) => setDevices(cameras.map(applyCameraLabel)));
             triggerEvent('connect');
           }
           camera?.getCapabilities().then(setCameraCapabilities);
@@ -91,9 +104,9 @@ function useCamera(options = {}) {
       }
 
       // Force refresh devices list, to handle permission issues on specific browsers
-      getCameras().then((cameras) => setDevices(cameras.map(applyCameraLabel)));
+      getCameras(compatibilityMode).then((cameras) => setDevices(cameras.map(applyCameraLabel)));
     },
-    [currentCameraId, currentCamera, options, triggerEvent]
+    [currentCameraId, currentCamera, options, triggerEvent, compatibilityMode]
   );
 
   // Action take picture

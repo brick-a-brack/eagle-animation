@@ -25,6 +25,7 @@ const DEFAULT_SETTINGS = {
   EVENT_MODE_ENABLED: false,
   EVENT_KEY: '',
   EVENT_API: PARTNER_API,
+  COMPATIBILITY_MODE_CAMERAS: false,
 };
 
 function useSettings() {

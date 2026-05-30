@@ -157,7 +157,7 @@ const Animator = ({ t }) => {
           }),
   });
 
-  const { isCameraReady, devices, currentCameraCapabilities, currentCamera, currentCameraId, actions: cameraActions } = useCamera();
+  const { isCameraReady, devices, currentCameraCapabilities, currentCamera, currentCameraId, actions: cameraActions } = useCamera({ compatibilityMode: !!settings?.COMPATIBILITY_MODE_CAMERAS });
 
   // Disable frame deletion confirmation if we change the current frame
   useEffect(() => {
@@ -168,15 +168,28 @@ const Animator = ({ t }) => {
 
   // Select default camera
   useEffect(() => {
-    if (devices?.length > 0 && settings && !currentCameraId) {
-      const availableDevices = devices.filter((device) => !!device?.id);
-      const defaultCamera = availableDevices.find((device) => device.id === settings.CAMERA_ID) || availableDevices[0] || null;
+    if (!devices?.length || !settings) {
+      return;
+    }
 
-      if (!defaultCamera) {
-        return;
-      }
+    const availableDevices = devices.filter((device) => !!device?.id);
+    const currentIsValid = currentCameraId && availableDevices.some((device) => device.id === currentCameraId);
+    if (currentIsValid) {
+      return;
+    }
 
-      cameraActions.setCamera(defaultCamera.id);
+    const savedCamera = availableDevices.find((device) => device.id === settings.CAMERA_ID);
+    const defaultCamera = savedCamera || availableDevices[0] || null;
+    if (!defaultCamera) {
+      return;
+    }
+
+    cameraActions.setCamera(defaultCamera.id);
+
+    // Only persist when we had to fall back to a different camera than the saved one,
+    // so we don't overwrite a still-valid CAMERA_ID during transient device list updates
+    // (e.g. compatibility mode toggle, slow device enumeration).
+    if (!savedCamera) {
       settingsActions.setSettings({ CAMERA_ID: defaultCamera.id });
     }
   }, [devices, settings, currentCameraId]);
@@ -211,7 +224,7 @@ const Animator = ({ t }) => {
   };
 
   const handleSettingsChange = async (values) => {
-    if (values.CAMERA_ID !== settings.CAMERA_ID) {
+    if (values.CAMERA_ID !== currentCameraId) {
       cameraActions.setCamera(values.CAMERA_ID || null);
     }
     settingsActions.setSettings(values);
@@ -602,6 +615,7 @@ const Animator = ({ t }) => {
               appCapabilities={appCapabilities}
               devices={devices}
               settings={settings}
+              currentCameraId={currentCameraId}
             />
           </Window>
           <Window isOpened={activeWindow === 'project'} onClose={() => setActiveWindow(null)}>
