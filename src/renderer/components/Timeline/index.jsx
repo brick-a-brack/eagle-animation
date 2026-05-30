@@ -12,8 +12,8 @@ import { useTranslation, withTranslation } from 'react-i18next';
 
 import * as style from './style.module.css';
 
-const SortableItem = ({ img, isShortPlayBegining = false, playing = false, selected, onSelect, index }) => {
-  const { setNodeRef, isDragging, transform, transition, listeners, attributes, active } = useSortable({ id: img.id });
+const SortableItem = ({ id, link = '', hidden = false, length = 0, hasMasking = false, isShortPlayBegining = false, playing = false, selected = false, onSelect, index }) => {
+  const { setNodeRef, isDragging, transform, transition, listeners, attributes, active } = useSortable({ id });
   const { t } = useTranslation();
   return (
     <span
@@ -22,7 +22,7 @@ const SortableItem = ({ img, isShortPlayBegining = false, playing = false, selec
       {...listeners}
       role="button"
       tabIndex={0}
-      id={`timeline-frame-${img.id}`}
+      id={`timeline-frame-${id}`}
       style={{
         opacity: isDragging ? 1 : undefined,
         zIndex: isDragging ? 999 : undefined,
@@ -30,14 +30,14 @@ const SortableItem = ({ img, isShortPlayBegining = false, playing = false, selec
         transform: active ? DNDCSS.Transform.toString({ ...transform, y: 0, scaleX: 1, scaleY: 1 }) : undefined,
         transition: active ? transition : undefined,
       }}
-      onClick={() => onSelect(img?.id)}
-      className={`${style.containerImg} ${selected ? style.selected : ''} ${!playing && style.containerImgHover} ${img.hidden ? style.isHidden : ''}`}
+      onClick={() => onSelect(id)}
+      className={`${style.containerImg} ${selected ? style.selected : ''} ${!playing && style.containerImgHover} ${hidden ? style.isHidden : ''}`}
     >
-      <span className={style.img}>{img.link && <img alt="" className={style.imgcontent} src={getPictureLink(img.link, { w: 80, h: 80, m: 'cover', f: 'jpg' })} loading="lazy" />}</span>
-      {img.hidden && <FontAwesomeIcon className={style.icon} icon={faEyeSlash} />}
+      <span className={style.img}>{link && <img alt="" className={style.imgcontent} src={getPictureLink(link, { w: 80, h: 80, m: 'cover', f: 'jpg' })} loading="lazy" />}</span>
+      {hidden && <FontAwesomeIcon className={style.icon} icon={faEyeSlash} />}
       {isShortPlayBegining && <FontAwesomeIcon className={style.shortPlayIcon} icon={faForwardFast} />}
-      {img.length > 1 && <span className={style.duplicated}>{`x${img.length}`}</span>}
-      {img.masking && <span className={style.masking}>{t('M')}</span>}
+      {length > 1 && <span className={style.duplicated}>{`x${length}`}</span>}
+      {hasMasking && <span className={style.masking}>{t('M')}</span>}
       <span className={style.title}>{`#${index + 1}`}</span>
     </span>
   );
@@ -145,7 +145,11 @@ const Timeline = ({ onSelect, onMove, select = false, pictures = [], playing = f
                 key={`timeline-item-${img.id}`}
                 index={index}
                 playing={playing}
-                img={img}
+                id={img.id}
+                link={img.link || ''}
+                hidden={!!img.hidden}
+                length={img.length || 0}
+                hasMasking={!!img.masking}
                 selected={select === img.id}
                 onSelect={onSelect}
                 isShortPlayBegining={shortPlayFrameId === img.id}
