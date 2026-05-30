@@ -52,7 +52,7 @@ const SceneSelector = ({
       <button type="button" className={style.button} onClick={() => setIsOpen((v) => !v)} disabled={disabled}>
         <div className={style.buttonContent}>
           <span className={style.projectLabel}>{projectTitle || t('Untitled project')}</span>
-          <span className={style.sceneLabel}>{currentScene?.title || t('Scene #{{index}}', { index: Number(currentTrack) + 1 })}</span>
+          <span className={style.sceneLabel}>{currentScene?.title || t('Untitled scene')}</span>
         </div>
         <FontAwesomeIcon icon={faChevronDown} className={`${style.chevron} ${isOpen ? style.chevronOpen : ''}`} />
       </button>
@@ -87,7 +87,7 @@ const SceneSelector = ({
           <div className={style.separator} />
 
           <div className={style.sectionHeader}>{t('Scenes')}</div>
-          {scenes.map((s) => (
+          {scenes.map((s, i) => (
             <div key={s.id || s.index} className={`${style.row} ${s.index === Number(currentTrack) ? style.rowActive : ''}`}>
               <button
                 type="button"
@@ -97,7 +97,7 @@ const SceneSelector = ({
                   onSelect(s.index);
                 }}
               >
-                <span className={style.rowTitle}>{s.title || t('Scene #{{index}}', { index: Number(currentTrack) + 1 })}</span>
+                <span className={style.rowTitle}>{s.title || t('Untitled scene')}</span>
                 <div className={style.rowMeta}>
                   {s.framerate && <span className={style.metaTag}>{s.framerate} FPS</span>}
                   {s.ratio && s.ratio.includes(':') && <span className={style.metaTag}>{s.ratio}</span>}

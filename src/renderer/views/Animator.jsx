@@ -444,8 +444,9 @@ const Animator = ({ t }) => {
     },
     ADD_SCENE: async () => {
       const newIndex = project.scenes.length;
+      const newVisualIndex = project.scenes.filter((s) => !s.deleted).length + 1; // To be displayed
       const currentFps = project?.scenes?.[track]?.framerate || 12;
-      await projectActions.addScene(t('Scene') + ' #' + (newIndex + 1), currentFps);
+      await projectActions.addScene(t('Untitled scene #{{index}}', { index: newVisualIndex}), currentFps);
       window.track('scene_added', { projectId: `${id}`, trackId: `${newIndex}` });
       navigate(`/animator/${id}/${newIndex}`);
     },
