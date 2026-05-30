@@ -69,11 +69,25 @@
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
     left: 0;
     margin-top: 6px;
+    opacity: 0;
     padding: 8px;
+    pointer-events: none;
     position: absolute;
     right: 0;
     top: 100%;
+    transform: translateY(-6px) scale(0.98);
+    transform-origin: top center;
+    transition: opacity 0.15s ease-in-out, transform 0.15s ease-in-out, visibility 0s linear 0.15s;
+    visibility: hidden;
     z-index: 10;
+}
+
+.panelOpen {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0) scale(1);
+    transition: opacity 0.15s ease-in-out, transform 0.15s ease-in-out, visibility 0s linear 0s;
+    visibility: visible;
 }
 
 .sectionHeader {

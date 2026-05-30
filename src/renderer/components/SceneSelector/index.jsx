@@ -52,9 +52,8 @@ const SceneSelector = ({
         <FontAwesomeIcon icon={faChevronDown} className={`${style.chevron} ${isOpen ? style.chevronOpen : ''}`} />
       </button>
 
-      {isOpen && (
-        <div className={style.panel}>
-          <div className={style.sectionHeader}>{t('Project')}</div>
+      <div className={`${style.panel} ${isOpen ? style.panelOpen : ''}`} aria-hidden={!isOpen}>
+        <div className={style.sectionHeader}>{t('Project')}</div>
           <div className={style.projectRow}>
             <input
               className={style.projectInput}
@@ -126,8 +125,7 @@ const SceneSelector = ({
             <FontAwesomeIcon icon={faPlus} />
             <span>{t('New scene')}</span>
           </button>
-        </div>
-      )}
+      </div>
     </div>
   );
 };
