@@ -1,6 +1,6 @@
 .container {
     position: relative;
-    width: 260px;
+    width: 300px;
 }
 
 .button {
@@ -132,10 +132,16 @@
     font-size: var(--font-size-4);
     font-weight: 600;
     line-height: var(--line-size-4);
-    max-width: 180px;
+    max-width: 100%;
     min-width: 80px;
     outline: none;
     padding: 4px 6px;
+}
+
+
+.projectInput::placeholder {
+    color: var(--color-white);
+    opacity: 0.5;
 }
 
 .projectInput:focus {
@@ -148,15 +154,15 @@
     border-radius: 4px;
     display: flex;
     justify-content: space-between;
-    transition: background 0.15s ease-in-out;
+    margin: var(--space-small) 0;
 }
 
 .row:hover {
-    background: var(--color-theme-light);
+    background-color: var(--color-theme-light);
 }
 
 .rowActive {
-    background: var(--color-theme-light);
+    background-color: var(--color-theme-light);
 }
 
 .rowSelect {
@@ -169,15 +175,17 @@
     flex: 1;
     gap: var(--space-medium);
     justify-content: space-between;
+    min-width: 0;
+    overflow: hidden;
     padding: 7px 10px;
     text-align: left;
 }
 
 .rowTitle {
-    flex-shrink: 1;
+    flex: 1;
     font-size: var(--font-size-5);
     font-weight: 500;
-    max-width: 160px;
+    min-width: 0;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -240,13 +248,21 @@
     display: flex;
     font-size: var(--font-size-5);
     font-weight: 500;
-    gap: var(--space-medium);
+    gap: var(--space-small);
     padding: 7px 10px;
-    transition: background 0.15s ease-in-out, color 0.15s ease-in-out;
     width: 100%;
 }
 
 .createButton:hover {
     background: var(--color-theme-light);
     color: var(--color-primary);
+}
+
+.scrollable {
+    overflow-y: scroll;
+    max-height: calc(100vh - 300px);
+}
+
+.scrollable::-webkit-scrollbar {
+    display: none;
 }

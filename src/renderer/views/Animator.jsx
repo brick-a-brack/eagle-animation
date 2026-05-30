@@ -584,7 +584,7 @@ const Animator = ({ t }) => {
           onAction={handleAction}
         >
           <SceneSelector
-              scenes={visibleScenes.map((s) => ({ id: s.id, index: s.index, title: s.title, framerate: s.framerate, ratio: s.ratio }))}
+              scenes={visibleScenes.map((s) => ({ id: s.id, index: s.index, title: s.title, framerate: s.framerate, pictureCount: s.pictures?.filter((p) => !p.deleted).length ?? 0 }))}
               currentTrack={track}
               disabled={isPlaying}
               projectTitle={project?.title}
