@@ -12,16 +12,6 @@ import { useTranslation, withTranslation } from 'react-i18next';
 
 import * as style from './style.module.css';
 
-const getPicturesKey = (pictures) => {
-  const data = structuredClone(pictures);
-  for (let i = 0; i < pictures.length; i++) {
-    delete data[i].thumbnail;
-    delete data[i].preview;
-    delete data[i].resolution;
-  }
-  return JSON.stringify(data);
-};
-
 const SortableItem = ({ img, isShortPlayBegining = false, playing = false, selected, onSelect, index }) => {
   const { setNodeRef, isDragging, transform, transition, listeners, attributes, active } = useSortable({ id: img.id });
   const { t } = useTranslation();
@@ -106,7 +96,8 @@ const Timeline = ({ onSelect, onMove, select = false, pictures = [], playing = f
     return () => window.removeEventListener('keydown', callback, false);
   });
 
-  const picturesKey = getPicturesKey(pictures);
+  let picturesKey = '';
+  for (let i = 0; i < pictures.length; i++) picturesKey += pictures[i].id + '|';
 
   useLayoutEffect(() => {
     const key = select === false ? '#timeline-frame-live' : `#timeline-frame-${select}`;
