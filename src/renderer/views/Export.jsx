@@ -18,10 +18,13 @@ import useAppCapabilities from '@hooks/useAppCapabilities';
 import useDiscordActivity from '@hooks/useDiscordActivity';
 import useProject from '@hooks/useProject';
 import useSettings from '@hooks/useSettings';
+import pLimit from 'p-limit';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { withTranslation } from 'react-i18next';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
+
+const GetFrameResolutionsLimit = pLimit(10);
 
 const generateCustomUuid = (length) => {
   const array = new Uint32Array(length);
@@ -39,9 +42,13 @@ export const GetFrameResolutions = async (frames) => {
   }
   const resolutions = await Promise.all(
     frames.map((frame) => {
-      return fetch(frame.metaLink)
-        .then((res) => res.json())
-        .catch(() => ({ width: null, height: null }));
+      const metaLinkUrl = new URL(frame.metaLink, window.location.origin);
+      metaLinkUrl.searchParams.set('c', 'true');
+      return GetFrameResolutionsLimit(() =>
+        fetch(metaLinkUrl.pathname + metaLinkUrl.search)
+          .then((res) => res.json())
+          .catch(() => ({ width: null, height: null }))
+      );
     })
   );
   return resolutions;

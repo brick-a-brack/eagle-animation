@@ -96,7 +96,7 @@ const ControlBar = ({
         />
         <Button title={gridStatus ? t('Disable grid') : t('Enable grid')} selected={gridStatus} onClick={handleAction('GRID')} icon={faFrame} disabled={framePosition !== false} />
 
-        <div className={`${style.slider} ${differenceStatus || framePosition !== false ? style.sliderDisabled : ''}`} id="onion" data-tooltip-content={t('Onion blending')}>
+        <div className={`${style.slider} ${differenceStatus || framePosition !== false ? style.sliderDisabled : ''}`} id="onion" data-tooltip-id="onion">
           <CustomSlider step={0.01} min={0} max={1} value={onionValue} onChange={differenceStatus || framePosition !== false ? () => {} : (value) => handleAction('ONION_CHANGE', value)()} />
         </div>
         <Button
@@ -107,7 +107,7 @@ const ControlBar = ({
           icon={faEraser}
           disabled={framePosition !== false}
         />
-        <Button style={{ marginLeft: 'var(--space-big)' }} title={t('Camera settings')} selected={showCameraSettings} onClick={handleAction('CAMERA_SETTINGS')} icon={faSliders} />
+        <Button style={{ marginLeft: 'var(--space-big)' }} title={t('Camera settings')} selected={showCameraSettings} onClick={isPlaying ? () => {} : handleAction('CAMERA_SETTINGS')} icon={faSliders} disabled={isPlaying} />
       </div>
       <Button disabled={isTakingPicture || !isCameraReady} onClick={handleAction('TAKE_PICTURE')} color="primary" icon={faCamera} title={t('Take a picture')} />
       <div className={`${style.subcontainer} ${style.right}`}>
@@ -124,8 +124,7 @@ const ControlBar = ({
           tag={t('FPS')}
           register={register('fps')}
         />
-        <Tooltip anchorId="onion" />
-        <Tooltip anchorId={`preview-indicator`} />
+        <Tooltip id="onion" content={t('Onion blending')} />
       </div>
     </div>
   );

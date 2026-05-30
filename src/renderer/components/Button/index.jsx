@@ -10,8 +10,8 @@ const Button = ({ icon, onClick, title = '', disabled = false, selected = false,
   return (
     <div {...{ ...rest, children: null }} className={style.mainContainer}>
       <div
-        {...(title ? { 'data-tooltip-content': title, id: `button-${uid}` } : {})}
         id={`button-${uid}`}
+        data-tooltip-id={`button-${uid}`}
         role="button"
         tabIndex={0}
         onClick={() => onClick && onClick()}
@@ -19,7 +19,7 @@ const Button = ({ icon, onClick, title = '', disabled = false, selected = false,
       >
         <FontAwesomeIcon icon={icon} />
       </div>
-      {title && <Tooltip place={tooltipPosition.toLowerCase()} anchorId={`button-${uid}`} />}
+      {title && <Tooltip content={title} place={tooltipPosition.toLowerCase()} id={`button-${uid}`} />}
     </div>
   );
 };

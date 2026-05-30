@@ -2,9 +2,9 @@ import React from 'react';
 
 import * as style from './style.module.css';
 
-const Switch = ({ register = {}, className = '', required = false, isDisabled = false, ...props }) => {
+const Switch = ({ register = {}, className = '', required = false, disabled = false, ...props }) => {
   return (
-    <label className={`${style.swtch} ${isDisabled && style.isDisabled} ${className}`}>
+    <label className={`${style.swtch} ${disabled && style.disabled} ${className}`}>
       <input type="checkbox" required={required} {...register} {...props} />
       <span className={style.slider}></span>
     </label>

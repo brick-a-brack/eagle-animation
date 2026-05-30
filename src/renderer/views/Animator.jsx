@@ -1,6 +1,7 @@
 import CameraSettingsWindow from '@components/CameraSettingsWindow';
 import ControlBar from '@components/ControlBar';
 import HeaderBar from '@components/HeaderBar';
+import ImportOverlay from '@components/ImportOverlay';
 import KeyboardHandler from '@components/KeyboardHandler';
 import LimitWarning from '@components/LimitWarning';
 import LoadingPage from '@components/LoadingPage';
@@ -8,7 +9,8 @@ import MaskingWindow from '@components/MaskingWindow';
 import PageLayout from '@components/PageLayout';
 import Player from '@components/Player';
 import ProjectSettingsWindow from '@components/ProjectSettingsWindow';
-import ProjectTitle from '@components/ProjectTitle';
+import SceneSelector from '@components/SceneSelector';
+import SceneSettingsWindow from '@components/SceneSettingsWindow';
 import Timeline from '@components/Timeline';
 import Window from '@components/Window';
 import { parseRatio } from '@core/ratio';
@@ -17,7 +19,7 @@ import useCamera from '@hooks/useCamera';
 import useDiscordActivity from '@hooks/useDiscordActivity';
 import useProject from '@hooks/useProject';
 import useSettings from '@hooks/useSettings';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { flushSync } from 'react-dom';
 import { withTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -126,27 +128,25 @@ const Animator = ({ t }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const { settings, actions: settingsActions } = useSettings();
   const { appCapabilities } = useAppCapabilities();
-  const [showCameraSettings, setShowCameraSettings] = useState(false);
+  const [activeWindow, setActiveWindow] = useState(null);
   const [maskingMode, setMaskingMode] = useState('DISABLED');
-  const [showProjectSettings, setShowProjectSettings] = useState(false);
   const [isTakingPicture, setIsTakingPicture] = useState(false);
   const [loopStatus, setLoopStatus] = useState(false);
   const [shortPlayStatus, setShortPlayStatus] = useState(false);
   const [differenceStatus, setDifferenceStatus] = useState(false);
-  const [fps, setFps] = useState(12);
-  const [ratio, setRatio] = useState(null);
   const [onionValue, setOnionValue] = useState(1);
   const [gridStatus, setGridStatus] = useState(false);
   const [currentFrameId, setCurrentFrameId] = useState(false);
   const [deleteOnLiveViewConfirmation, setDeleteOnLiveViewConfirmation] = useState(false);
-  const [disableKeyboardShortcuts, setDisableKeyboardShortcuts] = useState(false);
-  const [showMaskingEditor, setShowMaskingEditor] = useState(false);
   const [pendingBackgroundFrame, setPendingBackgroundFrame] = useState(false);
+  const [sceneEditingIndex, setSceneEditingIndex] = useState(Number(track) || 0);
   const maskingEditorRef = useRef(null);
 
   const { project, actions: projectActions } = useProject({ id });
 
   const nbFrames = project?.scenes?.[track]?.pictures?.filter((e) => !e.deleted)?.length || 0;
+  const fps = Math.min(60, Math.max(1, Number(project?.scenes?.[track]?.framerate) || 1));
+  const ratio = project?.scenes?.[track]?.ratio ? parseRatio(project?.scenes?.[track]?.ratio) : null;
 
   useDiscordActivity({
     actionIcon: 'animating',
@@ -159,24 +159,7 @@ const Animator = ({ t }) => {
           }),
   });
 
-  const {
-    isCameraReady,
-    devices,
-    currentCameraCapabilities,
-    currentCamera,
-    currentCameraId,
-    actions: cameraActions,
-  } = useCamera({
-    forceMaxQuality: !!settings?.FORCE_QUALITY,
-    eventsHandlers: {
-      connect: () => {
-        playerRef?.current?.resize();
-      },
-      disconnect: () => {
-        playerRef?.current?.resize();
-      },
-    },
-  });
+  const { isCameraReady, devices, currentCameraCapabilities, currentCamera, currentCameraId, actions: cameraActions } = useCamera({ compatibilityMode: !!settings?.COMPATIBILITY_MODE_CAMERAS });
 
   // Disable frame deletion confirmation if we change the current frame
   useEffect(() => {
@@ -185,26 +168,49 @@ const Animator = ({ t }) => {
     })();
   }, [currentFrameId]);
 
-  // Sync framerate when project change
+  // Reset per-scene local state when switching scenes
   useEffect(() => {
-    (() => {
-      setFps(project?.scenes?.[track]?.framerate);
-    })();
-  }, [project?.scenes?.[track]?.framerate]);
-
-  // Sync ratio when project change
-  useEffect(() => {
-    (() => {
-      setRatio(project?.scenes?.[track]?.ratio ? parseRatio(project?.scenes?.[track]?.ratio) : null);
-    })();
-  }, [project?.scenes?.[track]?.ratio]);
+    setCurrentFrameId(false);
+    setPendingBackgroundFrame(false);
+    setDeleteOnLiveViewConfirmation(false);
+    if (playerRef.current) {
+      playerRef.current.showFrame(false);
+    }
+  }, [track]);
 
   // Select default camera
   useEffect(() => {
-    if (settings?.CAMERA_ID) {
-      cameraActions.setCamera(settings?.CAMERA_ID || null);
+    if (!devices?.length || !settings) {
+      return;
     }
-  }, [settings?.CAMERA_ID]);
+
+    const availableDevices = devices.filter((device) => !!device?.id);
+    const currentIsValid = currentCameraId && availableDevices.some((device) => device.id === currentCameraId);
+    if (currentIsValid) {
+      return;
+    }
+
+    const savedCamera = availableDevices.find((device) => device.id === settings.CAMERA_ID);
+    const defaultCamera = savedCamera || availableDevices[0] || null;
+    if (!defaultCamera) {
+      return;
+    }
+
+    cameraActions.setCamera(defaultCamera.id);
+
+    // Only persist when we had to fall back to a different camera than the saved one,
+    // so we don't overwrite a still-valid CAMERA_ID during transient device list updates
+    // (e.g. compatibility mode toggle, slow device enumeration).
+    if (!savedCamera) {
+      settingsActions.setSettings({ CAMERA_ID: defaultCamera.id });
+    }
+  }, [devices, settings, currentCameraId]);
+
+  const handleImportPicture = useCallback((blob) => projectActions.addFrame(track, blob), [projectActions, track]);
+
+  const handleSelectFrame = useCallback((selectedFrameId) => {
+    playerRef.current.showFrame(selectedFrameId === false ? false : selectedFrameId);
+  }, []);
 
   // Shortcut if informations are not ready
   if (!project || !settings || !devices) {
@@ -216,10 +222,15 @@ const Animator = ({ t }) => {
   }
 
   // ---- RUNTIME LOGIC
-  const pictures = project.scenes[track].pictures.filter((e) => !e.deleted);
+  const pictures = (project.scenes[track]?.pictures || []).filter((e) => !e.deleted);
   const framePosition = currentFrameId === false ? false : pictures.findIndex((p) => p.id === currentFrameId) + 1 || 1;
   const currentFrame = currentFrameId === false ? false : pictures.find((p) => p.id === currentFrameId) || false;
   const totalAnimationFrames = pictures.reduce((acc, e) => acc + (!e.deleted && !e.hidden ? e.length || 1 : 0), 0);
+
+  const visibleScenes = project.scenes.map((s, index) => ({ ...s, index })).filter((s) => !s.deleted);
+  const editingScene = project.scenes[sceneEditingIndex] || null;
+  const editingFps = Math.min(60, Math.max(1, Number(editingScene?.framerate) || 1));
+  const editingRatio = editingScene?.ratio ? parseRatio(editingScene.ratio) : null;
 
   const handleAction = (action, args = null) => {
     if (actionsEvents[action]) {
@@ -229,11 +240,10 @@ const Animator = ({ t }) => {
     }
   };
 
-  const handleSelectFrame = (selectedFrame) => {
-    playerRef.current.showFrame(selectedFrame === false ? false : selectedFrame.id);
-  };
-
   const handleSettingsChange = async (values) => {
+    if (values.CAMERA_ID !== currentCameraId) {
+      cameraActions.setCamera(values.CAMERA_ID || null);
+    }
     settingsActions.setSettings(values);
   };
 
@@ -337,7 +347,7 @@ const Animator = ({ t }) => {
     },
     CAMERA_SETTINGS: () => {
       playerRef.current.showFrame(false);
-      setShowCameraSettings(!showCameraSettings);
+      setActiveWindow((v) => (v === 'camera' ? null : 'camera'));
     },
     DELETE_FRAME: async () => {
       if (pictures.length === 0) {
@@ -443,7 +453,31 @@ const Animator = ({ t }) => {
       navigate(`/settings?back=/animator/${id}/${track}`);
     },
     PROJECT_SETTINGS: () => {
-      setShowProjectSettings((v) => !v);
+      setActiveWindow((v) => (v === 'project' ? null : 'project'));
+    },
+    ADD_SCENE: async () => {
+      const newIndex = project.scenes.length;
+      const newVisualIndex = project.scenes.filter((s) => !s.deleted).length + 1; // To be displayed
+      const currentFps = project?.scenes?.[track]?.framerate || 12;
+      await projectActions.addScene(t('Untitled scene #{{index}}', { index: newVisualIndex}), currentFps);
+      window.track('scene_added', { projectId: `${id}`, trackId: `${newIndex}` });
+      navigate(`/animator/${id}/${newIndex}`);
+    },
+    DELETE_SCENE: async () => {
+      const indexToDelete = Number(sceneEditingIndex);
+      const aliveOthers = project.scenes.filter((s, i) => i !== indexToDelete && !s.deleted);
+      if (aliveOthers.length === 0) {
+        return;
+      }
+      projectActions.deleteScene(indexToDelete);
+      setActiveWindow(null);
+      window.track('scene_deleted', { projectId: `${id}`, trackId: `${indexToDelete}` });
+      if (Number(track) === indexToDelete) {
+        const survivor = project.scenes.findIndex((s, i) => i !== indexToDelete && !s.deleted);
+        if (survivor !== -1) {
+          navigate(`/animator/${id}/${survivor}`);
+        }
+      }
     },
     MORE: () => {},
     EXPORT: () => {
@@ -475,12 +509,6 @@ const Animator = ({ t }) => {
       navigate(`/`);
       window.track('project_deleted', { projectId: id });
     },
-    FPS_FOCUS: () => {
-      setDisableKeyboardShortcuts(true);
-    },
-    FPS_BLUR: () => {
-      setDisableKeyboardShortcuts(false);
-    },
     TOOGLE_MASKING_MODE: () => {
       const values = ['DISABLED', 'CONTINUOUS', 'UNIQUE'];
       const newMode = values?.[values?.indexOf(maskingMode) + 1] || values?.[0];
@@ -491,20 +519,16 @@ const Animator = ({ t }) => {
       window.track('animator_changed', { feature: 'masking', value: newMode });
     },
     MASKING_EDITOR: () => {
-      setShowMaskingEditor(true);
+      setActiveWindow('masking');
     },
   };
 
-  const handlePlayerInit = (videoDOM = null, imageDOM = null) => {
-    cameraActions.setDomRefs({ videoDOM, imageDOM });
+  const handlePlayerInit = (setStream) => {
+    cameraActions.setStream(setStream);
   };
 
   const handleCapabilityChange = async (id, value) => {
     cameraActions.setCapability(id, value);
-  };
-
-  const handleCapabilitiesReset = async () => {
-    cameraActions.capabilitiesReset();
   };
 
   const handleDevicesRefresh = async () => {
@@ -513,13 +537,17 @@ const Animator = ({ t }) => {
 
   const handleProjectSettingsChange = async (fields) => {
     projectActions.rename(fields.title || '');
-    if (fields.fps) {
-      setFps(fields.fps);
-      handleAction('FPS_CHANGE', fields.fps);
-    }
+  };
 
-    setRatio(fields.ratio);
-    handleAction('RATIO_CHANGE', fields?.ratio?.userValue || '');
+  const handleSceneSettingsChange = async (fields) => {
+    projectActions.renameScene(sceneEditingIndex, fields.title || '');
+    if (fields.fps) {
+      projectActions.changeFPS(sceneEditingIndex, fields.fps);
+      if (Number(sceneEditingIndex) === Number(track) && isPlaying) {
+        playerRef?.current?.stop();
+      }
+    }
+    projectActions.changeRatio(sceneEditingIndex, fields?.ratio?.userValue || null);
   };
 
   const handleCloseMaskingEditor = async () => {
@@ -530,7 +558,7 @@ const Animator = ({ t }) => {
     }
 
     // Close editor
-    setShowMaskingEditor(false);
+    setActiveWindow(null);
 
     // Force player sync
     setTimeout(() => {
@@ -554,7 +582,24 @@ const Animator = ({ t }) => {
           ]}
           onAction={handleAction}
         >
-          <ProjectTitle title={project?.title} onTitleChange={(title) => projectActions.rename(title || '')} onEdit={() => handleAction('PROJECT_SETTINGS')} />
+          <SceneSelector
+              scenes={visibleScenes.map((s) => ({ id: s.id, index: s.index, title: s.title, framerate: s.framerate, ratio: s.ratio }))}
+              currentTrack={track}
+              disabled={isPlaying}
+              projectTitle={project?.title}
+              onProjectTitleChange={(title) => projectActions.rename(title || '')}
+              onEditProject={() => handleAction('PROJECT_SETTINGS')}
+              onSelect={(newIndex) => {
+                if (Number(newIndex) !== Number(track)) {
+                  navigate(`/animator/${id}/${newIndex}`);
+                }
+              }}
+              onCreate={() => handleAction('ADD_SCENE')}
+              onEditScene={(sceneIndex) => {
+                setSceneEditingIndex(sceneIndex);
+                setActiveWindow('scene');
+              }}
+            />
         </HeaderBar>
         <Player
           t={t}
@@ -590,7 +635,7 @@ const Animator = ({ t }) => {
           )}
           <ControlBar
             onAction={handleAction}
-            showCameraSettings={showCameraSettings}
+            showCameraSettings={activeWindow === 'camera'}
             gridModes={settings.GRID_MODES}
             gridStatus={gridStatus}
             differenceStatus={differenceStatus}
@@ -621,40 +666,47 @@ const Animator = ({ t }) => {
           />
         </div>
       </PageLayout>
-      {!showCameraSettings && !showProjectSettings && !showMaskingEditor && <KeyboardHandler onAction={handleAction} disabled={disableKeyboardShortcuts} />}
-      <Window isOpened={showCameraSettings} onClose={() => setShowCameraSettings(false)}>
-        <CameraSettingsWindow
-          cameraCapabilities={currentCameraCapabilities}
-          onCapabilityChange={handleCapabilityChange}
-          onSettingsChange={handleSettingsChange}
-          onCapabilitiesReset={handleCapabilitiesReset}
-          onDevicesListRefresh={handleDevicesRefresh}
-          appCapabilities={appCapabilities}
-          devices={devices}
-          settings={settings}
-        />
-      </Window>
-      <Window isOpened={showProjectSettings} onClose={() => setShowProjectSettings(false)}>
-        <ProjectSettingsWindow
-          fps={fps}
-          title={project?.title || ''}
-          ratio={ratio?.userValue || null}
-          onProjectSettingsChange={handleProjectSettingsChange}
-          onProjectDelete={() => handleAction('DELETE_PROJECT')}
-        />
-      </Window>
+      {activeWindow === null && !isPlaying && <ImportOverlay onPictureAdd={handleImportPicture} />}
+      {activeWindow === null && <KeyboardHandler onAction={handleAction} />}
       {!isPlaying && (
-        <Window isOpened={showMaskingEditor && !isPlaying} onClose={handleCloseMaskingEditor} isFullScreen={true}>
-          {currentFrame && currentFrame?.masking && (
-            <MaskingWindow
-              key={currentFrame.id}
-              ref={maskingEditorRef}
-              backgroundLayer={currentFrame?.masking?.background?.link || null}
-              foregroundLayer={currentFrame?.masking?.foreground?.link || null}
-              transparentLayer={currentFrame?.masking?.transparent?.link || null}
+        <>
+          <Window isOpened={activeWindow === 'camera'} onClose={() => setActiveWindow(null)}>
+            <CameraSettingsWindow
+              cameraCapabilities={currentCameraCapabilities}
+              onCapabilityChange={handleCapabilityChange}
+              onSettingsChange={handleSettingsChange}
+              onDevicesListRefresh={handleDevicesRefresh}
+              appCapabilities={appCapabilities}
+              devices={devices}
+              settings={settings}
+              currentCameraId={currentCameraId}
             />
-          )}
-        </Window>
+          </Window>
+          <Window isOpened={activeWindow === 'project'} onClose={() => setActiveWindow(null)}>
+            <ProjectSettingsWindow title={project?.title || ''} onProjectSettingsChange={handleProjectSettingsChange} onProjectDelete={() => handleAction('DELETE_PROJECT')} />
+          </Window>
+          <Window isOpened={activeWindow === 'scene'} onClose={() => setActiveWindow(null)}>
+            <SceneSettingsWindow
+              title={editingScene?.title || ''}
+              fps={editingFps}
+              ratio={editingRatio?.userValue || null}
+              canDelete={visibleScenes.length > 1}
+              onSceneSettingsChange={handleSceneSettingsChange}
+              onSceneDelete={() => handleAction('DELETE_SCENE')}
+            />
+          </Window>
+          <Window isOpened={activeWindow === 'masking' && !isPlaying} onClose={handleCloseMaskingEditor} isFullScreen={true}>
+            {currentFrame && currentFrame?.masking && (
+              <MaskingWindow
+                key={currentFrame.id}
+                ref={maskingEditorRef}
+                backgroundLayer={currentFrame?.masking?.background?.link || null}
+                foregroundLayer={currentFrame?.masking?.foreground?.link || null}
+                transparentLayer={currentFrame?.masking?.transparent?.link || null}
+              />
+            )}
+          </Window>
+        </>
       )}
     </>
   );

@@ -1,32 +1,42 @@
 import { isBlink } from '@common/isBlink';
 import { DEVICE } from '@config-web';
 
-import { Camera as NativeProxyCamera, CameraBrowser as NativeProxyBrowser } from './NativeProxy';
+import { Camera as ToucanCameraServerCamera, CameraBrowser as ToucanCameraServerBrowser } from './ToucanCameraServer';
 import { Camera as WebcamCamera, CameraBrowser as WebcamCameraBrowser } from './Webcam';
 import { Camera as WebGPhoto2Camera, CameraBrowser as WebGPhoto2CameraBrowser } from './WebGPhoto2';
 
-const Cameras = [
-  { browser: WebcamCameraBrowser, item: WebcamCamera },
-  ...(DEVICE === 'ELECTRON' ? [{ browser: NativeProxyBrowser, item: NativeProxyCamera }] : []),
+const getCameraModules = (compatibilityMode = false) => [
+  ...(DEVICE === 'ELECTRON' && !compatibilityMode ? [{ browser: ToucanCameraServerBrowser, item: ToucanCameraServerCamera }] : []),
+  ...(DEVICE !== 'ELECTRON' || compatibilityMode ? [{ browser: WebcamCameraBrowser, item: WebcamCamera }] : []),
   ...(DEVICE === 'WEB' && isBlink() ? [{ browser: WebGPhoto2CameraBrowser, item: WebGPhoto2Camera }] : []),
 ];
 
 let cachedCameras = {};
 let cachedAvailableCameras = [];
 
-export const getCameras = async () => {
+export const getCameras = async (compatibilityMode = false) => {
   const availableCameras = [];
 
-  for (const camType of Cameras) {
-    const cameras = (await camType?.browser?.getCameras()) || [];
+  const Cameras = getCameraModules(compatibilityMode);
+  const camerasLists = await Promise.all(Cameras.map((camType) => camType?.browser?.getCameras() || []));
+
+  for (let i = 0; i < camerasLists.length; i++) {
+    const cameras = camerasLists[i];
+    const camType = Cameras[i];
     for (const camera of cameras) {
       availableCameras.push({
         ...camera,
-        id: `${camera.type}-${camera.module}-${camera.deviceId}`,
+        id: `${camera.module}-${camera.deviceId}`,
         entityClass: camType?.item || null,
       });
     }
   }
+
+  availableCameras.sort((a, b) => {
+    if (a.module === 'GPHOTO2' && b.module !== 'GPHOTO2') return 1;
+    if (a.module !== 'GPHOTO2' && b.module === 'GPHOTO2') return -1;
+    return a.id.localeCompare(b.id);
+  });
 
   cachedAvailableCameras = availableCameras;
   return availableCameras;
@@ -134,54 +144,21 @@ const mergePictures = async (pictures = []) => {
 };
 
 const reversePicture = async (picture, reverseX = false, reverseY = false) => {
-  // Convert to canvas
-  let canvas = picture;
-  if (!(canvas instanceof HTMLCanvasElement)) {
-    canvas = await convertBufferToCanvas(canvas);
+  let source = picture;
+  if (!(source instanceof HTMLCanvasElement)) {
+    source = await convertBufferToCanvas(source);
   }
-
-  const imageData = {
-    width: canvas.width,
-    height: canvas.height,
-    data: canvas.getContext('2d', { alpha: false }).getImageData(0, 0, canvas.width, canvas.height).data,
-  };
-
-  // Define final width and height
-  const width = imageData.width;
-  const height = imageData.height;
-  const dataArray = new Uint8ClampedArray(width * height * 4);
-
-  for (let x = 0; x < width; x++) {
-    for (let y = 0; y < height; y++) {
-      // Source pixels indexes
-      const sourceRedIdx = y * (width * 4) + x * 4;
-      const sourceGreenIdx = y * (width * 4) + x * 4 + 1;
-      const sourceBlueIdx = y * (width * 4) + x * 4 + 2;
-      const sourceAlphaIdx = y * (width * 4) + x * 4 + 3;
-
-      // Destination pixels indexes
-      const outX = reverseX ? width - x : x;
-      const outY = reverseY ? height - y : y;
-      const destRedIdx = outY * (width * 4) + outX * 4;
-      const destGreenIdx = outY * (width * 4) + outX * 4 + 1;
-      const destBlueIdx = outY * (width * 4) + outX * 4 + 2;
-      const destAlphaIdx = outY * (width * 4) + outX * 4 + 3;
-
-      // Transfer data
-      dataArray[destRedIdx] = imageData.data[sourceRedIdx];
-      dataArray[destGreenIdx] = imageData.data[sourceGreenIdx];
-      dataArray[destBlueIdx] = imageData.data[sourceBlueIdx];
-      dataArray[destAlphaIdx] = imageData.data[sourceAlphaIdx];
-    }
-  }
-
-  const imgValues = new ImageData(dataArray, width, height);
 
   const outputCanvas = document.createElement('canvas');
-  outputCanvas.width = width;
-  outputCanvas.height = height;
+  outputCanvas.width = source.width;
+  outputCanvas.height = source.height;
   const ctx = outputCanvas.getContext('2d', { alpha: false });
-  ctx.putImageData(imgValues, 0, 0, 0, 0, width, height);
+
+  ctx.save();
+  ctx.scale(reverseX ? -1 : 1, reverseY ? -1 : 1);
+  ctx.translate(reverseX ? -source.width : 0, reverseY ? -source.height : 0);
+  ctx.drawImage(source, 0, 0);
+  ctx.restore();
 
   return outputCanvas;
 };

@@ -4,30 +4,39 @@ import { getCamera, getCameras, takePicture } from './modules';
 
 const applyCameraLabel = (e, i) => ({ ...e, label: `[${i + 1}] ${e.label || ''}` });
 
-const flushCanvas = (dom) => {
-  if (dom) {
-    const ctx = dom.getContext('2d');
-    ctx.clearRect(0, 0, dom.width, dom.height);
-  }
-};
-
 function useCamera(options = {}) {
-  const capabilitiesIntervals = useRef({});
+  const compatibilityMode = !!options?.compatibilityMode;
   const [devices, setDevices] = useState(null);
   const [currentCameraId, setCurrentCameraId] = useState(null);
-  const [currentCamera, setCurrentCamera] = useState(undefined);
   const [isReady, setIsReady] = useState(false);
   const [cameraCapabilities, setCameraCapabilities] = useState([]);
-  const domRefs = useRef(null);
+  const setStreamRef = useRef(null);
   const eventsRefs = useRef([
     ...(typeof options?.eventsHandlers?.connect === 'function' ? [['connect', options?.eventsHandlers?.connect]] : []),
     ...(typeof options?.eventsHandlers?.disconnect === 'function' ? [['disconnect', options?.eventsHandlers?.disconnect]] : []),
   ]);
 
-  // Load cameras list at setup
+  // Derived from currentCameraId. getCamera() caches its instances, so this
+  // returns a stable reference for a given id across renders (safe to use in
+  // effect/callback dependency arrays) — no need to keep it in a state.
+  const currentCamera = currentCameraId ? getCamera(currentCameraId) : null;
+
+  // Load cameras list at setup; refresh when compatibility mode toggles.
+  // We invalidate the current devices list (and selection) while the new one is
+  // being fetched so consumers don't keep using a list that no longer matches
+  // the active mode (which would lead to wrong default-camera fallbacks).
   useEffect(() => {
-    getCameras().then((cameras) => setDevices(cameras.map(applyCameraLabel)));
-  }, []);
+    let cancelled = false;
+    setDevices(null);
+    setCurrentCameraId(null);
+    getCameras(compatibilityMode).then((cameras) => {
+      if (cancelled) return;
+      setDevices(cameras.map(applyCameraLabel));
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [compatibilityMode]);
 
   // Trigger event
   const triggerEvent = useCallback((name, data = null) => {
@@ -47,64 +56,57 @@ function useCamera(options = {}) {
 
   // Action refresh devices list
   const actionRefreshDevices = useCallback(() => {
-    getCameras().then((cameras) => setDevices(cameras.map(applyCameraLabel)));
-  }, []);
+    getCameras(compatibilityMode).then((cameras) => setDevices(cameras.map(applyCameraLabel)));
+  }, [compatibilityMode]);
 
-  // Action to set DOM refs
-  const actionSetDomRefs = useCallback(
-    async ({ videoDOM, imageDOM }) => {
-      if (!domRefs.current) {
-        domRefs.current = {};
-      }
-      domRefs.current.videoDOM = videoDOM;
-      domRefs.current.imageDOM = imageDOM;
+  // Action to set stream callback
+  const actionSetStream = useCallback(
+    async (setStream) => {
+      setStreamRef.current = setStream;
       if (currentCamera) {
-        await currentCamera.connect({ videoDOM: domRefs.current.videoDOM, imageDOM: domRefs.current.imageDOM }, options, () => {
-          getCameras().then((cameras) => setDevices(cameras.map(applyCameraLabel)));
+        await currentCamera.connect({ setStream: setStreamRef.current }, options, () => {
+          getCameras(compatibilityMode).then((cameras) => setDevices(cameras.map(applyCameraLabel)));
         });
-        flushCanvas(domRefs.current.imageDOM);
         triggerEvent('connect');
         currentCamera.getCapabilities().then(setCameraCapabilities);
       }
     },
-    [currentCamera, options, triggerEvent]
+    [currentCamera, options, triggerEvent, compatibilityMode]
   );
 
   // Action set camera
   const actionSetCamera = useCallback(
     async (cameraId) => {
-      const cameras = await getCameras();
-      const deviceId = cameras.find((e) => e.id === cameraId)?.id || cameras?.[0]?.id || null;
+      const cameras = await getCameras(compatibilityMode);
+      const deviceId = cameras.find((e) => e.id === cameraId)?.id || (!cameraId ? cameras?.[0]?.id || null : null);
       if (deviceId !== currentCameraId) {
         if (currentCamera) {
-          setCurrentCameraId(null);
-          setCurrentCamera(null);
-          currentCamera?.disconnect();
+          try {
+            currentCamera?.disconnect();
+          } catch (e) {
+            console.error(e);
+          }
           triggerEvent('disconnect');
-          flushCanvas(domRefs.current.imageDOM);
         }
         if (deviceId) {
           setCurrentCameraId(deviceId);
           const camera = getCamera(deviceId);
-          if (domRefs?.current?.videoDOM && domRefs?.current?.imageDOM) {
-            await camera?.connect({ videoDOM: domRefs?.current?.videoDOM, imageDOM: domRefs?.current?.imageDOM }, options, () => {
-              getCameras().then((cameras) => setDevices(cameras.map(applyCameraLabel)));
-            });
+          if (setStreamRef?.current) {
+            await camera?.connect({ setStream: setStreamRef.current }, options);
+            await getCameras(compatibilityMode).then((cameras) => setDevices(cameras.map(applyCameraLabel)));
             triggerEvent('connect');
           }
-          setCurrentCamera(camera);
           camera?.getCapabilities().then(setCameraCapabilities);
         } else {
           setCurrentCameraId(null);
-          setCurrentCamera(null);
           setCameraCapabilities([]);
         }
       }
 
       // Force refresh devices list, to handle permission issues on specific browsers
-      getCameras().then((cameras) => setDevices(cameras.map(applyCameraLabel)));
+      getCameras(compatibilityMode).then((cameras) => setDevices(cameras.map(applyCameraLabel)));
     },
-    [currentCameraId, currentCamera, options, triggerEvent]
+    [currentCameraId, currentCamera, options, triggerEvent, compatibilityMode]
   );
 
   // Action take picture
@@ -118,17 +120,6 @@ function useCamera(options = {}) {
     [currentCamera]
   );
 
-  // Reset capabilities
-  const actionCapabilitesReset = useCallback(async () => {
-    setTimeout(async () => {
-      if (currentCamera) {
-        await currentCamera.resetCapabilities();
-        capabilitiesIntervals.current = {};
-        currentCamera.getCapabilities().then(setCameraCapabilities);
-      }
-    }, 0);
-  }, [currentCamera]);
-
   // Add event listener
   const actionAddEventListener = useCallback(async (name, callback) => {
     eventsRefs.current.push([name, callback]);
@@ -139,46 +130,44 @@ function useCamera(options = {}) {
     eventsRefs.current = eventsRefs.current.filter((e) => e[0] !== name || e[1] !== callback);
   }, []);
 
-  // Update camera capabilities
-  useEffect(() => {
-    const interval = setInterval(async () => {
-      if (currentCamera) {
-        let updated = false;
-        for (const id of Object.keys(capabilitiesIntervals.current || {})) {
-          if (capabilitiesIntervals.current[id] === null) {
-            continue;
-          }
-          await currentCamera.applyCapability(id, capabilitiesIntervals.current[id]);
-          capabilitiesIntervals.current[id] = null;
-          updated = true;
-        }
-        if (updated || Object.keys(capabilitiesIntervals.current || {}).reduce((acc, e) => acc || capabilitiesIntervals.current[e] !== null, false)) {
-          const newState = await currentCamera.getCapabilities();
-          setCameraCapabilities((oldState) => newState.map((e) => ({ ...e, value: oldState.find((f) => f.id === e.id)?.value })));
-        }
-      }
-    }, 100);
-    return () => clearInterval(interval);
-  }, [currentCamera]);
-
   // Action set capability
-  const actionSetCapability = useCallback((id, value) => {
-    capabilitiesIntervals.current[id] = value;
-    setCameraCapabilities((oldState) => oldState.map((e) => (e.id === id ? { ...e, value } : e)));
-  }, []);
+  const actionSetCapability = useCallback(
+    async (id, value) => {
+      if (currentCamera) {
+        await currentCamera?.applyCapability(id, value);
+        const newState = await currentCamera?.getCapabilities();
+        setCameraCapabilities(newState);
+      }
+    },
+    [currentCamera]
+  );
+
+  useEffect(() => {
+    return () => {
+      if (currentCamera) {
+        try {
+          currentCamera?.disconnect();
+        } catch (e) {
+          console.error(e);
+        }
+        triggerEvent('disconnect');
+      }
+    };
+  }, [currentCamera, triggerEvent]);
+
+  const isCurrentCameraConnected = currentCameraId && devices && devices.some((e) => `${e.id}` === `${currentCameraId}`);
 
   return {
-    isCameraReady: isReady,
+    isCameraReady: isCurrentCameraConnected && isReady,
     devices,
-    currentCameraId,
-    currentCameraCapabilities: cameraCapabilities || [],
-    currentCamera: (isReady ? currentCamera : null) || null,
+    currentCameraId: isCurrentCameraConnected ? currentCameraId : null,
+    currentCameraCapabilities: isCurrentCameraConnected ? cameraCapabilities || [] : [],
+    currentCamera: (isCurrentCameraConnected && isReady ? currentCamera : null) || null,
     actions: {
-      setDomRefs: actionSetDomRefs,
+      setStream: actionSetStream,
       setCamera: actionSetCamera,
       refreshDevices: actionRefreshDevices,
       takePicture: actionTakePicture,
-      capabilitiesReset: actionCapabilitesReset,
       setCapability: actionSetCapability,
       addEventListener: actionAddEventListener,
       removeEventListener: actionRemoveEventListener,

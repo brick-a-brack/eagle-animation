@@ -64,7 +64,7 @@
   width: calc(100% - 4px);
 }
 
-.selected .title {
+span[data-selected="true"] .title, .selected .title {
   background-color: var(--color-alert);
   opacity: 1;
 }
@@ -86,7 +86,7 @@
   width: 24px;
 }
 
-.containerImg.containerImgHover:hover .title {
+.container:not(.playing) .containerImg:hover .title {
   opacity: 1;
 }
 

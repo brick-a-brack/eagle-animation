@@ -32,6 +32,12 @@
     color: var(--color-primary);
 }
 
+.actionDisabled {
+    cursor: default;
+    opacity: 0.3;
+    pointer-events: none;
+}
+
 .action svg {
     height: 100%;
     margin-top: 2px;

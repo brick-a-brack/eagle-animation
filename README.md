@@ -32,7 +32,11 @@ without ads!_ 🎥
 ### How to fix: "Eagle Animation" is damaged and can't be opened. You should move it to Trash.
 
 This error occurs because Eagle Animation files are not signed. You can fix the issue by following these instructions:
-[https://www.youtube.com/watch?v=ceGovao817g](https://www.youtube.com/watch?v=ceGovao817g).
+- Install the app using the .dmg file like any other app
+- Open a terminal
+- Type `xattr -c "/Applications/Eagle Animation.app"` and press enter
+
+Video details: [https://www.youtube.com/watch?v=ceGovao817g](https://www.youtube.com/watch?v=ceGovao817g).
 
 ### What languages does Eagle Animation support?
 
@@ -40,7 +44,7 @@ Eagle Animation is available in English, French, German, Spanish, Italian, Portu
 
 ### Is Eagle Animation compatible with my camera?
 
-Eagle animation is compatible with all webcams detected by your device and also support DSLR cameras on the Windows version.
+Eagle Animation is compatible webcams and some DSLR cameras on the desktop version.
 
 ### Is there a mobile version of Eagle Animation?
 
@@ -53,16 +57,18 @@ Feel free to make pull-requests, help us to translate the software or report iss
 The logo was created by Nishant Shukla and sound effects were obtained from [Zapsplat.com](https://zapsplat.com/).
 
 ## Build and configuration
+
 Some variables can be configured using a `.env` file, values with a "\*" are required.
 
-| **Name**         | **Description**                                                                                         | **Example**                                |
-| ---------------- | ------------------------------------------------------------------------------------------------------- | ------------------------------------------ |
-| VITE_PUBLIC_URL  | The full url of the assets server, must be ended by a slash "/". If it is not defined, we will use "/". | `https://app.eagle-animation.com/`         |
-| VITE_COMMIT_HASH | The hash of the current git commit, if it is not provided, the bundle will be flagged as "local".       | `cda02bf88498ce97d947fb357a6e4f459812122a` |
+| **Name**                      | **Description**                                                                                         | **Example**                                |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------- | ------------------------------------------ |
+| VITE_PUBLIC_URL               | The full URL of the assets server, must end with a slash "/". If it is not defined, we will use "/". | `https://app.eagle-animation.com/`         |
+| VITE_COMMIT_HASH              | The hash of the current git commit, if it is not provided, the bundle will be flagged as "local".       | `cda02bf88498ce97d947fb357a6e4f459812122a` |
+| VITE_TOUCAN_CAMERA_SERVER_URL | Used for development, to choose the Toucan Camera Server instance.                                      | `http://192.168.1.14:8040/?token=RH6EH3`   |
 
 ### Build process
 
-- Run `npm i --legacy-peer-deps` to install dependencies (`--legacy-peer-deps` is required because we use an old dependency).
+- Run `npm i` to install dependencies.
 - Update `src/config.js` file if needed.
 - Run `npm run build:win`, `npm run build:linux`, `npm run build:mac` and `npm run build:web` to build release files.
 
@@ -70,66 +76,38 @@ Some variables can be configured using a `.env` file, values with a "\*" are req
 
 - Update `version` value in `package.json` if needed.
 - Create a draft release on Github and tag it with the same version number: `vX.X.X`.
-- Merge your branch/dev into master.
+- Merge your branch (dev into master).
 
 ### Development mode
 
-- Run `npm i --legacy-peer-deps` to install dependencies.
+- Run `npm i` to install dependencies.
 - Run `npm run start:electron` to launch the application in dev mode.
 - Run `npm run start:web` to launch the web app in dev mode.
 
 ### Telemetry
 
-To improve the quality of **Eagle Animation**, runtime errors and application events are automatically reported to developpers using [PostHog](https://posthog.com/). You can disable the telemetry, just set `POSTHOG_TOKEN` to `""` in `src/config.js` and rebuild the app.
+To improve the quality of **Eagle Animation**, runtime errors and application events are automatically reported to developers using [PostHog](https://posthog.com/). You can disable telemetry by
+setting `POSTHOG_TOKEN` to `""` in `src/config.js` and rebuilding the app.
 
-We also track user behavior on the app to
-
-## Compatilibity
+## Compatibility
 
 Some features are device-dependent or platform-limited. Here's a summary table.
 
-| Feature                   | Downloadable app | Web (Chrome¹) | Web (Firefox) | Web (Safari) |
-| ------------------------- | ---------------- | ------------- | ------------- | ------------ |
-| Take photos (Webcam)      | 🟢               | 🟢            | 🟡²           | 🟡²          |
-| Control settings (Webcam) | 🟡³              | 🟡³           | 🔴            | 🔴           |
-| Take photos (DSLR)        | 🟡⁴              | 🟡⁵           | 🔴            | 🔴           |
-| Export frames             | 🟢               | 🟢            | 🟢            | 🟢           |
-| Export video              | 🟢               | 🟢            | 🟢            | 🟢           |
-| Workshop features         | 🟢               | 🔴            | 🔴            | 🔴           |
+| Feature               | Downloadable app | Web (Chrome¹) | Web (Firefox / Safari) |
+| --------------------- | ---------------- | ------------- | ---------------------- |
+| Take photos           | 🟢               | 🟢            | 🟢                     |
+| Export frames         | 🟢               | 🟢            | 🟢                     |
+| Export video          | 🟢               | 🟢            | 🟢                     |
+| Camera settings       | 🟢               | 🟡²           | 🔴                     |
+| DSLR support          | 🟢³              | 🟡⁴           | 🔴                     |
+| Remote camera support | 🟢               | 🔴            | 🔴                     |
+| Workshop features     | 🟢               | 🔴            | 🔴                     |
 
-1. Including Chromium based browsers (Edge, Brave, Opera, Arc, etc...).
-2. The quality of webcam photos is poorer on Firefox and Safari.
-3. Webcam settings are only supported on Windows.
-4. Only on Windows and with Canon cameras.
-5. Using WebUSB, can require advanced configuration on Windows.
+1. Including Chromium-based browsers (Edge, Brave, Opera, Arc, etc.).
+2. Webcam settings are only supported on Windows and Linux.
+3. Canon support on Windows, additional devices supported on macOS and Linux.
+4. Using WebUSB, can require advanced configuration on Windows.
 
-## Camera support and DSLR implementation
+## Camera support and implementation
 
-Camera implementation varies based on devices and browser engine, Eagle Animation uses various libraries to support cameras.
-
-### Webcam
-
-All versions of the app support webcams. On the downloadable version and when using Chromium-based browsers, the app uses the Web ImageCapture API to take photos, which results in better photo
-quality.
-
-| Platform | Downloadable app | Web (Chrome) | Web (Firefox) | Web (Safari) |
-| -------- | ---------------- | ------------ | ------------- | ------------ |
-| Windows  | ImageCapture     | ImageCapture | Fallback      | Fallback     |
-| Linux    | ImageCapture     | ImageCapture | Fallback      | Fallback     |
-| Mac      | ImageCapture     | ImageCapture | Fallback      | Fallback     |
-
-- [ImageCapture](https://www.w3.org/TR/image-capture/)
-- Fallback: Use canvas to extract frame from live preview
-
-### DSLR
-
-DSLR support depends on the platform and the specific implementation. Refer to the details below to check if your camera is supported.
-
-| Platform | Downloadable app | Web (Chrome)        | Web (Firefox) | Web (Safari) |
-| -------- | ---------------- | ------------------- | ------------- | ------------ |
-| Windows  | EDSDK            | libgphoto2 (WebUSB) | 🔴            | 🔴           |
-| Linux    | 🔴               | libgphoto2 (WebUSB) | 🔴            | 🔴           |
-| Mac      | 🔴               | libgphoto2 (WebUSB) | 🔴            | 🔴           |
-
-- [EDSDK](https://developercommunity.usa.canon.com/resource/1744392420000/CDC_EDSDK_Compat_List)
-- [libgphoto2](http://www.gphoto.org/proj/libgphoto2/support.php)
+Camera support varies based on devices and operating systems, Eagle Animation uses [Toucan Camera Server](https://github.com/brick-a-brack/toucan-camera-server) to handle camera complexity.

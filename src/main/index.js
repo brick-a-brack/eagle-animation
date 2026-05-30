@@ -1,21 +1,18 @@
 import 'source-map-support/register';
 
-import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
-import url from 'node:url';
 
 import { electronApp, is, optimizer } from '@electron-toolkit/utils';
-import { app, BrowserWindow, ipcMain, net, protocol, shell } from 'electron';
-import sharp from 'sharp';
+import { app, BrowserWindow, ipcMain, protocol, shell } from 'electron';
 
 import icon from '../../resources/icon.png?asset';
-import { parseResizeArguments } from '../common/resizer';
 import actions from './actions';
-import { PROJECTS_PATH } from './config';
+import { ImageRoute } from './core/routes';
+import { runToucanCameraServer, stopToucanCameraServer } from './core/toucan';
 
 let sendToRenderer = () => null;
 
-protocol.registerSchemesAsPrivileged([{ scheme: 'ea', privileges: { bypassCSP: true, standard: true, secure: true, supportFetchAPI: true } }]);
+protocol.registerSchemesAsPrivileged([{ scheme: 'ea', privileges: { bypassCSP: true, corsEnabled: true, standard: true, secure: true, supportFetchAPI: true } }]);
 
 function createWindow() {
   // Create the browser window.
@@ -37,6 +34,13 @@ function createWindow() {
 
   mainWindow.on('ready-to-show', () => {
     mainWindow.show();
+  });
+
+  // Run Toucan Camera Server once window is ready
+  mainWindow.webContents.once('did-finish-load', () => {
+    runToucanCameraServer((data) => {
+      sendToRenderer('TOUCAN_CAMERA_SERVER_CONFIG', data);
+    });
   });
 
   mainWindow.webContents.setWindowOpenHandler((details) => {
@@ -69,93 +73,8 @@ app.whenReady().then(() => {
     optimizer.watchWindowShortcuts(window);
   });
 
-  protocol.handle('ea', async (request) => {
-    // Parse URL and parameters
-    const urlObj = new URL(request.url);
-
-    // Get disk path
-    const diskPath = `${PROJECTS_PATH}/${request.url.slice('ea://api/pictures/'.length).split('?')[0]}`;
-
-    // Options
-    const args = parseResizeArguments(urlObj.searchParams);
-    const { w, h, m, q, i } = args;
-    let { f } = args;
-
-    // No changes needed
-    if (!w && !h && !f && !q && !m && !i) {
-      return net.fetch(url.pathToFileURL(diskPath).toString());
-    }
-
-    try {
-      // Create a Sharp instance
-      const inputBuf = await readFile(diskPath);
-      let img = sharp(inputBuf);
-
-      // Metadata only
-      if (i === 'json') {
-        const size = await img.metadata();
-        return new Response(
-          JSON.stringify({
-            width: size.width,
-            height: size.height,
-          }),
-          {
-            headers: {
-              'Content-Type': 'application/json',
-              'Cache-Control': 'public, max-age=31536000',
-            },
-          }
-        );
-      }
-
-      // Resize
-      if (w || h) {
-        img = img.resize(w ? parseInt(w, 10) : null, h ? parseInt(h, 10) : null, {
-          fit: m === 'cover' ? 'cover' : 'contain',
-          withoutEnlargement: false,
-        });
-      }
-
-      // Determine previous format to reuse it
-      if (!f) {
-        const meta = await img.metadata();
-        if (['png', 'webp', 'avif'].includes(meta?.format)) {
-          f = meta?.format;
-        }
-      }
-
-      // Format conversion
-      const quality = q ? parseInt(q, 10) : 80;
-      let outputBuffer = null;
-      let mimeType = null;
-      if (!outputBuffer && f === 'png') {
-        outputBuffer = await img.png({ quality }).toBuffer();
-        mimeType = 'image/png';
-      }
-      if (!outputBuffer && f === 'webp') {
-        outputBuffer = await img.webp({ quality }).toBuffer();
-        mimeType = 'image/webp';
-      }
-      if (!outputBuffer && f === 'avif') {
-        outputBuffer = await img.avif({ quality }).toBuffer();
-        mimeType = 'image/avif';
-      }
-      if (!outputBuffer) {
-        outputBuffer = await img.jpeg({ quality }).toBuffer();
-        mimeType = 'image/jpeg';
-      }
-
-      return new Response(outputBuffer, {
-        headers: {
-          'content-type': mimeType,
-          'Cache-Control': 'public, max-age=31536000',
-        },
-      });
-    } catch (err) {
-      console.error('ea handler error', err);
-      return net.fetch(url.pathToFileURL(diskPath).toString());
-    }
-  });
+  // Register custom protocol for image processing
+  protocol.handle('ea', ImageRoute);
 
   createWindow();
 
@@ -170,10 +89,26 @@ app.whenReady().then(() => {
 // for applications and their menu bar to stay active until the user quits
 // explicitly with Cmd + Q.
 app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
+  if (process.platform !== 'darwin' || is.dev) {
     app.quit();
   }
 });
+
+// Make sure the toucan camera server is killed before Electron exits,
+// otherwise it keeps holding the webcam handle (visible as an active
+// camera indicator in the parent terminal / VS Code).
+app.on('before-quit', () => {
+  stopToucanCameraServer();
+});
+
+const handleTerminationSignal = (signal) => {
+  stopToucanCameraServer();
+  app.quit();
+  // Give Electron a moment to tear down, then force-exit if needed.
+  setTimeout(() => process.exit(signal === 'SIGINT' ? 130 : 143), 1500).unref?.();
+};
+process.on('SIGINT', () => handleTerminationSignal('SIGINT'));
+process.on('SIGTERM', () => handleTerminationSignal('SIGTERM'));
 
 // In this file you can include the rest of your app"s specific main process
 // code. You can also put them in separate files and require them here.

@@ -26,6 +26,7 @@
     position: fixed;
     transform: translate(0%, 101%);
     transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+    will-change: transform, opacity;
     width: 100%;
 }
 
@@ -42,7 +43,7 @@
   pointer-events: all;
 }
 
-.opened .window {
+.opened > .window {
   opacity: 1;
   transform: translate(0%, 0%);
 }

@@ -1,3 +1,4 @@
+import PreviewStream from '@components/PreviewStream';
 import { getPictureLink } from '@core/resize';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import faEyeSlash from '@icons/faEyeSlash';
@@ -21,8 +22,7 @@ class Player extends Component {
 
     this.dom = {
       container: React.createRef(),
-      video: React.createRef(),
-      videoFrame: React.createRef(),
+      previewStream: React.createRef(),
       picture: React.createRef(),
       grid: React.createRef(),
     };
@@ -36,9 +36,6 @@ class Player extends Component {
       ready: false,
       frameIndex: false, // Frame index contains the position in the animation (including duplicated frames)
     };
-
-    // Used to detect size change on canvas based preview
-    this.videoFrameObserver = null;
 
     this.resize = () => {
       this.initCanvas();
@@ -99,7 +96,7 @@ class Player extends Component {
         const frame = (newFrameIndex === false ? filteredFrames[filteredFrames.length - 1] : filteredFrames[newFrameIndex]) || false;
         this.drawFrame(frame.link || false);
         this.setState({ frameIndex: newFrameIndex });
-        this.props.onFrameChange(newFrameIndex !== false && frame ? frame.id : false);
+        this.props.onFrameChange(newFrameIndex !== false && frame ? frame.id : false, newFrameIndex);
         return true;
       };
 
@@ -185,25 +182,11 @@ class Player extends Component {
 
   componentDidMount() {
     const { onInit } = this.props;
-    onInit(this.dom.video.current, this.dom.videoFrame.current);
 
-    this.dom.video.current.onloadedmetadata = () => {
-      this.resize();
-    };
-    this.dom.video.current.onresize = () => {
-      this.resize();
-    };
+    onInit((type, data) => this.dom.previewStream.current?.setStream(type, data));
 
     this.resize();
     window.addEventListener('resize', this.resize);
-
-    this.videoFrameObserver = new MutationObserver(() => {
-      this.resize();
-    });
-    this.videoFrameObserver.observe(this.dom.videoFrame.current, {
-      attributeFilter: ['height', 'width'],
-    });
-
     this.showFrame(false);
   }
 
@@ -247,9 +230,6 @@ class Player extends Component {
   }
 
   componentWillUnmount() {
-    if (this.videoFrameObserver) {
-      this.videoFrameObserver.disconnect();
-    }
     window.removeEventListener('resize', this.resize);
     this.stop();
   }
@@ -259,19 +239,7 @@ class Player extends Component {
   }
 
   getRatio() {
-    let ratio = null;
-    if (!ratio && this.dom.video.current && (this.dom.video.current.src || this.dom.video.current.srcObject)) {
-      const tmpRatio = this.dom.video.current.videoWidth / this.dom.video.current.videoHeight;
-      if (tmpRatio > 0) {
-        ratio = tmpRatio;
-      }
-    }
-    if (!ratio && this.dom.videoFrame.current) {
-      const tmpRatio = this.dom.videoFrame.current.width / this.dom.videoFrame.current.height;
-      if (tmpRatio > 0) {
-        ratio = tmpRatio;
-      }
-    }
+    const ratio = this.dom.previewStream.current?.getStreamRatio() || null;
     return ratio > 0 ? ratio : 16 / 9;
   }
 
@@ -401,10 +369,12 @@ class Player extends Component {
     return (
       <div className={`${style.playerContainer} ${frameIndex === false ? style.live : ''}`}>
         <div className={style.container} ref={this.dom.container} style={{ width: `${width}px`, height: `${height}px`, opacity: ready ? 1 : 0 }}>
-          <video ref={this.dom.video} className={`${style.layout} ${reverseClassNames}`} style={{ opacity: isCameraReady && frameIndex === false ? 1 : 0 }} />
-          <div style={{ opacity: frameIndex === false ? 1 : 0 }} className={`${style.layout} ${reverseClassNames}`}>
-            <canvas ref={this.dom.videoFrame} className={style.layoutVideoFrame} />
-          </div>
+          <PreviewStream
+            ref={this.dom.previewStream}
+            className={`${style.layout} ${reverseClassNames}`}
+            style={{ opacity: isCameraReady && frameIndex === false ? 1 : 0 }}
+            onRatioChange={this.resize}
+          />
           <canvas
             ref={this.dom.picture}
             className={style.layout}
