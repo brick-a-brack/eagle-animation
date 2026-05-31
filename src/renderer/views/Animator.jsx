@@ -480,6 +480,12 @@ const Animator = ({ t }) => {
         }
       }
     },
+    UNDO: () => {
+      if (!isPlaying) projectActions.undo();
+    },
+    REDO: () => {
+      if (!isPlaying) projectActions.redo();
+    },
     MORE: () => {},
     EXPORT: () => {
       navigate(`/export/${id}/${track}?back=/animator/${id}/${track}`);
