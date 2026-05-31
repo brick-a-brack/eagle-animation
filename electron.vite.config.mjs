@@ -13,6 +13,9 @@ export default defineConfig(({ mode }) => {
     main: {
       build: {
         rollupOptions: {
+          input: {
+            index: resolve(__dirname, 'src/backend-electron/index.js'),
+          },
           external: ['sharp'],
         },
         sourcemap: true,
@@ -21,6 +24,11 @@ export default defineConfig(({ mode }) => {
     },
     preload: {
       build: {
+        rollupOptions: {
+          input: {
+            index: resolve(__dirname, 'src/backend-electron/preload/index.js'),
+          },
+        },
         sourcemap: true,
       },
       plugins: [externalizeDepsPlugin()],

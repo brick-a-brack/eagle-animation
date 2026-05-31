@@ -25,34 +25,36 @@ Stop motion animation software by Brick à Brack, available as an **Electron des
 
 ```
 src/
-├── main/            # Electron main process (Node.js only)
-│   ├── index.js     # Window creation, protocol registration, IPC setup
-│   ├── actions.js   # IPC action handlers
-│   └── core/
-│       ├── routes.js    # ea:// custom protocol handler (image serving + resizing)
-│       ├── projects.js  # Filesystem project I/O
-│       ├── export.js    # Native FFmpeg export
-│       ├── toucan.js    # Toucan Camera Server subprocess
-│       └── settings.js  # Settings persistence
-├── preload/
-│   └── index.js     # Exposes window.IPC to renderer via contextBridge
-├── renderer/        # React app (shared between Electron and web)
-│   ├── index.jsx    # Entry: mounts React, wires window.EA/EAEvents, registers SW
-│   ├── config.js    # Runtime device detection (ELECTRON vs WEB)
-│   ├── sw-web.js    # Service Worker (web-only backend, compiled to /sw.js)
+├── backend-electron/    # Electron main process (Node.js only)
+│   ├── index.js         # Window creation, protocol registration, IPC setup
+│   ├── actions.js       # IPC action handlers
+│   ├── core/
+│   │   ├── routes.js    # ea:// custom protocol handler (image serving + resizing)
+│   │   ├── projects.js  # Filesystem project I/O
+│   │   ├── export.js    # Native FFmpeg export
+│   │   ├── toucan.js    # Toucan Camera Server subprocess
+│   │   └── settings.js  # Settings persistence
+│   └── preload/
+│       └── index.js     # Exposes window.IPC to renderer via contextBridge
+├── backend-web/         # Web browser backend (no server required)
+│   ├── sw-web.js        # Service Worker — intercepts /api/pictures/* (compiled to /sw.js)
+│   └── actions/
+│       ├── index.js     # Web action handlers + event bus
+│       ├── projects.js  # Dexie project CRUD
+│       ├── frames.js    # IndexedDB frame blob storage
+│       ├── buffer.js    # Temporary buffer for exports
+│       └── ffmpeg.js    # FFmpeg.wasm init
+├── renderer/            # React app (shared between Electron and web)
+│   ├── index.jsx        # Entry: mounts React, wires window.EA/EAEvents, registers SW
+│   ├── config.js        # Runtime device detection (ELECTRON vs WEB)
 │   ├── core/
 │   │   └── bindings.js  # THE bridge: EA() and EAEvents() dual-backend shim
-│   ├── actions/     # Web backend (mirrors main/actions.js)
-│   │   ├── index.js     # Web action handlers + event bus
-│   │   ├── projects.js  # Dexie project CRUD
-│   │   ├── frames.js    # IndexedDB frame blob storage
-│   │   └── ffmpeg.js    # FFmpeg.wasm init
-│   ├── hooks/       # useProject, useProjects, useSettings, useSyncList …
-│   ├── views/       # Page components (Home, Animator, Export, Settings …)
-│   └── components/  # Reusable UI components
-└── common/          # Shared between main and renderer
-    ├── ffmpeg.js    # FFmpeg argument builders (codec, bitrate)
-    └── resizer.js   # Query-param parsing for image resize requests
+│   ├── hooks/           # useProject, useProjects, useSettings, useSyncList …
+│   ├── views/           # Page components (Home, Animator, Export, Settings …)
+│   └── components/      # Reusable UI components
+└── common/              # Shared between main and renderer
+    ├── ffmpeg.js        # FFmpeg argument builders (codec, bitrate)
+    └── resizer.js       # Query-param parsing for image resize requests
 ```
 
 ---
