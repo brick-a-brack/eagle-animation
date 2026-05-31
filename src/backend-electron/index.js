@@ -56,7 +56,11 @@ function createWindow() {
     mainWindow.loadFile(join(__dirname, '../renderer/index.html'));
   }
 
-  sendToRenderer = (channel, value) => mainWindow.webContents.send(channel, value);
+  sendToRenderer = (channel, value) => {
+    if (!mainWindow.isDestroyed()) {
+      mainWindow.webContents.send(channel, value);
+    }
+  };
 }
 
 // This method will be called when Electron has finished
