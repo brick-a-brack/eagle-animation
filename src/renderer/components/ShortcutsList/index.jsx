@@ -62,6 +62,9 @@ const ShortcutsList = ({ t, shortcuts }) => {
     DEDUPLICATE: t('Deduplicate current frame'),
     GRID: t('Show / Hide grid'),
     HIDE_FRAME: t('Show / Hide current frame in the animation'),
+    UNDO: t('Undo last action'),
+    REDO: t('Redo last undone action'),
+    ADD_SCENE: t('Add new scene'),
   };
 
   const categories = {
@@ -82,7 +85,7 @@ const ShortcutsList = ({ t, shortcuts }) => {
       'ONION_MORE',
       'GRID',
     ],
-    ACTIONS: ['DELETE_FRAME', 'CLONE', 'DUPLICATE', 'DEDUPLICATE', 'HIDE_FRAME', 'ADD_SCENE'],
+    ACTIONS: ['DELETE_FRAME', 'CLONE', 'DUPLICATE', 'DEDUPLICATE', 'HIDE_FRAME', 'ADD_SCENE', 'UNDO', 'REDO'],
     NAVIGATION: ['FRAME_LEFT', 'FRAME_RIGHT', 'ALTERNATIVE_FRAME_LEFT', 'ALTERNATIVE_FRAME_RIGHT', 'FRAME_LIVE', 'FRAME_FIRST'],
     OTHER: ['HOME'],
   };
