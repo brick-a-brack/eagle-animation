@@ -205,7 +205,7 @@ export default defineConfig(({ mode }) => {
       ],
     }),
     serviceWorkerPlugin({
-      filename: resolve(__dirname, 'src/renderer/sw-web.js'),
+      filename: resolve(__dirname, 'src/backend-web/sw-web.js'),
     }),
   ],
   server: {

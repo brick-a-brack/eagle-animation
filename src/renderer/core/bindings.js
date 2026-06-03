@@ -6,7 +6,7 @@ export const EA = async (action, data) => {
 
   // Web (Web browser backend)
   if (typeof window.IPC === 'undefined') {
-    return import('../actions').then(({ Actions: WebActions }) => {
+    return import('../../backend-web/actions').then(({ Actions: WebActions }) => {
       if (WebActions[action]) {
         return WebActions[action](null, data);
       }
@@ -24,7 +24,7 @@ export const EAEvents = (name, callback = () => {}) => {
 
   // Web (Web browser backend)
   if (typeof window.IPC === 'undefined') {
-    import('../actions').then(({ addEventListener }) => {
+    import('../../backend-web/actions').then(({ addEventListener }) => {
       addEventListener(name, callback);
     });
   }
