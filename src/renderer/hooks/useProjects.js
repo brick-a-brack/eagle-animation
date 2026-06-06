@@ -31,6 +31,32 @@ const countFrames = (project) => {
   return count;
 };
 
+// Total animation duration in seconds (each scene played at its own framerate)
+const computeDuration = (project) => {
+  let seconds = 0;
+  for (const scene of project.scenes) {
+    if (scene.deleted) {
+      continue;
+    }
+    const framerate = Number(scene.framerate) > 0 ? Number(scene.framerate) : 1;
+    let frames = 0;
+    for (const picture of scene.pictures) {
+      if (!picture.deleted) {
+        frames++;
+      }
+    }
+    seconds += frames / framerate;
+  }
+  return seconds;
+};
+
+// Framerate to display for the project (first non-empty scene, fallback to first scene)
+const getFramerate = (project) => {
+  const sceneWithFrames = project.scenes.find((scene) => !scene.deleted && scene.pictures.some((p) => !p.deleted));
+  const scene = sceneWithFrames || project.scenes.find((s) => !s.deleted) || project.scenes[0];
+  return Number(scene?.framerate) || null;
+};
+
 function useProjects(options) {
   const [projectsData, setProjectsData] = useState(null);
 
@@ -67,6 +93,23 @@ function useProjects(options) {
     window.EA('SAVE_PROJECT', { project_id: projectId, data: d });
   }, []);
 
+  // Action toggle favorite
+  const actionSetFavorite = useCallback(async (projectId, favorite) => {
+    setProjectsData((oldData) => {
+      return oldData.map((e) => {
+        let d = structuredClone(e);
+        if (d.id === projectId) {
+          d.project.favorite = Boolean(favorite);
+        }
+        return d;
+      });
+    });
+
+    let d = await window.EA('GET_PROJECT', { project_id: projectId });
+    d.project.favorite = Boolean(favorite);
+    window.EA('SAVE_PROJECT', { project_id: projectId, data: d });
+  }, []);
+
   // Action create
   const actionCreate = useCallback(
     async (title = '') => {
@@ -83,13 +126,19 @@ function useProjects(options) {
         ...(e || {}),
         stats: {
           frames: countFrames(e.project),
+          duration: computeDuration(e.project),
+          framerate: getFramerate(e.project),
         },
+        favorite: Boolean(e?.project?.favorite),
+        creation: e?.project?.creation || null,
+        updated: e?.project?.updated || null,
         preview: getDefaultFrame(e)?.picture?.link || null,
       })) || null,
     actions: {
       refresh: actionRefresh,
       create: actionCreate,
       rename: actionRename,
+      setFavorite: actionSetFavorite,
     },
   };
 }

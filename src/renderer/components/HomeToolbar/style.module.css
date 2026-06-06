@@ -1,0 +1,208 @@
+.toolbar {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-small);
+}
+
+/* ---------- Search ---------- */
+
+.search {
+    align-items: center;
+    background-color: var(--color-theme-medium);
+    border: 1px solid transparent;
+    border-radius: var(--border-radius-medium);
+    display: flex;
+    flex: 1 1 240px;
+    gap: var(--space-small);
+    min-width: 200px;
+    padding: 0 var(--space-medium);
+    transition: border-color 0.2s ease-in-out;
+}
+
+.search:focus-within {
+    border-color: var(--color-primary);
+}
+
+.searchIcon {
+    color: var(--color-white);
+    flex: 0 0 auto;
+    height: 15px;
+    opacity: 0.5;
+    width: 15px;
+}
+
+.search input {
+    background: transparent;
+    border: none;
+    color: var(--color-white);
+    flex: 1 1 auto;
+    font-family: 'Open Sans', sans-serif;
+    font-size: var(--font-size-6);
+    height: 40px;
+    min-width: 0;
+    outline: none;
+}
+
+.search input::placeholder {
+    color: var(--color-white);
+    opacity: 0.45;
+}
+
+.clear {
+    align-items: center;
+    background: transparent;
+    border: none;
+    color: var(--color-white);
+    cursor: pointer;
+    display: flex;
+    opacity: 0.5;
+    padding: 4px;
+}
+
+.clear:hover {
+    opacity: 1;
+}
+
+/* ---------- Shared control look ---------- */
+
+.sort {
+    position: relative;
+}
+
+.sortButton,
+.toggle {
+    align-items: center;
+    background-color: var(--color-theme-medium);
+    border: 1px solid transparent;
+    border-radius: var(--border-radius-medium);
+    color: var(--color-white);
+    cursor: pointer;
+    display: flex;
+    font-family: 'Open Sans', sans-serif;
+    font-size: var(--font-size-6);
+    gap: var(--space-small);
+    height: 42px;
+    padding: 0 var(--space-medium);
+    transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out, color 0.2s ease-in-out;
+    white-space: nowrap;
+}
+
+.sortButton:hover,
+.toggle:hover {
+    background-color: var(--color-theme-light);
+}
+
+.chevron {
+    height: 12px;
+    opacity: 0.6;
+    transition: transform 0.2s ease-in-out;
+    width: 12px;
+}
+
+.chevronOpen {
+    transform: rotate(180deg);
+}
+
+/* ---------- Sort menu ---------- */
+
+.backdrop {
+    inset: 0;
+    position: fixed;
+    z-index: 40;
+}
+
+.menu {
+    background-color: var(--color-theme-medium);
+    border: 1px solid var(--color-theme-light);
+    border-radius: var(--border-radius-medium);
+    box-shadow: 0 8px 24px rgb(0 0 0 / 35%);
+    display: flex;
+    flex-direction: column;
+    margin-top: var(--space-tiny);
+    min-width: 100%;
+    overflow: hidden;
+    padding: var(--space-tiny);
+    position: absolute;
+    right: 0;
+    top: 100%;
+    z-index: 50;
+}
+
+.menuItem {
+    background: transparent;
+    border: none;
+    border-radius: var(--border-radius-small);
+    color: var(--color-white);
+    cursor: pointer;
+    font-family: 'Open Sans', sans-serif;
+    font-size: var(--font-size-6);
+    padding: var(--space-small) var(--space-medium);
+    text-align: left;
+    white-space: nowrap;
+}
+
+.menuItem:hover {
+    background-color: var(--color-theme-light);
+}
+
+.menuItemActive {
+    color: var(--color-theme-extra-light);
+    font-weight: 700;
+}
+
+/* ---------- Favorites toggle ---------- */
+
+.toggle svg {
+    height: 14px;
+    opacity: 0.6;
+    width: 14px;
+}
+
+.toggleActive {
+    border-color: var(--color-warning);
+    color: var(--color-warning);
+}
+
+.toggleActive svg {
+    opacity: 1;
+}
+
+/* ---------- View toggle ---------- */
+
+.viewToggle {
+    background-color: var(--color-theme-medium);
+    border-radius: var(--border-radius-medium);
+    display: flex;
+    gap: 2px;
+    padding: 4px;
+}
+
+.viewToggle button {
+    align-items: center;
+    background: transparent;
+    border: none;
+    border-radius: var(--border-radius-small);
+    color: var(--color-white);
+    cursor: pointer;
+    display: flex;
+    height: 34px;
+    justify-content: center;
+    opacity: 0.5;
+    transition: background-color 0.2s ease-in-out, opacity 0.2s ease-in-out;
+    width: 38px;
+}
+
+.viewToggle button:hover {
+    opacity: 1;
+}
+
+.viewToggle svg {
+    height: 18px;
+    width: 18px;
+}
+
+.viewActive {
+    background-color: var(--color-theme-light) !important;
+    opacity: 1 !important;
+}
