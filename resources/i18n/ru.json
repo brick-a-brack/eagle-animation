@@ -360,5 +360,8 @@
   "Delete the scene and all its photos": "Удалить сцену и все её фотографии",
   "Use camera compatibility mode": "Использовать режим совместимости камеры",
   "Disables DSLR and remote cameras, may limit available camera settings": "Отключает DSLR и удалённые камеры, может ограничить доступные настройки камеры",
-  "Untitled scene #{{index}}": "Безымянная сцена #{{index}}"
+  "Untitled scene #{{index}}": "Безымянная сцена #{{index}}",
+  "Privacy": "Конфиденциальность",
+  "Allow telemetry": "Разрешить телеметрию",
+  "Send anonymous usage data to help improve the application": "Отправить анонимные данные об использовании, чтобы помочь улучшить приложение"
 }

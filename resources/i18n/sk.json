@@ -360,5 +360,8 @@
   "Delete the scene and all its photos": "Odstrániť scénu a všetky jej fotografie",
   "Use camera compatibility mode": "Použiť režim kompatibility kamery",
   "Disables DSLR and remote cameras, may limit available camera settings": "Deaktivuje DSLR a diaľkové kamery, môže obmedziť dostupné nastavenia kamery",
-  "Untitled scene #{{index}}": "Názov scény bez názvu #{{index}}"
+  "Untitled scene #{{index}}": "Názov scény bez názvu #{{index}}",
+  "Privacy": "Ochrana osobných údajov",
+  "Allow telemetry": "Povoliť telemetriu",
+  "Send anonymous usage data to help improve the application": "Poslať anonymné údaje o používaní na pomoc pri zlepšovaní aplikácie"
 }

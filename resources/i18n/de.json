@@ -368,5 +368,8 @@
   "Delete the scene and all its photos": "Die Szene und alle ihre Fotos löschen",
   "Use camera compatibility mode": "Kamerakompatibilitätsmodus verwenden",
   "Disables DSLR and remote cameras, may limit available camera settings": "Deaktiviert DSLR- und Fernkameras, kann die verfügbaren Kameraeinstellungen einschränken",
-  "Untitled scene #{{index}}": "Unbetitelte Szene #{{index}}"
+  "Untitled scene #{{index}}": "Unbetitelte Szene #{{index}}",
+  "Privacy": "Datenschutz",
+  "Allow telemetry": "Telemetrie erlauben",
+  "Send anonymous usage data to help improve the application": "Anonyme Nutzungsdaten senden, um die Anwendung zu verbessern"
 }

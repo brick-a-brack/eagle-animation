@@ -353,5 +353,8 @@
   "Delete the scene and all its photos": "Verwijder de scène en al zijn foto's",
   "Use camera compatibility mode": "Gebruik de compatibiliteitsmodus van de camera",
   "Disables DSLR and remote cameras, may limit available camera settings": "Deactiveert DSLR- en afstandscamera's, kan beschikbare camera-instellingen beperken",
-  "Untitled scene #{{index}}": "Ongetitelde scène #{{index}}"
+  "Untitled scene #{{index}}": "Ongetitelde scène #{{index}}",
+  "Privacy": "Privacy",
+  "Allow telemetry": "Telemetrie toestaan",
+  "Send anonymous usage data to help improve the application": "Stuur anonieme gebruiksgegevens om de applicatie te helpen verbeteren"
 }

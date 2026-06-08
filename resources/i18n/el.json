@@ -353,5 +353,8 @@
   "Delete the scene and all its photos": "Διαγραφή της σκηνής και όλων των φωτογραφιών της",
   "Use camera compatibility mode": "Χρήση λειτουργίας συμβατότητας κάμερας",
   "Disables DSLR and remote cameras, may limit available camera settings": "Απενεργοποιεί τις DSLR και τις απομακρυσμένες κάμερες, μπορεί να περιορίσει τις διαθέσιμες ρυθμίσεις κάμερας",
-  "Untitled scene #{{index}}": "Ανώνυμη σκηνή #{{index}}"
+  "Untitled scene #{{index}}": "Ανώνυμη σκηνή #{{index}}",
+  "Privacy": "Ιδιωτικότητα",
+  "Allow telemetry": "Επιτρέψτε την τηλεμετρία",
+  "Send anonymous usage data to help improve the application": "Στείλτε ανώνυμα δεδομένα χρήσης για να βοηθήσετε στη βελτίωση της εφαρμογής"
 }

@@ -27,6 +27,7 @@ try {
       person_profiles: 'always',
       autocapture: false,
       disable_session_recording: true,
+      opt_out_capturing_by_default: true,
     });
 
     posthog.register({
@@ -35,6 +36,18 @@ try {
     });
   }
 } catch (err) {} // eslint-disable-line no-empty
+
+window.setTelemetryEnabled = (enabled) => {
+  try {
+    if (!IS_DEV && POSTHOG_TOKEN) {
+      if (enabled) {
+        posthog.opt_in_capturing();
+      } else {
+        posthog.opt_out_capturing();
+      }
+    }
+  } catch (err) {} // eslint-disable-line no-empty
+};
 
 window.track = (eventName, data = {}) => {
   try {

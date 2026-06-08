@@ -26,6 +26,7 @@ const DEFAULT_SETTINGS = {
   EVENT_KEY: '',
   EVENT_API: PARTNER_API,
   COMPATIBILITY_MODE_CAMERAS: false,
+  TELEMETRY_ENABLED: true,
 };
 
 function useSettings() {
@@ -34,20 +35,18 @@ function useSettings() {
   // Initial load
   useEffect(() => {
     window.EA('GET_SETTINGS').then((definedSettings) => {
-      setSettings({
-        ...DEFAULT_SETTINGS,
-        ...definedSettings,
-      });
+      const merged = { ...DEFAULT_SETTINGS, ...definedSettings };
+      window.setTelemetryEnabled?.(merged.TELEMETRY_ENABLED !== false);
+      setSettings(merged);
     });
   }, []);
 
   // Refresh action
   const actionRefreshSettings = useCallback(async () => {
     const definedSettings = await window.EA('GET_SETTINGS');
-    setSettings({
-      ...DEFAULT_SETTINGS,
-      ...definedSettings,
-    });
+    const merged = { ...DEFAULT_SETTINGS, ...definedSettings };
+    window.setTelemetryEnabled?.(merged.TELEMETRY_ENABLED !== false);
+    setSettings(merged);
   }, []);
 
   // Set action
@@ -68,6 +67,7 @@ function useSettings() {
       setLanguage(computedNewSettings.LANGUAGE);
     }
 
+    window.setTelemetryEnabled?.(computedNewSettings.TELEMETRY_ENABLED !== false);
     setSettings(computedNewSettings);
     await window.EA('SAVE_SETTINGS', { settings: computedNewSettings });
   }, []);

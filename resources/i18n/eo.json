@@ -368,5 +368,8 @@
   "Delete the scene and all its photos": "Forigi la scenon kaj ĉiujn ĝiajn fotojn",
   "Use camera compatibility mode": "Uzi la kameran kongruecan reĝimon",
   "Disables DSLR and remote cameras, may limit available camera settings": "Malŝaltas DSLR kaj malproksimajn kameron, povas limigi disponeblajn kamerajn agordojn",
-  "Untitled scene #{{index}}": "Sen titolo sceno #{{index}}"
+  "Untitled scene #{{index}}": "Sen titolo sceno #{{index}}",
+  "Privacy": "Konfidencialeco",
+  "Allow telemetry": "Permesi telemetriecon",
+  "Send anonymous usage data to help improve the application": "Sendi anonimajn uzadatumojn por helpi plibonigi la aplikon"
 }

@@ -357,5 +357,8 @@
   "Delete the scene and all its photos": "Izbriši scenu i sve njezine fotografije",
   "Use camera compatibility mode": "Koristi način kompatibilnosti kamere",
   "Disables DSLR and remote cameras, may limit available camera settings": "Onemogućuje DSLR i daljinske kamere, može ograničiti dostupne postavke kamere",
-  "Untitled scene #{{index}}": "Nepodijeljena scena #{{index}}"
+  "Untitled scene #{{index}}": "Nepodijeljena scena #{{index}}",
+  "Privacy": "Privatnost",
+  "Allow telemetry": "Dopusti telemetriju",
+  "Send anonymous usage data to help improve the application": "Pošaljite anonimne podatke o korištenju kako biste pomogli poboljšati aplikaciju"
 }
