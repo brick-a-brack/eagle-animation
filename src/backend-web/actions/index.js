@@ -9,6 +9,7 @@ import { createBuffer, flushBuffers, getBuffer } from './buffer';
 import { getFFmpeg } from './ffmpeg';
 import { createFrame } from './frames';
 import { createProject, deleteProject, getAllProjects, getProject, saveProject } from './projects';
+import { exportWithWebCodecs, isWebCodecsAvailable } from './webcodecs';
 
 let events = [];
 let currentDirectory = null;
@@ -163,7 +164,10 @@ export const Actions = {
     return [];
   },
   APP_CAPABILITIES: async () => {
-    return ['EXPORT_VIDEO', 'EXPORT_VIDEO_H264', 'EXPORT_VIDEO_VP8', 'EXPORT_VIDEO_PRORES', 'EXPORT_FRAMES', 'EXPORT_FRAMES_ZIP'];
+    const capabilities = ['EXPORT_VIDEO', 'EXPORT_VIDEO_H264', 'EXPORT_VIDEO_VP8', 'EXPORT_VIDEO_PRORES', 'EXPORT_FRAMES', 'EXPORT_FRAMES_ZIP'];
+    if (await isWebCodecsAvailable('hevc')) capabilities.push('EXPORT_VIDEO_HEVC');
+    if (await isWebCodecsAvailable('vp9')) capabilities.push('EXPORT_VIDEO_VP9');
+    return capabilities;
   },
   EXPORT_SELECT_PATH: async (evt, { compress_as_zip = false }) => {
     currentDirectory = null;
@@ -245,32 +249,49 @@ export const Actions = {
     }
 
     if (mode === 'video') {
-      const handleData = (data) => {
-        parseFFmpegLogs(data?.message || '', frames.length || 0, custom_output_framerate ? custom_output_framerate_number : undefined, (progress) => {
+      const fps = custom_output_framerate ? custom_output_framerate_number : project.project.scenes[trackId].framerate;
+      const useWebCodecs = await isWebCodecsAvailable(format);
+
+      if (useWebCodecs) {
+        const frameBuffers = [];
+        for (const frame of frames) {
+          const buffer = await getBuffer(frame.buffer_id);
+          frameBuffers.push({ buffer });
+        }
+
+        const result = await exportWithWebCodecs(frameBuffers, format, fps, (progress) => {
           sendEvent('FFMPEG_PROGRESS', { progress });
         });
-      };
 
-      const ffmpeg = await getFFmpeg(handleData);
+        saveAs(new Blob([result.buffer], { type: result.mimeType }), result.filename);
+      } else {
+        const handleData = (data) => {
+          parseFFmpegLogs(data?.message || '', frames.length || 0, custom_output_framerate ? custom_output_framerate_number : undefined, (progress) => {
+            sendEvent('FFMPEG_PROGRESS', { progress });
+          });
+        };
 
-      for (const frame of frames) {
-        const buffer = await getBuffer(frame.buffer_id);
-        await ffmpeg.writeFile(`frame-${frame.index.toString().padStart(6, '0')}.${frame.extension}`, await fetchFile(new Blob([buffer])));
+        const ffmpeg = await getFFmpeg(handleData);
+
+        for (const frame of frames) {
+          const buffer = await getBuffer(frame.buffer_id);
+          await ffmpeg.writeFile(`frame-${frame.index.toString().padStart(6, '0')}.${frame.extension}`, await fetchFile(new Blob([buffer])));
+        }
+
+        const profile = getEncodingProfile(format);
+        const output = `video.${profile.extension}`;
+
+        const args = getFFmpegArgs(format, output, project.project.scenes[trackId].framerate, {
+          customOutputFramerate: custom_output_framerate,
+          customOutputFramerateNumber: custom_output_framerate_number,
+        });
+
+        console.log(`🎞️ FFmpeg ${args.map((e) => `"${e}"`).join(' ')}`);
+
+        await ffmpeg.exec(args);
+        const data = await ffmpeg.readFile(output);
+        saveAs(new Blob([data.buffer], { type: 'application/octet-stream' }), output);
       }
-
-      const profile = getEncodingProfile(format);
-      const output = `video.${profile.extension}`;
-
-      const args = getFFmpegArgs(format, output, project.project.scenes[trackId].framerate, {
-        customOutputFramerate: custom_output_framerate,
-        customOutputFramerateNumber: custom_output_framerate_number,
-      });
-
-      console.log(`🎞️ FFmpeg ${args.map((e) => `"${e}"`).join(' ')}`);
-
-      await ffmpeg.exec(args);
-      const data = await ffmpeg.readFile(output);
-      saveAs(new Blob([data.buffer], { type: 'application/octet-stream' }), output);
     }
 
     await flushBuffers();

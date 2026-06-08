@@ -64,9 +64,10 @@ function useCamera(options = {}) {
     async (setStream) => {
       setStreamRef.current = setStream;
       if (currentCamera) {
-        await currentCamera.connect({ setStream: setStreamRef.current }, options, () => {
-          getCameras(compatibilityMode).then((cameras) => setDevices(cameras.map(applyCameraLabel)));
-        });
+        await currentCamera.connect({ setStream: setStreamRef.current }, options);
+        // Refresh device list after getUserMedia so real deviceIds become available
+        // (browsers return empty deviceIds before permission is granted).
+        await getCameras(compatibilityMode).then((cameras) => setDevices(cameras.map(applyCameraLabel)));
         triggerEvent('connect');
         currentCamera.getCapabilities().then(setCameraCapabilities);
       }
