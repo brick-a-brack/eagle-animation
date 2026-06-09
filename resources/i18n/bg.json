@@ -353,5 +353,8 @@
   "Delete the scene and all its photos": "Изтрий сцената и всичките й снимки",
   "Use camera compatibility mode": "Използвай режим на съвместимост на камерата",
   "Disables DSLR and remote cameras, may limit available camera settings": "Деактивира DSLR и дистанционни камери, може да ограничи наличните настройки на камерата",
-  "Untitled scene #{{index}}": "Без заглавие #{{index}}"
+  "Untitled scene #{{index}}": "Без заглавие #{{index}}",
+  "Privacy": "Поверителност",
+  "Allow telemetry": "Позволи телеметрия",
+  "Send anonymous usage data to help improve the application": "Изпращайте анонимни данни за използване, за да помогнете за подобряване на приложението"
 }

@@ -12,6 +12,7 @@ class PreviewStream extends Component {
     this._streamType = null;
     this._currentRatio = null;
     this._rafId = null;
+    this._playPromise = null;
   }
 
   // type:
@@ -38,7 +39,8 @@ class PreviewStream extends Component {
       this._videoEl.playsInline = true;
       this._videoEl.onerror = () => this._flushCanvas();
       this._videoEl.srcObject = data;
-      this._videoEl.play();
+      this._playPromise = this._videoEl.play();
+      this._playPromise.catch(e => { if (e.name !== 'AbortError') console.error(e); });
       this._streamType = 'video';
     } else {
       // Clear stream (e.g. setStream(null) on disconnect): fully release the
@@ -134,10 +136,14 @@ class PreviewStream extends Component {
 
   _destroyVideoEl() {
     if (!this._videoEl) return;
-    this._videoEl.pause();
-    this._videoEl.srcObject = null;
-    this._videoEl.onerror = null;
+    const el = this._videoEl;
     this._videoEl = null;
+    el.onerror = null;
+    const destroy = () => { el.pause(); el.srcObject = null; };
+    const p = this._playPromise;
+    this._playPromise = null;
+    if (p) p.then(destroy, destroy);
+    else destroy();
   }
 
   _destroyFrameEl() {

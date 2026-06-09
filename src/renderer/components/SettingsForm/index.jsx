@@ -112,6 +112,13 @@ const SettingsForm = ({ settings = {}, onUpdate = () => { }, t }) => {
           </FormGroup>
         )}
 
+        <Heading h={1}>{t('Privacy')}</Heading>
+        <FormGroup label={t('Allow telemetry')} description={t('Send anonymous usage data to help improve the application')}>
+          <div>
+            <Switch register={register('TELEMETRY_ENABLED')} />
+          </div>
+        </FormGroup>
+
         <Heading h={1}>{t('Workshops features')}</Heading>
         <FormGroup label={t('Enable workshop features')} description={t('Enable features related to stop motion workshops')}>
           <div>

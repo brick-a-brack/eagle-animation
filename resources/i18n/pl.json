@@ -375,5 +375,8 @@
   "Delete the scene and all its photos": "Usuń scenę i wszystkie jej zdjęcia",
   "Use camera compatibility mode": "Użyj trybu zgodności kamery",
   "Disables DSLR and remote cameras, may limit available camera settings": "Wyłącza aparaty DSLR i zdalne, może ograniczyć dostępne ustawienia kamery",
-  "Untitled scene #{{index}}": "Scena bez tytułu #{{index}}"
+  "Untitled scene #{{index}}": "Scena bez tytułu #{{index}}",
+  "Privacy": "Prywatność",
+  "Allow telemetry": "Zezwól na telemetrię",
+  "Send anonymous usage data to help improve the application": "Wyślij anonimowe dane dotyczące użycia, aby pomóc w poprawie aplikacji"
 }

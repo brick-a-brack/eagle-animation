@@ -64,14 +64,24 @@ function useCamera(options = {}) {
     async (setStream) => {
       setStreamRef.current = setStream;
       if (currentCamera) {
-        await currentCamera.connect({ setStream: setStreamRef.current }, options, () => {
-          getCameras(compatibilityMode).then((cameras) => setDevices(cameras.map(applyCameraLabel)));
-        });
+        await currentCamera.connect({ setStream: setStreamRef.current }, options);
+        // Refresh device list after getUserMedia so real deviceIds become available
+        // (browsers return empty deviceIds before permission is granted).
+        const updatedCameras = await getCameras(compatibilityMode);
+        setDevices(updatedCameras.map(applyCameraLabel));
         triggerEvent('connect');
-        currentCamera.getCapabilities().then(setCameraCapabilities);
+        currentCamera.getCapabilities().then((caps) => {
+          setCameraCapabilities(caps);
+          const cameraInfo = updatedCameras.find((e) => e.id === currentCameraId);
+          window.track('camera_connected', {
+            camera_label: cameraInfo?.label || null,
+            camera_module: cameraInfo?.module || null,
+            camera_capabilities: caps.map((c) => c.id),
+          });
+        });
       }
     },
-    [currentCamera, options, triggerEvent, compatibilityMode]
+    [currentCamera, options, triggerEvent, compatibilityMode, currentCameraId]
   );
 
   // Action set camera
@@ -93,10 +103,20 @@ function useCamera(options = {}) {
           const camera = getCamera(deviceId);
           if (setStreamRef?.current) {
             await camera?.connect({ setStream: setStreamRef.current }, options);
-            await getCameras(compatibilityMode).then((cameras) => setDevices(cameras.map(applyCameraLabel)));
+            await getCameras(compatibilityMode).then((cams) => setDevices(cams.map(applyCameraLabel)));
             triggerEvent('connect');
+            camera?.getCapabilities().then((caps) => {
+              setCameraCapabilities(caps);
+              const cameraInfo = cameras.find((e) => e.id === deviceId);
+              window.track('camera_connected', {
+                camera_label: cameraInfo?.label || null,
+                camera_module: cameraInfo?.module || null,
+                camera_capabilities: caps.map((c) => c.id),
+              });
+            });
+          } else {
+            camera?.getCapabilities().then(setCameraCapabilities);
           }
-          camera?.getCapabilities().then(setCameraCapabilities);
         } else {
           setCurrentCameraId(null);
           setCameraCapabilities([]);

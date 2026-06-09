@@ -353,5 +353,8 @@
   "Delete the scene and all its photos": "A jelenet és az összes fényképének törlése",
   "Use camera compatibility mode": "Használja a kamera kompatibilitási módot",
   "Disables DSLR and remote cameras, may limit available camera settings": "Letiltja a DSLR és távoli kamerákat, korlátozhatja a rendelkezésre álló kamera beállításokat",
-  "Untitled scene #{{index}}": "Cím nélküli jelenet #{{index}}"
+  "Untitled scene #{{index}}": "Cím nélküli jelenet #{{index}}",
+  "Privacy": "Adatvédelem",
+  "Allow telemetry": "Telemetria engedélyezése",
+  "Send anonymous usage data to help improve the application": "Névtelen használati adatokat küldeni az alkalmazás fejlesztésének segítésére"
 }

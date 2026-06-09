@@ -353,5 +353,8 @@
   "Delete the scene and all its photos": "Ta bort scenen och alla dess foton",
   "Use camera compatibility mode": "Använd kamerakompatibilitetsläge",
   "Disables DSLR and remote cameras, may limit available camera settings": "Inaktiverar DSLR- och fjärrkameror, kan begränsa tillgängliga kamerainställningar",
-  "Untitled scene #{{index}}": "Obenämnd scen #{{index}}"
+  "Untitled scene #{{index}}": "Obenämnd scen #{{index}}",
+  "Privacy": "Sekretess",
+  "Allow telemetry": "Tillåt telemetri",
+  "Send anonymous usage data to help improve the application": "Skicka anonym användardata för att hjälpa till att förbättra applikationen"
 }

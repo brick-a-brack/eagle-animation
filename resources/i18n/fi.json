@@ -353,5 +353,8 @@
   "Delete the scene and all its photos": "Poista kohtaus ja kaikki sen valokuvat",
   "Use camera compatibility mode": "Käytä kameran yhteensopivuustilaa",
   "Disables DSLR and remote cameras, may limit available camera settings": "Poistaa DSLR- ja etäkamerat käytöstä, voi rajoittaa käytettävissä olevia kameran asetuksia",
-  "Untitled scene #{{index}}": "Nimetön kohtaus #{{index}}"
+  "Untitled scene #{{index}}": "Nimetön kohtaus #{{index}}",
+  "Privacy": "Yksityisyys",
+  "Allow telemetry": "Salli telemetria",
+  "Send anonymous usage data to help improve the application": "Lähetä anonyymejä käyttödataa auttaaksesi parantamaan sovellusta"
 }

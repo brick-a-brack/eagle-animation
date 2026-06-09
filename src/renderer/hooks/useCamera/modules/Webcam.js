@@ -23,8 +23,8 @@ class Webcam {
             deviceId: this.deviceId ? { exact: this.deviceId } : undefined,
             ...(isFirefox()
               ? {
-                  width: { min: 640, ideal: 1920, max: 99999 },
-                  height: { min: 480, ideal: 1080, max: 99999 },
+                  width: { min: 1, ideal: 1920, max: 99999 },
+                  height: { min: 1, ideal: 1080, max: 99999 },
                 }
               : {
                   width: width || 99999,
