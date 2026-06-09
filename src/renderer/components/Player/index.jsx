@@ -101,7 +101,9 @@ class Player extends Component {
       };
 
       this.props.onPlayingStatusChange(true);
-      exec(playFromBegining || startOnLiveView);
+      if (playFromBegining || startOnLiveView) {
+        exec(true);
+      }
 
       this.clock = setInterval(() => {
         if (!exec()) {
