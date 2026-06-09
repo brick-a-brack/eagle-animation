@@ -101,7 +101,9 @@ class Player extends Component {
       };
 
       this.props.onPlayingStatusChange(true);
-      exec(playFromBegining || startOnLiveView);
+      if (playFromBegining || startOnLiveView) {
+        exec(true);
+      }
 
       this.clock = setInterval(() => {
         if (!exec()) {
@@ -219,8 +221,8 @@ class Player extends Component {
       this.drawGrid();
     }
 
-    // Force to display live view if capabilities changed
-    if (!isEqual(prevProps.cameraCapabilities, this.props.cameraCapabilities)) {
+    // Force to display live view if capabilities changed (only when not playing)
+    if (!isEqual(prevProps.cameraCapabilities, this.props.cameraCapabilities) && !this.clock) {
       this.showFrame(false);
     }
 
