@@ -356,5 +356,8 @@
   "Untitled scene #{{index}}": "Nimetön kohtaus #{{index}}",
   "Privacy": "Yksityisyys",
   "Allow telemetry": "Salli telemetria",
-  "Send anonymous usage data to help improve the application": "Lähetä anonyymejä käyttödataa auttaaksesi parantamaan sovellusta"
+  "Send anonymous usage data to help improve the application": "Lähetä anonyymejä käyttödataa auttaaksesi parantamaan sovellusta",
+  "Undo last action": "Peru viimeisin toiminto",
+  "Redo last undone action": "Tee viimeinen peruttu toiminto uudelleen",
+  "Add new scene": "Lisää uusi kohtaus"
 }

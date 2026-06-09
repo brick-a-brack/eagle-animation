@@ -356,5 +356,8 @@
   "Untitled scene #{{index}}": "Ongetitelde scène #{{index}}",
   "Privacy": "Privacy",
   "Allow telemetry": "Telemetrie toestaan",
-  "Send anonymous usage data to help improve the application": "Stuur anonieme gebruiksgegevens om de applicatie te helpen verbeteren"
+  "Send anonymous usage data to help improve the application": "Stuur anonieme gebruiksgegevens om de applicatie te helpen verbeteren",
+  "Undo last action": "Annuleer de laatste actie",
+  "Redo last undone action": "Herstel de laatste ongedane actie",
+  "Add new scene": "Voeg een nieuwe scène toe"
 }

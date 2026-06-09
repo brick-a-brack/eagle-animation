@@ -356,5 +356,8 @@
   "Untitled scene #{{index}}": "Ανώνυμη σκηνή #{{index}}",
   "Privacy": "Ιδιωτικότητα",
   "Allow telemetry": "Επιτρέψτε την τηλεμετρία",
-  "Send anonymous usage data to help improve the application": "Στείλτε ανώνυμα δεδομένα χρήσης για να βοηθήσετε στη βελτίωση της εφαρμογής"
+  "Send anonymous usage data to help improve the application": "Στείλτε ανώνυμα δεδομένα χρήσης για να βοηθήσετε στη βελτίωση της εφαρμογής",
+  "Undo last action": "Αναίρεση τελευταίας ενέργειας",
+  "Redo last undone action": "Επαναφορά τελευταίας αναιρεθείσας ενέργειας",
+  "Add new scene": "Προσθήκη νέας σκηνής"
 }

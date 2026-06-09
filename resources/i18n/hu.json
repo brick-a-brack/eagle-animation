@@ -356,5 +356,8 @@
   "Untitled scene #{{index}}": "Cím nélküli jelenet #{{index}}",
   "Privacy": "Adatvédelem",
   "Allow telemetry": "Telemetria engedélyezése",
-  "Send anonymous usage data to help improve the application": "Névtelen használati adatokat küldeni az alkalmazás fejlesztésének segítésére"
+  "Send anonymous usage data to help improve the application": "Névtelen használati adatokat küldeni az alkalmazás fejlesztésének segítésére",
+  "Undo last action": "Utolsó művelet visszavonása",
+  "Redo last undone action": "Utolsó visszavont művelet megismétlése",
+  "Add new scene": "Új jelenet hozzáadása"
 }

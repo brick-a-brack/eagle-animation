@@ -356,5 +356,8 @@
   "Untitled scene #{{index}}": "Obenämnd scen #{{index}}",
   "Privacy": "Sekretess",
   "Allow telemetry": "Tillåt telemetri",
-  "Send anonymous usage data to help improve the application": "Skicka anonym användardata för att hjälpa till att förbättra applikationen"
+  "Send anonymous usage data to help improve the application": "Skicka anonym användardata för att hjälpa till att förbättra applikationen",
+  "Undo last action": "Ångra senaste åtgärd",
+  "Redo last undone action": "Gör om senaste ångrade åtgärd",
+  "Add new scene": "Lägg till ny scen"
 }

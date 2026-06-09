@@ -356,5 +356,8 @@
   "Untitled scene #{{index}}": "Без заглавие #{{index}}",
   "Privacy": "Поверителност",
   "Allow telemetry": "Позволи телеметрия",
-  "Send anonymous usage data to help improve the application": "Изпращайте анонимни данни за използване, за да помогнете за подобряване на приложението"
+  "Send anonymous usage data to help improve the application": "Изпращайте анонимни данни за използване, за да помогнете за подобряване на приложението",
+  "Undo last action": "Отмени последното действие",
+  "Redo last undone action": "Повтори последното отменено действие",
+  "Add new scene": "Добави нова сцена"
 }

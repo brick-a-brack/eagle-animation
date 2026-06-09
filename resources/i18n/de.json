@@ -371,5 +371,8 @@
   "Untitled scene #{{index}}": "Unbetitelte Szene #{{index}}",
   "Privacy": "Datenschutz",
   "Allow telemetry": "Telemetrie erlauben",
-  "Send anonymous usage data to help improve the application": "Anonyme Nutzungsdaten senden, um die Anwendung zu verbessern"
+  "Send anonymous usage data to help improve the application": "Anonyme Nutzungsdaten senden, um die Anwendung zu verbessern",
+  "Undo last action": "Letzte Aktion rückgängig machen",
+  "Redo last undone action": "Letzte rückgängig gemachte Aktion wiederholen",
+  "Add new scene": "Neue Szene hinzufügen"
 }

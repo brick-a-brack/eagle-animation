@@ -371,5 +371,8 @@
   "Scenes": "Scenes",
   "Use camera compatibility mode": "Use camera compatibility mode",
   "Disables DSLR and remote cameras, may limit available camera settings": "Disables DSLR and remote cameras, may limit available camera settings",
-  "Untitled scene #{{index}}": "Untitled scene #{{index}}"
+  "Untitled scene #{{index}}": "Untitled scene #{{index}}",
+  "Undo last action": "Undo last action",
+  "Redo last undone action": "Redo last undone action",
+  "Add new scene": "Add new scene"
 }

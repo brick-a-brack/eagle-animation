@@ -371,5 +371,8 @@
   "Untitled scene #{{index}}": "Sen titolo sceno #{{index}}",
   "Privacy": "Konfidencialeco",
   "Allow telemetry": "Permesi telemetriecon",
-  "Send anonymous usage data to help improve the application": "Sendi anonimajn uzadatumojn por helpi plibonigi la aplikon"
+  "Send anonymous usage data to help improve the application": "Sendi anonimajn uzadatumojn por helpi plibonigi la aplikon",
+  "Undo last action": "Malfari la lastan agon",
+  "Redo last undone action": "Refari la lastan malfaritan agon",
+  "Add new scene": "Aldoni novan scenon"
 }

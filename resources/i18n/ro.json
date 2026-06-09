@@ -360,5 +360,8 @@
   "Untitled scene #{{index}}": "Scenă fără titlu #{{index}}",
   "Privacy": "Confidențialitate",
   "Allow telemetry": "Permite telemetria",
-  "Send anonymous usage data to help improve the application": "Trimite date de utilizare anonime pentru a ajuta la îmbunătățirea aplicației"
+  "Send anonymous usage data to help improve the application": "Trimite date de utilizare anonime pentru a ajuta la îmbunătățirea aplicației",
+  "Undo last action": "Anulează ultima acțiune",
+  "Redo last undone action": "Refă ultima acțiune anulată",
+  "Add new scene": "Adaugă o nouă scenă"
 }

@@ -356,5 +356,8 @@
   "Untitled scene #{{index}}": "Uden titel scene #{{index}}",
   "Privacy": "Privatliv",
   "Allow telemetry": "Tillad telemetri",
-  "Send anonymous usage data to help improve the application": "Send anonym brugsdata for at hjælpe med at forbedre applikationen"
+  "Send anonymous usage data to help improve the application": "Send anonym brugsdata for at hjælpe med at forbedre applikationen",
+  "Undo last action": "Fortryd sidste handling",
+  "Redo last undone action": "Gentag sidste fortrudte handling",
+  "Add new scene": "Tilføj ny scene"
 }

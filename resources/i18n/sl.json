@@ -364,5 +364,8 @@
   "Untitled scene #{{index}}": "Nepodpisana scena #{{index}}",
   "Privacy": "Zasebnost",
   "Allow telemetry": "Dovoli telemetrijo",
-  "Send anonymous usage data to help improve the application": "Pošlji anonimne podatke o uporabi, da pomagaš izboljšati aplikacijo"
+  "Send anonymous usage data to help improve the application": "Pošlji anonimne podatke o uporabi, da pomagaš izboljšati aplikacijo",
+  "Undo last action": "Razveljavi zadnjo dejanje",
+  "Redo last undone action": "Ponovi zadnje razveljavljeno dejanje",
+  "Add new scene": "Dodaj novo sceno"
 }

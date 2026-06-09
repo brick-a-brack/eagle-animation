@@ -382,5 +382,8 @@
   "Untitled scene #{{index}}": "Be pavadinimo scena #{{index}}",
   "Privacy": "Privatumas",
   "Allow telemetry": "Leisti telemetriją",
-  "Send anonymous usage data to help improve the application": "Siųsti anoniminius naudojimo duomenis, kad padėtų tobulinti programą"
+  "Send anonymous usage data to help improve the application": "Siųsti anoniminius naudojimo duomenis, kad padėtų tobulinti programą",
+  "Undo last action": "Atšaukti paskutinį veiksmą",
+  "Redo last undone action": "Pakartoti paskutinį atšauktą veiksmą",
+  "Add new scene": "Pridėti naują sceną"
 }

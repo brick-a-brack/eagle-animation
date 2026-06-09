@@ -363,5 +363,8 @@
   "Untitled scene #{{index}}": "Názov scény bez názvu #{{index}}",
   "Privacy": "Ochrana osobných údajov",
   "Allow telemetry": "Povoliť telemetriu",
-  "Send anonymous usage data to help improve the application": "Poslať anonymné údaje o používaní na pomoc pri zlepšovaní aplikácie"
+  "Send anonymous usage data to help improve the application": "Poslať anonymné údaje o používaní na pomoc pri zlepšovaní aplikácie",
+  "Undo last action": "Zrušiť poslednú akciu",
+  "Redo last undone action": "Znovu vykonať poslednú zrušenú akciu",
+  "Add new scene": "Pridať novú scénu"
 }

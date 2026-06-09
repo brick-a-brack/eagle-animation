@@ -363,5 +363,8 @@
   "Untitled scene #{{index}}": "Безымянная сцена #{{index}}",
   "Privacy": "Конфиденциальность",
   "Allow telemetry": "Разрешить телеметрию",
-  "Send anonymous usage data to help improve the application": "Отправить анонимные данные об использовании, чтобы помочь улучшить приложение"
+  "Send anonymous usage data to help improve the application": "Отправить анонимные данные об использовании, чтобы помочь улучшить приложение",
+  "Undo last action": "Отменить последнее действие",
+  "Redo last undone action": "Повторить последнее отмененное действие",
+  "Add new scene": "Добавить новую сцену"
 }

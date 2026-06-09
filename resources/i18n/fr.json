@@ -374,5 +374,8 @@
   "Scenes": "Scènes",
   "Use camera compatibility mode": "Utiliser le mode de compatibilité de la caméra",
   "Disables DSLR and remote cameras, may limit available camera settings": "Désactive les caméras DSLR et à distance, peut limiter les paramètres de caméra disponibles",
-  "Untitled scene #{{index}}": "Scène sans titre #{{index}}"
+  "Untitled scene #{{index}}": "Scène sans titre #{{index}}",
+  "Undo last action": "Annuler la dernière action",
+  "Redo last undone action": "Refaire la dernière action annulée",
+  "Add new scene": "Ajouter une nouvelle scène"
 }

@@ -378,5 +378,8 @@
   "Untitled scene #{{index}}": "Scena bez tytułu #{{index}}",
   "Privacy": "Prywatność",
   "Allow telemetry": "Zezwól na telemetrię",
-  "Send anonymous usage data to help improve the application": "Wyślij anonimowe dane dotyczące użycia, aby pomóc w poprawie aplikacji"
+  "Send anonymous usage data to help improve the application": "Wyślij anonimowe dane dotyczące użycia, aby pomóc w poprawie aplikacji",
+  "Undo last action": "Cofnij ostatnią akcję",
+  "Redo last undone action": "Ponów ostatnią cofniętą akcję",
+  "Add new scene": "Dodaj nową scenę"
 }
