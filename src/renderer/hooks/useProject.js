@@ -1,5 +1,5 @@
 import { mimeTypeToExtension } from '@core/frameTypes';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { v4 } from 'uuid';
 import { useHistory } from './useHistory';
 
@@ -33,9 +33,6 @@ function useProject(options) {
 
   const { push: pushHistory, undo: historyUndo, redo: historyRedo, canUndo, canRedo } = useHistory({ key: options?.id, serialize: getFingerprint });
 
-  const isUndoRedoRef = useRef(false);
-  const lastSavedFPRef = useRef(null);
-
   // Initial load
   useEffect(() => {
     window.EA('GET_PROJECT', { project_id: options.id }).then((data) => {
@@ -46,10 +43,6 @@ function useProject(options) {
   // Push to history on every real projectData change
   useEffect(() => {
     if (!projectData) return;
-    if (isUndoRedoRef.current) {
-      isUndoRedoRef.current = false;
-      return;
-    }
     pushHistory(projectData);
   }, [projectData, pushHistory]);
 
@@ -356,19 +349,13 @@ function useProject(options) {
   // Action Undo
   const actionUndo = useCallback(() => {
     const prev = historyUndo();
-    if (prev) {
-      isUndoRedoRef.current = true;
-      setProjectData(structuredClone(prev));
-    }
+    if (prev) setProjectData(structuredClone(prev));
   }, [historyUndo]);
 
   // Action Redo
   const actionRedo = useCallback(() => {
     const next = historyRedo();
-    if (next) {
-      isUndoRedoRef.current = true;
-      setProjectData(structuredClone(next));
-    }
+    if (next) setProjectData(structuredClone(next));
   }, [historyRedo]);
 
   return {
