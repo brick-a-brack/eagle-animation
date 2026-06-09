@@ -68,11 +68,13 @@ const ControlBar = ({
 
   useEffect(() => {
     const values = getValues();
-    handleAction('FPS_CHANGE', values.fps)();
+    handleAction('FPS_CHANGE', Number(values.fps) || 1)();
   }, [JSON.stringify(formValues)]);
 
   useEffect(() => {
-    setValue('fps', fps);
+    if (Number(getValues().fps) !== fps) {
+      setValue('fps', fps);
+    }
   }, [fps]);
 
   return (
