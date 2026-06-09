@@ -161,6 +161,18 @@ const Animator = ({ t }) => {
 
   const { isCameraReady, devices, currentCameraCapabilities, currentCamera, currentCameraId, actions: cameraActions } = useCamera({ compatibilityMode: !!settings?.COMPATIBILITY_MODE_CAMERAS });
 
+  // Redirect to first available scene if current scene no longer exists (e.g. after undo or scene deletion)
+  useEffect(() => {
+    if (!project) return;
+    const currentScene = project.scenes?.[track];
+    if (!currentScene || currentScene.deleted) {
+      const firstValid = project.scenes.findIndex((s) => !s.deleted);
+      if (firstValid !== -1) {
+        navigate(`/animator/${id}/${firstValid}`);
+      }
+    }
+  }, [project, track, id, navigate]);
+
   // Disable frame deletion confirmation if we change the current frame
   useEffect(() => {
     (() => {
@@ -473,12 +485,12 @@ const Animator = ({ t }) => {
       projectActions.deleteScene(indexToDelete);
       setActiveWindow(null);
       window.track('scene_deleted', { projectId: `${id}`, trackId: `${indexToDelete}` });
-      if (Number(track) === indexToDelete) {
-        const survivor = project.scenes.findIndex((s, i) => i !== indexToDelete && !s.deleted);
-        if (survivor !== -1) {
-          navigate(`/animator/${id}/${survivor}`);
-        }
-      }
+    },
+    UNDO: () => {
+      if (!isPlaying) projectActions.undo();
+    },
+    REDO: () => {
+      if (!isPlaying) projectActions.redo();
     },
     MORE: () => {},
     EXPORT: () => {
