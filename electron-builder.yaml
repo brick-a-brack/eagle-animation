@@ -50,7 +50,7 @@ linux:
   category: Photography
   synopsis: EagleAnimation is an awesome, free and open-source animation software.
   description: EagleAnimation is an awesome, free and open-source animation software.
-  icon: out/renderer/icon-linux.icns
+  icon: out/renderer/icon.png
   target:
     - deb
     - rpm
