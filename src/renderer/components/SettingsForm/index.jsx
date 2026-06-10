@@ -13,7 +13,7 @@ import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { withTranslation } from 'react-i18next';
 
-const SettingsForm = ({ settings = {}, onUpdate = () => { }, t }) => {
+const SettingsForm = ({ settings = {}, onUpdate = () => {}, t }) => {
   const { appCapabilities } = useAppCapabilities();
   const form = useForm({
     mode: 'all',
@@ -64,9 +64,7 @@ const SettingsForm = ({ settings = {}, onUpdate = () => { }, t }) => {
           </div>
         </FormGroup>
         {DEVICE === 'ELECTRON' && (
-          <FormGroup
-            label={t('Use camera compatibility mode')}
-            description={t('Disables DSLR and remote cameras, may limit available camera settings')}>
+          <FormGroup label={t('Use camera compatibility mode')} description={t('Disables DSLR and remote cameras, may limit available camera settings')}>
             <div>
               <Switch register={register('COMPATIBILITY_MODE_CAMERAS')} />
             </div>

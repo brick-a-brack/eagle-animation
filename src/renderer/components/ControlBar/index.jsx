@@ -109,7 +109,14 @@ const ControlBar = ({
           icon={faEraser}
           disabled={framePosition !== false}
         />
-        <Button style={{ marginLeft: 'var(--space-big)' }} title={t('Camera settings')} selected={showCameraSettings} onClick={isPlaying ? () => {} : handleAction('CAMERA_SETTINGS')} icon={faSliders} disabled={isPlaying} />
+        <Button
+          style={{ marginLeft: 'var(--space-big)' }}
+          title={t('Camera settings')}
+          selected={showCameraSettings}
+          onClick={isPlaying ? () => {} : handleAction('CAMERA_SETTINGS')}
+          icon={faSliders}
+          disabled={isPlaying}
+        />
       </div>
       <Button disabled={isTakingPicture || !isCameraReady} onClick={handleAction('TAKE_PICTURE')} color="primary" icon={faCamera} title={t('Take a picture')} />
       <div className={`${style.subcontainer} ${style.right}`}>

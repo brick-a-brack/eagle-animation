@@ -1,6 +1,7 @@
 import { mimeTypeToExtension } from '@core/frameTypes';
 import { useCallback, useEffect, useState } from 'react';
 import { v4 } from 'uuid';
+
 import { useHistory } from './useHistory';
 
 function cleanProjectData(data) {

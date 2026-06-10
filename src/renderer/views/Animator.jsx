@@ -472,7 +472,7 @@ const Animator = ({ t }) => {
       const newVisualIndex = project.scenes.filter((s) => !s.deleted).length + 1; // To be displayed
       const currentFps = project?.scenes?.[track]?.framerate || 12;
       const currentRatio = project?.scenes?.[track]?.ratio || null;
-      await projectActions.addScene(t('Untitled scene #{{index}}', { index: newVisualIndex}), currentFps, currentRatio);
+      await projectActions.addScene(t('Untitled scene #{{index}}', { index: newVisualIndex }), currentFps, currentRatio);
       window.track('scene_added', { projectId: `${id}`, trackId: `${newIndex}` });
       navigate(`/animator/${id}/${newIndex}`);
     },
@@ -596,23 +596,23 @@ const Animator = ({ t }) => {
           onAction={handleAction}
         >
           <SceneSelector
-              scenes={visibleScenes.map((s) => ({ id: s.id, index: s.index, title: s.title, framerate: s.framerate, pictureCount: s.pictures?.filter((p) => !p.deleted).length ?? 0 }))}
-              currentTrack={track}
-              disabled={isPlaying}
-              projectTitle={project?.title}
-              onProjectTitleChange={(title) => projectActions.rename(title || '')}
-              onEditProject={() => handleAction('PROJECT_SETTINGS')}
-              onSelect={(newIndex) => {
-                if (Number(newIndex) !== Number(track)) {
-                  navigate(`/animator/${id}/${newIndex}`);
-                }
-              }}
-              onCreate={() => handleAction('ADD_SCENE')}
-              onEditScene={(sceneIndex) => {
-                setSceneEditingIndex(sceneIndex);
-                setActiveWindow('scene');
-              }}
-            />
+            scenes={visibleScenes.map((s) => ({ id: s.id, index: s.index, title: s.title, framerate: s.framerate, pictureCount: s.pictures?.filter((p) => !p.deleted).length ?? 0 }))}
+            currentTrack={track}
+            disabled={isPlaying}
+            projectTitle={project?.title}
+            onProjectTitleChange={(title) => projectActions.rename(title || '')}
+            onEditProject={() => handleAction('PROJECT_SETTINGS')}
+            onSelect={(newIndex) => {
+              if (Number(newIndex) !== Number(track)) {
+                navigate(`/animator/${id}/${newIndex}`);
+              }
+            }}
+            onCreate={() => handleAction('ADD_SCENE')}
+            onEditScene={(sceneIndex) => {
+              setSceneEditingIndex(sceneIndex);
+              setActiveWindow('scene');
+            }}
+          />
         </HeaderBar>
         <Player
           t={t}

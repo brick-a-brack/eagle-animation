@@ -13,12 +13,12 @@ const SceneSelector = ({
   t,
   scenes = [],
   currentTrack = 0,
-  onSelect = () => { },
-  onCreate = () => { },
-  onEditScene = () => { },
+  onSelect = () => {},
+  onCreate = () => {},
+  onEditScene = () => {},
   projectTitle = '',
-  onProjectTitleChange = () => { },
-  onEditProject = () => { },
+  onProjectTitleChange = () => {},
+  onEditProject = () => {},
   disabled = false,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -102,7 +102,11 @@ const SceneSelector = ({
               >
                 <span className={style.rowTitle}>{s.title || t('Untitled scene')}</span>
                 <div className={style.rowMeta}>
-                  {s.pictureCount > 0 && <span className={style.metaTag}>{s.pictureCount} <FontAwesomeIcon icon={faImages} style={{ position: 'relative', top: '-1px' }} /></span>}
+                  {s.pictureCount > 0 && (
+                    <span className={style.metaTag}>
+                      {s.pictureCount} <FontAwesomeIcon icon={faImages} style={{ position: 'relative', top: '-1px' }} />
+                    </span>
+                  )}
                   {s.framerate && <span className={style.metaTag}>{s.framerate} FPS</span>}
                 </div>
               </button>
