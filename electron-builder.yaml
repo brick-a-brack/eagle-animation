@@ -31,6 +31,7 @@ win:
     - zip
 
 mac:
+  x64ArchFiles: "**/node_modules/@img/**"
   artifactName: Eagle-Animation-${version}-mac.${ext}
   executableName: Eagle Animation
   category: public.app-category.photography
