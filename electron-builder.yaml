@@ -31,10 +31,7 @@ win:
     - zip
 
 mac:
-  x64ArchFiles:
-    - "**/node_modules/@img/**"
-    - "**/node_modules/ffmpeg-static/**"
-    - "**/toucan-camera-server/bin/**"
+  x64ArchFiles: "**/{node_modules/@img,node_modules/ffmpeg-static,node_modules/sharp,toucan-camera-server/bin}/**"
   artifactName: Eagle-Animation-${version}-mac.${ext}
   executableName: Eagle Animation
   category: public.app-category.photography
