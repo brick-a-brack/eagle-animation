@@ -17,23 +17,19 @@ class EAWebViewClient(
     override fun shouldInterceptRequest(view: WebView?, request: WebResourceRequest?): WebResourceResponse? {
         val uri = request?.url ?: return null
 
-        // ea://api/pictures/{projectId}/{sceneIndex}/{filename}?w=&h=&f=&m=&q=&i=
-        if (uri.scheme?.lowercase() == "ea") {
-            val segments = uri.pathSegments
-            Log.d("EAWebView", "ea:// intercept: host=${uri.host} segments=$segments")
-            if (uri.host == "api" && segments.size >= 4 && segments[0] == "pictures") {
-                val imageFile = projectsDir
-                    .resolve(segments[1])
-                    .resolve(segments[2])
-                    .resolve(segments[3])
-                Log.d("EAWebView", "image path=${imageFile.absolutePath} exists=${imageFile.exists()} size=${if (imageFile.exists()) imageFile.length() else -1}")
-                return if (imageFile.exists()) {
-                    ImageProcessor.process(imageFile, uri)
-                } else {
-                    WebResourceResponse("application/json", "utf-8", 404, "Not Found", emptyMap(), "null".byteInputStream())
-                }
+        // https://appassets.androidplatform.net/api/pictures/{projectId}/{sceneIndex}/{filename}?...
+        if (uri.scheme == "https" && uri.host == "appassets.androidplatform.net" &&
+            uri.pathSegments.size >= 4 && uri.pathSegments[0] == "api" && uri.pathSegments[1] == "pictures"
+        ) {
+            val imageFile = projectsDir
+                .resolve(uri.pathSegments[2])
+                .resolve(uri.pathSegments[3])
+                .resolve(uri.pathSegments[4])
+            return if (imageFile.exists()) {
+                ImageProcessor.process(imageFile, uri)
+            } else {
+                WebResourceResponse("application/json", "utf-8", 404, "Not Found", emptyMap(), "null".byteInputStream())
             }
-            return null
         }
 
         return assetLoader.shouldInterceptRequest(uri)

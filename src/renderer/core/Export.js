@@ -72,31 +72,25 @@ export const ExportFrames = async (
 
     // If buffer is not cached, compute it
     if (!cachedBuffers.has(`${file.type}:${file.id}`)) {
-      // On Android (window.IPC), EXPORT reads frames directly from disk via the link field —
-      // fetch() to ea:// is unsupported in WebView, and buffering is a no-op anyway.
-      if (!window.IPC) {
-        const frameArrayBuffer = await fetch(
-          getPictureLink(file.link, {
-            ...(copiedResolution && copiedResolution.width ? { w: copiedResolution.width } : {}),
-            ...(copiedResolution && copiedResolution.height ? { h: copiedResolution.height } : {}),
-            ...(copiedResolution
-              ? {
-                  m: 'cover',
-                  q: 100,
-                }
-              : {}),
-            ...(typeof opts.forceFileExtension !== 'undefined' ? { f: computedExtension } : {}),
-            c: false,
-          })
-        ).then((res) => res.arrayBuffer());
+      const frameArrayBuffer = await fetch(
+        getPictureLink(file.link, {
+          ...(copiedResolution && copiedResolution.width ? { w: copiedResolution.width } : {}),
+          ...(copiedResolution && copiedResolution.height ? { h: copiedResolution.height } : {}),
+          ...(copiedResolution
+            ? {
+                m: 'cover',
+                q: 100,
+              }
+            : {}),
+          ...(typeof opts.forceFileExtension !== 'undefined' ? { f: computedExtension } : {}),
+          c: false,
+        })
+      ).then((res) => res.arrayBuffer());
 
-        // Write file on disk/ram
-        const bufferId = v4();
-        await onBufferCreate(bufferId, Buffer.from(frameArrayBuffer));
-        cachedBuffers.set(`${file.type}:${file.id}`, bufferId);
-      } else {
-        cachedBuffers.set(`${file.type}:${file.id}`, null);
-      }
+      // Write file on disk/ram
+      const bufferId = v4();
+      await onBufferCreate(bufferId, Buffer.from(frameArrayBuffer));
+      cachedBuffers.set(`${file.type}:${file.id}`, bufferId);
     }
 
     // Send progress

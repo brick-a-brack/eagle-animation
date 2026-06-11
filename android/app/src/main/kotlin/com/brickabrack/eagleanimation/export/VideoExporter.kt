@@ -188,8 +188,9 @@ class VideoExporter(
     }
 
     private fun resolveFile(link: String): File {
-        val path = link.substringBefore("?").removePrefix("ea://api/pictures/")
-        val parts = path.split("/")
+        val parts = link.substringBefore("?")
+            .removePrefix("https://appassets.androidplatform.net/api/pictures/")
+            .split("/")
         return projectsDir.resolve(parts[0]).resolve(parts[1]).resolve(parts[2])
     }
 }

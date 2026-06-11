@@ -188,23 +188,6 @@ class ActionDispatcher(
             JSONObject().put("uri", uri)
         }
 
-        "GET_FRAME_INFO" -> {
-            val link = data.optString("link")
-            val uri = android.net.Uri.parse(link)
-            val segments = uri.pathSegments
-            if (segments.size >= 4 && segments[0] == "pictures") {
-                val file = projectStorage.projectsDir
-                    .resolve(segments[1])
-                    .resolve(segments[2])
-                    .resolve(segments[3])
-                val opts = android.graphics.BitmapFactory.Options().apply { inJustDecodeBounds = true }
-                android.graphics.BitmapFactory.decodeFile(file.absolutePath, opts)
-                JSONObject().put("width", opts.outWidth).put("height", opts.outHeight)
-            } else {
-                null
-            }
-        }
-
         "GET_TOUCAN_CAMERA_SERVER_CONFIG" -> JSONObject()
             .put("port", "8040")
             .put("token", cameraServerToken)
@@ -287,9 +270,15 @@ class ActionDispatcher(
         }
     }
 
+    /** Returns [projectId, sceneIndex, filename] from a picture link. */
+    private fun pictureSegments(link: String): List<String> =
+        link.substringBefore("?")
+            .removePrefix("https://appassets.androidplatform.net/api/pictures/")
+            .split("/")
+
     private fun pictureLink(projectId: String, sceneIndex: Any, filename: String) =
-        "ea://api/pictures/$projectId/$sceneIndex/$filename"
+        "https://appassets.androidplatform.net/api/pictures/$projectId/$sceneIndex/$filename"
 
     private fun metaLink(projectId: String, sceneIndex: Any, filename: String) =
-        "ea://api/pictures/$projectId/$sceneIndex/$filename?infos=json"
+        "https://appassets.androidplatform.net/api/pictures/$projectId/$sceneIndex/$filename?infos=json"
 }
