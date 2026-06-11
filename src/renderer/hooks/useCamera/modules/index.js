@@ -186,6 +186,17 @@ export const takePicture = async (camera, nbFramesToTake = 1, reverseX = true, r
     }
   }
 
+  // Android direct-save path: Kotlin handles averaging + flip natively (no image data through Binder)
+  if (bufferList.length > 0 && bufferList[0]._directSaveUrl) {
+    const sentinel = Buffer.from(new ArrayBuffer(0));
+    sentinel.type = 'image/jpeg';
+    sentinel._directSaveUrls = bufferList.map((f) => f._directSaveUrl);
+    sentinel._directSaveAuthorization = bufferList[0]._directSaveAuthorization;
+    sentinel._reverseX = reverseX;
+    sentinel._reverseY = reverseY;
+    return sentinel;
+  }
+
   // Output frame
   let finalCanvas = bufferList?.[0];
 
