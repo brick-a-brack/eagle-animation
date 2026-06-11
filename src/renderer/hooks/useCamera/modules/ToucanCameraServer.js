@@ -83,6 +83,18 @@ class ToucanCameraServer {
   }
 
   async takePicture() {
+    // On Android (window.IPC = AndroidIPC bridge), skip fetching the JPEG into JS.
+    // Kotlin will fetch directly from the local Toucan server via SAVE_PICTURE_FROM_URL,
+    // avoiding the ~30 MB base64 Binder transfer that makes saves take 20+ seconds.
+    if (window.IPC) {
+      return {
+        type: 'image/jpeg',
+        buffer: new ArrayBuffer(0),
+        _directSaveUrl: `${getApiUrl()}cameras/${this.deviceId}/capture`,
+        _directSaveAuthorization: getAuthHeader().authorization,
+      };
+    }
+
     const request = await fetch(`${getApiUrl()}cameras/${this.deviceId}/capture`, {
       method: 'POST',
       headers: {

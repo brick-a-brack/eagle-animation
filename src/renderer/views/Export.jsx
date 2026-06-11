@@ -40,6 +40,16 @@ export const GetFrameResolutions = async (frames) => {
   if (!frames || frames.length === 0) {
     return [];
   }
+  // fetch() does not support custom URL schemes (ea://) in Android WebView — use IPC bridge.
+  if (window.IPC) {
+    return Promise.all(
+      frames.map((frame) =>
+        GetFrameResolutionsLimit(() =>
+          window.EA('GET_FRAME_INFO', { link: frame.link }).catch(() => ({ width: null, height: null }))
+        )
+      )
+    );
+  }
   const resolutions = await Promise.all(
     frames.map((frame) => {
       const metaLinkUrl = new URL(frame.metaLink, window.location.origin);
@@ -304,6 +314,7 @@ const Export = ({ t }) => {
     await window.EA('EXPORT', {
       frames: frames.map(({ mimeType, bufferId, ...e }) => ({ ...e, buffer_id: bufferId, mime_type: mimeType })),
       output_path: outputPath,
+      export_resolution: resolution ?? null,
       mode: data.mode,
       format: data.format,
       framerate: project?.scenes?.[Number(track)]?.framerate,
