@@ -1,8 +1,17 @@
+import { getAudioDurationFromArrayBuffer } from '@core/audio';
 import { mimeTypeToExtension } from '@core/frameTypes';
 import { useCallback, useEffect, useState } from 'react';
 import { v4 } from 'uuid';
 
 import { useHistory } from './useHistory';
+
+// Ensure a scene has an audioTracks array (older projects predate audio)
+const ensureAudioTracks = (scene) => {
+  if (!scene.audioTracks) {
+    scene.audioTracks = [];
+  }
+  return scene.audioTracks;
+};
 
 function cleanProjectData(data) {
   const d = structuredClone(data);
@@ -17,6 +26,12 @@ function cleanProjectData(data) {
           delete picture.masking[layer].link;
           delete picture.masking[layer].metaLink;
         }
+      }
+    }
+    for (const track of scene.audioTracks || []) {
+      for (const chunk of track.chunks || []) {
+        delete chunk.link;
+        delete chunk.peaks;
       }
     }
   }
@@ -129,14 +144,52 @@ function useProject(options) {
     });
   }, []);
 
-  // Action delete frame
+  // Action delete frame — soft-deletes the picture and re-anchors any audio chunk
+  // that pointed at it onto a neighbouring picture, keeping it at ~the same instant.
   const actionDeleteFrame = useCallback(async (trackId, frameId) => {
     const sceneId = Number(trackId);
     setProjectData((oldData) => {
       let d = structuredClone(oldData);
-      if (d.project.scenes[sceneId]) {
-        d.project.scenes[sceneId].pictures = d.project.scenes[sceneId].pictures.map((p) => (`${p.id}` !== `${frameId}` ? p : { ...p, deleted: true }));
+      const scene = d.project.scenes[sceneId];
+      if (!scene) {
+        return d;
       }
+
+      // Compute the re-anchor target while the frame is still alive
+      const fps = Math.max(1, Number(scene.framerate) || 1);
+      const alive = scene.pictures.filter((p) => !p.deleted);
+      const delIdx = alive.findIndex((p) => `${p.id}` === `${frameId}`);
+      let reanchor = null;
+      if (delIdx !== -1) {
+        const prev = alive[delIdx - 1];
+        const next = alive[delIdx + 1];
+        if (prev) {
+          // Anchor to the previous picture; add its hold so the sound keeps its instant
+          reanchor = { frameID: prev.id, deltaSeconds: (prev.length || 1) / fps };
+        } else if (next) {
+          // No previous picture: the next one slides into the freed slot, delay unchanged
+          reanchor = { frameID: next.id, deltaSeconds: 0 };
+        } else {
+          // Last picture of the scene: fall back to the scene start
+          reanchor = { frameID: null, deltaSeconds: 0 };
+        }
+      }
+
+      // Soft delete the picture
+      scene.pictures = scene.pictures.map((p) => (`${p.id}` !== `${frameId}` ? p : { ...p, deleted: true }));
+
+      // Re-anchor chunks that pointed at the deleted frame
+      if (reanchor) {
+        for (const audioTrack of scene.audioTracks || []) {
+          for (const chunk of audioTrack.chunks || []) {
+            if (`${chunk.frameID}` === `${frameId}`) {
+              chunk.frameID = reanchor.frameID;
+              chunk.frameDelay = (chunk.frameDelay || 0) + reanchor.deltaSeconds;
+            }
+          }
+        }
+      }
+
       return d;
     });
   }, []);
@@ -347,6 +400,117 @@ function useProject(options) {
     [options?.id]
   );
 
+  // Import an audio file: stores the bytes and decodes its duration.
+  // Returns { src, sourceDuration } — does not mutate the project.
+  const importAudio = useCallback(
+    async (file) => {
+      const arrayBuffer = await file.arrayBuffer();
+      const sourceDuration = await getAudioDurationFromArrayBuffer(arrayBuffer);
+      const { src } = await window.EA('IMPORT_AUDIO', {
+        project_id: options?.id,
+        buffer: new Uint8Array(arrayBuffer),
+        extension: mimeTypeToExtension(file.type),
+      });
+      return { src, sourceDuration };
+    },
+    [options?.id]
+  );
+
+  // Action add audio track
+  const actionAddAudioTrack = useCallback(async (trackId, title = '') => {
+    const sceneId = Number(trackId);
+    const id = v4();
+    setProjectData((oldData) => {
+      let d = structuredClone(oldData);
+      const scene = d.project.scenes[sceneId];
+      if (scene) {
+        ensureAudioTracks(scene).push({ id, title, muted: false, volume: 1, chunks: [] });
+      }
+      return d;
+    });
+    return id;
+  }, []);
+
+  // Action remove audio track
+  const actionRemoveAudioTrack = useCallback(async (trackId, audioTrackId) => {
+    const sceneId = Number(trackId);
+    setProjectData((oldData) => {
+      let d = structuredClone(oldData);
+      const scene = d.project.scenes[sceneId];
+      if (scene) {
+        scene.audioTracks = ensureAudioTracks(scene).filter((t) => `${t.id}` !== `${audioTrackId}`);
+      }
+      return d;
+    });
+  }, []);
+
+  // Action update audio track (title / muted / volume)
+  const actionUpdateAudioTrack = useCallback(async (trackId, audioTrackId, patch = {}) => {
+    const sceneId = Number(trackId);
+    setProjectData((oldData) => {
+      let d = structuredClone(oldData);
+      const scene = d.project.scenes[sceneId];
+      if (scene) {
+        scene.audioTracks = ensureAudioTracks(scene).map((t) => (`${t.id}` !== `${audioTrackId}` ? t : { ...t, ...patch }));
+      }
+      return d;
+    });
+  }, []);
+
+  // Action add audio chunk (imports the file, then anchors it on the track)
+  const actionAddAudioChunk = useCallback(
+    async (trackId, audioTrackId, file, { frameID = null, frameDelay = 0 } = {}) => {
+      const sceneId = Number(trackId);
+      const { src, sourceDuration } = await importAudio(file);
+      const id = v4();
+      setProjectData((oldData) => {
+        let d = structuredClone(oldData);
+        const scene = d.project.scenes[sceneId];
+        if (scene) {
+          const track = ensureAudioTracks(scene).find((t) => `${t.id}` === `${audioTrackId}`);
+          if (track) {
+            track.chunks = [...(track.chunks || []), { id, src, frameID, frameDelay, startAt: 0, duration: sourceDuration, sourceDuration }];
+          }
+        }
+        return d;
+      });
+      return id;
+    },
+    [importAudio]
+  );
+
+  // Action update audio chunk (frameID / frameDelay / startAt / duration)
+  const actionUpdateAudioChunk = useCallback(async (trackId, audioTrackId, chunkId, patch = {}) => {
+    const sceneId = Number(trackId);
+    setProjectData((oldData) => {
+      let d = structuredClone(oldData);
+      const scene = d.project.scenes[sceneId];
+      if (scene) {
+        const track = ensureAudioTracks(scene).find((t) => `${t.id}` === `${audioTrackId}`);
+        if (track) {
+          track.chunks = (track.chunks || []).map((c) => (`${c.id}` !== `${chunkId}` ? c : { ...c, ...patch }));
+        }
+      }
+      return d;
+    });
+  }, []);
+
+  // Action remove audio chunk
+  const actionRemoveAudioChunk = useCallback(async (trackId, audioTrackId, chunkId) => {
+    const sceneId = Number(trackId);
+    setProjectData((oldData) => {
+      let d = structuredClone(oldData);
+      const scene = d.project.scenes[sceneId];
+      if (scene) {
+        const track = ensureAudioTracks(scene).find((t) => `${t.id}` === `${audioTrackId}`);
+        if (track) {
+          track.chunks = (track.chunks || []).filter((c) => `${c.id}` !== `${chunkId}`);
+        }
+      }
+      return d;
+    });
+  }, []);
+
   // Action Undo
   const actionUndo = useCallback(() => {
     const prev = historyUndo();
@@ -377,6 +541,13 @@ function useProject(options) {
       addScene: actionAddScene,
       renameScene: actionRenameScene,
       deleteScene: actionDeleteScene,
+      importAudio,
+      addAudioTrack: actionAddAudioTrack,
+      removeAudioTrack: actionRemoveAudioTrack,
+      updateAudioTrack: actionUpdateAudioTrack,
+      addAudioChunk: actionAddAudioChunk,
+      updateAudioChunk: actionUpdateAudioChunk,
+      removeAudioChunk: actionRemoveAudioChunk,
       undo: actionUndo,
       redo: actionRedo,
     },

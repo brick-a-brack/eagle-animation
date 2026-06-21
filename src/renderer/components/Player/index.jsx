@@ -1,4 +1,6 @@
+import { getChunkStartSeconds } from '@common/timeline';
 import PreviewStream from '@components/PreviewStream';
+import { getAudioContext, loadAudioBuffer } from '@core/audio';
 import { getPictureLink } from '@core/resize';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import faEyeSlash from '@icons/faEyeSlash';
@@ -60,6 +62,9 @@ class Player extends Component {
 
     this.clock = null;
     this.frames = [];
+    this.audioSources = [];
+    this.audioPlaying = false;
+    this.lastAudioIndex = null;
 
     this.computeFrames = () => {
       this.frames = this.props.pictures.filter((e) => !e.deleted).reduce((acc, e) => [...acc, ...new Array(e.length || 1).fill(e)], []);
@@ -97,6 +102,15 @@ class Player extends Component {
         this.drawFrame(frame.link || false);
         this.setState({ frameIndex: newFrameIndex });
         this.props.onFrameChange(newFrameIndex !== false && frame ? frame.id : false, newFrameIndex);
+
+        // Keep timeline audio in sync, restarting it whenever the loop wraps back.
+        if (this.audioPlaying && typeof newFrameIndex === 'number') {
+          if (this.lastAudioIndex != null && newFrameIndex < this.lastAudioIndex) {
+            this.startAudio(newFrameIndex);
+          } else {
+            this.lastAudioIndex = newFrameIndex;
+          }
+        }
         return true;
       };
 
@@ -104,6 +118,12 @@ class Player extends Component {
       if (playFromBegining || startOnLiveView) {
         exec(true);
       }
+
+      // Start timeline audio from the output-frame index where playback begins.
+      const len = this.frames.length;
+      const beginIndex = this.props.shortPlayStatus && this.props.shortPlayFrames > 0 && len > this.props.shortPlayFrames ? len - this.props.shortPlayFrames : 0;
+      const startIndex = playFromBegining || startOnLiveView ? beginIndex : this.state.frameIndex === false ? beginIndex : this.state.frameIndex;
+      this.startAudio(startIndex);
 
       this.clock = setInterval(() => {
         if (!exec()) {
@@ -160,12 +180,14 @@ class Player extends Component {
       this.setState({ frameIndex: false });
       this.props.onFrameChange(false);
       this.props.onPlayingStatusChange(false);
+      this.stopAudio();
     };
 
     this.showFrame = (id) => {
       if (this.clock) {
         clearInterval(this.clock);
       }
+      this.stopAudio(); // audio is muted while scrubbing frame by frame
       if (id === false) {
         const frame = this.frames[this.frames.length - 1] || false; // Draw last frame for onion feature
         this.drawFrame(frame.link || false);
@@ -180,6 +202,106 @@ class Player extends Component {
       this.props.onFrameChange(frame.id);
       this.props.onPlayingStatusChange(false);
     };
+
+    // --- Timeline audio (Web Audio), synced to the frame clock ---
+
+    // Decode all chunks ahead of time so playback starts without latency.
+    this.preloadAudio = () => {
+      const scene = this.props.audioScene;
+      const projectId = this.props.projectId;
+      if (!scene || !projectId) {
+        return;
+      }
+      for (const track of scene.audioTracks || []) {
+        for (const chunk of track.chunks || []) {
+          loadAudioBuffer(projectId, chunk.src);
+        }
+      }
+    };
+
+    // Schedule every chunk relative to the output-frame index where playback begins.
+    this.startAudio = (startFrameIndex) => {
+      this.stopAudio();
+      const scene = this.props.audioScene;
+      const projectId = this.props.projectId;
+      if (!scene || !projectId) {
+        return;
+      }
+      const fps = this.props.fps || 12;
+      const ctx = getAudioContext();
+      if (ctx.state === 'suspended') {
+        ctx.resume();
+      }
+      const t0 = ctx.currentTime;
+      const playStartSec = startFrameIndex / fps;
+      this.audioPlaying = true;
+      this.lastAudioIndex = startFrameIndex;
+
+      for (const track of scene.audioTracks || []) {
+        if (track.muted) {
+          continue;
+        }
+        const volume = track.volume ?? 1;
+        for (const chunk of track.chunks || []) {
+          const rel = getChunkStartSeconds(chunk, scene, fps) - playStartSec;
+          const dur = chunk.duration || 0;
+          let when = t0;
+          let offset = chunk.startAt || 0;
+          let playDur = dur;
+          if (rel >= 0) {
+            when = t0 + rel;
+          } else {
+            const into = -rel; // playback already started mid-clip
+            if (into >= dur) {
+              continue;
+            }
+            offset += into;
+            playDur = dur - into;
+          }
+          if (playDur > 0) {
+            this.scheduleChunk(ctx, projectId, chunk.src, when, offset, playDur, volume);
+          }
+        }
+      }
+    };
+
+    this.scheduleChunk = async (ctx, projectId, src, when, offset, playDur, volume) => {
+      const buffer = await loadAudioBuffer(projectId, src);
+      if (!buffer || !this.audioPlaying) {
+        return;
+      }
+      // Compensate for any decode latency that pushed us past the scheduled time.
+      const now = ctx.currentTime;
+      if (when < now) {
+        const late = now - when;
+        offset += late;
+        playDur -= late;
+        when = now;
+        if (playDur <= 0) {
+          return;
+        }
+      }
+      const source = ctx.createBufferSource();
+      source.buffer = buffer;
+      const gain = ctx.createGain();
+      gain.gain.value = volume;
+      source.connect(gain).connect(ctx.destination);
+      try {
+        source.start(when, offset, playDur);
+        this.audioSources.push(source);
+      } catch (err) {} // eslint-disable-line no-empty
+    };
+
+    this.stopAudio = () => {
+      this.audioPlaying = false;
+      this.lastAudioIndex = null;
+      for (const source of this.audioSources) {
+        try {
+          source.stop();
+        } catch (err) {} // eslint-disable-line no-empty
+      }
+      this.audioSources = [];
+    };
   }
 
   componentDidMount() {
@@ -190,6 +312,7 @@ class Player extends Component {
     this.resize();
     window.addEventListener('resize', this.resize);
     this.showFrame(false);
+    this.preloadAudio();
   }
 
   componentDidUpdate(prevProps) {
@@ -214,6 +337,11 @@ class Player extends Component {
       if (this.state.frameIndex === false) {
         this.showFrame(false);
       }
+    }
+
+    // Preload audio when the scene's audio changes
+    if (!isEqual(prevProps.audioScene, this.props.audioScene)) {
+      this.preloadAudio();
     }
 
     // Redraw grid if ratio changed

@@ -26,6 +26,7 @@ export const generateProjectObject = (name) => ({
       title: '',
       framerate: DEFAULT_FPS,
       pictures: [],
+      audioTracks: [],
       deleted: false,
     },
   ],
@@ -133,4 +134,19 @@ export const savePicture = async (projectPath, track, ext, buffer) => {
     deleted: false,
     length: 1,
   };
+};
+
+// Store an imported audio file in the project's audio folder
+export const saveAudio = async (projectPath, ext, buffer) => {
+  const directoryPath = join(projectPath, '/audio/');
+  await mkdirp(directoryPath);
+  const filename = `${randomUUID()}.${ext}`;
+  await writeFile(join(directoryPath, filename), buffer);
+  return { filename };
+};
+
+// Read an audio file back as a raw buffer
+export const getAudioBuffer = async (projectPath, src) => {
+  const safe = `${src}`.replace(/[/\\]/g, '');
+  return readFile(join(projectPath, '/audio/', safe));
 };

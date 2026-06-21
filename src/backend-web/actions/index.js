@@ -5,6 +5,7 @@ import { fetchFile } from '@ffmpeg/util';
 import { saveAs } from 'file-saver';
 import JSZip from 'jszip';
 
+import { createAudio, getAudioBuffer } from './audio';
 import { createBuffer, flushBuffers, getBuffer } from './buffer';
 import { getFFmpeg } from './ffmpeg';
 import { createFrame } from './frames';
@@ -45,6 +46,7 @@ const computeProject = async (data) => {
         ...scene,
         id: scene.id || crypto.randomUUID(),
         deleted: scene.deleted || false,
+        audioTracks: scene.audioTracks || [],
         pictures: await Promise.all(
           scene.pictures.map(async (picture) => ({
             ...picture,
@@ -125,6 +127,13 @@ export const Actions = {
   DELETE_PROJECT: async (evt, { project_id }) => {
     await deleteProject(project_id);
     return null;
+  },
+  IMPORT_AUDIO: async (evt, { buffer, extension = 'dat' }) => {
+    const src = await createAudio(buffer, extension);
+    return { src };
+  },
+  GET_AUDIO: async (evt, { src }) => {
+    return getAudioBuffer(src);
   },
   OPEN_LINK: async (evt, { link }) => {
     window.open(link, '_blank');

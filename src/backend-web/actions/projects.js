@@ -27,6 +27,7 @@ export const generateProjectObject = (name) => ({
       title: '',
       framerate: DEFAULT_FPS,
       pictures: [],
+      audioTracks: [],
       deleted: false,
     },
   ],

@@ -1,3 +1,4 @@
+import AudioTimeline from '@components/AudioTimeline';
 import CameraSettingsWindow from '@components/CameraSettingsWindow';
 import ControlBar from '@components/ControlBar';
 import HeaderBar from '@components/HeaderBar';
@@ -623,6 +624,8 @@ const Animator = ({ t }) => {
           onPlayingStatusChange={setIsPlaying}
           isPlaying={isPlaying}
           pictures={pictures}
+          projectId={id}
+          audioScene={project.scenes[track]}
           onionValue={onionValue}
           showGrid={gridStatus}
           blendMode={differenceStatus}
@@ -676,6 +679,18 @@ const Animator = ({ t }) => {
             shortPlayStatus={shortPlayStatus}
             shortPlayFrames={Number(settings.SHORT_PLAY) || 1}
             frameCaptureMode={frameCaptureMode}
+          />
+          <AudioTimeline
+            projectId={id}
+            scene={project.scenes[track]}
+            trackId={track}
+            fps={fps}
+            onAddTrack={projectActions.addAudioTrack}
+            onRemoveTrack={projectActions.removeAudioTrack}
+            onUpdateTrack={projectActions.updateAudioTrack}
+            onAddClip={projectActions.addAudioChunk}
+            onUpdateClip={projectActions.updateAudioChunk}
+            onRemoveClip={projectActions.removeAudioChunk}
           />
         </div>
       </PageLayout>

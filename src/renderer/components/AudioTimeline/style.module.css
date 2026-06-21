@@ -1,0 +1,255 @@
+.panel {
+  background: var(--color-theme-dark);
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.toolbar {
+  align-items: center;
+  box-sizing: border-box;
+  display: flex;
+  gap: var(--space-small);
+  padding: var(--space-small);
+}
+
+.modeToggle {
+  display: inline-flex;
+  gap: 2px;
+}
+
+.modeBtn {
+  background: var(--color-theme-medium);
+  border: none;
+  border-radius: var(--border-radius-small);
+  color: var(--color-white);
+  cursor: pointer;
+  height: 28px;
+  opacity: 0.6;
+  width: 34px;
+}
+
+.modeBtnActive {
+  background: var(--color-primary);
+  opacity: 1;
+}
+
+.addTrackBtn {
+  background: var(--color-primary);
+  border: none;
+  border-radius: var(--border-radius-small);
+  color: var(--color-white);
+  cursor: pointer;
+  font-size: var(--font-size-7);
+  font-weight: 600;
+  height: 28px;
+  padding: 0 var(--space-small);
+}
+
+.empty {
+  box-sizing: border-box;
+  color: var(--color-white);
+  font-size: var(--font-size-7);
+  opacity: 0.5;
+  padding: 0 var(--space-small) var(--space-small);
+}
+
+.body {
+  display: flex;
+  width: 100%;
+}
+
+/* Fixed left column with per-track controls */
+.gutters {
+  background: var(--color-theme-dark);
+  flex: 0 0 180px;
+  width: 180px;
+  z-index: 2;
+}
+
+.rulerGutter {
+  height: 80px;
+}
+
+.trackGutter {
+  border-top: 1px solid var(--color-theme-medium);
+  box-sizing: border-box;
+  height: 56px;
+  padding: var(--space-tiny) var(--space-small);
+}
+
+.trackTitle {
+  background: var(--color-theme-medium);
+  border: none;
+  border-radius: var(--border-radius-small);
+  box-sizing: border-box;
+  color: var(--color-white);
+  font-size: var(--font-size-7);
+  height: 20px;
+  padding: 0 var(--space-tiny);
+  width: 100%;
+}
+
+.trackControls {
+  align-items: center;
+  display: flex;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+.iconBtn {
+  background: var(--color-theme-medium);
+  border: none;
+  border-radius: var(--border-radius-small);
+  color: var(--color-white);
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 600;
+  height: 22px;
+  width: 26px;
+}
+
+.iconBtnActive {
+  background: var(--color-alert);
+}
+
+.volume {
+  flex: 1;
+  min-width: 0;
+}
+
+.fileInput {
+  display: none;
+}
+
+/* Scrollable timeline area */
+.scroll {
+  flex: 1;
+  overflow: auto hidden;
+}
+
+.content {
+  position: relative;
+}
+
+.ruler {
+  background: var(--color-theme-light);
+  height: 80px;
+  position: relative;
+}
+
+.cell {
+  border-right: 1px solid var(--color-theme-dark);
+  box-sizing: border-box;
+  height: 80px;
+  overflow: hidden;
+  position: absolute;
+  top: 0;
+}
+
+.cellImg {
+  height: 80px;
+  left: 50%;
+  object-fit: cover;
+  position: absolute;
+  transform: translateX(-50%);
+  width: 100%;
+}
+
+.cellBadge {
+  background-color: var(--color-primary);
+  border-top-left-radius: var(--border-radius-small);
+  bottom: 0;
+  color: var(--color-white);
+  font-size: var(--font-size-7);
+  line-height: 14px;
+  padding: 1px 4px;
+  pointer-events: none;
+  position: absolute;
+  right: 0;
+}
+
+.lane {
+  border-top: 1px solid var(--color-theme-medium);
+  height: 56px;
+  position: relative;
+}
+
+.laneMuted {
+  opacity: 0.4;
+}
+
+.clip {
+  background: var(--color-primary);
+  border-radius: var(--border-radius-small);
+  box-sizing: border-box;
+  cursor: grab;
+  height: 48px;
+  overflow: hidden;
+  position: absolute;
+  top: 4px;
+  touch-action: none;
+  user-select: none;
+}
+
+.clipDragging {
+  cursor: grabbing;
+  opacity: 0.85;
+  z-index: 5;
+}
+
+.handle {
+  bottom: 0;
+  cursor: ew-resize;
+  position: absolute;
+  top: 0;
+  touch-action: none;
+  width: 8px;
+  z-index: 2;
+}
+
+.handle:hover {
+  background: rgb(255 255 255 / 35%);
+}
+
+.handleLeft {
+  left: 0;
+}
+
+.handleRight {
+  right: 0;
+}
+
+.waveform {
+  display: block;
+  height: 40px;
+  pointer-events: none;
+  width: 100%;
+}
+
+.clipLabel {
+  bottom: 0;
+  color: var(--color-white);
+  font-size: 10px;
+  left: 4px;
+  pointer-events: none;
+  position: absolute;
+}
+
+.clipDelete {
+  background: rgb(0 0 0 / 40%);
+  border: none;
+  border-radius: var(--border-radius-small);
+  color: var(--color-white);
+  cursor: pointer;
+  font-size: 11px;
+  height: 18px;
+  opacity: 0;
+  position: absolute;
+  right: 2px;
+  top: 2px;
+  width: 18px;
+}
+
+.clip:hover .clipDelete {
+  opacity: 1;
+}
