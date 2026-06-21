@@ -173,6 +173,8 @@ const actions = {
       'EXPORT_VIDEO_PRORES',
       'EXPORT_VIDEO_VP8',
       'EXPORT_VIDEO_VP9',
+      'FULLSCREEN',
+      'SHORTCUTS',
     ];
     return capabilities;
   },
