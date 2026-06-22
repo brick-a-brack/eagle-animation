@@ -1,3 +1,8 @@
+.wrapper {
+  position: relative;
+  width: 100%;
+}
+
 .container {
   /* Height img + scollbar */
   background: linear-gradient(0deg, var(--color-theme-light) 0%, var(--color-theme-dark) 100%);
@@ -8,6 +13,31 @@
   white-space: nowrap;
   width: 100%;
   --size: 80px;
+}
+
+.shadow {
+  bottom: 0;
+  opacity: 0;
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+  transition: opacity 0.2s ease;
+  width: 50px;
+  z-index: 10;
+}
+
+.shadow.visible {
+  opacity: 1;
+}
+
+.shadowLeft {
+  background: linear-gradient(90deg, rgb(14 25 40 / 100%) 0%, rgb(14 25 40 / 0%) 100%);
+  left: 0;
+}
+
+.shadowRight {
+  background: linear-gradient(270deg, rgb(14 25 40 / 100%) 0%, rgb(14 25 40 / 0%) 100%);
+  right: 0;
 }
 
 @media (max-width: 850px) {
@@ -127,6 +157,20 @@ span[data-selected="true"] .title, .selected .title {
 
 .container::-webkit-scrollbar-track {
   background-color: rgb(0 0 0 / 0%);
+}
+
+@media (pointer: coarse) {
+  .container {
+    scrollbar-width: none;
+  }
+
+  .containerImg {
+    padding-bottom: 4px;
+  }
+
+  .container::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 .shortPlayIcon {

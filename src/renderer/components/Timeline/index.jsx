@@ -96,8 +96,21 @@ const SortableList = memo(({ sortableItemIds, visiblePictures, maskingLabel, sho
 
 const Timeline = ({ onSelect, onMove, select = false, pictures = [], playing = false, shortPlayStatus = false, shortPlayFrames = 0, frameCaptureMode = false }) => {
   const ref = useRef(null);
+  const shadowLeftRef = useRef(null);
+  const shadowRightRef = useRef(null);
   const { t } = useTranslation();
   const maskingLabel = t('M');
+
+  // Imperatively toggle the edge shadows based on scroll position to avoid
+  // re-rendering the (memoized) heavy frame list on every scroll/resize tick.
+  const updateShadows = useCallback(() => {
+    const el = ref.current;
+    if (!el) return;
+    const atStart = el.scrollLeft <= 1;
+    const atEnd = el.scrollLeft + el.clientWidth >= el.scrollWidth - 1;
+    if (shadowLeftRef.current) shadowLeftRef.current.classList.toggle(style.visible, !atStart);
+    if (shadowRightRef.current) shadowRightRef.current.classList.toggle(style.visible, !atEnd);
+  }, []);
 
   // Latest-ref pattern: keep callbacks/data accessible from stable handlers without re-creating them.
   const latestRef = useRef({ pictures, onSelect, onMove });
@@ -132,6 +145,13 @@ const Timeline = ({ onSelect, onMove, select = false, pictures = [], playing = f
     return () => window.removeEventListener('keydown', callback, false);
   }, []);
 
+  // Keep shadows in sync with viewport/content size changes.
+  useEffect(() => {
+    updateShadows();
+    window.addEventListener('resize', updateShadows, false);
+    return () => window.removeEventListener('resize', updateShadows, false);
+  }, [updateShadows]);
+
   // Comprehensive signature: any prop displayed by SortableItem is captured here.
   // Re-renders of the memoized inner list happen only when this string actually changes.
   let picturesKey = '';
@@ -155,6 +175,8 @@ const Timeline = ({ onSelect, onMove, select = false, pictures = [], playing = f
 
   const prevScrollRef = useRef({ key: null, select: null });
   useLayoutEffect(() => {
+    // Content size may have changed (add/delete/load) → refresh shadows.
+    updateShadows();
     const target = select === false ? '#timeline-frame-live' : `#timeline-frame-${select}`;
     if (document.querySelector(target)) {
       const isPicturesChange = picturesKey !== prevScrollRef.current.key;
@@ -173,9 +195,9 @@ const Timeline = ({ onSelect, onMove, select = false, pictures = [], playing = f
         maxDuration: instant ? 0 : 1500,
         cancelOnUserAction: false,
         horizontalOffset: (-window.innerWidth + document.querySelector(target).getBoundingClientRect().width) / 2,
-      });
+      }).then(updateShadows);
     }
-  }, [select, picturesKey, playing]);
+  }, [select, picturesKey, playing]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Short play id: same O(n) walk as before.
   const shortPlayFrameId = useMemo(() => {
@@ -198,18 +220,22 @@ const Timeline = ({ onSelect, onMove, select = false, pictures = [], playing = f
   }, [picturesKey, shortPlayStatus, shortPlayFrames]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <aside className={`${style.container} ${playing ? style.playing : ''}`} ref={ref}>
-      <SortableList
-        sortableItemIds={sortableItemIds}
-        visiblePictures={visiblePictures}
-        maskingLabel={maskingLabel}
-        shortPlayFrameId={shortPlayFrameId}
-        onSelect={stableOnSelect}
-        onDragEnd={stableOnDragEnd}
-        sensors={sensors}
-      />
-      <LiveItem select={select} onSelect={stableOnSelect} frameCaptureMode={frameCaptureMode} />
-    </aside>
+    <div className={style.wrapper}>
+      <aside className={`${style.container} ${playing ? style.playing : ''}`} ref={ref} onScroll={updateShadows}>
+        <SortableList
+          sortableItemIds={sortableItemIds}
+          visiblePictures={visiblePictures}
+          maskingLabel={maskingLabel}
+          shortPlayFrameId={shortPlayFrameId}
+          onSelect={stableOnSelect}
+          onDragEnd={stableOnDragEnd}
+          sensors={sensors}
+        />
+        <LiveItem select={select} onSelect={stableOnSelect} frameCaptureMode={frameCaptureMode} />
+      </aside>
+      <div ref={shadowLeftRef} className={`${style.shadow} ${style.shadowLeft}`} />
+      <div ref={shadowRightRef} className={`${style.shadow} ${style.shadowRight}`} />
+    </div>
   );
 };
 
