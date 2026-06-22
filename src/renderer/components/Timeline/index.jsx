@@ -28,7 +28,6 @@ const SortableItem = memo(({ id, link = '', hidden = false, length = 0, hasMaski
       style={{
         opacity: isDragging ? 1 : undefined,
         zIndex: isDragging ? 999 : undefined,
-        minWidth: `80px`,
         transform: active ? DNDCSS.Transform.toString({ ...transform, y: 0, scaleX: 1, scaleY: 1 }) : undefined,
         transition: active ? transition : undefined,
       }}

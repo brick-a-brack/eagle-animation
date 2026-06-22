@@ -7,14 +7,36 @@
   padding-right: 2px;
   white-space: nowrap;
   width: 100%;
+  --size: 80px;
+}
+
+@media (max-width: 850px) {
+  .container {
+    --size: 75px;
+  }
+}
+@media (max-width: 800px) {
+  .container {
+    --size: 70px;
+  }
+}
+@media (max-width: 750px) {
+  .container {
+    --size: 65px;
+  }
+}
+@media (max-width: 700px) {
+  .container {
+    --size: 60px;
+  }
 }
 
 .containerImg {
   background: rgb(0 0 0 / 0%);
   cursor: pointer;
   display: inline-block;
-  height: 80px;
-  min-width: 80px;
+  height: var(--size);
+  min-width: var(--size) !important;
   overflow: hidden;
   padding-left: 2px;
   padding-right: 2px;
@@ -27,8 +49,8 @@
   background: rgb(0 0 0 / 0%);
   cursor: pointer;
   display: inline-block;
-  height: 80px;
-  min-width: 80px;
+  height: var(--size);
+  min-width: var(--size);
   overflow: hidden;
   position: absolute;
   user-select: none;
@@ -37,8 +59,8 @@
 .imgcontent {
   height: 100%;
   margin-left: 50%;
-  min-height: 80px;
-  min-width: 80px;
+  min-height: var(--size);
+  min-width: var(--size);
   position: absolute;
   transform: translateX(-50%);
   user-select: none;
