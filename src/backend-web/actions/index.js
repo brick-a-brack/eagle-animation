@@ -1,4 +1,3 @@
-import { isIos } from '@braintree/browser-detection';
 import { getEncodingProfile, getFFmpegArgs, parseFFmpegLogs } from '@common/ffmpeg';
 import { DEVICE, LS_SETTINGS } from '@config-web';
 import { extensionToMimeType } from '@core/frameTypes';
@@ -165,12 +164,9 @@ export const Actions = {
     return [];
   },
   APP_CAPABILITIES: async () => {
-    const capabilities = ['SHORTCUTS', 'EXPORT_VIDEO', 'EXPORT_VIDEO_H264', 'EXPORT_VIDEO_VP8', 'EXPORT_VIDEO_PRORES', 'EXPORT_FRAMES', 'EXPORT_FRAMES_ZIP'];
+    const capabilities = ['FULLSCREEN', 'SHORTCUTS', 'EXPORT_VIDEO', 'EXPORT_VIDEO_H264', 'EXPORT_VIDEO_VP8', 'EXPORT_VIDEO_PRORES', 'EXPORT_FRAMES', 'EXPORT_FRAMES_ZIP'];
     if (await isWebCodecsAvailable('hevc')) capabilities.push('EXPORT_VIDEO_HEVC');
     if (await isWebCodecsAvailable('vp9')) capabilities.push('EXPORT_VIDEO_VP9');
-    if (!isIos()) {
-      capabilities.push('FULLSCREEN');
-    }
     return capabilities;
   },
   EXPORT_SELECT_PATH: async (evt, { compress_as_zip = false }) => {

@@ -145,7 +145,7 @@ class MainActivity : AppCompatActivity() {
 
         bridge = EAJSBridge(webView, scope, dispatcher)
         webView.addJavascriptInterface(bridge, "AndroidIPC")
-        webView.webViewClient = EAWebViewClient(projectsDir, assetLoader)
+        webView.webViewClient = EAWebViewClient(projectsDir, assetLoader, ipcScript)
 
         if (WebViewFeature.isFeatureSupported(WebViewFeature.DOCUMENT_START_SCRIPT)) {
             WebViewCompat.addDocumentStartJavaScript(webView, ipcScript, setOf("*"))
