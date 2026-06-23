@@ -40,7 +40,7 @@ const ActionButton = withTranslation()(({ type, tooltipPosition = 'LEFT', onClic
 const HeaderBar = ({ onAction = null, leftActions = [], rightActions = [], children = null, leftChildren = null, rightChildren = null, title = '', withBorder = false }) => {
   return (
     <div className={`${style.headerBar} ${withBorder && style.withBorder}`}>
-      <div>
+      <div className={style.left}>
         {leftActions.map((type) => (
           <ActionButton type={type} key={type} onClick={() => onAction(type)} tooltipPosition="NONE" />
         ))}
@@ -52,7 +52,7 @@ const HeaderBar = ({ onAction = null, leftActions = [], rightActions = [], child
           {!children && title && <div className={style.title}>{title}</div>}
         </div>
       )}
-      <div>
+      <div className={style.right}>
         {rightChildren}
         {rightActions.map((type) => (
           <ActionButton type={type} key={type} onClick={() => onAction(type)} tooltipPosition="NONE" />

@@ -3,7 +3,7 @@
   background: var(--color-theme-dark);
   display: flex;
   gap: var(--space-big);
-  height:62px;
+  height: 62px;
   justify-content: center;
   overflow: hidden;
   text-align: center;
@@ -34,10 +34,44 @@
 }
 
 .sliderDisabled {
-  cursor:not-allowed;
+  cursor: not-allowed;
   opacity: 0.2;
 }
 
-.sliderDisabled *{
+.sliderDisabled * {
   pointer-events: none;
+}
+
+.sideLayout {
+  display: none;
+}
+
+.sideContainer {
+  width: 62px;
+  flex-direction: column;
+  height: 100%;
+  position: fixed;
+  border: none;
+  overflow: hidden;
+  z-index: 99;
+  right: 0;
+  top: 0;
+  background: var(--color-theme-extra-dark);
+
+    align-items: center;
+    justify-content: center;
+}
+
+/* Mobile view */
+@media screen and (orientation: landscape) and (max-width: 700px) {
+  .regularLayout {
+    display: none;
+  }
+
+  .sideLayout {
+    display: flex;
+  }
+
+
+
 }

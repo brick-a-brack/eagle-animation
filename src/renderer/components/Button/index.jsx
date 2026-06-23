@@ -5,10 +5,10 @@ import { useMemo } from 'react';
 
 import * as style from './style.module.css';
 
-const Button = ({ icon, onClick, title = '', disabled = false, selected = false, color = 'normal', selectedColor = 'normal', tooltipPosition = 'TOP', ...rest }) => {
+const Button = ({ icon, className = '', onClick, title = '', disabled = false, selected = false, color = 'normal', selectedColor = 'normal', tooltipPosition = 'TOP', ...rest }) => {
   const uid = useMemo(() => uniqueId(), []);
   return (
-    <div {...{ ...rest, children: null }} className={style.mainContainer}>
+    <div {...{ ...rest, children: null }} className={`${style.container} ${className || ''}`}>
       <div
         id={`button-${uid}`}
         data-tooltip-id={`button-${uid}`}

@@ -78,64 +78,84 @@ const ControlBar = ({
   }, [fps]);
 
   return (
-    <div className={style.container}>
-      <div className={`${style.subcontainer} ${style.left}`}>
-        {!isPlaying && framePosition !== false && (
-          <Button title={isCurrentFrameHidden ? t('Unhide frame') : t('Hide frame')} onClick={handleAction('HIDE_FRAME')} icon={isCurrentFrameHidden ? faImageEye : faImageEyeSlash} />
-        )}
-        {!isPlaying && framePosition !== false && canDeduplicate && <Button title={t('Deduplicate frame')} onClick={handleAction('DEDUPLICATE')} icon={faImageCircleMinus} />}
-        {!isPlaying && framePosition !== false && <Button title={t('Duplicate frame')} onClick={handleAction('DUPLICATE')} icon={faImageCirclePlus} />}
-        {!isPlaying && framePosition !== false && <Button title={t('Remove frame')} onClick={handleAction('DELETE_FRAME')} icon={faImageSlash} />}
-        {!isPlaying && framePosition !== false && canUseMaskingEditor && <Button title={t('Open masking editor')} onClick={handleAction('MASKING_EDITOR')} icon={faPen} />}
-
+    <>
+      <div className={`${style.sideContainer} ${style.sideLayout}`}>
         <Button
-          style={{ marginLeft: 'var(--space-big)' }}
-          title={t('Difference')}
-          selected={differenceStatus}
-          onClick={handleAction('DIFFERENCE')}
-          icon={faDiamondHalfStroke}
-          disabled={framePosition !== false}
-        />
-        <Button title={gridStatus ? t('Disable grid') : t('Enable grid')} selected={gridStatus} onClick={handleAction('GRID')} icon={faFrame} disabled={framePosition !== false} />
-
-        <div className={`${style.slider} ${differenceStatus || framePosition !== false ? style.sliderDisabled : ''}`} id="onion" data-tooltip-id="onion">
-          <CustomSlider step={0.01} min={0} max={1} value={onionValue} onChange={differenceStatus || framePosition !== false ? () => {} : (value) => handleAction('ONION_CHANGE', value)()} />
-        </div>
-        <Button
-          title={t('Masking mode ({{status}})', { status: (MASKING_MODES[maskingMode] || MASKING_MODES.DISABLED)(t) })}
-          selected={maskingMode !== 'DISABLED'}
-          onClick={framePosition === false ? handleAction('TOOGLE_MASKING_MODE') : () => {}}
-          size="mini"
-          icon={faEraser}
-          disabled={framePosition !== false}
-        />
-        <Button
-          style={{ marginLeft: 'var(--space-big)' }}
           title={t('Camera settings')}
           selected={showCameraSettings}
-          onClick={isPlaying ? () => {} : handleAction('CAMERA_SETTINGS')}
+          onClick={isPlaying ? () => { } : handleAction('CAMERA_SETTINGS')}
           icon={faSliders}
           disabled={isPlaying}
         />
-      </div>
-      <Button disabled={isTakingPicture || !isCameraReady} onClick={handleAction('TAKE_PICTURE')} color="primary" icon={faCamera} title={t('Take a picture')} />
-      <div className={`${style.subcontainer} ${style.right}`}>
-        <PreviewIndicator framePosition={framePosition} frameQuantity={frameQuantity} animationFrameQuantity={totalAnimationFrames} fps={fps} />
+
+        <Button disabled={isTakingPicture || !isCameraReady} onClick={handleAction('TAKE_PICTURE')} color="primary" icon={faCamera} title={t('Take a picture')} />
+
         <Button selectedColor="warning" title={!isPlaying ? t('Play') : t('Stop')} selected={isPlaying} onClick={handleAction('PLAY')} icon={isPlaying ? faStop : faPlay} />
-        <Button title={t('Loop')} onClick={handleAction('LOOP')} selected={loopStatus} icon={faArrowsRepeat} />
-        <Button title={t('Short play')} onClick={handleAction('SHORT_PLAY')} selected={shortPlayStatus} icon={faForwardFast} />
-        <NumberInput
-          onBlur={() => handleAction('FPS_BLUR')()}
-          onFocus={() => handleAction('FPS_FOCUS')()}
-          style={{ marginLeft: 'var(--space-big)' }}
-          min={1}
-          max={60}
-          tag={t('FPS')}
-          register={register('fps')}
-        />
-        <Tooltip id="onion" content={t('Onion blending')} />
+
+
+
       </div>
-    </div>
+
+
+      <div className={`${style.container} ${style.regularLayout}`}>
+        <div className={`${style.subcontainer} ${style.left}`}>
+          {!isPlaying && framePosition !== false && (
+            <Button title={isCurrentFrameHidden ? t('Unhide frame') : t('Hide frame')} onClick={handleAction('HIDE_FRAME')} icon={isCurrentFrameHidden ? faImageEye : faImageEyeSlash} />
+          )}
+          {!isPlaying && framePosition !== false && canDeduplicate && <Button title={t('Deduplicate frame')} onClick={handleAction('DEDUPLICATE')} icon={faImageCircleMinus} />}
+          {!isPlaying && framePosition !== false && <Button title={t('Duplicate frame')} onClick={handleAction('DUPLICATE')} icon={faImageCirclePlus} />}
+          {!isPlaying && framePosition !== false && <Button title={t('Remove frame')} onClick={handleAction('DELETE_FRAME')} icon={faImageSlash} />}
+          {!isPlaying && framePosition !== false && canUseMaskingEditor && <Button title={t('Open masking editor')} onClick={handleAction('MASKING_EDITOR')} icon={faPen} />}
+
+          <Button
+            style={{ marginLeft: 'var(--space-big)' }}
+            title={t('Difference')}
+            selected={differenceStatus}
+            onClick={handleAction('DIFFERENCE')}
+            icon={faDiamondHalfStroke}
+            disabled={framePosition !== false}
+          />
+          <Button title={gridStatus ? t('Disable grid') : t('Enable grid')} selected={gridStatus} onClick={handleAction('GRID')} icon={faFrame} disabled={framePosition !== false} />
+
+          <div className={`${style.slider} ${differenceStatus || framePosition !== false ? style.sliderDisabled : ''}`} id="onion" data-tooltip-id="onion">
+            <CustomSlider step={0.01} min={0} max={1} value={onionValue} onChange={differenceStatus || framePosition !== false ? () => { } : (value) => handleAction('ONION_CHANGE', value)()} />
+          </div>
+          <Button
+            title={t('Masking mode ({{status}})', { status: (MASKING_MODES[maskingMode] || MASKING_MODES.DISABLED)(t) })}
+            selected={maskingMode !== 'DISABLED'}
+            onClick={framePosition === false ? handleAction('TOOGLE_MASKING_MODE') : () => { }}
+            size="mini"
+            icon={faEraser}
+            disabled={framePosition !== false}
+          />
+          <Button
+            style={{ marginLeft: 'var(--space-big)' }}
+            title={t('Camera settings')}
+            selected={showCameraSettings}
+            onClick={isPlaying ? () => { } : handleAction('CAMERA_SETTINGS')}
+            icon={faSliders}
+            disabled={isPlaying}
+          />
+        </div>
+        <Button disabled={isTakingPicture || !isCameraReady} onClick={handleAction('TAKE_PICTURE')} color="primary" icon={faCamera} title={t('Take a picture')} />
+        <div className={`${style.subcontainer} ${style.right}`}>
+          <PreviewIndicator framePosition={framePosition} frameQuantity={frameQuantity} animationFrameQuantity={totalAnimationFrames} fps={fps} />
+          <Button selectedColor="warning" title={!isPlaying ? t('Play') : t('Stop')} selected={isPlaying} onClick={handleAction('PLAY')} icon={isPlaying ? faStop : faPlay} />
+          <Button title={t('Loop')} onClick={handleAction('LOOP')} selected={loopStatus} icon={faArrowsRepeat} />
+          <Button title={t('Short play')} onClick={handleAction('SHORT_PLAY')} selected={shortPlayStatus} icon={faForwardFast} />
+          <NumberInput
+            onBlur={() => handleAction('FPS_BLUR')()}
+            onFocus={() => handleAction('FPS_FOCUS')()}
+            style={{ marginLeft: 'var(--space-big)' }}
+            min={1}
+            max={60}
+            tag={t('FPS')}
+            register={register('fps')}
+          />
+          <Tooltip id="onion" content={t('Onion blending')} />
+        </div>
+      </div>
+    </>
   );
 };
 

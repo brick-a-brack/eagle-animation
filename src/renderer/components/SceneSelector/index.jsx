@@ -8,6 +8,8 @@ import { useEffect, useRef, useState } from 'react';
 import { withTranslation } from 'react-i18next';
 
 import * as style from './style.module.css';
+import Button from '@components/Button';
+import faQuestion from '@icons/faQuestion';
 
 const SceneSelector = ({
   t,
@@ -50,6 +52,8 @@ const SceneSelector = ({
 
   return (
     <div className={style.container} ref={containerRef}>
+
+      
       <button type="button" className={style.button} onClick={() => setIsOpen((v) => !v)} disabled={disabled}>
         <div className={style.buttonContent}>
           <span className={style.projectLabel}>{projectTitle || t('Untitled project')}</span>
