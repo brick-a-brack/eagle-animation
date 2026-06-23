@@ -79,24 +79,6 @@ const ControlBar = ({
 
   return (
     <>
-      <div className={`${style.sideContainer} ${style.sideLayout}`}>
-        <Button
-          title={t('Camera settings')}
-          selected={showCameraSettings}
-          onClick={isPlaying ? () => { } : handleAction('CAMERA_SETTINGS')}
-          icon={faSliders}
-          disabled={isPlaying}
-        />
-
-        <Button disabled={isTakingPicture || !isCameraReady} onClick={handleAction('TAKE_PICTURE')} color="primary" icon={faCamera} title={t('Take a picture')} />
-
-        <Button selectedColor="warning" title={!isPlaying ? t('Play') : t('Stop')} selected={isPlaying} onClick={handleAction('PLAY')} icon={isPlaying ? faStop : faPlay} />
-
-
-
-      </div>
-
-
       <div className={`${style.container} ${style.regularLayout}`}>
         <div className={`${style.subcontainer} ${style.left}`}>
           {!isPlaying && framePosition !== false && (

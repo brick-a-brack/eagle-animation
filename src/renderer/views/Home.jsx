@@ -15,6 +15,17 @@ import { useEffect } from 'react';
 import { withTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
+import Button from '@components/Button';
+import faArrowLeft from '@icons/faArrowLeft';
+import MobileLayout from '@components/MobileLayout';
+import faDownLeftAndUpRightToCenter from '@icons/faDownLeftAndUpRightToCenter';
+import faFileExport from '@icons/faFileExport';
+import faFilmGear from '@icons/faFilmGear';
+import faGear from '@icons/faGear';
+import faKeyboard from '@icons/faKeyboard';
+import faListCheck from '@icons/faListCheck';
+import faUpRightAndDownLeftFromCenter from '@icons/faUpRightAndDownLeftFromCenter';
+
 const HomeView = ({ t }) => {
   const { version, latestVersion, actions: versionActions } = useAppVersion();
   const { projects, actions: projectsActions } = useProjects();
@@ -48,7 +59,7 @@ const HomeView = ({ t }) => {
     versionActions.openUpdatePage();
   };
 
-  const handleAction = (action) => {
+  const handleAction = (action) => () => {
     if (action === 'SETTINGS') {
       navigate('/settings?back=/');
     }
@@ -66,30 +77,47 @@ const HomeView = ({ t }) => {
     }
   };
 
-  return (
-    <PageLayout>
-      <HeaderBar
-        leftChildren={<VersionUpdater onClick={handleLink} version={version} latestVersion={latestVersion} onLink={handleLink} />}
-        rightActions={[...(settings?.EVENT_MODE_ENABLED ? ['SYNC_LIST'] : []), ...(!isIos() ? [isFullscreen ? 'EXIT_FULLSCREEN' : 'ENTER_FULLSCREEN'] : []), 'SHORTCUTS', 'SETTINGS']}
-        onAction={handleAction}
-        withBorder
-      >
-        <Logo />
-      </HeaderBar>
-      <PageContent>
-        {projects !== null && (
-          <ProjectsGrid>
-            <ProjectCard placeholder={t('New project')} onClick={handleCreateProject} icon="ADD" />
-            {[...projects]
-              .filter((e) => Boolean(e?.stats?.frames || 0))
-              .sort((a, b) => b.project.updated - a.project.updated)
-              .map((e) => (
-                <ProjectCard key={e.id} id={e.id} title={e.project.title} picture={e.preview} nbFrames={e?.stats?.frames || 0} onClick={handleOpenProject} onTitleChange={handleRenameProject} />
-              ))}
-          </ProjectsGrid>
-        )}
-      </PageContent>
-    </PageLayout>
+  const primaryActions = [
+    ...(true ? [{ label: t('Back'), icon: faArrowLeft, onClick: handleAction('BACK') }] : []),
+  ]
+
+  const secondaryActions = [
+    ...(settings?.EVENT_MODE_ENABLED ? [{ label: t('Sync list'), icon: faListCheck, onClick: handleAction('SYNC_LIST') }] : []),
+    ...(!isIos() ? [isFullscreen ? { label: t('Exit fullscreen'), icon: faDownLeftAndUpRightToCenter, onClick: handleAction('EXIT_FULLSCREEN') } : { label: t('Fullscreen'), icon: faUpRightAndDownLeftFromCenter, onClick: handleAction('ENTER_FULLSCREEN') }] : []),
+    { label: t('Shortcuts'), icon: faKeyboard, onClick: handleAction('SHORTCUTS') },
+    { label: t('Settings'), icon: faGear, onClick: handleAction('SETTINGS') }
+  ];
+
+  return (<PageLayout>
+    <HeaderBar
+      leftChildren={<VersionUpdater onClick={handleLink} version={version} latestVersion={latestVersion} onLink={handleLink} />}
+      leftActions={primaryActions}
+      rightActions={secondaryActions}
+      onAction={handleAction}
+      withBorder
+    >
+      <Logo />
+    </HeaderBar>
+    <MobileLayout
+      showLogo={true}
+      topLeftActions={primaryActions}
+      bottomLeftActions={secondaryActions}
+    showLeftActions={true} 
+    />
+    <PageContent>
+      {projects !== null && (
+        <ProjectsGrid>
+          <ProjectCard placeholder={t('New project')} onClick={handleCreateProject} icon="ADD" />
+          {[...projects]
+            .filter((e) => Boolean(e?.stats?.frames || 0))
+            .sort((a, b) => b.project.updated - a.project.updated)
+            .map((e) => (
+              <ProjectCard key={e.id} id={e.id} title={e.project.title} picture={e.preview} nbFrames={e?.stats?.frames || 0} onClick={handleOpenProject} onTitleChange={handleRenameProject} />
+            ))}
+        </ProjectsGrid>
+      )}
+    </PageContent>
+  </PageLayout>
   );
 };
 

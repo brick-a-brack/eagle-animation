@@ -23,6 +23,8 @@ import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { withTranslation } from 'react-i18next';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import faArrowLeft from '@icons/faArrowLeft';
+import MobileLayout from '@components/MobileLayout';
 
 const GetFrameResolutionsLimit = pLimit(10);
 
@@ -198,12 +200,18 @@ const Export = ({ t }) => {
     navigate(searchParams.get('back') || '/');
   };
 
+ const primaryActions = [
+    { label: t('Back'), icon: faArrowLeft, onClick: handleBack },
+  ]
+
+
   if (!project || !settings || !bestResolution) {
     return (
       <>
         <LoadingPage show={true} />
         <PageLayout>
           <HeaderBar leftActions={['BACK']} onAction={handleBack} title={t('Export')} withBorder />
+          <MobileLayout topLeftActions={primaryActions} showLeftActions={true} />
           <PageContent></PageContent>
         </PageLayout>
       </>
@@ -332,7 +340,8 @@ const Export = ({ t }) => {
     <>
       <LoadingPage show={!settings} />
       <PageLayout>
-        <HeaderBar leftActions={['BACK']} onAction={handleBack} title={t('Export')} withBorder />
+        <HeaderBar leftActions={primaryActions} onAction={handleBack} title={t('Export')} withBorder />
+        <MobileLayout topLeftActions={primaryActions} showLeftActions={true} />
         <PageContent>
           {settings && (
             <form id="export">

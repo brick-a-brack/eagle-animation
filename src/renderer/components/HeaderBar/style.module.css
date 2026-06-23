@@ -30,23 +30,10 @@
     transform: translateX(-50%);
 }
 
-/* Mobile view */
-@media screen and (orientation: landscape) and (max-width: 700px) {
-    .headerBar {
-        width: 62px;
-        flex-direction: column;
-        height: 100%;
-        position: fixed;
-        border: none;
-        overflow: hidden;
-        z-index: 99;
-    }
-
-    .headerBar .left {
-        padding-top: 5px;
-    }
-
-    .headerBar .right {
-        padding-bottom: 5px;
-    }
+/* Hide it on mobile view */
+@media (orientation: landscape) and (max-width: 700px),
+       (orientation: landscape) and (max-height: 500px) {
+  .headerBar {
+    display: none;
+  }
 }

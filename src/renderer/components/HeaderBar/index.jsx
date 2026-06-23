@@ -10,40 +10,22 @@ import faUpRightAndDownLeftFromCenter from '@icons/faUpRightAndDownLeftFromCente
 import { withTranslation } from 'react-i18next';
 
 import * as style from './style.module.css';
+import ActionButton from '../ActionButton';
 
-const ActionButton = withTranslation()(({ type, tooltipPosition = 'LEFT', onClick = () => {}, t }) => {
-  const titles = {
-    BACK: t('Back'),
-    SETTINGS: t('Settings'),
-    SHORTCUTS: t('Shortcuts'),
-    PROJECT_SETTINGS: t('Edit project'),
-    EXPORT: t('Export'),
-    ENTER_FULLSCREEN: t('Fullscreen'),
-    EXIT_FULLSCREEN: t('Exit fullscreen'),
-    SYNC_LIST: t('Sync list'),
-  };
-
-  const icons = {
-    BACK: faArrowLeft,
-    SETTINGS: faGear,
-    SHORTCUTS: faKeyboard,
-    PROJECT_SETTINGS: faFilmGear,
-    EXPORT: faFileExport,
-    ENTER_FULLSCREEN: faUpRightAndDownLeftFromCenter,
-    EXIT_FULLSCREEN: faDownLeftAndUpRightToCenter,
-    SYNC_LIST: faListCheck,
-  };
-
-  return <Button label={titles?.[type] || null} onClick={onClick} icon={icons?.[type] || null} tooltipPosition={tooltipPosition} />;
-});
+const RenderActions = ({ actions = [], tooltipPosition = "NONE" }) => {
+  return actions.map((action) => <Button
+    label={action.title || null}
+    onClick={action.onClick}
+    icon={action.icon || null}
+    tooltipPosition={tooltipPosition}
+  />);
+}
 
 const HeaderBar = ({ onAction = null, leftActions = [], rightActions = [], children = null, leftChildren = null, rightChildren = null, title = '', withBorder = false }) => {
   return (
     <div className={`${style.headerBar} ${withBorder && style.withBorder}`}>
       <div className={style.left}>
-        {leftActions.map((type) => (
-          <ActionButton type={type} key={type} onClick={() => onAction(type)} tooltipPosition="NONE" />
-        ))}
+        {leftActions.length > 0 && <RenderActions actions={leftActions} tooltipPosition="RIGHT" />}
         {leftChildren}
       </div>
       {(children || title) && (
@@ -54,9 +36,7 @@ const HeaderBar = ({ onAction = null, leftActions = [], rightActions = [], child
       )}
       <div className={style.right}>
         {rightChildren}
-        {rightActions.map((type) => (
-          <ActionButton type={type} key={type} onClick={() => onAction(type)} tooltipPosition="NONE" />
-        ))}
+        {rightActions.length > 0 && <RenderActions actions={rightActions} tooltipPosition="LEFT" />}
       </div>
     </div>
   );

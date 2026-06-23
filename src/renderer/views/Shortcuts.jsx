@@ -7,6 +7,8 @@ import SHORTCUTS from '@core/shortcuts';
 import useDiscordActivity from '@hooks/useDiscordActivity';
 import { withTranslation } from 'react-i18next';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import faArrowLeft from '@icons/faArrowLeft';
+import MobileLayout from '@components/MobileLayout';
 
 const SettingsView = ({ t }) => {
   const [searchParams] = useSearchParams();
@@ -17,9 +19,15 @@ const SettingsView = ({ t }) => {
     navigate(searchParams.get('back') || '/');
   };
 
+ const primaryActions = [
+    { label: t('Back'), icon: faArrowLeft, onClick: handleBack },
+  ]
+
+
   return (
     <PageLayout>
-      <HeaderBar leftActions={['BACK']} onAction={handleBack} title={t('Shortcuts')} withBorder />
+      <HeaderBar leftActions={primaryActions} onAction={handleBack} title={t('Shortcuts')} withBorder />
+      <MobileLayout topLeftActions={primaryActions} showLeftActions={true} />
       <PageContent>
         <FormLayout>
           <ShortcutsList shortcuts={SHORTCUTS} />
