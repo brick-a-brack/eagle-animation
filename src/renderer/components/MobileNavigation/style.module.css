@@ -66,6 +66,14 @@
     user-select: none;
 }
 
+.headerBarLeft.withBorder {
+    border-right: 3px solid var(--color-primary);
+}
+
+.headerBarRight.withBorder {
+    border-left: 3px solid var(--color-primary);
+}
+
 /* Show it on mobile view */
 @media (orientation: landscape) and (max-width: 700px),
        (orientation: landscape) and (max-height: 500px) {

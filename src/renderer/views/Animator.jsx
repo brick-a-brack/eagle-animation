@@ -1,11 +1,12 @@
 import CameraSettingsWindow from '@components/CameraSettingsWindow';
 import ControlBar from '@components/ControlBar';
-import HeaderBar from '@components/HeaderBar';
+import DesktopNavigation from '@components/DesktopNavigation';
 import ImportOverlay from '@components/ImportOverlay';
 import KeyboardHandler from '@components/KeyboardHandler';
 import LimitWarning from '@components/LimitWarning';
 import LoadingPage from '@components/LoadingPage';
 import MaskingWindow from '@components/MaskingWindow';
+import MobileNavigation from '@components/MobileNavigation';
 import PageLayout from '@components/PageLayout';
 import Player from '@components/Player';
 import ProjectSettingsWindow from '@components/ProjectSettingsWindow';
@@ -19,6 +20,12 @@ import useCamera from '@hooks/useCamera';
 import useDiscordActivity from '@hooks/useDiscordActivity';
 import useProject from '@hooks/useProject';
 import useSettings from '@hooks/useSettings';
+import faArrowLeft from '@icons/faArrowLeft';
+import faCamera from '@icons/faCamera';
+import faFileExport from '@icons/faFileExport';
+import faPlay from '@icons/faPlay';
+import faSliders from '@icons/faSliders';
+import faStop from '@icons/faStop';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { flushSync } from 'react-dom';
 import { withTranslation } from 'react-i18next';
@@ -580,21 +587,28 @@ const Animator = ({ t }) => {
   };
 
   const frameCaptureMode = maskingMode !== 'DISABLED' && !isPlaying ? (pendingBackgroundFrame ? 'FOREGROUND' : 'BACKGROUND') : null;
+  const canExport =
+    pictures?.some((e) => !e?.hidden) &&
+    (appCapabilities.includes('EXPORT_VIDEO') || appCapabilities.includes('EXPORT_FRAMES') || (appCapabilities.includes('BACKGROUND_SYNC') && settings?.EVENT_MODE_ENABLED));
+
+  // Actions
+  const primaryActions = [{ label: t('Back'), icon: faArrowLeft, onClick: handleAction.bind(null, 'BACK') }];
+
+  const secondaryActions = canExport ? [{ label: t('Export'), icon: faFileExport, onClick: handleAction.bind(null, 'EXPORT') }] : [];
+
+  const mobileActionsTop = [{ label: t('Camera settings'), icon: faSliders, onClick: handleAction.bind(null, 'CAMERA_SETTINGS') }];
+
+  const mobileActionsMiddle = [{ label: t('Take a picture'), icon: faCamera, onClick: handleAction.bind(null, 'TAKE_PICTURE'), color: 'primary', disabled: isTakingPicture || !isCameraReady }];
+
+  const mobileActionsBottom = [
+    { label: !isPlaying ? t('Play') : t('Stop'), icon: isPlaying ? faStop : faPlay, onClick: handleAction.bind(null, 'PLAY'), selectedColor: 'warning', selected: isPlaying },
+  ];
 
   return (
     <>
       <LoadingPage show={false} />
-      <PageLayout>
-        <HeaderBar
-          leftActions={['BACK']}
-          rightActions={[
-            ...(pictures?.some((e) => !e?.hidden) &&
-            (appCapabilities.includes('EXPORT_VIDEO') || appCapabilities.includes('EXPORT_FRAMES') || (appCapabilities.includes('BACKGROUND_SYNC') && settings?.EVENT_MODE_ENABLED))
-              ? ['EXPORT']
-              : []),
-          ]}
-          onAction={handleAction}
-        >
+      <PageLayout hasMobileLeftBar={true} hasMobileRightBar={true}>
+        <DesktopNavigation leftActions={primaryActions} rightActions={secondaryActions}>
           <SceneSelector
             scenes={visibleScenes.map((s) => ({ id: s.id, index: s.index, title: s.title, framerate: s.framerate, pictureCount: s.pictures?.filter((p) => !p.deleted).length ?? 0 }))}
             currentTrack={track}
@@ -613,7 +627,16 @@ const Animator = ({ t }) => {
               setActiveWindow('scene');
             }}
           />
-        </HeaderBar>
+        </DesktopNavigation>
+        <MobileNavigation
+          topLeftActions={primaryActions}
+          bottomLeftActions={secondaryActions}
+          topRightActions={mobileActionsTop}
+          middleRightActions={mobileActionsMiddle}
+          bottomRightActions={mobileActionsBottom}
+          showLeftActions={true}
+          showRightActions={true}
+        />
         <Player
           t={t}
           ref={playerRef}

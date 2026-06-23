@@ -73,6 +73,8 @@
   position: relative;
   user-select: none;
   vertical-align: bottom;
+  padding-bottom: var(--padding-bottom);
+  padding-top: var(--padding-top);
 }
 
 .img {
@@ -162,10 +164,8 @@ span[data-selected="true"] .title, .selected .title {
 @media (pointer: coarse) {
   .container {
     scrollbar-width: none;
-  }
-
-  .containerImg {
-    padding-bottom: 4px;
+    --padding-bottom: 4px;
+    --padding-top: 4px;
   }
 
   .container::-webkit-scrollbar {
@@ -176,7 +176,7 @@ span[data-selected="true"] .title, .selected .title {
 .shortPlayIcon {
   background-color: var(--color-primary);
   border-top-right-radius: var(--border-radius-small);
-  bottom: 0;
+  bottom: var(--padding-bottom);
   color: var(--color-white);
   height: 14px;
   left: 0;
@@ -188,7 +188,7 @@ span[data-selected="true"] .title, .selected .title {
 .duplicated {
   background-color: var(--color-primary);
   border-top-left-radius: var(--border-radius-small);
-  bottom: 0;
+  bottom: var(--padding-bottom);
   color: var(--color-white);
   font-size: var(--font-size-7);
   height: 14px;
@@ -202,7 +202,7 @@ span[data-selected="true"] .title, .selected .title {
 .masking {
   background-color: var(--color-primary);
   border-top-right-radius: var(--border-radius-small);
-  bottom: 0;
+  bottom: var(--padding-bottom);
   color: var(--color-white);
   font-size: var(--font-size-7);
   height: 14px;
@@ -248,7 +248,7 @@ span[data-selected="true"] .title, .selected .title {
 
 .liveLayerText {
   background: var(--color-theme-medium);
-  bottom: 0;
+  bottom: var(--padding-bottom);
   box-sizing: border-box;
   color: var(--color-white);
   font-size: 10px;

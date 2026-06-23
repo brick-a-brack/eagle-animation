@@ -9,23 +9,19 @@ import faListCheck from '@icons/faListCheck';
 import faUpRightAndDownLeftFromCenter from '@icons/faUpRightAndDownLeftFromCenter';
 import { withTranslation } from 'react-i18next';
 
-import * as style from './style.module.css';
 import ActionButton from '../ActionButton';
 
-const RenderActions = ({ actions = [], tooltipPosition = "NONE" }) => {
-  return actions.map((action) => <Button
-    label={action.title || null}
-    onClick={action.onClick}
-    icon={action.icon || null}
-    tooltipPosition={tooltipPosition}
-  />);
-}
+import * as style from './style.module.css';
 
-const HeaderBar = ({ onAction = null, leftActions = [], rightActions = [], children = null, leftChildren = null, rightChildren = null, title = '', withBorder = false }) => {
+const RenderActions = ({ actions = [], tooltipPosition = 'NONE' }) => {
+  return actions.map((action) => <Button label={action.title || null} onClick={action.onClick} icon={action.icon || null} tooltipPosition={tooltipPosition} />);
+};
+
+const DesktopNavigation = ({ onAction = null, leftActions = [], rightActions = [], children = null, leftChildren = null, rightChildren = null, title = '', withBorder = false }) => {
   return (
     <div className={`${style.headerBar} ${withBorder && style.withBorder}`}>
       <div className={style.left}>
-        {leftActions.length > 0 && <RenderActions actions={leftActions} tooltipPosition="RIGHT" />}
+        {leftActions.length > 0 && <RenderActions actions={leftActions} tooltipPosition="NONE" />}
         {leftChildren}
       </div>
       {(children || title) && (
@@ -36,10 +32,10 @@ const HeaderBar = ({ onAction = null, leftActions = [], rightActions = [], child
       )}
       <div className={style.right}>
         {rightChildren}
-        {rightActions.length > 0 && <RenderActions actions={rightActions} tooltipPosition="LEFT" />}
+        {rightActions.length > 0 && <RenderActions actions={rightActions} tooltipPosition="NONE" />}
       </div>
     </div>
   );
 };
 
-export default HeaderBar;
+export default DesktopNavigation;

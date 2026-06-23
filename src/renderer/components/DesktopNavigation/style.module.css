@@ -24,6 +24,12 @@
     user-select: none;
 }
 
+.left,
+.right,
+.center {
+    display: flex;
+}
+
 .center {
     left: 50%;
     position: absolute;
@@ -32,8 +38,8 @@
 
 /* Hide it on mobile view */
 @media (orientation: landscape) and (max-width: 700px),
-       (orientation: landscape) and (max-height: 500px) {
-  .headerBar {
-    display: none;
-  }
+(orientation: landscape) and (max-height: 500px) {
+    .headerBar {
+        display: none;
+    }
 }

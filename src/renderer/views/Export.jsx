@@ -1,11 +1,12 @@
 import { floorResolution, floorResolutionValue, getBestResolution } from '@common/resolution';
 import ActionCard from '@components/ActionCard';
+import DesktopNavigation from '@components/DesktopNavigation';
 import ExportOverlay from '@components/ExportOverlay';
 import FormGroup from '@components/FormGroup';
 import FormLayout from '@components/FormLayout';
-import HeaderBar from '@components/HeaderBar';
 import Input from '@components/Input';
 import LoadingPage from '@components/LoadingPage';
+import MobileNavigation from '@components/MobileNavigation';
 import NumberInput from '@components/NumberInput';
 import PageContent from '@components/PageContent';
 import PageLayout from '@components/PageLayout';
@@ -18,13 +19,12 @@ import useAppCapabilities from '@hooks/useAppCapabilities';
 import useDiscordActivity from '@hooks/useDiscordActivity';
 import useProject from '@hooks/useProject';
 import useSettings from '@hooks/useSettings';
+import faArrowLeft from '@icons/faArrowLeft';
 import pLimit from 'p-limit';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { withTranslation } from 'react-i18next';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
-import faArrowLeft from '@icons/faArrowLeft';
-import MobileLayout from '@components/MobileLayout';
 
 const GetFrameResolutionsLimit = pLimit(10);
 
@@ -200,18 +200,15 @@ const Export = ({ t }) => {
     navigate(searchParams.get('back') || '/');
   };
 
- const primaryActions = [
-    { label: t('Back'), icon: faArrowLeft, onClick: handleBack },
-  ]
-
+  const primaryActions = [{ label: t('Back'), icon: faArrowLeft, onClick: handleBack }];
 
   if (!project || !settings || !bestResolution) {
     return (
       <>
         <LoadingPage show={true} />
         <PageLayout>
-          <HeaderBar leftActions={['BACK']} onAction={handleBack} title={t('Export')} withBorder />
-          <MobileLayout topLeftActions={primaryActions} showLeftActions={true} />
+          <DesktopNavigation leftActions={['BACK']} onAction={handleBack} title={t('Export')} withBorder />
+          <MobileNavigation topLeftActions={primaryActions} showLeftActions={true} />
           <PageContent></PageContent>
         </PageLayout>
       </>
@@ -339,9 +336,9 @@ const Export = ({ t }) => {
   return (
     <>
       <LoadingPage show={!settings} />
-      <PageLayout>
-        <HeaderBar leftActions={primaryActions} onAction={handleBack} title={t('Export')} withBorder />
-        <MobileLayout topLeftActions={primaryActions} showLeftActions={true} />
+      <PageLayout hasMobileLeftBar={true}>
+        <DesktopNavigation leftActions={primaryActions} onAction={handleBack} title={t('Export')} withBorder />
+        <MobileNavigation topLeftActions={primaryActions} showLeftActions={true} withBorder={true} />
         <PageContent>
           {settings && (
             <form id="export">

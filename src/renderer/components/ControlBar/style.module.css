@@ -41,3 +41,11 @@
 .sliderDisabled * {
   pointer-events: none;
 }
+
+
+@media (orientation: landscape) and (max-width: 700px),
+(orientation: landscape) and (max-height: 500px) {
+  .container {
+    display: none;
+  }
+}

@@ -1,15 +1,15 @@
+import Button from '@components/Button';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import faChevronDown from '@icons/faChevronDown';
 import faGear from '@icons/faGear';
 import faImages from '@icons/faImages';
 import faPlus from '@icons/faPlus';
+import faQuestion from '@icons/faQuestion';
 import faSlidersUp from '@icons/faSlidersUp';
 import { useEffect, useRef, useState } from 'react';
 import { withTranslation } from 'react-i18next';
 
 import * as style from './style.module.css';
-import Button from '@components/Button';
-import faQuestion from '@icons/faQuestion';
 
 const SceneSelector = ({
   t,
@@ -52,8 +52,6 @@ const SceneSelector = ({
 
   return (
     <div className={style.container} ref={containerRef}>
-
-      
       <button type="button" className={style.button} onClick={() => setIsOpen((v) => !v)} disabled={disabled}>
         <div className={style.buttonContent}>
           <span className={style.projectLabel}>{projectTitle || t('Untitled project')}</span>
