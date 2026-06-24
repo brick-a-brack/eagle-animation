@@ -359,5 +359,10 @@
   "Send anonymous usage data to help improve the application": "Στείλτε ανώνυμα δεδομένα χρήσης για να βοηθήσετε στη βελτίωση της εφαρμογής",
   "Undo last action": "Αναίρεση τελευταίας ενέργειας",
   "Redo last undone action": "Επαναφορά τελευταίας αναιρεθείσας ενέργειας",
-  "Add new scene": "Προσθήκη νέας σκηνής"
+  "Add new scene": "Προσθήκη νέας σκηνής",
+  "Tools & playback": "__NOT_TRANSLATED__",
+  "Onion skin": "__NOT_TRANSLATED__",
+  "Speed": "__NOT_TRANSLATED__",
+  "More": "__NOT_TRANSLATED__",
+  "Frame actions": "__NOT_TRANSLATED__"
 }

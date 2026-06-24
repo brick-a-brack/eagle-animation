@@ -367,5 +367,10 @@
   "Send anonymous usage data to help improve the application": "Pošlji anonimne podatke o uporabi, da pomagaš izboljšati aplikacijo",
   "Undo last action": "Razveljavi zadnjo dejanje",
   "Redo last undone action": "Ponovi zadnje razveljavljeno dejanje",
-  "Add new scene": "Dodaj novo sceno"
+  "Add new scene": "Dodaj novo sceno",
+  "Tools & playback": "__NOT_TRANSLATED__",
+  "Onion skin": "__NOT_TRANSLATED__",
+  "Speed": "__NOT_TRANSLATED__",
+  "More": "__NOT_TRANSLATED__",
+  "Frame actions": "__NOT_TRANSLATED__"
 }

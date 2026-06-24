@@ -385,5 +385,10 @@
   "Send anonymous usage data to help improve the application": "Siųsti anoniminius naudojimo duomenis, kad padėtų tobulinti programą",
   "Undo last action": "Atšaukti paskutinį veiksmą",
   "Redo last undone action": "Pakartoti paskutinį atšauktą veiksmą",
-  "Add new scene": "Pridėti naują sceną"
+  "Add new scene": "Pridėti naują sceną",
+  "Tools & playback": "__NOT_TRANSLATED__",
+  "Onion skin": "__NOT_TRANSLATED__",
+  "Speed": "__NOT_TRANSLATED__",
+  "More": "__NOT_TRANSLATED__",
+  "Frame actions": "__NOT_TRANSLATED__"
 }

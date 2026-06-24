@@ -8,11 +8,13 @@ import LoadingPage from '@components/LoadingPage';
 import MaskingWindow from '@components/MaskingWindow';
 import MobileNavigation from '@components/MobileNavigation';
 import PageLayout from '@components/PageLayout';
+import PictureWindow from '@components/PictureWindow';
 import Player from '@components/Player';
 import ProjectSettingsWindow from '@components/ProjectSettingsWindow';
 import SceneSelector from '@components/SceneSelector';
 import SceneSettingsWindow from '@components/SceneSettingsWindow';
 import Timeline from '@components/Timeline';
+import ToolsWindow from '@components/ToolsWindow';
 import Window from '@components/Window';
 import { parseRatio } from '@core/ratio';
 import useAppCapabilities from '@hooks/useAppCapabilities';
@@ -23,10 +25,11 @@ import useSettings from '@hooks/useSettings';
 import faArrowLeft from '@icons/faArrowLeft';
 import faBoxArrowDown from '@icons/faBoxArrowDown';
 import faCamera from '@icons/faCamera';
-import faEllipsisVertical from '@icons/faEllipsisVertical';
 import faEraser from '@icons/faEraser';
 import faFolder from '@icons/faFolder';
+import faPictureOptions from '@icons/faPictureOptions';
 import faPlay from '@icons/faPlay';
+import faPlayOptions from '@icons/faPlayOptions';
 import faSliders from '@icons/faSliders';
 import faStop from '@icons/faStop';
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -502,7 +505,15 @@ const Animator = ({ t }) => {
     REDO: () => {
       if (!isPlaying) projectActions.redo();
     },
-    MORE: () => {},
+    MORE: () => {
+      // On the live view, expose playback tools ; on a selected frame, expose frame actions
+      if (currentFrameId === false) {
+        playerRef.current.showFrame(false);
+        setActiveWindow((v) => (v === 'tools' ? null : 'tools'));
+      } else {
+        setActiveWindow((v) => (v === 'picture' ? null : 'picture'));
+      }
+    },
     EXPORT: () => {
       navigate(`/export/${id}/${track}?back=/animator/${id}/${track}`);
     },
@@ -599,7 +610,7 @@ const Animator = ({ t }) => {
 
   const secondaryActions = canExport ? [{ label: t('Export'), icon: faBoxArrowDown, onClick: handleAction.bind(null, 'EXPORT') }] : [];
 
-  const mobileActionsTop = [{ label: t('More'), icon: faEllipsisVertical, onClick: handleAction.bind(null, 'MORE') }];
+  const mobileActionsTop = [{ label: t('More'), icon: currentFrame === false ? faPlayOptions : faPictureOptions, onClick: handleAction.bind(null, 'MORE') }];
 
   const mobileActionsMiddle = [
     { label: t('Masking mode ({{status}})'), icon: faEraser, onClick: handleAction.bind(null, 'TOGGLE_MASKING_MODE'), selected: maskingMode !== 'DISABLED' },
@@ -725,6 +736,32 @@ const Animator = ({ t }) => {
               devices={devices}
               settings={settings}
               currentCameraId={currentCameraId}
+            />
+          </Window>
+          <Window isOpened={activeWindow === 'tools'} onClose={() => setActiveWindow(null)}>
+            <ToolsWindow
+              onAction={handleAction}
+              gridStatus={gridStatus}
+              differenceStatus={differenceStatus}
+              onionValue={onionValue}
+              loopStatus={loopStatus}
+              shortPlayStatus={shortPlayStatus}
+              fps={fps}
+              framePosition={framePosition}
+            />
+          </Window>
+          <Window isOpened={activeWindow === 'picture'} onClose={() => setActiveWindow(null)}>
+            <PictureWindow
+              onAction={(action) => {
+                handleAction(action);
+                // Close the sheet once the frame is gone (delete) — the other actions keep it open for quick edits
+                if (action === 'DELETE_FRAME') {
+                  setActiveWindow(null);
+                }
+              }}
+              isHidden={!!currentFrame.hidden}
+              canDeduplicate={currentFrame.length > 1}
+              canUseMaskingEditor={!!currentFrame.masking}
             />
           </Window>
           <Window isOpened={activeWindow === 'project'} onClose={() => setActiveWindow(null)}>

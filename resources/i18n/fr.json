@@ -377,5 +377,10 @@
   "Untitled scene #{{index}}": "Scène sans titre #{{index}}",
   "Undo last action": "Annuler la dernière action",
   "Redo last undone action": "Refaire la dernière action annulée",
-  "Add new scene": "Ajouter une nouvelle scène"
+  "Add new scene": "Ajouter une nouvelle scène",
+  "Tools & playback": "Outils & lecture",
+  "Onion skin": "Pelure d'oignon",
+  "Speed": "Vitesse",
+  "More": "__NOT_TRANSLATED__",
+  "Frame actions": "Actions sur la photo"
 }
