@@ -4,7 +4,5 @@
 }
 
 .title {
-    margin-bottom: var(--space-medium) !important;
-    margin-top: var(--space-medium) !important;
-    text-align: center;
+    margin-top: var(--space-medium);
 }
