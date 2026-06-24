@@ -105,7 +105,7 @@ const ControlBar = ({
           <Button
             title={t('Masking mode ({{status}})', { status: (MASKING_MODES[maskingMode] || MASKING_MODES.DISABLED)(t) })}
             selected={maskingMode !== 'DISABLED'}
-            onClick={framePosition === false ? handleAction('TOOGLE_MASKING_MODE') : () => {}}
+            onClick={framePosition === false ? handleAction('TOGGLE_MASKING_MODE') : () => {}}
             size="mini"
             icon={faEraser}
             disabled={framePosition !== false}

@@ -52,12 +52,7 @@
 }
 @media (max-width: 750px) {
   .container {
-    --size: 65px;
-  }
-}
-@media (max-width: 700px) {
-  .container {
-    --size: 60px;
+    --size: 54px;
   }
 }
 
