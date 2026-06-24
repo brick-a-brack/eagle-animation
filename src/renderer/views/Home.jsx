@@ -1,5 +1,4 @@
 import { isIos } from '@braintree/browser-detection';
-import Button from '@components/Button';
 import DesktopNavigation from '@components/DesktopNavigation';
 import Logo from '@components/Logo';
 import MobileNavigation from '@components/MobileNavigation';
@@ -15,8 +14,6 @@ import useProjects from '@hooks/useProjects';
 import useSettings from '@hooks/useSettings';
 import faArrowLeft from '@icons/faArrowLeft';
 import faDownLeftAndUpRightToCenter from '@icons/faDownLeftAndUpRightToCenter';
-import faFileExport from '@icons/faFileExport';
-import faFilmGear from '@icons/faFilmGear';
 import faGear from '@icons/faGear';
 import faKeyboard from '@icons/faKeyboard';
 import faListCheck from '@icons/faListCheck';

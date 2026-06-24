@@ -1,10 +1,8 @@
-import Button from '@components/Button';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import faChevronDown from '@icons/faChevronDown';
 import faGear from '@icons/faGear';
 import faImages from '@icons/faImages';
 import faPlus from '@icons/faPlus';
-import faQuestion from '@icons/faQuestion';
 import faSlidersUp from '@icons/faSlidersUp';
 import { useEffect, useRef, useState } from 'react';
 import { withTranslation } from 'react-i18next';

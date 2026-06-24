@@ -1,21 +1,13 @@
 import Button from '@components/Button';
-import faArrowLeft from '@icons/faArrowLeft';
-import faDownLeftAndUpRightToCenter from '@icons/faDownLeftAndUpRightToCenter';
-import faFileExport from '@icons/faFileExport';
-import faFilmGear from '@icons/faFilmGear';
-import faGear from '@icons/faGear';
-import faKeyboard from '@icons/faKeyboard';
-import faListCheck from '@icons/faListCheck';
-import faUpRightAndDownLeftFromCenter from '@icons/faUpRightAndDownLeftFromCenter';
-import { withTranslation } from 'react-i18next';
 
 import iconUrl from './assets/icon.svg';
 
 import * as style from './style.module.css';
 
 const RenderActions = ({ actions = [], tooltipPosition = 'NONE' }) => {
-  return actions.map((action) => (
+  return actions.map((action, i) => (
     <Button
+      key={action.key || action.title || i}
       label={action.title || null}
       onClick={action.onClick}
       icon={action.icon || null}

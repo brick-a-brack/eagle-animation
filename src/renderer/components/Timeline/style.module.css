@@ -13,6 +13,11 @@
   white-space: nowrap;
   width: 100%;
   --size: 80px;
+  --title-size: calc(var(--size) * 0.3125);
+  --title-font: calc(var(--size) * 0.1625);
+  --tag-size: calc(var(--size) * 0.175);
+  --padding-bottom: 0px;
+  --padding-top: 0px;
 }
 
 .shadow {
@@ -38,22 +43,6 @@
 .shadowRight {
   background: linear-gradient(270deg, rgb(14 25 40 / 100%) 0%, rgb(14 25 40 / 0%) 100%);
   right: 0;
-}
-
-@media (max-width: 850px) {
-  .container {
-    --size: 75px;
-  }
-}
-@media (max-width: 800px) {
-  .container {
-    --size: 70px;
-  }
-}
-@media (max-width: 750px) {
-  .container {
-    --size: 54px;
-  }
 }
 
 .containerImg {
@@ -100,11 +89,11 @@
 .title {
   background-color: var(--color-primary);
   color: var(--color-white);
-  font-size: 13px;
+  font-size: var(--title-font);
   font-weight: 600;
-  height: 25px;
+  height: var(--title-size);
   letter-spacing: 1px;
-  line-height: 25px;
+  line-height: var(--title-size);
   opacity: 0;
   position: absolute;
   text-align: center;
@@ -113,7 +102,8 @@
   width: calc(100% - 4px);
 }
 
-span[data-selected="true"] .title, .selected .title {
+span[data-selected="true"] .title,
+.selected .title {
   background-color: var(--color-alert);
   opacity: 1;
 }
@@ -173,7 +163,7 @@ span[data-selected="true"] .title, .selected .title {
   border-top-right-radius: var(--border-radius-small);
   bottom: var(--padding-bottom);
   color: var(--color-white);
-  height: 14px;
+  height: var(--tag-size);
   left: 0;
   padding: var(--space-tiny) var(--space-small);
   pointer-events: none;
@@ -185,9 +175,9 @@ span[data-selected="true"] .title, .selected .title {
   border-top-left-radius: var(--border-radius-small);
   bottom: var(--padding-bottom);
   color: var(--color-white);
-  font-size: var(--font-size-7);
-  height: 14px;
-  line-height: 14px;
+  font-size: calc(0.9 * var(--tag-size));
+  height: var(--tag-size);
+  line-height: var(--tag-size);
   padding: var(--space-tiny) var(--space-small);
   pointer-events: none;
   position: absolute;
@@ -199,14 +189,13 @@ span[data-selected="true"] .title, .selected .title {
   border-top-right-radius: var(--border-radius-small);
   bottom: var(--padding-bottom);
   color: var(--color-white);
-  font-size: var(--font-size-7);
-  height: 14px;
+  font-size: calc(0.9 * var(--tag-size));
+  height: var(--tag-size);
   left: 2px;
-  line-height: 14px;
+  line-height: var(--tag-size);
   padding: var(--space-tiny) var(--space-small);
   pointer-events: none;
   position: absolute;
-  width: 14px;
 }
 
 .liveLayerIcon {
@@ -253,4 +242,23 @@ span[data-selected="true"] .title, .selected .title {
   text-align: center;
   text-overflow: ellipsis;
   width: calc(100% - 4px);
+}
+
+@media (max-width: 850px) {
+  .container {
+    --size: 70px;
+
+  }
+}
+
+@media (max-width: 800px) {
+  .container {
+    --size: 62px;
+  }
+}
+
+@media (max-width: 750px) {
+  .container {
+    --size: 54px;
+  }
 }

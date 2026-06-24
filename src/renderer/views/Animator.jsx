@@ -21,14 +21,13 @@ import useDiscordActivity from '@hooks/useDiscordActivity';
 import useProject from '@hooks/useProject';
 import useSettings from '@hooks/useSettings';
 import faArrowLeft from '@icons/faArrowLeft';
-import faCamera from '@icons/faCamera';
-import faFileExport from '@icons/faFileExport';
-import faPlay from '@icons/faPlay';
-import faSliders from '@icons/faSliders';
 import faBoxArrowDown from '@icons/faBoxArrowDown';
-import faFolder from '@icons/faFolder';
+import faCamera from '@icons/faCamera';
 import faEllipsisVertical from '@icons/faEllipsisVertical';
 import faEraser from '@icons/faEraser';
+import faFolder from '@icons/faFolder';
+import faPlay from '@icons/faPlay';
+import faSliders from '@icons/faSliders';
 import faStop from '@icons/faStop';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { flushSync } from 'react-dom';
@@ -166,8 +165,8 @@ const Animator = ({ t }) => {
       nbFrames === 0
         ? t('Capture in progress')
         : t('Captured: {{content}}', {
-          content: [t('{{count}} frame', { count: nbFrames })].join(' • '),
-        }),
+            content: [t('{{count}} frame', { count: nbFrames })].join(' • '),
+          }),
   });
 
   const { isCameraReady, devices, currentCameraCapabilities, currentCamera, currentCameraId, actions: cameraActions } = useCamera({ compatibilityMode: !!settings?.COMPATIBILITY_MODE_CAMERAS });
@@ -285,61 +284,61 @@ const Animator = ({ t }) => {
 
   const takePictures =
     (nbPicturesToTake = null) =>
-      async () => {
-        if (isTakingPicture || !currentCamera) {
-          return;
-        }
-        flushSync(() => {
-          setIsTakingPicture(true);
-        });
+    async () => {
+      if (isTakingPicture || !currentCamera) {
+        return;
+      }
+      flushSync(() => {
+        setIsTakingPicture(true);
+      });
 
-        setStartedAt((oldValue) => (oldValue ? oldValue : new Date().getTime() / 1000));
+      setStartedAt((oldValue) => (oldValue ? oldValue : new Date().getTime() / 1000));
 
-        const numberOfFramesToTake = Number(nbPicturesToTake !== null ? nbPicturesToTake : settings.CAPTURE_FRAMES) || 1;
-        for (let i = 0; i < numberOfFramesToTake; i++) {
-          const nbFramesToTakeForAvg = (settings.AVERAGING_ENABLED ? Number(settings.AVERAGING_VALUE) : 1) || 1;
-          try {
-            const frame = await cameraActions.takePicture(nbFramesToTakeForAvg, settings.REVERSE_X, settings.REVERSE_Y);
-            const frameType = maskingMode === 'DISABLED' ? 'NORMAL' : pendingBackgroundFrame ? 'FOREGROUND' : 'BACKGROUND';
+      const numberOfFramesToTake = Number(nbPicturesToTake !== null ? nbPicturesToTake : settings.CAPTURE_FRAMES) || 1;
+      for (let i = 0; i < numberOfFramesToTake; i++) {
+        const nbFramesToTakeForAvg = (settings.AVERAGING_ENABLED ? Number(settings.AVERAGING_VALUE) : 1) || 1;
+        try {
+          const frame = await cameraActions.takePicture(nbFramesToTakeForAvg, settings.REVERSE_X, settings.REVERSE_Y);
+          const frameType = maskingMode === 'DISABLED' ? 'NORMAL' : pendingBackgroundFrame ? 'FOREGROUND' : 'BACKGROUND';
 
-            window.track('frame_captured', {
-              projectId: `${id}`,
-              trackId: `${track}`,
-              reverseX: settings.REVERSE_X,
-              reverseY: settings.REVERSE_Y,
-              nbFrames: nbFramesToTakeForAvg,
-              maskingMode,
-              frameType,
-            });
+          window.track('frame_captured', {
+            projectId: `${id}`,
+            trackId: `${track}`,
+            reverseX: settings.REVERSE_X,
+            reverseY: settings.REVERSE_Y,
+            nbFrames: nbFramesToTakeForAvg,
+            maskingMode,
+            frameType,
+          });
 
-            if (settings.SOUNDS) {
-              const isAprilFoolsDay = new Date().getDate() === 1 && new Date().getMonth() === 3;
-              playSound(isAprilFoolsDay ? soundEagle : soundShutter);
-            }
-
-            // Save frame
-            if (pendingBackgroundFrame || maskingMode === 'DISABLED') {
-              await projectActions.addFrame(track, frame, isPlaying ? false : currentFrameId, pendingBackgroundFrame || null);
-            } else if (maskingMode === 'UNIQUE' || !pendingBackgroundFrame) {
-              setPendingBackgroundFrame(frame);
-            }
-
-            // Clean background
-            if (maskingMode === 'DISABLED' || (maskingMode === 'UNIQUE' && pendingBackgroundFrame)) {
-              setPendingBackgroundFrame(null);
-            }
-          } catch (err) {
-            if (settings.SOUNDS) {
-              playSound(soundError);
-            }
-            console.error('Failed to take a picture', err);
+          if (settings.SOUNDS) {
+            const isAprilFoolsDay = new Date().getDate() === 1 && new Date().getMonth() === 3;
+            playSound(isAprilFoolsDay ? soundEagle : soundShutter);
           }
-        }
 
-        flushSync(() => {
-          setIsTakingPicture(false);
-        });
-      };
+          // Save frame
+          if (pendingBackgroundFrame || maskingMode === 'DISABLED') {
+            await projectActions.addFrame(track, frame, isPlaying ? false : currentFrameId, pendingBackgroundFrame || null);
+          } else if (maskingMode === 'UNIQUE' || !pendingBackgroundFrame) {
+            setPendingBackgroundFrame(frame);
+          }
+
+          // Clean background
+          if (maskingMode === 'DISABLED' || (maskingMode === 'UNIQUE' && pendingBackgroundFrame)) {
+            setPendingBackgroundFrame(null);
+          }
+        } catch (err) {
+          if (settings.SOUNDS) {
+            playSound(soundError);
+          }
+          console.error('Failed to take a picture', err);
+        }
+      }
+
+      flushSync(() => {
+        setIsTakingPicture(false);
+      });
+    };
 
   const actionsEvents = {
     PLAY: () => {
@@ -503,7 +502,7 @@ const Animator = ({ t }) => {
     REDO: () => {
       if (!isPlaying) projectActions.redo();
     },
-    MORE: () => { },
+    MORE: () => {},
     EXPORT: () => {
       navigate(`/export/${id}/${track}?back=/animator/${id}/${track}`);
     },
@@ -605,15 +604,14 @@ const Animator = ({ t }) => {
   const mobileActionsMiddle = [
     { label: t('Masking mode ({{status}})'), icon: faEraser, onClick: handleAction.bind(null, 'TOGGLE_MASKING_MODE'), selected: maskingMode !== 'DISABLED' },
     { label: t('Take a picture'), icon: faCamera, onClick: handleAction.bind(null, 'TAKE_PICTURE'), color: 'primary', disabled: isTakingPicture || !isCameraReady },
-    { label: t('Camera settings'), icon: faSliders, onClick: handleAction.bind(null, 'CAMERA_SETTINGS') }
+    { label: t('Camera settings'), icon: faSliders, onClick: handleAction.bind(null, 'CAMERA_SETTINGS') },
   ];
 
   const mobileActionsBottom = [
-    { label: !isPlaying ? t('Play') : t('Stop'), icon: isPlaying ? faStop : faPlay, onClick: handleAction.bind(null, 'PLAY'), selectedColor: 'warning', selected: isPlaying }
+    { label: !isPlaying ? t('Play') : t('Stop'), icon: isPlaying ? faStop : faPlay, onClick: handleAction.bind(null, 'PLAY'), selectedColor: 'warning', selected: isPlaying },
   ];
 
-  const projectAction = { label: t('Project'), icon: faFolder, onClick: handleAction.bind(null, 'PROJECT'), };
-
+  const projectAction = { label: t('Project'), icon: faFolder, onClick: handleAction.bind(null, 'PROJECT') };
 
   return (
     <>
