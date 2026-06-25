@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import * as style from './style.module.css';
 
-const IconTabs = ({ tabs = [], onClick = () => { } }) => {
+const IconTabs = ({ tabs = [], onClick = () => {} }) => {
   if (tabs.length === 0) {
     return null;
   }
@@ -16,7 +16,7 @@ const IconTabs = ({ tabs = [], onClick = () => { } }) => {
   return (
     <div className={style.container} style={{ '--index': selectedIndex }}>
       <div className={style.tabContainer}>
-        <div className={style.backgroundTab}  />
+        <div className={style.backgroundTab} />
         {tabs.map((e, i) => (
           <Action key={e.id || e.title || i} title={e.title} onClick={() => onClick(e, i)} className={`${style.tab} ${i === 0 ? style.tabFirst : ''} ${i === tabs.length - 1 ? style.tabLast : ''}`}>
             {e.icon && <FontAwesomeIcon icon={e.icon} />}
