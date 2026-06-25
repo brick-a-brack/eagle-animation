@@ -13,6 +13,11 @@
   white-space: nowrap;
   width: 100%;
   --size: 80px;
+  --title-size: calc(var(--size) * 0.3125);
+  --title-font: calc(var(--size) * 0.1625);
+  --tag-size: calc(var(--size) * 0.175);
+  --padding-bottom: 0px;
+  --padding-top: 0px;
 }
 
 .shadow {
@@ -40,27 +45,6 @@
   right: 0;
 }
 
-@media (max-width: 850px) {
-  .container {
-    --size: 75px;
-  }
-}
-@media (max-width: 800px) {
-  .container {
-    --size: 70px;
-  }
-}
-@media (max-width: 750px) {
-  .container {
-    --size: 65px;
-  }
-}
-@media (max-width: 700px) {
-  .container {
-    --size: 60px;
-  }
-}
-
 .containerImg {
   background: rgb(0 0 0 / 0%);
   cursor: pointer;
@@ -73,6 +57,8 @@
   position: relative;
   user-select: none;
   vertical-align: bottom;
+  padding-bottom: var(--padding-bottom);
+  padding-top: var(--padding-top);
 }
 
 .img {
@@ -103,11 +89,11 @@
 .title {
   background-color: var(--color-primary);
   color: var(--color-white);
-  font-size: 13px;
+  font-size: var(--title-font);
   font-weight: 600;
-  height: 25px;
+  height: var(--title-size);
   letter-spacing: 1px;
-  line-height: 25px;
+  line-height: var(--title-size);
   opacity: 0;
   position: absolute;
   text-align: center;
@@ -116,7 +102,8 @@
   width: calc(100% - 4px);
 }
 
-span[data-selected="true"] .title, .selected .title {
+span[data-selected="true"] .title,
+.selected .title {
   background-color: var(--color-alert);
   opacity: 1;
 }
@@ -162,10 +149,8 @@ span[data-selected="true"] .title, .selected .title {
 @media (pointer: coarse) {
   .container {
     scrollbar-width: none;
-  }
-
-  .containerImg {
-    padding-bottom: 4px;
+    --padding-bottom: 4px;
+    --padding-top: 4px;
   }
 
   .container::-webkit-scrollbar {
@@ -176,9 +161,9 @@ span[data-selected="true"] .title, .selected .title {
 .shortPlayIcon {
   background-color: var(--color-primary);
   border-top-right-radius: var(--border-radius-small);
-  bottom: 0;
+  bottom: var(--padding-bottom);
   color: var(--color-white);
-  height: 14px;
+  height: var(--tag-size);
   left: 0;
   padding: var(--space-tiny) var(--space-small);
   pointer-events: none;
@@ -188,11 +173,11 @@ span[data-selected="true"] .title, .selected .title {
 .duplicated {
   background-color: var(--color-primary);
   border-top-left-radius: var(--border-radius-small);
-  bottom: 0;
+  bottom: var(--padding-bottom);
   color: var(--color-white);
-  font-size: var(--font-size-7);
-  height: 14px;
-  line-height: 14px;
+  font-size: calc(0.9 * var(--tag-size));
+  height: var(--tag-size);
+  line-height: var(--tag-size);
   padding: var(--space-tiny) var(--space-small);
   pointer-events: none;
   position: absolute;
@@ -202,16 +187,15 @@ span[data-selected="true"] .title, .selected .title {
 .masking {
   background-color: var(--color-primary);
   border-top-right-radius: var(--border-radius-small);
-  bottom: 0;
+  bottom: var(--padding-bottom);
   color: var(--color-white);
-  font-size: var(--font-size-7);
-  height: 14px;
+  font-size: calc(0.9 * var(--tag-size));
+  height: var(--tag-size);
   left: 2px;
-  line-height: 14px;
+  line-height: var(--tag-size);
   padding: var(--space-tiny) var(--space-small);
   pointer-events: none;
   position: absolute;
-  width: 14px;
 }
 
 .liveLayerIcon {
@@ -248,7 +232,7 @@ span[data-selected="true"] .title, .selected .title {
 
 .liveLayerText {
   background: var(--color-theme-medium);
-  bottom: 0;
+  bottom: var(--padding-bottom);
   box-sizing: border-box;
   color: var(--color-white);
   font-size: 10px;
@@ -258,4 +242,23 @@ span[data-selected="true"] .title, .selected .title {
   text-align: center;
   text-overflow: ellipsis;
   width: calc(100% - 4px);
+}
+
+@media (max-width: 850px) {
+  .container {
+    --size: 70px;
+
+  }
+}
+
+@media (max-width: 800px) {
+  .container {
+    --size: 62px;
+  }
+}
+
+@media (max-width: 750px) {
+  .container {
+    --size: 54px;
+  }
 }
