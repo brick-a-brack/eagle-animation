@@ -4,15 +4,15 @@
 }
 
 @media (max-width: 500px) {
-  .container {
-    width: 250px;
-  }
+    .container {
+        width: 250px;
+    }
 }
 
 @media (max-width: 400px) {
-  .container {
-    width: 200px;
-  }
+    .container {
+        width: 200px;
+    }
 }
 
 .button {
