@@ -278,18 +278,3 @@
 .scrollable::-webkit-scrollbar {
     display: none;
 }
-
-.sideButton {
-    display: none;
-}
-
-/* Mobile view */
-@media screen and (orientation: landscape) and (max-width: 700px) {
-    .button {
-        display: none;
-    }
-
-    .sideButton {
-        display: block;
-    }
-}
