@@ -7,6 +7,7 @@ import PageLayout from '@components/PageLayout';
 import ProjectCard from '@components/ProjectCard';
 import ProjectsGrid from '@components/ProjectsGrid';
 import VersionUpdater from '@components/VersionUpdater';
+import useAppCapabilities from '@hooks/useAppCapabilities';
 import useAppVersion from '@hooks/useAppVersion';
 import useDiscordActivity from '@hooks/useDiscordActivity';
 import useFullscreen from '@hooks/useFullscreen';
@@ -24,6 +25,7 @@ import { useNavigate } from 'react-router-dom';
 
 const HomeView = ({ t }) => {
   const { version, latestVersion, actions: versionActions } = useAppVersion();
+  const { appCapabilities } = useAppCapabilities();
   const { projects, actions: projectsActions } = useProjects();
   const { settings } = useSettings();
   const navigate = useNavigate();
@@ -71,18 +73,21 @@ const HomeView = ({ t }) => {
     if (action === 'EXIT_FULLSCREEN') {
       exitFullscreen();
     }
+    if (action === 'RETURN_TO_WEBSITE') {
+      window.EA('OPEN_LINK', { link: 'https://eagle-animation.com/' });
+    }
   };
 
-  const primaryActions = [...(true ? [{ label: t('Back'), icon: faArrowLeft, onClick: handleAction('BACK') }] : [])];
+  const primaryActions = [...(appCapabilities.includes('RETURN_TO_WEBSITE') ? [{ label: t('Back'), icon: faArrowLeft, onClick: handleAction('RETURN_TO_WEBSITE') }] : [])];
 
   const secondaryActions = [
     ...(settings?.EVENT_MODE_ENABLED ? [{ label: t('Sync list'), icon: faListCheck, onClick: handleAction('SYNC_LIST') }] : []),
     ...(!isIos()
       ? [
-          isFullscreen
-            ? { label: t('Exit fullscreen'), icon: faDownLeftAndUpRightToCenter, onClick: handleAction('EXIT_FULLSCREEN') }
-            : { label: t('Fullscreen'), icon: faUpRightAndDownLeftFromCenter, onClick: handleAction('ENTER_FULLSCREEN') },
-        ]
+        isFullscreen
+          ? { label: t('Exit fullscreen'), icon: faDownLeftAndUpRightToCenter, onClick: handleAction('EXIT_FULLSCREEN') }
+          : { label: t('Fullscreen'), icon: faUpRightAndDownLeftFromCenter, onClick: handleAction('ENTER_FULLSCREEN') },
+      ]
       : []),
     { label: t('Shortcuts'), icon: faKeyboard, onClick: handleAction('SHORTCUTS') },
     { label: t('Settings'), icon: faGear, onClick: handleAction('SETTINGS') },
