@@ -1,4 +1,3 @@
-import { isIos } from '@braintree/browser-detection';
 import HeaderBar from '@components/HeaderBar';
 import Logo from '@components/Logo';
 import PageContent from '@components/PageContent';
@@ -6,6 +5,7 @@ import PageLayout from '@components/PageLayout';
 import ProjectCard from '@components/ProjectCard';
 import ProjectsGrid from '@components/ProjectsGrid';
 import VersionUpdater from '@components/VersionUpdater';
+import useAppCapabilities from '@hooks/useAppCapabilities';
 import useAppVersion from '@hooks/useAppVersion';
 import useDiscordActivity from '@hooks/useDiscordActivity';
 import useFullscreen from '@hooks/useFullscreen';
@@ -19,6 +19,7 @@ const HomeView = ({ t }) => {
   const { version, latestVersion, actions: versionActions } = useAppVersion();
   const { projects, actions: projectsActions } = useProjects();
   const { settings } = useSettings();
+  const { appCapabilities } = useAppCapabilities();
   const navigate = useNavigate();
   const { isFullscreen, enterFullscreen, exitFullscreen } = useFullscreen();
   useDiscordActivity({ description: t('Ready to animate') });
@@ -70,7 +71,12 @@ const HomeView = ({ t }) => {
     <PageLayout>
       <HeaderBar
         leftChildren={<VersionUpdater onClick={handleLink} version={version} latestVersion={latestVersion} onLink={handleLink} />}
-        rightActions={[...(settings?.EVENT_MODE_ENABLED ? ['SYNC_LIST'] : []), ...(!isIos() ? [isFullscreen ? 'EXIT_FULLSCREEN' : 'ENTER_FULLSCREEN'] : []), 'SHORTCUTS', 'SETTINGS']}
+        rightActions={[
+          ...(settings?.EVENT_MODE_ENABLED ? ['SYNC_LIST'] : []),
+          ...(appCapabilities.includes('FULLSCREEN') ? [isFullscreen ? 'EXIT_FULLSCREEN' : 'ENTER_FULLSCREEN'] : []),
+          ...(appCapabilities.includes('SHORTCUTS') ? ['SHORTCUTS'] : []),
+          'SETTINGS',
+        ]}
         onAction={handleAction}
         withBorder
       >

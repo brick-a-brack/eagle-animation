@@ -297,15 +297,24 @@ function useProject(options) {
   // Action add frame
   const actionAddFrame = useCallback(
     async (trackId, frameBlob, beforeFrameId = false, backgroundBlob = null) => {
-      const frameBuffer = Buffer.from(frameBlob.buffer);
       const frameExtension = mimeTypeToExtension(frameBlob.type);
       const sceneId = Number(trackId);
-      const addedPicture = await window.EA('SAVE_PICTURE', {
-        project_id: options?.id,
-        track_id: sceneId,
-        buffer: frameBuffer,
-        extension: frameExtension,
-      });
+      const addedPicture = frameBlob._directSaveUrls
+        ? await window.EA('SAVE_PICTURE_FROM_URLS', {
+            project_id: options?.id,
+            track_id: sceneId,
+            urls: frameBlob._directSaveUrls,
+            authorization: frameBlob._directSaveAuthorization,
+            reverseX: frameBlob._reverseX || false,
+            reverseY: frameBlob._reverseY || false,
+            extension: frameExtension,
+          })
+        : await window.EA('SAVE_PICTURE', {
+            project_id: options?.id,
+            track_id: sceneId,
+            buffer: Buffer.from(frameBlob.buffer),
+            extension: frameExtension,
+          });
 
       let backgroundPicture = null;
       if (backgroundBlob) {

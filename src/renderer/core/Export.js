@@ -105,6 +105,7 @@ export const ExportFrames = async (
       extension: computedExtension,
       mimeType: extensionToMimeType(computedExtension),
       bufferId: cachedBuffers.get(`${file.type}:${file.id}`),
+      link: file.link,
     });
   }
 

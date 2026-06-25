@@ -304,6 +304,7 @@ const Export = ({ t }) => {
     await window.EA('EXPORT', {
       frames: frames.map(({ mimeType, bufferId, ...e }) => ({ ...e, buffer_id: bufferId, mime_type: mimeType })),
       output_path: outputPath,
+      export_resolution: resolution ?? null,
       mode: data.mode,
       format: data.format,
       framerate: project?.scenes?.[Number(track)]?.framerate,
