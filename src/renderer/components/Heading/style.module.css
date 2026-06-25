@@ -4,15 +4,16 @@
 .h4,
 .h5,
 .h6 {
-  color: var(--color-primary);
+  color: var(--color-white);
   font-weight: 600;
   margin: 0;
   padding: 0;
 }
 
 .h1 {
-  font-size: var(--font-size-1);
-  line-height: var(--line-size-1);
+  font-size: var(--font-size-4);
+  letter-spacing: 0.02em;
+  line-height: var(--line-size-4);
   margin-bottom: var(--space-medium);
 }
 
