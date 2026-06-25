@@ -60,7 +60,7 @@
     "intrinsic-scale": "^5.0.0",
     "jszip": "^3.10.1",
     "lodash": "^4.18.1",
-    "mediabunny": "^1.47.0",
+    "mediabunny": "^1.48.1",
     "mkdirp": "^3.0.1",
     "p-limit": "^7.3.0",
     "path-browserify": "^1.0.1",
