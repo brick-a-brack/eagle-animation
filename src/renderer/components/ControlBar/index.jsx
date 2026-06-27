@@ -90,7 +90,7 @@ const ControlBar = ({
 
           <Button
             className={style.moreButton}
-            title={t('More')}
+            title={isFrameSelected ? t('Image options') : t('More')}
             icon={isFrameSelected ? faImage : faEllipsisVertical}
             onClick={handleAction(isFrameSelected ? 'SHOW_PICTURE_OPTIONS' : 'SHOW_TOOLS')}
             disabled={isPlaying}
@@ -121,7 +121,6 @@ const ControlBar = ({
                   title: t('Duplicate frame'),
                   onClick: handleAction('DUPLICATE'),
                   icon: faImageCirclePlus,
-                  tag: frameQuantity > 1 ? frameQuantity : '',
                 },
                 {
                   title: t('Remove frame'),

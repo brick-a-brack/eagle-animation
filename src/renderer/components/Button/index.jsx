@@ -7,6 +7,7 @@ import * as style from './style.module.css';
 
 const Button = ({ icon, className = '', onClick, title = '', tag = '', disabled = false, selected = false, color = 'normal', selectedColor = 'normal', tooltipPosition = 'TOP', ...rest }) => {
   const uid = useMemo(() => uniqueId(), []);
+
   return (
     <div {...{ ...rest, children: null }} className={`${style.mainContainer} ${className || ''}`}>
       <div

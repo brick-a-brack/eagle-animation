@@ -7,7 +7,7 @@ const ButtonsGroup = ({ actions = [], tooltipPosition = 'NONE', merge = false, g
     <Button
       className={`${groupClassName || ''} ${merge ? style.merge : ''} ${merge && i === 0 ? style.mergeStart : ''}  ${merge && i === actions.length - 1 ? style.mergeEnd : ''}`}
       key={action.key || action.title || i}
-      label={action.title || null}
+      title={action.title || null}
       onClick={action.onClick}
       icon={action.icon || null}
       tag={action.tag || undefined}

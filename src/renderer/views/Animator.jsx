@@ -621,13 +621,13 @@ const Animator = ({ t }) => {
     (appCapabilities.includes('EXPORT_VIDEO') || appCapabilities.includes('EXPORT_FRAMES') || (appCapabilities.includes('BACKGROUND_SYNC') && settings?.EVENT_MODE_ENABLED));
 
   // Actions
-  const primaryActions = [{ label: t('Back'), icon: faArrowLeft, onClick: handleAction.bind(null, 'BACK') }];
+  const primaryActions = [{ title: t('Back'), icon: faArrowLeft, onClick: handleAction.bind(null, 'BACK') }];
 
-  const secondaryActions = canExport ? [{ label: t('Export'), icon: faBoxArrowDown, onClick: handleAction.bind(null, 'EXPORT') }] : [];
+  const secondaryActions = canExport ? [{ title: t('Export'), icon: faBoxArrowDown, onClick: handleAction.bind(null, 'EXPORT') }] : [];
 
   const mobileActionsTop = [
     {
-      label: t('More'),
+      title: currentFrame === false || isPlaying ? t('More') : t('Image options'),
       icon: currentFrame === false || isPlaying ? faEllipsisVertical : faImage,
       onClick: handleAction.bind(null, currentFrame === false || isPlaying ? 'SHOW_TOOLS' : 'SHOW_PICTURE_OPTIONS'),
       disabled: isPlaying,
@@ -636,22 +636,22 @@ const Animator = ({ t }) => {
 
   const mobileActionsMiddle = [
     {
-      label: t('Masking mode ({{status}})'),
+      title: t('Masking mode ({{status}})'),
       tag: maskingMode !== 'DISABLED' ? (MASKING_MODES[maskingMode] || MASKING_MODES.DISABLED)(t).slice(0, 1) : '',
       icon: faEraser,
       onClick: handleAction.bind(null, 'TOGGLE_MASKING_MODE'),
       selected: maskingMode !== 'DISABLED',
       disabled: isPlaying,
     },
-    { label: t('Take a picture'), icon: faCamera, onClick: handleAction.bind(null, 'TAKE_PICTURE'), color: 'primary', disabled: isTakingPicture || !isCameraReady },
-    { label: t('Camera settings'), icon: faSliders, onClick: handleAction.bind(null, 'CAMERA_SETTINGS'), disabled: isPlaying },
+    { title: t('Take a picture'), icon: faCamera, onClick: handleAction.bind(null, 'TAKE_PICTURE'), color: 'primary', disabled: isTakingPicture || !isCameraReady },
+    { title: t('Camera settings'), icon: faSliders, onClick: handleAction.bind(null, 'CAMERA_SETTINGS'), disabled: isPlaying },
   ];
 
   const mobileActionsBottom = [
-    { label: !isPlaying ? t('Play') : t('Stop'), icon: isPlaying ? faStop : faPlay, onClick: handleAction.bind(null, 'PLAY'), selectedColor: 'warning', selected: isPlaying },
+    { title: !isPlaying ? t('Play') : t('Stop'), icon: isPlaying ? faStop : faPlay, onClick: handleAction.bind(null, 'PLAY'), selectedColor: 'warning', selected: isPlaying },
   ];
 
-  const projectAction = { label: t('Project'), icon: faFolder, onClick: handleAction.bind(null, 'PROJECT') };
+  const projectAction = { title: t('Project'), icon: faFolder, onClick: handleAction.bind(null, 'PROJECT') };
 
   return (
     <>
