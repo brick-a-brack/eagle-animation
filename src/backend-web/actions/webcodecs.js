@@ -1,12 +1,4 @@
-import {
-  BufferTarget,
-  Mp4OutputFormat,
-  Output,
-  VideoSample,
-  VideoSampleSource,
-  WebMOutputFormat,
-  canEncodeVideo,
-} from 'mediabunny';
+import { BufferTarget, canEncodeVideo, Mp4OutputFormat, Output, VideoSample, VideoSampleSource, WebMOutputFormat } from 'mediabunny';
 
 const WEBCODECS_PROFILES = {
   h264: { codec: 'avc', format: Mp4OutputFormat, extension: 'mp4', mimeType: 'video/mp4' },
@@ -34,7 +26,7 @@ export const exportWithWebCodecs = async (frames, format, fps, onProgress) => {
 
   const source = new VideoSampleSource({
     codec: profile.codec,
-    bitrate: 8_000_000,
+    bitrate: 8000000,
     keyFrameInterval: 2,
   });
   output.addVideoTrack(source);

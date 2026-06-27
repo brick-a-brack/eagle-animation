@@ -25,11 +25,11 @@ import useSettings from '@hooks/useSettings';
 import faArrowLeft from '@icons/faArrowLeft';
 import faBoxArrowDown from '@icons/faBoxArrowDown';
 import faCamera from '@icons/faCamera';
+import faEllipsisVertical from '@icons/faEllipsisVertical';
 import faEraser from '@icons/faEraser';
 import faFolder from '@icons/faFolder';
-import faPictureOptions from '@icons/faPictureOptions';
+import faImage from '@icons/faImage';
 import faPlay from '@icons/faPlay';
-import faPlayOptions from '@icons/faPlayOptions';
 import faSliders from '@icons/faSliders';
 import faStop from '@icons/faStop';
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -42,6 +42,12 @@ import soundDeleteConfirm from '~/resources/sounds/deleteConfirm.mp3';
 import soundEagle from '~/resources/sounds/eagle.mp3';
 import soundError from '~/resources/sounds/error.mp3';
 import soundShutter from '~/resources/sounds/shutter.mp3';
+
+const MASKING_MODES = {
+  DISABLED: (t) => t('Disabled'),
+  UNIQUE: (t) => t('Unique'),
+  CONTINUOUS: (t) => t('Continuous'),
+};
 
 // Play sound
 const playSound = (src, timeout = 2000) => {
@@ -505,12 +511,14 @@ const Animator = ({ t }) => {
     REDO: () => {
       if (!isPlaying) projectActions.redo();
     },
-    MORE: () => {
-      // On the live view, expose playback tools ; on a selected frame, expose frame actions
+    SHOW_TOOLS: () => {
       if (currentFrameId === false) {
         playerRef.current.showFrame(false);
         setActiveWindow((v) => (v === 'tools' ? null : 'tools'));
-      } else {
+      }
+    },
+    SHOW_PICTURE_OPTIONS: () => {
+      if (currentFrameId !== false) {
         setActiveWindow((v) => (v === 'picture' ? null : 'picture'));
       }
     },
@@ -532,6 +540,13 @@ const Animator = ({ t }) => {
     DEDUPLICATE: async () => {
       projectActions.applyDuplicateFrameOffset(track, currentFrameId, -1);
       window.track('frame_duplicated', { projectId: `${id}`, trackId: `${track}`, frameId: `${currentFrameId}`, offset: -1 });
+    },
+    SET_DUPLICATE_COUNT: (value) => {
+      const target = Math.max(1, Math.round(Number(value) || 1));
+      const offset = target - (currentFrame?.length || 1);
+      if (!offset) return;
+      projectActions.applyDuplicateFrameOffset(track, currentFrameId, offset);
+      window.track('frame_duplicated', { projectId: `${id}`, trackId: `${track}`, frameId: `${currentFrameId}`, offset });
     },
     MUTE: () => {
       const newValue = !settings.SOUNDS;
@@ -610,12 +625,26 @@ const Animator = ({ t }) => {
 
   const secondaryActions = canExport ? [{ label: t('Export'), icon: faBoxArrowDown, onClick: handleAction.bind(null, 'EXPORT') }] : [];
 
-  const mobileActionsTop = [{ label: t('More'), icon: currentFrame === false ? faPlayOptions : faPictureOptions, onClick: handleAction.bind(null, 'MORE') }];
+  const mobileActionsTop = [
+    {
+      label: t('More'),
+      icon: currentFrame === false || isPlaying ? faEllipsisVertical : faImage,
+      onClick: handleAction.bind(null, currentFrame === false || isPlaying ? 'SHOW_TOOLS' : 'SHOW_PICTURE_OPTIONS'),
+      disabled: isPlaying,
+    },
+  ];
 
   const mobileActionsMiddle = [
-    { label: t('Masking mode ({{status}})'), icon: faEraser, onClick: handleAction.bind(null, 'TOGGLE_MASKING_MODE'), selected: maskingMode !== 'DISABLED' },
+    {
+      label: t('Masking mode ({{status}})'),
+      tag: maskingMode !== 'DISABLED' ? (MASKING_MODES[maskingMode] || MASKING_MODES.DISABLED)(t).slice(0, 1) : '',
+      icon: faEraser,
+      onClick: handleAction.bind(null, 'TOGGLE_MASKING_MODE'),
+      selected: maskingMode !== 'DISABLED',
+      disabled: isPlaying,
+    },
     { label: t('Take a picture'), icon: faCamera, onClick: handleAction.bind(null, 'TAKE_PICTURE'), color: 'primary', disabled: isTakingPicture || !isCameraReady },
-    { label: t('Camera settings'), icon: faSliders, onClick: handleAction.bind(null, 'CAMERA_SETTINGS') },
+    { label: t('Camera settings'), icon: faSliders, onClick: handleAction.bind(null, 'CAMERA_SETTINGS'), disabled: isPlaying },
   ];
 
   const mobileActionsBottom = [
@@ -752,15 +781,15 @@ const Animator = ({ t }) => {
           </Window>
           <Window isOpened={activeWindow === 'picture'} onClose={() => setActiveWindow(null)}>
             <PictureWindow
-              onAction={(action) => {
-                handleAction(action);
+              onAction={(action, args) => {
+                handleAction(action, args);
                 // Close the sheet once the frame is gone (delete) — the other actions keep it open for quick edits
                 if (action === 'DELETE_FRAME') {
                   setActiveWindow(null);
                 }
               }}
               isHidden={!!currentFrame.hidden}
-              canDeduplicate={currentFrame.length > 1}
+              duplicateCount={currentFrame.length || 1}
               canUseMaskingEditor={!!currentFrame.masking}
             />
           </Window>

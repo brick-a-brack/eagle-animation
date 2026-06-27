@@ -1,50 +1,21 @@
 import Heading from '@components/Heading';
+import NumberInput from '@components/NumberInput';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import faImageCircleMinus from '@icons/faImageCircleMinus';
-import faImageCirclePlus from '@icons/faImageCirclePlus';
 import faImageEye from '@icons/faImageEye';
 import faImageEyeSlash from '@icons/faImageEyeSlash';
+import faImages from '@icons/faImages';
 import faImageSlash from '@icons/faImageSlash';
 import faPen from '@icons/faPen';
 import { withTranslation } from 'react-i18next';
 
 import * as style from './style.module.css';
 
-const PictureWindow = ({ t, isHidden = false, canDeduplicate = false, canUseMaskingEditor = false, onAction = null }) => {
+const PictureWindow = ({ t, isHidden = false, canUseMaskingEditor = false, duplicateCount = 1, onAction = null }) => {
   const handleAction = (action) => () => {
     if (onAction) {
       onAction(action);
     }
   };
-
-  const rows = [
-    {
-      key: 'HIDE_FRAME',
-      label: isHidden ? t('Unhide frame') : t('Hide frame'),
-      icon: isHidden ? faImageEye : faImageEyeSlash,
-    },
-    {
-      key: 'DUPLICATE',
-      label: t('Duplicate frame'),
-      icon: faImageCirclePlus,
-    },
-    canDeduplicate && {
-      key: 'DEDUPLICATE',
-      label: t('Deduplicate frame'),
-      icon: faImageCircleMinus,
-    },
-    canUseMaskingEditor && {
-      key: 'MASKING_EDITOR',
-      label: t('Open masking editor'),
-      icon: faPen,
-    },
-    {
-      key: 'DELETE_FRAME',
-      label: t('Remove frame'),
-      icon: faImageSlash,
-      variant: 'alert',
-    },
-  ].filter(Boolean);
 
   return (
     <div className={style.actions}>
@@ -52,14 +23,36 @@ const PictureWindow = ({ t, isHidden = false, canDeduplicate = false, canUseMask
         {t('Frame actions')}
       </Heading>
 
-      {rows.map((row) => (
-        <button key={row.key} type="button" className={`${style.row} ${row.variant === 'alert' ? style.alert : ''}`} onClick={handleAction(row.key)}>
+      <button type="button" className={style.row} onClick={handleAction('HIDE_FRAME')}>
+        <span className={style.label}>
+          <FontAwesomeIcon icon={isHidden ? faImageEye : faImageEyeSlash} className={style.icon} />
+          {isHidden ? t('Unhide frame') : t('Hide frame')}
+        </span>
+      </button>
+
+      <div className={`${style.row} ${style.rowStatic}`}>
+        <span className={style.label} title={t('Number of frames this picture occupies')}>
+          <FontAwesomeIcon icon={faImages} className={style.icon} />
+          {t('Duplicate frame')}
+        </span>
+        <NumberInput key={duplicateCount} min={1} defaultValue={duplicateCount} onValueChange={(value) => onAction && onAction('SET_DUPLICATE_COUNT', value)} />
+      </div>
+
+      {canUseMaskingEditor && (
+        <button type="button" className={style.row} onClick={handleAction('MASKING_EDITOR')}>
           <span className={style.label}>
-            <FontAwesomeIcon icon={row.icon} className={style.icon} />
-            {row.label}
+            <FontAwesomeIcon icon={faPen} className={style.icon} />
+            {t('Open masking editor')}
           </span>
         </button>
-      ))}
+      )}
+
+      <button type="button" className={`${style.row} ${style.alert}`} onClick={handleAction('DELETE_FRAME')}>
+        <span className={style.label}>
+          <FontAwesomeIcon icon={faImageSlash} className={style.icon} />
+          {t('Remove frame')}
+        </span>
+      </button>
     </div>
   );
 };

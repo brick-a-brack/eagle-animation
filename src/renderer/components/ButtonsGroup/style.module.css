@@ -1,0 +1,19 @@
+.merge > * {
+    border-radius: 0;
+    margin-left:0;
+    margin-right:0;
+}
+
+.mergeStart > * {
+    margin-left:5px;
+    border-top-left-radius: 21px;
+    border-bottom-left-radius: 21px;
+    padding-left: 2px;
+}
+
+.mergeEnd > * {
+    margin-right:5px;
+    border-top-right-radius: 21px;
+    border-bottom-right-radius: 21px;
+    padding-right: 2px;
+}

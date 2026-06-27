@@ -6,10 +6,12 @@
     display: flex;
     justify-content: center;
     overflow: hidden;
+
+    height: 26px;
 }
 
 .noTag {
-    width:100px;
+    width: 100px;
 }
 
 .input {
@@ -22,6 +24,8 @@
     line-height: var(--line-size-6);
     text-align: center;
     width: 40px;
+    
+    height: 100%;
 }
 
 .input::-webkit-outer-spin-button,
@@ -42,21 +46,23 @@
     text-align: center;
     user-select: none;
     width: 30px;
+    height: 100%;
 }
 
 .field {
     align-items: center;
     display: flex;
     justify-content: center;
+    height: 100%;
 }
 
 .tag {
     align-items: center;
     display: flex;
-    height: 26px;
     padding-left: var(--space-small);
     padding-right: var(--space-small);
     user-select: none;
+    height: 100%;
 }
 
 .button:hover,

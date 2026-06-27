@@ -14,6 +14,7 @@
   cursor: pointer;
   display: flex;
   gap: var(--space-medium);
+  justify-content: space-between;
   min-height: 48px;
   padding: 0;
   text-align: left;
@@ -27,6 +28,16 @@
 .row:hover .label,
 .row:hover .icon {
   opacity: 0.7;
+}
+
+/* Rows that host their own controls (e.g. the duplicate stepper) must not behave like a single clickable button */
+.rowStatic {
+  cursor: default;
+}
+
+.rowStatic:hover .label,
+.rowStatic:hover .icon {
+  opacity: 1;
 }
 
 .label {

@@ -25,10 +25,16 @@
 }
 
 
+.subcontainer.center {
+  width: 156px;
+  min-width: 156px;
+  max-width: 156px;
+}
+
+
 .slider {
   display: inline-block;
   margin-left: 22px;
-  margin-right: 22px;
   min-width: 75px;
   transition: opacity 0.2s ease-in-out;
 }
@@ -43,9 +49,85 @@
 }
 
 
+.previewIndicator {
+  margin-right: var(--space-big);
+
+}
+
 @media (orientation: landscape) and (max-width: 700px),
 (orientation: landscape) and (max-height: 500px) {
   .container {
+    display: none;
+  }
+}
+
+.imageMoreButton {
+  display: none;
+}
+
+.playStandaloneButton {
+  display: none;
+}
+
+.moreButton {
+  display: none;
+}
+
+/* Hide image actions + preview indicator */
+@media (max-width: 1050px) {
+  .imageGroupActions {
+    display: none;
+  }
+
+  .imageMoreButton {
+    display: block;
+  }
+
+  .previewIndicator {
+    display: none;
+  }
+}
+
+
+/* Hide preview indicator */
+@media (max-width: 768px) {
+  .liveViewActions {
+    display: none;
+  }
+
+  .slider {
+    display: none;
+  }
+
+  .fpsInput {
+    display: none;
+  }
+
+  .playingGroupActions {
+    display: none;
+  }
+
+  .playStandaloneButton {
+    display: block;
+  }
+
+  .moreButton {
+    display: block;
+  }
+
+  .subcontainer.left {
+    justify-content: flex-start;
+    min-width: 84px;
+    padding-left: 5px;
+  }
+
+  .subcontainer.right {
+    justify-content: flex-end;
+    min-width: 84px;
+    padding-right: 5px;
+  }
+
+  .imageMoreButton {
     display: none;
   }
 }
