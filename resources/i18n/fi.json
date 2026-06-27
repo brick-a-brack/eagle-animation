@@ -60,7 +60,7 @@
   "Difference": "Ero",
   "Disable grid": "Poista ruudukko käytöstä",
   "Enable grid": "Ota ruudukko käyttöön",
-  "Onion blending": "Sipulisekoitus",
+  "Onion skin": "Sipulisekoitus",
   "Camera settings": "Kameran asetukset",
   "Live": "Suora",
   "Play": "Toista",
@@ -364,5 +364,6 @@
   "Onion skin": "__NOT_TRANSLATED__",
   "Speed": "__NOT_TRANSLATED__",
   "More": "__NOT_TRANSLATED__",
-  "Frame actions": "__NOT_TRANSLATED__"
+  "Frame actions": "__NOT_TRANSLATED__",
+  "Number of frames this picture occupies": "__NOT_TRANSLATED__"
 }

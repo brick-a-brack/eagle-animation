@@ -60,7 +60,7 @@
   "Difference": "Rozdíl",
   "Disable grid": "Vypnout mřížku",
   "Enable grid": "Zapnout mřížku",
-  "Onion blending": "Cibulové míchání",
+  "Onion skin": "Cibulové míchání",
   "Camera settings": "Nastavení kamery",
   "Live": "Živě",
   "Play": "Přehrát",
@@ -371,5 +371,6 @@
   "Onion skin": "__NOT_TRANSLATED__",
   "Speed": "__NOT_TRANSLATED__",
   "More": "__NOT_TRANSLATED__",
-  "Frame actions": "__NOT_TRANSLATED__"
+  "Frame actions": "__NOT_TRANSLATED__",
+  "Number of frames this picture occupies": "__NOT_TRANSLATED__"
 }

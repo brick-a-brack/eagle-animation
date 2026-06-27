@@ -12,7 +12,7 @@
   "Duplicate frame": "Duplica fotogramma",
   "Deduplicate frame": "Deduplica fotogramma",
   "Difference": "Differenza",
-  "Onion blending": "Sfumatura cipolla",
+  "Onion skin": "Sfumatura cipolla",
   "Live": "Dal vivo",
   "Play": "Riproduci",
   "Pause": "Pausa",
@@ -382,5 +382,6 @@
   "Onion skin": "__NOT_TRANSLATED__",
   "Speed": "__NOT_TRANSLATED__",
   "More": "__NOT_TRANSLATED__",
-  "Frame actions": "__NOT_TRANSLATED__"
+  "Frame actions": "__NOT_TRANSLATED__",
+  "Number of frames this picture occupies": "__NOT_TRANSLATED__"
 }

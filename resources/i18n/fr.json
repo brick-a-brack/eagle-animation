@@ -12,7 +12,6 @@
   "Duplicate frame": "Dupliquer l'image",
   "Deduplicate frame": "Dédupliquer l'image",
   "Difference": "Différence",
-  "Onion blending": "Transparence",
   "Live": "Direct",
   "Play": "Lecture",
   "Pause": "Pause",
@@ -151,8 +150,8 @@
   "Next frame": "Image suivante",
   "Jump to live view": "Aller à la vue en direct",
   "Jump to first frame": "Aller à la première image",
-  "Increase onion skin": "Augmenter l'onion skin",
-  "Decrease onion skin": "Réduire l'onion skin",
+  "Increase onion skin": "Augmenter la transparence",
+  "Decrease onion skin": "Réduire la transparence",
   "Mute / Unmute sounds": "Activer / Désactiver les sons",
   "Duplicate current frame": "Dupliquer l'image actuelle",
   "Deduplicate current frame": "Dédupliquer l'image actuelle",
@@ -379,8 +378,9 @@
   "Redo last undone action": "Refaire la dernière action annulée",
   "Add new scene": "Ajouter une nouvelle scène",
   "Tools & playback": "Outils & lecture",
-  "Onion skin": "Pelure d'oignon",
+  "Onion skin": "Onion skin",
   "Speed": "Vitesse",
-  "More": "__NOT_TRANSLATED__",
-  "Frame actions": "Actions sur la photo"
+  "More": "Voir plus",
+  "Frame actions": "Actions sur l'image",
+  "Number of frames this picture occupies": "Nombre d'images occupées par cette photo"
 }

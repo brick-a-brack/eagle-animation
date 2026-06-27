@@ -60,7 +60,7 @@
   "Difference": "Razlika",
   "Disable grid": "Onemogući mrežu",
   "Enable grid": "Omogući mrežu",
-  "Onion blending": "Slojevito preklapanje",
+  "Onion skin": "Slojevito preklapanje",
   "Camera settings": "Postavke kamere",
   "Live": "Uživo",
   "Play": "Reproduciraj",
@@ -368,5 +368,6 @@
   "Onion skin": "__NOT_TRANSLATED__",
   "Speed": "__NOT_TRANSLATED__",
   "More": "__NOT_TRANSLATED__",
-  "Frame actions": "__NOT_TRANSLATED__"
+  "Frame actions": "__NOT_TRANSLATED__",
+  "Number of frames this picture occupies": "__NOT_TRANSLATED__"
 }

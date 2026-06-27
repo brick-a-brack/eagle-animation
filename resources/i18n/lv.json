@@ -60,7 +60,7 @@
   "Difference": "Atšķirība",
   "Disable grid": "Atspējot režģi",
   "Enable grid": "Iespējot režģi",
-  "Onion blending": "Sīpolu sajaukšana",
+  "Onion skin": "Sīpolu sajaukšana",
   "Camera settings": "Kameras iestatījumi",
   "Live": "Tiešraide",
   "Play": "Atskaņot",
@@ -368,5 +368,6 @@
   "Onion skin": "__NOT_TRANSLATED__",
   "Speed": "__NOT_TRANSLATED__",
   "More": "__NOT_TRANSLATED__",
-  "Frame actions": "__NOT_TRANSLATED__"
+  "Frame actions": "__NOT_TRANSLATED__",
+  "Number of frames this picture occupies": "__NOT_TRANSLATED__"
 }

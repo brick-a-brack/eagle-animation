@@ -12,7 +12,7 @@
   "Duplicate frame": "Duplikuj klatkę",
   "Deduplicate frame": "Usuń duplikat klatki",
   "Difference": "Różnice",
-  "Onion blending": "Łączenie cebulowe",
+  "Onion skin": "Łączenie cebulowe",
   "Live": "Na żywo",
   "Play": "Odtwórz",
   "Pause": "Pauza",
@@ -386,5 +386,6 @@
   "Onion skin": "__NOT_TRANSLATED__",
   "Speed": "__NOT_TRANSLATED__",
   "More": "__NOT_TRANSLATED__",
-  "Frame actions": "__NOT_TRANSLATED__"
+  "Frame actions": "__NOT_TRANSLATED__",
+  "Number of frames this picture occupies": "__NOT_TRANSLATED__"
 }

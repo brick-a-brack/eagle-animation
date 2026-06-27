@@ -12,7 +12,7 @@
   "Duplicate frame": "Bild duplizieren",
   "Deduplicate frame": "Bild deduplizieren",
   "Difference": "Unterschied",
-  "Onion blending": "Transparenz",
+  "Onion skin": "Transparenz",
   "Live": "Live",
   "Play": "Abspielen",
   "Pause": "Pause",
@@ -379,5 +379,6 @@
   "Onion skin": "__NOT_TRANSLATED__",
   "Speed": "__NOT_TRANSLATED__",
   "More": "__NOT_TRANSLATED__",
-  "Frame actions": "__NOT_TRANSLATED__"
+  "Frame actions": "__NOT_TRANSLATED__",
+  "Number of frames this picture occupies": "__NOT_TRANSLATED__"
 }

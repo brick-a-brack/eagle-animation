@@ -12,7 +12,7 @@
   "Duplicate frame": "Duplicate frame",
   "Deduplicate frame": "Deduplicate frame",
   "Difference": "Difference",
-  "Onion blending": "Onion blending",
+  "Onion skin": "Onion skin",
   "Live": "Live",
   "Play": "Play",
   "Pause": "Pause",
@@ -379,5 +379,6 @@
   "Onion skin": "Onion skin",
   "Speed": "Speed",
   "More": "More",
-  "Frame actions": "Frame actions"
+  "Frame actions": "Frame actions",
+  "Number of frames this picture occupies": "Number of frames this picture occupies"
 }
