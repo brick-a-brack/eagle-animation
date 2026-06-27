@@ -170,6 +170,7 @@ const ControlBar = ({
             onClick={framePosition === false ? handleAction('TOGGLE_MASKING_MODE') : () => {}}
             size="mini"
             icon={faEraser}
+            disabled={isPlaying}
           />
         </div>
         <div className={`${style.subcontainer} ${style.right}`}>
