@@ -1,14 +1,14 @@
 .headerBar {
-    width: 60px;
-    flex-direction: column;
-    height: 100%;
-    position: fixed;
-    border: none;
-    overflow: hidden;
-    z-index: 99;
     background: var(--color-theme-extra-dark);
+    border: none;
     box-sizing: border-box;
     display: none;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+    position: fixed;
+    width: 60px;
+    z-index: 99;
 }
 
 .headerBarLeft {
@@ -30,21 +30,19 @@
 .top,
 .center,
 .bottom {
-
-    position: absolute;
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
-    align-content: center;
+    place-content: center center;
     align-items: center;
+    display: flex;
+    flex-direction: column;
+    position: absolute;
     width: 100%;
 
 
 }
 
 .top {
-    top: 0;
     padding-top: 5px;
+    top: 0;
 
 }
 
@@ -61,9 +59,9 @@
 .logo {
     cursor: pointer;
     height: 42px;
-    width: 42px;
     margin: 5px;
     user-select: none;
+    width: 42px;
 }
 
 .headerBarLeft.withBorder {
@@ -75,8 +73,8 @@
 }
 
 /* Show it on mobile view */
-@media (orientation: landscape) and (max-width: 700px),
-       (orientation: landscape) and (max-height: 500px) {
+@media (orientation: landscape) and (width <= 700px),
+       (orientation: landscape) and (height <= 500px) {
     .headerBar {
         display: block;
     }

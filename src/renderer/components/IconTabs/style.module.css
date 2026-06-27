@@ -1,6 +1,7 @@
 .container {
     display: flex;
     justify-content: center;
+
     --size: 45px;
     --icon-size: 22px;
 }
@@ -47,10 +48,10 @@
     position: absolute;
     top: 0;
     transform: translateX(0%);
+    transform: translateX(calc(var(--index) * (var(--size) + 1px) + 3px));
     transition: transform .25s ease-in-out;
     width: var(--size);
     z-index: 0;
-    transform: translateX(calc(var(--index) * (var(--size) + 1px) + 3px));
 }
 
 

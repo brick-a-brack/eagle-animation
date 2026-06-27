@@ -1,8 +1,8 @@
 .dpad {
   display: grid;
+  gap: 6px;
   grid-template-columns: repeat(3, 50px);
   grid-template-rows: repeat(3, 50px);
-  gap: 6px;
   justify-content: center;
 }
 
@@ -11,37 +11,37 @@
   border: 1px solid var(--pp-border);
   border-radius: var(--pp-radius);
   color: var(--pp-text-dim);
-  display: grid;
-  place-items: center;
   cursor: pointer;
+  display: grid;
   padding: 0;
+  place-items: center;
   transition: transform 0.08s ease, background 0.12s ease,
     border-color 0.12s ease, color 0.12s ease;
 }
 
 .dbtn:disabled {
-  opacity: 0.3;
   cursor: not-allowed;
+  opacity: 0.3;
   pointer-events: none;
 }
 
 .dbtn:hover {
-  color: var(--pp-accent);
-  border-color: var(--pp-border-strong);
   background: var(--pp-panel-3);
+  border-color: var(--pp-border-strong);
+  color: var(--pp-accent);
 }
 
 .dbtn:active,
 .dbtn.active {
-  transform: scale(0.92);
   background: var(--pp-accent);
-  color: var(--pp-accent-ink);
   border-color: var(--pp-accent);
+  color: var(--pp-accent-ink);
+  transform: scale(0.92);
 }
 
 .dbtn svg {
-  width: 18px;
   height: 18px;
+  width: 18px;
 }
 
 .center {
@@ -65,6 +65,6 @@
 
 .roll-left,
 .roll-right {
-  color: var(--pp-text-dim);
   border-style: dashed;
+  color: var(--pp-text-dim);
 }

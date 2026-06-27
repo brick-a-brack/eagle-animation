@@ -12,6 +12,7 @@
   padding-right: 2px;
   white-space: nowrap;
   width: 100%;
+
   --size: 80px;
   --title-size: calc(var(--size) * 0.3125);
   --title-font: calc(var(--size) * 0.1625);
@@ -52,13 +53,10 @@
   height: var(--size);
   min-width: var(--size) !important;
   overflow: hidden;
-  padding-left: 2px;
-  padding-right: 2px;
+  padding: var(--padding-top) 2px var(--padding-bottom) 2px;
   position: relative;
   user-select: none;
   vertical-align: bottom;
-  padding-bottom: var(--padding-bottom);
-  padding-top: var(--padding-top);
 }
 
 .img {
@@ -149,6 +147,7 @@ span[data-selected="true"] .title,
 @media (pointer: coarse) {
   .container {
     scrollbar-width: none;
+
     --padding-bottom: 4px;
     --padding-top: 4px;
   }
@@ -208,6 +207,7 @@ span[data-selected="true"] .title,
   position: absolute;
   text-align: center;
   width: calc(100% - 4px);
+
   --fa-primary-color: var(--color-white);
   --fa-secondary-color: var(--color-white);
 }
@@ -244,20 +244,20 @@ span[data-selected="true"] .title,
   width: calc(100% - 4px);
 }
 
-@media (max-width: 850px) {
+@media (width <= 850px) {
   .container {
     --size: 70px;
 
   }
 }
 
-@media (max-width: 800px) {
+@media (width <= 800px) {
   .container {
     --size: 62px;
   }
 }
 
-@media (max-width: 750px) {
+@media (width <= 750px) {
   .container {
     --size: 54px;
   }

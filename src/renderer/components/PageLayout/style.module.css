@@ -6,9 +6,8 @@
 }
 
 
-@media (orientation: landscape) and (max-width: 700px),
-(orientation: landscape) and (max-height: 500px) {
-
+@media (orientation: landscape) and (width <= 700px),
+(orientation: landscape) and (height <= 500px) {
   .hasMobileLeftBar {
     padding-left: 62px;
   }

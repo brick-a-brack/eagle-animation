@@ -26,9 +26,9 @@
 
 
 .subcontainer.center {
-  width: 156px;
-  min-width: 156px;
   max-width: 156px;
+  min-width: 156px;
+  width: 156px;
 }
 
 
@@ -54,8 +54,8 @@
 
 }
 
-@media (orientation: landscape) and (max-width: 700px),
-(orientation: landscape) and (max-height: 500px) {
+@media (orientation: landscape) and (width <= 700px),
+(orientation: landscape) and (height <= 500px) {
   .container {
     display: none;
   }
@@ -74,7 +74,7 @@
 }
 
 /* Hide image actions + preview indicator */
-@media (max-width: 1050px) {
+@media (width <= 1050px) {
   .imageGroupActions {
     display: none;
   }
@@ -90,7 +90,7 @@
 
 
 /* Hide preview indicator */
-@media (max-width: 768px) {
+@media (width <= 768px) {
   .liveViewActions {
     display: none;
   }
