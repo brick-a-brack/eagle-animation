@@ -60,7 +60,7 @@
   "Difference": "Rozdiel",
   "Disable grid": "Vypnúť mriežku",
   "Enable grid": "Zapnúť mriežku",
-  "Onion blending": "Cibulové prelínanie",
+  "Onion skin": "Cibuľová koža",
   "Camera settings": "Nastavenia kamery",
   "Live": "Naživo",
   "Play": "Prehrať",
@@ -366,5 +366,11 @@
   "Send anonymous usage data to help improve the application": "Poslať anonymné údaje o používaní na pomoc pri zlepšovaní aplikácie",
   "Undo last action": "Zrušiť poslednú akciu",
   "Redo last undone action": "Znovu vykonať poslednú zrušenú akciu",
-  "Add new scene": "Pridať novú scénu"
+  "Add new scene": "Pridať novú scénu",
+  "Tools & playback": "Nástroje a prehrávanie",
+  "Speed": "Rýchlosť",
+  "More": "Viac",
+  "Frame actions": "Akcie na snímke",
+  "Project name": "Názov projektu",
+  "Delete project": "Odstrániť projekt"
 }

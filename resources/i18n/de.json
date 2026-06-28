@@ -12,7 +12,7 @@
   "Duplicate frame": "Bild duplizieren",
   "Deduplicate frame": "Bild deduplizieren",
   "Difference": "Unterschied",
-  "Onion blending": "Transparenz",
+  "Onion skin": "Zwiebelhaut",
   "Live": "Live",
   "Play": "Abspielen",
   "Pause": "Pause",
@@ -374,5 +374,10 @@
   "Send anonymous usage data to help improve the application": "Anonyme Nutzungsdaten senden, um die Anwendung zu verbessern",
   "Undo last action": "Letzte Aktion rückgängig machen",
   "Redo last undone action": "Letzte rückgängig gemachte Aktion wiederholen",
-  "Add new scene": "Neue Szene hinzufügen"
+  "Add new scene": "Neue Szene hinzufügen",
+  "Tools & playback": "Werkzeuge & Wiedergabe",
+  "Speed": "Geschwindigkeit",
+  "More": "Mehr",
+  "Frame actions": "Bildaktionen",
+  "Project name": "Projektname"
 }

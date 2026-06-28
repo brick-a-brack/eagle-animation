@@ -64,7 +64,7 @@ const NumberInput = ({ register = {}, className = '', tag = '', step = 1, style 
   };
 
   return (
-    <div className={`${styleCss.container} ${!tag ? styleCss.noTag : ''}`} style={style}>
+    <div className={`${styleCss.container} ${!tag ? styleCss.noTag : ''} ${className || ''}`} style={style}>
       <button
         onKeyDown={(e) => {
           e.preventDefault();
@@ -80,7 +80,7 @@ const NumberInput = ({ register = {}, className = '', tag = '', step = 1, style 
           min={min}
           max={max}
           type="number"
-          className={`${styleCss.input} ${className}`}
+          className={`${styleCss.input}`}
           {...rest}
           {...register}
           onBlur={handleBlur}

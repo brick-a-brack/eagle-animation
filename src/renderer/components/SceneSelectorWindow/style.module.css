@@ -1,0 +1,210 @@
+.actions {
+  margin: 0 var(--space-huge);
+  padding-bottom: var(--space-huge);
+  width: calc(100% - 2 * var(--space-huge));
+}
+
+.title {
+  margin-top: var(--space-medium);
+}
+
+.fieldLabel {
+  color: var(--color-white);
+  font-size: var(--font-size-8);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  opacity: 0.45;
+  text-transform: uppercase;
+}
+
+.projectRow {
+  align-items: stretch;
+  display: flex;
+  gap: var(--space-small);
+  margin-top: var(--space-small);
+}
+
+.projectInput {
+  background: var(--color-theme-medium);
+  border: 1px solid var(--color-theme-light);
+  border-radius: var(--border-radius-small);
+  box-sizing: border-box;
+  color: var(--color-white);
+  flex: 1;
+  font-size: var(--font-size-4);
+  font-weight: 600;
+  height: 46px;
+  min-width: 0;
+  outline: none;
+  padding: 0 10px;
+  transition: border-color 0.15s ease-in-out;
+}
+
+.projectInput::placeholder {
+  color: var(--color-white);
+  opacity: 0.4;
+}
+
+.projectInput:focus {
+  border-color: var(--color-primary);
+}
+
+.deleteButton {
+  align-items: center;
+  background: var(--color-theme-medium);
+  border: 1px solid var(--color-theme-light);
+  border-radius: var(--border-radius-small);
+  box-sizing: border-box;
+  color: var(--color-white);
+  cursor: pointer;
+  display: flex;
+  flex-shrink: 0;
+  justify-content: center;
+  opacity: 0.7;
+  transition: border-color 0.15s ease-in-out, color 0.15s ease-in-out, opacity 0.15s ease-in-out;
+  width: 48px;
+}
+
+.deleteButton:hover {
+  border-color: var(--color-alert);
+  color: var(--color-alert);
+  opacity: 1;
+}
+
+.sceneHeader {
+  align-items: center;
+  display: flex;
+  gap: var(--space-small);
+  margin-top: var(--space-huge);
+}
+
+.countBadge {
+  background: var(--color-theme-light);
+  border-radius: 999px;
+  color: var(--color-white);
+  font-size: var(--font-size-9);
+  font-weight: 600;
+  opacity: 0.7;
+  padding: 1px 8px;
+}
+
+.sceneList {
+  margin-top: var(--space-small);
+}
+
+.sceneCard {
+  background: var(--color-theme-medium);
+  border: 1px solid var(--color-theme-light);
+  border-radius: var(--border-radius-small);
+  display: flex;
+  margin-bottom: var(--space-medium);
+  overflow: hidden;
+}
+
+.sceneCardActive {
+  background: rgb(72 110 229 / 16%);
+  border-color: var(--color-primary);
+}
+
+.sceneMain {
+  align-items: center;
+  background: transparent;
+  border: none;
+  color: var(--color-white);
+  cursor: pointer;
+  display: flex;
+  flex: 1;
+  gap: var(--space-medium);
+  height: 46px;
+  min-width: 0;
+  padding: 0 10px;
+  text-align: left;
+}
+
+.sceneIcon {
+  color: var(--color-theme-extra-light);
+  flex-shrink: 0;
+  height: 1.2rem;
+  width: 1.2rem;
+}
+
+.sceneCardActive .sceneIcon {
+  color: var(--color-primary);
+}
+
+.sceneInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.sceneTitle {
+  font-size: var(--font-size-7);
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sceneMeta {
+  align-items: center;
+  color: var(--color-white);
+  display: flex;
+  font-size: var(--font-size-9);
+  gap: var(--space-medium);
+  opacity: 0.6;
+}
+
+.sceneMeta span {
+  align-items: center;
+  display: inline-flex;
+  gap: 4px;
+}
+
+.sceneGear {
+  align-items: center;
+  background: transparent;
+  border: none;
+  border-left: 1px solid var(--color-theme-light);
+  color: var(--color-white);
+  cursor: pointer;
+  display: flex;
+  flex-shrink: 0;
+  justify-content: center;
+  opacity: 0.6;
+  transition: opacity 0.15s ease-in-out, color 0.15s ease-in-out;
+  width: 48px;
+}
+
+.sceneCardActive .sceneGear {
+  border-left-color: var(--color-primary);
+}
+
+.sceneGear:hover {
+  color: var(--color-primary);
+  opacity: 1;
+}
+
+.createButton {
+  align-items: center;
+  background: transparent;
+  border: 1px dashed var(--color-theme-extra-light);
+  border-radius: var(--border-radius-small);
+  color: var(--color-white);
+  cursor: pointer;
+  display: flex;
+  font-size: var(--font-size-5);
+  font-weight: 600;
+  gap: var(--space-small);
+  justify-content: center;
+  margin-top: var(--space-small);
+  padding: 12px;
+  transition: border-color 0.15s ease-in-out, color 0.15s ease-in-out;
+  width: 100%;
+}
+
+.createButton:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}

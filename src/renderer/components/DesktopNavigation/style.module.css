@@ -24,8 +24,22 @@
     user-select: none;
 }
 
+.left,
+.right,
+.center {
+    display: flex;
+}
+
 .center {
     left: 50%;
     position: absolute;
     transform: translateX(-50%);
+}
+
+/* Hide it on mobile view */
+@media (orientation: landscape) and (width <= 700px),
+(orientation: landscape) and (height <= 500px) {
+    .headerBar {
+        display: none;
+    }
 }

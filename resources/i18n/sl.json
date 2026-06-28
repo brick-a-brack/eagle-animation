@@ -60,7 +60,7 @@
   "Difference": "Razlika",
   "Disable grid": "Onemogoči mrežo",
   "Enable grid": "Omogoči mrežo",
-  "Onion blending": "Prosojnost (onion skin)",
+  "Onion skin": "Luknjača",
   "Camera settings": "Nastavitve kamere",
   "Live": "V živo",
   "Play": "Predvajaj",
@@ -367,5 +367,11 @@
   "Send anonymous usage data to help improve the application": "Pošlji anonimne podatke o uporabi, da pomagaš izboljšati aplikacijo",
   "Undo last action": "Razveljavi zadnjo dejanje",
   "Redo last undone action": "Ponovi zadnje razveljavljeno dejanje",
-  "Add new scene": "Dodaj novo sceno"
+  "Add new scene": "Dodaj novo sceno",
+  "Tools & playback": "Orodja & predvajanje",
+  "Speed": "Hitrost",
+  "More": "Več",
+  "Frame actions": "Dejanja na sliki",
+  "Project name": "Ime projekta",
+  "Delete project": "Izbriši projekt"
 }

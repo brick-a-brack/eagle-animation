@@ -60,7 +60,7 @@
   "Difference": "Разлика",
   "Disable grid": "Изключване на решетката",
   "Enable grid": "Активиране на решетката",
-  "Onion blending": "Смесване като луковица",
+  "Onion skin": "Лукова кожа",
   "Camera settings": "Настройки на камерата",
   "Live": "На живо",
   "Play": "Пусни",
@@ -359,5 +359,11 @@
   "Send anonymous usage data to help improve the application": "Изпращайте анонимни данни за използване, за да помогнете за подобряване на приложението",
   "Undo last action": "Отмени последното действие",
   "Redo last undone action": "Повтори последното отменено действие",
-  "Add new scene": "Добави нова сцена"
+  "Add new scene": "Добави нова сцена",
+  "Tools & playback": "Инструменти и възпроизвеждане",
+  "Speed": "Скорост",
+  "More": "Повече",
+  "Frame actions": "Действия върху кадъра",
+  "Project name": "Име на проекта",
+  "Delete project": "Изтриване на проекта"
 }

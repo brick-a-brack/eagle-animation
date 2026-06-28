@@ -55,6 +55,27 @@
     width: 20px;
 }
 
+.tag {
+    align-items: center;
+    background-color: var(--color-white);
+    border: 2px solid var(--color-theme-dark);
+    border-radius: 999px;
+    box-sizing: border-box;
+    color: var(--color-theme-dark);
+    display: flex;
+    font-size: 0.65rem;
+    font-weight: 700;
+    height: 18px;
+    justify-content: center;
+    line-height: 1;
+    min-width: 18px;
+    position: absolute;
+    right: -4px;
+    text-transform: uppercase;
+    top: -4px;
+        z-index: 9;
+}
+
 .button>svg path {
     fill: var(--color-white);
 }

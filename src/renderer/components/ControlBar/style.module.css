@@ -3,7 +3,7 @@
   background: var(--color-theme-dark);
   display: flex;
   gap: var(--space-big);
-  height:62px;
+  height: 62px;
   justify-content: center;
   overflow: hidden;
   text-align: center;
@@ -25,19 +25,113 @@
 }
 
 
+.subcontainer.center {
+  max-width: 156px;
+  min-width: 156px;
+  width: 156px;
+}
+
+
 .slider {
   display: inline-block;
   margin-left: 22px;
-  margin-right: 22px;
   min-width: 75px;
   transition: opacity 0.2s ease-in-out;
 }
 
 .sliderDisabled {
-  cursor:not-allowed;
+  cursor: not-allowed;
   opacity: 0.2;
 }
 
-.sliderDisabled *{
+.sliderDisabled * {
   pointer-events: none;
+}
+
+
+.previewIndicator {
+  margin-right: var(--space-big);
+
+}
+
+@media (orientation: landscape) and (width <=700px),
+(orientation: landscape) and (height <=500px) {
+  .container {
+    display: none;
+  }
+}
+
+.imageMoreButton {
+  display: none;
+}
+
+.playStandaloneButton {
+  display: none;
+}
+
+.moreButton {
+  display: none;
+}
+
+/* Hide image actions + preview indicator */
+@media (width <=1050px) {
+  .imageGroupActions {
+    display: none;
+  }
+
+  .imageMoreButton {
+    display: block;
+  }
+
+  .previewIndicator {
+    display: none;
+  }
+}
+
+
+/* Hide preview indicator */
+@media (width <=768px) {
+  .liveViewActions {
+    display: none;
+  }
+
+  .slider {
+    display: none;
+  }
+
+  .fpsInput {
+    display: none;
+  }
+
+  .playingGroupActions {
+    display: none;
+  }
+
+  .playStandaloneButton {
+    display: block;
+  }
+
+  .moreButton {
+    display: block;
+  }
+
+  .subcontainer.left {
+    justify-content: flex-start;
+    min-width: 84px;
+    padding-left: 5px;
+  }
+
+  .subcontainer.right {
+    justify-content: flex-end;
+    min-width: 84px;
+    padding-right: 5px;
+  }
+
+  .imageMoreButton {
+    display: none;
+  }
+
+  .container {
+    gap: 0;
+  }
 }

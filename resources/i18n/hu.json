@@ -60,7 +60,7 @@
   "Difference": "Különbség",
   "Disable grid": "Rács letiltása",
   "Enable grid": "Rács megjelenítése",
-  "Onion blending": "Hagymahéj effektus",
+  "Onion skin": "Hagyma bőr",
   "Camera settings": "Kamera beállítások",
   "Live": "Élő",
   "Play": "Lejátszás",
@@ -359,5 +359,11 @@
   "Send anonymous usage data to help improve the application": "Névtelen használati adatokat küldeni az alkalmazás fejlesztésének segítésére",
   "Undo last action": "Utolsó művelet visszavonása",
   "Redo last undone action": "Utolsó visszavont művelet megismétlése",
-  "Add new scene": "Új jelenet hozzáadása"
+  "Add new scene": "Új jelenet hozzáadása",
+  "Tools & playback": "Eszközök & lejátszás",
+  "Speed": "Sebesség",
+  "More": "Több",
+  "Frame actions": "Kép műveletek",
+  "Project name": "Projekt neve",
+  "Delete project": "Projekt törlése"
 }

@@ -12,7 +12,7 @@
   "Duplicate frame": "Duplicate frame",
   "Deduplicate frame": "Deduplicate frame",
   "Difference": "Difference",
-  "Onion blending": "Onion blending",
+  "Onion skin": "Onion skin",
   "Live": "Live",
   "Play": "Play",
   "Pause": "Pause",
@@ -374,5 +374,11 @@
   "Untitled scene #{{index}}": "Untitled scene #{{index}}",
   "Undo last action": "Undo last action",
   "Redo last undone action": "Redo last undone action",
-  "Add new scene": "Add new scene"
+  "Add new scene": "Add new scene",
+  "Tools & playback": "Tools & playback",
+  "Speed": "Speed",
+  "More": "More",
+  "Frame actions": "Frame actions",
+  "Onion blending": "Onion blending",
+  "Project name": "Project name"
 }

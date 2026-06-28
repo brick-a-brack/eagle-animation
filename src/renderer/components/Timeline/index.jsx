@@ -15,7 +15,7 @@ import * as style from './style.module.css';
 const MOUSE_OPTIONS = { activationConstraint: { distance: 0 } };
 const TOUCH_OPTIONS = { activationConstraint: { delay: 250, tolerance: 5 } };
 
-const SortableItem = memo(({ id, link = '', hidden = false, length = 0, hasMasking = false, maskingLabel = '', isShortPlayBegining = false, onSelect, index }) => {
+const SortableItem = memo(function SortableItem({ id, link = '', hidden = false, length = 0, hasMasking = false, maskingLabel = '', isShortPlayBegining = false, onSelect, index }) {
   const { setNodeRef, isDragging, transform, transition, listeners, attributes, active } = useSortable({ id });
   return (
     <span
@@ -71,7 +71,7 @@ const LiveItem = ({ select, onSelect, frameCaptureMode }) => {
 
 // Memoized inner list: receives ONLY stable props. Never re-renders on play tick
 // (no `select`/`playing`), so neither DndContext nor SortableContext re-emit context.
-const SortableList = memo(({ sortableItemIds, visiblePictures, maskingLabel, shortPlayFrameId, onSelect, onDragEnd, sensors }) => {
+const SortableList = memo(function SortableList({ sortableItemIds, visiblePictures, maskingLabel, shortPlayFrameId, onSelect, onDragEnd, sensors }) {
   return (
     <DndContext sensors={sensors} onDragEnd={onDragEnd}>
       <SortableContext items={sortableItemIds} strategy={horizontalListSortingStrategy}>
@@ -160,8 +160,8 @@ const Timeline = ({ onSelect, onMove, select = false, pictures = [], playing = f
     picturesKey += p.id + ',' + (p.hidden ? 1 : 0) + ',' + (p.masking ? 1 : 0) + ',' + (p.length || 0) + ',' + (p.link || '') + ';';
   }
 
-  const sortableItemIds = useMemo(() => pictures.map((p) => p.id), [picturesKey]); // eslint-disable-line react-hooks/exhaustive-deps
-  const visiblePictures = useMemo(() => pictures.filter((e) => !e.deleted), [picturesKey]); // eslint-disable-line react-hooks/exhaustive-deps
+  const sortableItemIds = useMemo(() => pictures.map((p) => p.id), [picturesKey]);
+  const visiblePictures = useMemo(() => pictures.filter((e) => !e.deleted), [picturesKey]);
 
   // Imperative .selected class toggling: avoids passing `select` as a prop to SortableItem,
   // which would defeat memoization. Runs after each pictures/select change, before paint.
@@ -197,7 +197,7 @@ const Timeline = ({ onSelect, onMove, select = false, pictures = [], playing = f
         horizontalOffset: (-window.innerWidth + document.querySelector(target).getBoundingClientRect().width) / 2,
       }).then(updateShadows);
     }
-  }, [select, picturesKey, playing]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [select, picturesKey, playing]);
 
   // Short play id: same O(n) walk as before.
   const shortPlayFrameId = useMemo(() => {
@@ -217,7 +217,7 @@ const Timeline = ({ onSelect, onMove, select = false, pictures = [], playing = f
       position += len;
     }
     return null;
-  }, [picturesKey, shortPlayStatus, shortPlayFrames]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [picturesKey, shortPlayStatus, shortPlayFrames]);
 
   return (
     <div className={style.wrapper}>

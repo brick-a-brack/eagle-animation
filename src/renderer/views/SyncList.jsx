@@ -1,11 +1,13 @@
+import DesktopNavigation from '@components/DesktopNavigation';
 import EmptyState from '@components/EmptyState';
-import HeaderBar from '@components/HeaderBar';
 import LoadingPage from '@components/LoadingPage';
+import MobileNavigation from '@components/MobileNavigation';
 import PageContent from '@components/PageContent';
 import PageLayout from '@components/PageLayout';
 import SyncItem from '@components/SyncItem';
 import useDiscordActivity from '@hooks/useDiscordActivity';
 import useSyncList from '@hooks/useSyncList';
+import faArrowLeft from '@icons/faArrowLeft';
 import faFilm from '@icons/faFilm';
 import { withTranslation } from 'react-i18next';
 import { useNavigate, useSearchParams } from 'react-router-dom';
@@ -22,11 +24,14 @@ const SyncListView = ({ t }) => {
 
   const orderedItems = [...[...items].reverse().filter((item) => item.isUploaded === false), ...[...items].reverse().filter((item) => item.isUploaded === true)];
 
+  const primaryActions = [{ label: t('Back'), icon: faArrowLeft, onClick: handleBack }];
+
   return (
     <>
       <LoadingPage show={!items} />
-      <PageLayout>
-        <HeaderBar leftActions={['BACK']} onAction={handleBack} title={t('Sync list')} withBorder />
+      <PageLayout hasMobileLeftBar={true}>
+        <DesktopNavigation leftActions={primaryActions} onAction={handleBack} title={t('Sync list')} withBorder />
+        <MobileNavigation topLeftActions={primaryActions} showLeftActions={true} withBorder={true} />
         <PageContent>
           {orderedItems.length === 0 && <EmptyState message={t('No items to sync')} icon={faFilm} />}
           {orderedItems.length > 0 && (

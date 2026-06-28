@@ -60,7 +60,7 @@
   "Difference": "Διαφορά",
   "Disable grid": "Απενεργοποίηση πλέγματος",
   "Enable grid": "Ενεργοποίηση πλέγματος",
-  "Onion blending": "Διαφάνεια κρεμάστρας",
+  "Onion skin": "Δέρμα κρεμμυδιού",
   "Camera settings": "Ρυθμίσεις κάμερας",
   "Live": "Ζωντανά",
   "Play": "Αναπαραγωγή",
@@ -359,5 +359,11 @@
   "Send anonymous usage data to help improve the application": "Στείλτε ανώνυμα δεδομένα χρήσης για να βοηθήσετε στη βελτίωση της εφαρμογής",
   "Undo last action": "Αναίρεση τελευταίας ενέργειας",
   "Redo last undone action": "Επαναφορά τελευταίας αναιρεθείσας ενέργειας",
-  "Add new scene": "Προσθήκη νέας σκηνής"
+  "Add new scene": "Προσθήκη νέας σκηνής",
+  "Tools & playback": "Εργαλεία & αναπαραγωγή",
+  "Speed": "Ταχύτητα",
+  "More": "Περισσότερα",
+  "Frame actions": "Ενέργειες καρέ",
+  "Project name": "Όνομα έργου",
+  "Delete project": "Διαγραφή έργου"
 }

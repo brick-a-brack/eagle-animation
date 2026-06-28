@@ -60,7 +60,7 @@
   "Difference": "Verschil",
   "Disable grid": "Raster uitschakelen",
   "Enable grid": "Raster inschakelen",
-  "Onion blending": "Uienmenging",
+  "Onion skin": "Ui-skin",
   "Camera settings": "Camera-instellingen",
   "Live": "Live",
   "Play": "Afspelen",
@@ -359,5 +359,11 @@
   "Send anonymous usage data to help improve the application": "Stuur anonieme gebruiksgegevens om de applicatie te helpen verbeteren",
   "Undo last action": "Annuleer de laatste actie",
   "Redo last undone action": "Herstel de laatste ongedane actie",
-  "Add new scene": "Voeg een nieuwe scène toe"
+  "Add new scene": "Voeg een nieuwe scène toe",
+  "Tools & playback": "Hulpmiddelen & afspelen",
+  "Speed": "Snelheid",
+  "More": "Meer",
+  "Frame actions": "Acties op het frame",
+  "Project name": "Projectnaam",
+  "Delete project": "Verwijder project"
 }

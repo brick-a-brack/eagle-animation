@@ -12,7 +12,7 @@
   "Duplicate frame": "Duplicar cuadro",
   "Deduplicate frame": "Eliminar duplicado",
   "Difference": "Diferencia",
-  "Onion blending": "Mezcla de cebolla",
+  "Onion skin": "Piel de cebolla",
   "Live": "En vivo",
   "Play": "Reproducir",
   "Pause": "Pausa",
@@ -377,5 +377,10 @@
   "Send anonymous usage data to help improve the application": "Enviar datos de uso anónimos para ayudar a mejorar la aplicación",
   "Undo last action": "Deshacer la última acción",
   "Redo last undone action": "Rehacer la última acción deshecha",
-  "Add new scene": "Agregar nueva escena"
+  "Add new scene": "Agregar nueva escena",
+  "Tools & playback": "Herramientas y reproducción",
+  "Speed": "Velocidad",
+  "More": "Más",
+  "Frame actions": "Acciones en el fotograma",
+  "Project name": "Nombre del proyecto"
 }

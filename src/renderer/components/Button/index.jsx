@@ -5,8 +5,9 @@ import { useMemo } from 'react';
 
 import * as style from './style.module.css';
 
-const Button = ({ icon, className = '', onClick, title = '', disabled = false, selected = false, color = 'normal', selectedColor = 'normal', tooltipPosition = 'TOP', ...rest }) => {
+const Button = ({ icon, className = '', onClick, title = '', tag = '', disabled = false, selected = false, color = 'normal', selectedColor = 'normal', tooltipPosition = 'TOP', ...rest }) => {
   const uid = useMemo(() => uniqueId(), []);
+
   return (
     <div {...{ ...rest, children: null }} className={`${style.mainContainer} ${className || ''}`}>
       <div
@@ -14,12 +15,13 @@ const Button = ({ icon, className = '', onClick, title = '', disabled = false, s
         data-tooltip-id={`button-${uid}`}
         role="button"
         tabIndex={0}
-        onClick={() => onClick && onClick()}
+        onClick={() => onClick && !disabled && onClick()}
         className={`${style.button} ${color === 'primary' && style.colorPrimary} ${selected && selectedColor === 'normal' ? style.selected : ''} ${selected && selectedColor === 'warning' ? style.selectedWarning : ''}  ${disabled ? style.disabled : ''}`}
       >
         <FontAwesomeIcon icon={icon} />
+        {tag !== '' && tag !== null && <span className={style.tag}>{tag}</span>}
       </div>
-      {title && <Tooltip content={title} place={tooltipPosition.toLowerCase()} id={`button-${uid}`} />}
+      {title && tooltipPosition.toLowerCase() !== 'none' && <Tooltip content={title} place={tooltipPosition.toLowerCase()} id={`button-${uid}`} />}
     </div>
   );
 };

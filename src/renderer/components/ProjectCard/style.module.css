@@ -3,17 +3,17 @@
       border-radius: var(--border-radius-small);
       color: var(--color-white);
       display: inline-block;
-      height: 220px;
+      height: 200px;
       margin: 20px;
       overflow: hidden;
       position: relative;
-      width: 300px;
+      width: 250px;
   }
 
   .banner {
       background: rgb(24 24 24);
       cursor: pointer;
-      height: 164px;
+      height: 144px;
       overflow: hidden;
       position: relative;
       width: 100%;

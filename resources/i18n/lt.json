@@ -12,7 +12,7 @@
   "Duplicate frame": "Dubliuoti kadrą",
   "Deduplicate frame": "Pašalinti dublikatus",
   "Difference": "Skirtumas",
-  "Onion blending": "Svogūno maišymas",
+  "Onion skin": "Svogūnų oda",
   "Live": "Tiesiogiai",
   "Play": "Leisti",
   "Pause": "Pauzė",
@@ -385,5 +385,10 @@
   "Send anonymous usage data to help improve the application": "Siųsti anoniminius naudojimo duomenis, kad padėtų tobulinti programą",
   "Undo last action": "Atšaukti paskutinį veiksmą",
   "Redo last undone action": "Pakartoti paskutinį atšauktą veiksmą",
-  "Add new scene": "Pridėti naują sceną"
+  "Add new scene": "Pridėti naują sceną",
+  "Tools & playback": "Įrankiai ir atkūrimas",
+  "Speed": "Greitis",
+  "More": "Daugiau",
+  "Frame actions": "Kadrų veiksmai",
+  "Project name": "Projekto pavadinimas"
 }

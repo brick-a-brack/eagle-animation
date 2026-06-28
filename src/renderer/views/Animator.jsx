@@ -1,17 +1,20 @@
 import CameraSettingsWindow from '@components/CameraSettingsWindow';
 import ControlBar from '@components/ControlBar';
-import HeaderBar from '@components/HeaderBar';
+import DesktopNavigation from '@components/DesktopNavigation';
 import ImportOverlay from '@components/ImportOverlay';
 import KeyboardHandler from '@components/KeyboardHandler';
 import LimitWarning from '@components/LimitWarning';
 import LoadingPage from '@components/LoadingPage';
 import MaskingWindow from '@components/MaskingWindow';
+import MobileNavigation from '@components/MobileNavigation';
 import PageLayout from '@components/PageLayout';
+import PictureWindow from '@components/PictureWindow';
 import Player from '@components/Player';
-import ProjectSettingsWindow from '@components/ProjectSettingsWindow';
 import SceneSelector from '@components/SceneSelector';
+import SceneSelectorWindow from '@components/SceneSelectorWindow';
 import SceneSettingsWindow from '@components/SceneSettingsWindow';
 import Timeline from '@components/Timeline';
+import ToolsWindow from '@components/ToolsWindow';
 import Window from '@components/Window';
 import { parseRatio } from '@core/ratio';
 import useAppCapabilities from '@hooks/useAppCapabilities';
@@ -19,6 +22,16 @@ import useCamera from '@hooks/useCamera';
 import useDiscordActivity from '@hooks/useDiscordActivity';
 import useProject from '@hooks/useProject';
 import useSettings from '@hooks/useSettings';
+import faArrowLeft from '@icons/faArrowLeft';
+import faBoxArrowDown from '@icons/faBoxArrowDown';
+import faCamera from '@icons/faCamera';
+import faEllipsisVertical from '@icons/faEllipsisVertical';
+import faEraser from '@icons/faEraser';
+import faFolder from '@icons/faFolder';
+import faImage from '@icons/faImage';
+import faPlay from '@icons/faPlay';
+import faSliders from '@icons/faSliders';
+import faStop from '@icons/faStop';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { flushSync } from 'react-dom';
 import { withTranslation } from 'react-i18next';
@@ -29,6 +42,12 @@ import soundDeleteConfirm from '~/resources/sounds/deleteConfirm.mp3';
 import soundEagle from '~/resources/sounds/eagle.mp3';
 import soundError from '~/resources/sounds/error.mp3';
 import soundShutter from '~/resources/sounds/shutter.mp3';
+
+const MASKING_MODES = {
+  DISABLED: (t) => t('Disabled'),
+  UNIQUE: (t) => t('Unique'),
+  CONTINUOUS: (t) => t('Continuous'),
+};
 
 // Play sound
 const playSound = (src, timeout = 2000) => {
@@ -464,8 +483,8 @@ const Animator = ({ t }) => {
     SETTINGS: () => {
       navigate(`/settings?back=/animator/${id}/${track}`);
     },
-    PROJECT_SETTINGS: () => {
-      setActiveWindow((v) => (v === 'project' ? null : 'project'));
+    PROJECT: () => {
+      setActiveWindow((v) => (v === 'scenes' ? null : 'scenes'));
     },
     ADD_SCENE: async () => {
       const newIndex = project.scenes.length;
@@ -475,6 +494,7 @@ const Animator = ({ t }) => {
       await projectActions.addScene(t('Untitled scene #{{index}}', { index: newVisualIndex }), currentFps, currentRatio);
       window.track('scene_added', { projectId: `${id}`, trackId: `${newIndex}` });
       navigate(`/animator/${id}/${newIndex}`);
+      setActiveWindow(null);
     },
     DELETE_SCENE: async () => {
       const indexToDelete = Number(sceneEditingIndex);
@@ -492,7 +512,17 @@ const Animator = ({ t }) => {
     REDO: () => {
       if (!isPlaying) projectActions.redo();
     },
-    MORE: () => {},
+    SHOW_TOOLS: () => {
+      if (currentFrameId === false) {
+        playerRef.current.showFrame(false);
+        setActiveWindow((v) => (v === 'tools' ? null : 'tools'));
+      }
+    },
+    SHOW_PICTURE_OPTIONS: () => {
+      if (currentFrameId !== false) {
+        setActiveWindow((v) => (v === 'picture' ? null : 'picture'));
+      }
+    },
     EXPORT: () => {
       navigate(`/export/${id}/${track}?back=/animator/${id}/${track}`);
     },
@@ -512,6 +542,13 @@ const Animator = ({ t }) => {
       projectActions.applyDuplicateFrameOffset(track, currentFrameId, -1);
       window.track('frame_duplicated', { projectId: `${id}`, trackId: `${track}`, frameId: `${currentFrameId}`, offset: -1 });
     },
+    SET_DUPLICATE_COUNT: (value) => {
+      const target = Math.max(1, Math.round(Number(value) || 1));
+      const offset = target - (currentFrame?.length || 1);
+      if (!offset) return;
+      projectActions.applyDuplicateFrameOffset(track, currentFrameId, offset);
+      window.track('frame_duplicated', { projectId: `${id}`, trackId: `${track}`, frameId: `${currentFrameId}`, offset });
+    },
     MUTE: () => {
       const newValue = !settings.SOUNDS;
       settingsActions.setSettings({ SOUNDS: newValue });
@@ -522,7 +559,7 @@ const Animator = ({ t }) => {
       navigate(`/`);
       window.track('project_deleted', { projectId: id });
     },
-    TOOGLE_MASKING_MODE: () => {
+    TOGGLE_MASKING_MODE: () => {
       const values = ['DISABLED', 'CONTINUOUS', 'UNIQUE'];
       const newMode = values?.[values?.indexOf(maskingMode) + 1] || values?.[0];
       if (newMode === 'DISABLED') {
@@ -546,10 +583,6 @@ const Animator = ({ t }) => {
 
   const handleDevicesRefresh = async () => {
     cameraActions.refreshDevices();
-  };
-
-  const handleProjectSettingsChange = async (fields) => {
-    projectActions.rename(fields.title || '');
   };
 
   const handleSceneSettingsChange = async (fields) => {
@@ -580,28 +613,55 @@ const Animator = ({ t }) => {
   };
 
   const frameCaptureMode = maskingMode !== 'DISABLED' && !isPlaying ? (pendingBackgroundFrame ? 'FOREGROUND' : 'BACKGROUND') : null;
+  const canExport =
+    pictures?.some((e) => !e?.hidden) &&
+    (appCapabilities.includes('EXPORT_VIDEO') || appCapabilities.includes('EXPORT_FRAMES') || (appCapabilities.includes('BACKGROUND_SYNC') && settings?.EVENT_MODE_ENABLED));
+
+  // Actions
+  const primaryActions = [{ title: t('Back'), icon: faArrowLeft, onClick: handleAction.bind(null, 'BACK') }];
+
+  const secondaryActions = canExport ? [{ title: t('Export'), icon: faBoxArrowDown, onClick: handleAction.bind(null, 'EXPORT') }] : [];
+
+  const mobileActionsTop = [
+    {
+      title: currentFrame === false || isPlaying ? t('More') : t('Frame actions'),
+      icon: currentFrame === false || isPlaying ? faEllipsisVertical : faImage,
+      onClick: handleAction.bind(null, currentFrame === false || isPlaying ? 'SHOW_TOOLS' : 'SHOW_PICTURE_OPTIONS'),
+      disabled: isPlaying,
+    },
+  ];
+
+  const mobileActionsMiddle = [
+    {
+      title: t('Masking mode ({{status}})'),
+      tag: maskingMode !== 'DISABLED' ? (MASKING_MODES[maskingMode] || MASKING_MODES.DISABLED)(t).slice(0, 1) : '',
+      icon: faEraser,
+      onClick: handleAction.bind(null, 'TOGGLE_MASKING_MODE'),
+      selected: maskingMode !== 'DISABLED',
+      disabled: isPlaying,
+    },
+    { title: t('Take a picture'), icon: faCamera, onClick: handleAction.bind(null, 'TAKE_PICTURE'), color: 'primary', disabled: isTakingPicture || !isCameraReady },
+    { title: t('Camera settings'), icon: faSliders, onClick: handleAction.bind(null, 'CAMERA_SETTINGS'), disabled: isPlaying },
+  ];
+
+  const mobileActionsBottom = [
+    { title: !isPlaying ? t('Play') : t('Stop'), icon: isPlaying ? faStop : faPlay, onClick: handleAction.bind(null, 'PLAY'), selectedColor: 'warning', selected: isPlaying },
+  ];
+
+  const projectAction = { title: t('Project'), icon: faFolder, onClick: handleAction.bind(null, 'PROJECT') };
 
   return (
     <>
       <LoadingPage show={false} />
-      <PageLayout>
-        <HeaderBar
-          leftActions={['BACK']}
-          rightActions={[
-            ...(pictures?.some((e) => !e?.hidden) &&
-            (appCapabilities.includes('EXPORT_VIDEO') || appCapabilities.includes('EXPORT_FRAMES') || (appCapabilities.includes('BACKGROUND_SYNC') && settings?.EVENT_MODE_ENABLED))
-              ? ['EXPORT']
-              : []),
-          ]}
-          onAction={handleAction}
-        >
+      <PageLayout hasMobileLeftBar={true} hasMobileRightBar={true}>
+        <DesktopNavigation leftActions={primaryActions} rightActions={secondaryActions}>
           <SceneSelector
             scenes={visibleScenes.map((s) => ({ id: s.id, index: s.index, title: s.title, framerate: s.framerate, pictureCount: s.pictures?.filter((p) => !p.deleted).length ?? 0 }))}
             currentTrack={track}
             disabled={isPlaying}
             projectTitle={project?.title}
             onProjectTitleChange={(title) => projectActions.rename(title || '')}
-            onEditProject={() => handleAction('PROJECT_SETTINGS')}
+            onProjectDelete={() => handleAction('DELETE_PROJECT')}
             onSelect={(newIndex) => {
               if (Number(newIndex) !== Number(track)) {
                 navigate(`/animator/${id}/${newIndex}`);
@@ -613,7 +673,16 @@ const Animator = ({ t }) => {
               setActiveWindow('scene');
             }}
           />
-        </HeaderBar>
+        </DesktopNavigation>
+        <MobileNavigation
+          topLeftActions={primaryActions}
+          bottomLeftActions={[projectAction, ...secondaryActions]}
+          topRightActions={mobileActionsTop}
+          middleRightActions={mobileActionsMiddle}
+          bottomRightActions={mobileActionsBottom}
+          showLeftActions={true}
+          showRightActions={true}
+        />
         <Player
           t={t}
           ref={playerRef}
@@ -695,8 +764,51 @@ const Animator = ({ t }) => {
               currentCameraId={currentCameraId}
             />
           </Window>
-          <Window isOpened={activeWindow === 'project'} onClose={() => setActiveWindow(null)}>
-            <ProjectSettingsWindow title={project?.title || ''} onProjectSettingsChange={handleProjectSettingsChange} onProjectDelete={() => handleAction('DELETE_PROJECT')} />
+          <Window isOpened={activeWindow === 'tools'} onClose={() => setActiveWindow(null)}>
+            <ToolsWindow
+              onAction={handleAction}
+              gridStatus={gridStatus}
+              differenceStatus={differenceStatus}
+              onionValue={onionValue}
+              loopStatus={loopStatus}
+              shortPlayStatus={shortPlayStatus}
+              fps={fps}
+              framePosition={framePosition}
+            />
+          </Window>
+          <Window isOpened={activeWindow === 'picture'} onClose={() => setActiveWindow(null)}>
+            <PictureWindow
+              onAction={(action, args) => {
+                handleAction(action, args);
+                // Close the sheet once the frame is gone (delete) — the other actions keep it open for quick edits
+                if (action === 'DELETE_FRAME') {
+                  setActiveWindow(null);
+                }
+              }}
+              isHidden={!!currentFrame.hidden}
+              duplicateCount={currentFrame.length || 1}
+              canUseMaskingEditor={!!currentFrame.masking}
+            />
+          </Window>
+          <Window isOpened={activeWindow === 'scenes'} onClose={() => setActiveWindow(null)}>
+            <SceneSelectorWindow
+              scenes={visibleScenes.map((s) => ({ id: s.id, index: s.index, title: s.title, framerate: s.framerate, pictureCount: s.pictures?.filter((p) => !p.deleted).length ?? 0 }))}
+              currentTrack={track}
+              projectTitle={project?.title}
+              onProjectTitleChange={(title) => projectActions.rename(title || '')}
+              onProjectDelete={() => handleAction('DELETE_PROJECT')}
+              onSelect={(newIndex) => {
+                if (Number(newIndex) !== Number(track)) {
+                  navigate(`/animator/${id}/${newIndex}`);
+                }
+                setActiveWindow(null);
+              }}
+              onCreate={() => handleAction('ADD_SCENE')}
+              onEditScene={(sceneIndex) => {
+                setSceneEditingIndex(sceneIndex);
+                setActiveWindow('scene');
+              }}
+            />
           </Window>
           <Window isOpened={activeWindow === 'scene'} onClose={() => setActiveWindow(null)}>
             <SceneSettingsWindow
