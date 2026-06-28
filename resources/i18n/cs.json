@@ -60,7 +60,7 @@
   "Difference": "Rozdíl",
   "Disable grid": "Vypnout mřížku",
   "Enable grid": "Zapnout mřížku",
-  "Onion skin": "__NOT_TRANSLATED__",
+  "Onion skin": "Cibule",
   "Camera settings": "Nastavení kamery",
   "Live": "Živě",
   "Play": "Přehrát",
@@ -367,12 +367,10 @@
   "Undo last action": "Zrušit poslední akci",
   "Redo last undone action": "Znovu provést poslední zrušenou akci",
   "Add new scene": "Přidat novou scénu",
-  "Tools & playback": "__NOT_TRANSLATED__",
-  "Speed": "__NOT_TRANSLATED__",
-  "More": "__NOT_TRANSLATED__",
-  "Frame actions": "__NOT_TRANSLATED__",
-  "Number of frames this picture occupies": "__NOT_TRANSLATED__",
-  "Image options": "__NOT_TRANSLATED__",
-  "Onion blending": "__NOT_TRANSLATED__",
-  "Project name": "__NOT_TRANSLATED__"
+  "Tools & playback": "Nástroje a přehrávání",
+  "Speed": "Rychlost",
+  "More": "Více",
+  "Frame actions": "Akce na snímku",
+  "Project name": "Název projektu",
+  "Delete project": "Smazat projekt"
 }

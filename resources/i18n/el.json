@@ -60,7 +60,7 @@
   "Difference": "Διαφορά",
   "Disable grid": "Απενεργοποίηση πλέγματος",
   "Enable grid": "Ενεργοποίηση πλέγματος",
-  "Onion skin": "__NOT_TRANSLATED__",
+  "Onion skin": "Δέρμα κρεμμυδιού",
   "Camera settings": "Ρυθμίσεις κάμερας",
   "Live": "Ζωντανά",
   "Play": "Αναπαραγωγή",
@@ -360,12 +360,10 @@
   "Undo last action": "Αναίρεση τελευταίας ενέργειας",
   "Redo last undone action": "Επαναφορά τελευταίας αναιρεθείσας ενέργειας",
   "Add new scene": "Προσθήκη νέας σκηνής",
-  "Tools & playback": "__NOT_TRANSLATED__",
-  "Speed": "__NOT_TRANSLATED__",
-  "More": "__NOT_TRANSLATED__",
-  "Frame actions": "__NOT_TRANSLATED__",
-  "Number of frames this picture occupies": "__NOT_TRANSLATED__",
-  "Image options": "__NOT_TRANSLATED__",
-  "Onion blending": "__NOT_TRANSLATED__",
-  "Project name": "__NOT_TRANSLATED__"
+  "Tools & playback": "Εργαλεία & αναπαραγωγή",
+  "Speed": "Ταχύτητα",
+  "More": "Περισσότερα",
+  "Frame actions": "Ενέργειες καρέ",
+  "Project name": "Όνομα έργου",
+  "Delete project": "Διαγραφή έργου"
 }

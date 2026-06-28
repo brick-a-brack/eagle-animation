@@ -86,11 +86,11 @@ const ControlBar = ({
     <>
       <div className={`${style.container} ${style.regularLayout}`}>
         <div className={`${style.subcontainer} ${style.left}`}>
-          {isFrameSelected && <Button className={style.imageMoreButton} title={t('Image options')} icon={faImage} onClick={handleAction('SHOW_PICTURE_OPTIONS')} />}
+          {isFrameSelected && <Button className={style.imageMoreButton} title={t('Frame actions')} icon={faImage} onClick={handleAction('SHOW_PICTURE_OPTIONS')} />}
 
           <Button
             className={style.moreButton}
-            title={isFrameSelected ? t('Image options') : t('More')}
+            title={isFrameSelected ? t('Frame actions') : t('More')}
             icon={isFrameSelected ? faImage : faEllipsisVertical}
             onClick={handleAction(isFrameSelected ? 'SHOW_PICTURE_OPTIONS' : 'SHOW_TOOLS')}
             disabled={isPlaying}
@@ -222,7 +222,7 @@ const ControlBar = ({
             tag={t('FPS')}
             register={register('fps')}
           />
-          <Tooltip id="onion" content={t('Onion blending')} />
+          <Tooltip id="onion" content={t('Onion skin')} />
         </div>
       </div>
     </>

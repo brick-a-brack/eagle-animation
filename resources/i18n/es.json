@@ -12,7 +12,7 @@
   "Duplicate frame": "Duplicar cuadro",
   "Deduplicate frame": "Eliminar duplicado",
   "Difference": "Diferencia",
-  "Onion skin": "__NOT_TRANSLATED__",
+  "Onion skin": "Piel de cebolla",
   "Live": "En vivo",
   "Play": "Reproducir",
   "Pause": "Pausa",
@@ -378,12 +378,9 @@
   "Undo last action": "Deshacer la última acción",
   "Redo last undone action": "Rehacer la última acción deshecha",
   "Add new scene": "Agregar nueva escena",
-  "Tools & playback": "__NOT_TRANSLATED__",
-  "Speed": "__NOT_TRANSLATED__",
-  "More": "__NOT_TRANSLATED__",
-  "Frame actions": "__NOT_TRANSLATED__",
-  "Number of frames this picture occupies": "__NOT_TRANSLATED__",
-  "Image options": "__NOT_TRANSLATED__",
-  "Onion blending": "__NOT_TRANSLATED__",
-  "Project name": "__NOT_TRANSLATED__"
+  "Tools & playback": "Herramientas y reproducción",
+  "Speed": "Velocidad",
+  "More": "Más",
+  "Frame actions": "Acciones en el fotograma",
+  "Project name": "Nombre del proyecto"
 }

@@ -31,7 +31,7 @@ const PictureWindow = ({ t, isHidden = false, canUseMaskingEditor = false, dupli
       </button>
 
       <div className={`${style.row} ${style.rowStatic}`}>
-        <span className={style.label} title={t('Number of frames this picture occupies')}>
+        <span className={style.label}>
           <FontAwesomeIcon icon={faImages} className={style.icon} />
           {t('Duplicate frame')}
         </span>

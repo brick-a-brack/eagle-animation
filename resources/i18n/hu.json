@@ -60,7 +60,7 @@
   "Difference": "Különbség",
   "Disable grid": "Rács letiltása",
   "Enable grid": "Rács megjelenítése",
-  "Onion skin": "__NOT_TRANSLATED__",
+  "Onion skin": "Hagyma bőr",
   "Camera settings": "Kamera beállítások",
   "Live": "Élő",
   "Play": "Lejátszás",
@@ -360,12 +360,10 @@
   "Undo last action": "Utolsó művelet visszavonása",
   "Redo last undone action": "Utolsó visszavont művelet megismétlése",
   "Add new scene": "Új jelenet hozzáadása",
-  "Tools & playback": "__NOT_TRANSLATED__",
-  "Speed": "__NOT_TRANSLATED__",
-  "More": "__NOT_TRANSLATED__",
-  "Frame actions": "__NOT_TRANSLATED__",
-  "Number of frames this picture occupies": "__NOT_TRANSLATED__",
-  "Image options": "__NOT_TRANSLATED__",
-  "Onion blending": "__NOT_TRANSLATED__",
-  "Project name": "__NOT_TRANSLATED__"
+  "Tools & playback": "Eszközök & lejátszás",
+  "Speed": "Sebesség",
+  "More": "Több",
+  "Frame actions": "Kép műveletek",
+  "Project name": "Projekt neve",
+  "Delete project": "Projekt törlése"
 }

@@ -624,7 +624,7 @@ const Animator = ({ t }) => {
 
   const mobileActionsTop = [
     {
-      title: currentFrame === false || isPlaying ? t('More') : t('Image options'),
+      title: currentFrame === false || isPlaying ? t('More') : t('Frame actions'),
       icon: currentFrame === false || isPlaying ? faEllipsisVertical : faImage,
       onClick: handleAction.bind(null, currentFrame === false || isPlaying ? 'SHOW_TOOLS' : 'SHOW_PICTURE_OPTIONS'),
       disabled: isPlaying,
