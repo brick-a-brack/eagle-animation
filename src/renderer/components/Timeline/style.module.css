@@ -156,6 +156,13 @@
   }
 }
 
+@media (orientation: landscape) and (width <=700px),
+(orientation: landscape) and (height <=500px) {
+  .container {
+    --padding-top: 4px;
+  }
+}
+
 .shortPlayIcon {
   background-color: var(--color-primary);
   border-top-right-radius: var(--border-radius-small);
@@ -246,7 +253,6 @@
 @media (width <= 850px) {
   .container {
     --size: 70px;
-
   }
 }
 
