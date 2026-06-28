@@ -10,8 +10,8 @@ import MobileNavigation from '@components/MobileNavigation';
 import PageLayout from '@components/PageLayout';
 import PictureWindow from '@components/PictureWindow';
 import Player from '@components/Player';
-import ProjectSettingsWindow from '@components/ProjectSettingsWindow';
 import SceneSelector from '@components/SceneSelector';
+import SceneSelectorWindow from '@components/SceneSelectorWindow';
 import SceneSettingsWindow from '@components/SceneSettingsWindow';
 import Timeline from '@components/Timeline';
 import ToolsWindow from '@components/ToolsWindow';
@@ -483,8 +483,8 @@ const Animator = ({ t }) => {
     SETTINGS: () => {
       navigate(`/settings?back=/animator/${id}/${track}`);
     },
-    PROJECT_SETTINGS: () => {
-      setActiveWindow((v) => (v === 'project' ? null : 'project'));
+    PROJECT: () => {
+      setActiveWindow((v) => (v === 'scenes' ? null : 'scenes'));
     },
     ADD_SCENE: async () => {
       const newIndex = project.scenes.length;
@@ -494,6 +494,7 @@ const Animator = ({ t }) => {
       await projectActions.addScene(t('Untitled scene #{{index}}', { index: newVisualIndex }), currentFps, currentRatio);
       window.track('scene_added', { projectId: `${id}`, trackId: `${newIndex}` });
       navigate(`/animator/${id}/${newIndex}`);
+      setActiveWindow(null);
     },
     DELETE_SCENE: async () => {
       const indexToDelete = Number(sceneEditingIndex);
@@ -584,10 +585,6 @@ const Animator = ({ t }) => {
     cameraActions.refreshDevices();
   };
 
-  const handleProjectSettingsChange = async (fields) => {
-    projectActions.rename(fields.title || '');
-  };
-
   const handleSceneSettingsChange = async (fields) => {
     projectActions.renameScene(sceneEditingIndex, fields.title || '');
     if (fields.fps) {
@@ -664,7 +661,7 @@ const Animator = ({ t }) => {
             disabled={isPlaying}
             projectTitle={project?.title}
             onProjectTitleChange={(title) => projectActions.rename(title || '')}
-            onEditProject={() => handleAction('PROJECT_SETTINGS')}
+            onProjectDelete={() => handleAction('DELETE_PROJECT')}
             onSelect={(newIndex) => {
               if (Number(newIndex) !== Number(track)) {
                 navigate(`/animator/${id}/${newIndex}`);
@@ -793,8 +790,25 @@ const Animator = ({ t }) => {
               canUseMaskingEditor={!!currentFrame.masking}
             />
           </Window>
-          <Window isOpened={activeWindow === 'project'} onClose={() => setActiveWindow(null)}>
-            <ProjectSettingsWindow title={project?.title || ''} onProjectSettingsChange={handleProjectSettingsChange} onProjectDelete={() => handleAction('DELETE_PROJECT')} />
+          <Window isOpened={activeWindow === 'scenes'} onClose={() => setActiveWindow(null)}>
+            <SceneSelectorWindow
+              scenes={visibleScenes.map((s) => ({ id: s.id, index: s.index, title: s.title, framerate: s.framerate, pictureCount: s.pictures?.filter((p) => !p.deleted).length ?? 0 }))}
+              currentTrack={track}
+              projectTitle={project?.title}
+              onProjectTitleChange={(title) => projectActions.rename(title || '')}
+              onProjectDelete={() => handleAction('DELETE_PROJECT')}
+              onSelect={(newIndex) => {
+                if (Number(newIndex) !== Number(track)) {
+                  navigate(`/animator/${id}/${newIndex}`);
+                }
+                setActiveWindow(null);
+              }}
+              onCreate={() => handleAction('ADD_SCENE')}
+              onEditScene={(sceneIndex) => {
+                setSceneEditingIndex(sceneIndex);
+                setActiveWindow('scene');
+              }}
+            />
           </Window>
           <Window isOpened={activeWindow === 'scene'} onClose={() => setActiveWindow(null)}>
             <SceneSettingsWindow

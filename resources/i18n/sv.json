@@ -60,7 +60,7 @@
   "Difference": "Skillnad",
   "Disable grid": "Inaktivera rutnät",
   "Enable grid": "Aktivera rutnät",
-  "Onion skin": "Lökskalsblandning",
+  "Onion skin": "__NOT_TRANSLATED__",
   "Camera settings": "Kamerainställningar",
   "Live": "Live",
   "Play": "Spela",
@@ -361,9 +361,11 @@
   "Redo last undone action": "Gör om senaste ångrade åtgärd",
   "Add new scene": "Lägg till ny scen",
   "Tools & playback": "__NOT_TRANSLATED__",
-  "Onion skin": "__NOT_TRANSLATED__",
   "Speed": "__NOT_TRANSLATED__",
   "More": "__NOT_TRANSLATED__",
   "Frame actions": "__NOT_TRANSLATED__",
-  "Number of frames this picture occupies": "__NOT_TRANSLATED__"
+  "Number of frames this picture occupies": "__NOT_TRANSLATED__",
+  "Image options": "__NOT_TRANSLATED__",
+  "Onion blending": "__NOT_TRANSLATED__",
+  "Project name": "__NOT_TRANSLATED__"
 }

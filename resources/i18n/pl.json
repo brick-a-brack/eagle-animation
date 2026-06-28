@@ -12,7 +12,7 @@
   "Duplicate frame": "Duplikuj klatkę",
   "Deduplicate frame": "Usuń duplikat klatki",
   "Difference": "Różnice",
-  "Onion skin": "Łączenie cebulowe",
+  "Onion skin": "__NOT_TRANSLATED__",
   "Live": "Na żywo",
   "Play": "Odtwórz",
   "Pause": "Pauza",
@@ -383,9 +383,11 @@
   "Redo last undone action": "Ponów ostatnią cofniętą akcję",
   "Add new scene": "Dodaj nową scenę",
   "Tools & playback": "__NOT_TRANSLATED__",
-  "Onion skin": "__NOT_TRANSLATED__",
   "Speed": "__NOT_TRANSLATED__",
   "More": "__NOT_TRANSLATED__",
   "Frame actions": "__NOT_TRANSLATED__",
-  "Number of frames this picture occupies": "__NOT_TRANSLATED__"
+  "Number of frames this picture occupies": "__NOT_TRANSLATED__",
+  "Image options": "__NOT_TRANSLATED__",
+  "Onion blending": "__NOT_TRANSLATED__",
+  "Project name": "__NOT_TRANSLATED__"
 }

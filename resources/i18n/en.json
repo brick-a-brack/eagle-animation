@@ -376,9 +376,11 @@
   "Redo last undone action": "Redo last undone action",
   "Add new scene": "Add new scene",
   "Tools & playback": "Tools & playback",
-  "Onion skin": "Onion skin",
   "Speed": "Speed",
   "More": "More",
   "Frame actions": "Frame actions",
-  "Number of frames this picture occupies": "Number of frames this picture occupies"
+  "Number of frames this picture occupies": "Number of frames this picture occupies",
+  "Image options": "Image options",
+  "Onion blending": "Onion blending",
+  "Project name": "Project name"
 }

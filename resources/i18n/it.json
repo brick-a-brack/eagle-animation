@@ -12,7 +12,7 @@
   "Duplicate frame": "Duplica fotogramma",
   "Deduplicate frame": "Deduplica fotogramma",
   "Difference": "Differenza",
-  "Onion skin": "Sfumatura cipolla",
+  "Onion skin": "__NOT_TRANSLATED__",
   "Live": "Dal vivo",
   "Play": "Riproduci",
   "Pause": "Pausa",
@@ -379,9 +379,11 @@
   "Redo last undone action": "Ripeti l'ultima azione annullata",
   "Add new scene": "Aggiungi una nuova scena",
   "Tools & playback": "__NOT_TRANSLATED__",
-  "Onion skin": "__NOT_TRANSLATED__",
   "Speed": "__NOT_TRANSLATED__",
   "More": "__NOT_TRANSLATED__",
   "Frame actions": "__NOT_TRANSLATED__",
-  "Number of frames this picture occupies": "__NOT_TRANSLATED__"
+  "Number of frames this picture occupies": "__NOT_TRANSLATED__",
+  "Image options": "__NOT_TRANSLATED__",
+  "Onion blending": "__NOT_TRANSLATED__",
+  "Project name": "__NOT_TRANSLATED__"
 }

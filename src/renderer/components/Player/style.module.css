@@ -145,8 +145,7 @@
 /* Remove player top border on mobile version */
 @media (orientation: landscape) and (width <=700px),
 (orientation: landscape) and (height <=500px) {
-
     .playerContainer, .live.playerContainer {
-        border-top: solid transparent 0px;
+        border-top: solid transparent 0;
     }
 }

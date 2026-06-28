@@ -60,7 +60,7 @@
   "Difference": "Razlika",
   "Disable grid": "Onemogući mrežu",
   "Enable grid": "Omogući mrežu",
-  "Onion skin": "Slojevito preklapanje",
+  "Onion skin": "__NOT_TRANSLATED__",
   "Camera settings": "Postavke kamere",
   "Live": "Uživo",
   "Play": "Reproduciraj",
@@ -365,9 +365,11 @@
   "Redo last undone action": "Ponovi posljednju poništenu radnju",
   "Add new scene": "Dodaj novu scenu",
   "Tools & playback": "__NOT_TRANSLATED__",
-  "Onion skin": "__NOT_TRANSLATED__",
   "Speed": "__NOT_TRANSLATED__",
   "More": "__NOT_TRANSLATED__",
   "Frame actions": "__NOT_TRANSLATED__",
-  "Number of frames this picture occupies": "__NOT_TRANSLATED__"
+  "Number of frames this picture occupies": "__NOT_TRANSLATED__",
+  "Image options": "__NOT_TRANSLATED__",
+  "Onion blending": "__NOT_TRANSLATED__",
+  "Project name": "__NOT_TRANSLATED__"
 }

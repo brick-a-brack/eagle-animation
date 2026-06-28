@@ -244,6 +244,26 @@
     opacity: 1;
 }
 
+.rowDelete {
+    align-items: center;
+    background: transparent;
+    border: none;
+    color: var(--color-white);
+    cursor: pointer;
+    display: inline-flex;
+    flex-shrink: 0;
+    height: 30px;
+    justify-content: center;
+    opacity: 0.5;
+    transition: opacity 0.15s ease-in-out, color 0.15s ease-in-out;
+    width: 30px;
+}
+
+.rowDelete:hover {
+    color: var(--color-alert);
+    opacity: 1;
+}
+
 .separator {
     background: var(--color-theme-light);
     height: 1px;

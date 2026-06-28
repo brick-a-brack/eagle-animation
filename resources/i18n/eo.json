@@ -12,7 +12,7 @@
   "Duplicate frame": "Duobligi la kadron",
   "Deduplicate frame": "Malduobligi la kadron",
   "Difference": "Diferenco",
-  "Onion skin": "Surskribo",
+  "Onion skin": "__NOT_TRANSLATED__",
   "Live": "Vivi",
   "Play": "Ludi",
   "Pause": "Paŭzi",
@@ -376,9 +376,11 @@
   "Redo last undone action": "Refari la lastan malfaritan agon",
   "Add new scene": "Aldoni novan scenon",
   "Tools & playback": "__NOT_TRANSLATED__",
-  "Onion skin": "__NOT_TRANSLATED__",
   "Speed": "__NOT_TRANSLATED__",
   "More": "__NOT_TRANSLATED__",
   "Frame actions": "__NOT_TRANSLATED__",
-  "Number of frames this picture occupies": "__NOT_TRANSLATED__"
+  "Number of frames this picture occupies": "__NOT_TRANSLATED__",
+  "Image options": "__NOT_TRANSLATED__",
+  "Onion blending": "__NOT_TRANSLATED__",
+  "Project name": "__NOT_TRANSLATED__"
 }
