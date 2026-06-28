@@ -33,10 +33,10 @@
   flex: 1;
   font-size: var(--font-size-4);
   font-weight: 600;
+  height: 46px;
   min-width: 0;
   outline: none;
   padding: 0 10px;
-  height: 46px;
   transition: border-color 0.15s ease-in-out;
 }
 
@@ -115,10 +115,10 @@
   display: flex;
   flex: 1;
   gap: var(--space-medium);
+  height: 46px;
   min-width: 0;
   padding: 0 10px;
   text-align: left;
-  height: 46px;
 }
 
 .sceneIcon {
