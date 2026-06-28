@@ -15,7 +15,7 @@ import * as style from './style.module.css';
 const MOUSE_OPTIONS = { activationConstraint: { distance: 0 } };
 const TOUCH_OPTIONS = { activationConstraint: { delay: 250, tolerance: 5 } };
 
-const SortableItem = memo(({ id, link = '', hidden = false, length = 0, hasMasking = false, maskingLabel = '', isShortPlayBegining = false, onSelect, index }) => {
+const SortableItem = memo(function SortableItem({ id, link = '', hidden = false, length = 0, hasMasking = false, maskingLabel = '', isShortPlayBegining = false, onSelect, index }) {
   const { setNodeRef, isDragging, transform, transition, listeners, attributes, active } = useSortable({ id });
   return (
     <span
@@ -71,7 +71,7 @@ const LiveItem = ({ select, onSelect, frameCaptureMode }) => {
 
 // Memoized inner list: receives ONLY stable props. Never re-renders on play tick
 // (no `select`/`playing`), so neither DndContext nor SortableContext re-emit context.
-const SortableList = memo(({ sortableItemIds, visiblePictures, maskingLabel, shortPlayFrameId, onSelect, onDragEnd, sensors }) => {
+const SortableList = memo(function SortableList({ sortableItemIds, visiblePictures, maskingLabel, shortPlayFrameId, onSelect, onDragEnd, sensors }) {
   return (
     <DndContext sensors={sensors} onDragEnd={onDragEnd}>
       <SortableContext items={sortableItemIds} strategy={horizontalListSortingStrategy}>
