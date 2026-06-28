@@ -14,6 +14,21 @@ export const formatDuration = (seconds) => {
   return `${s}s`;
 };
 
+// Format a duration (in seconds) as a timecode (e.g. "00:12", "01:57", "1:02:03")
+export const formatTimecode = (seconds) => {
+  const total = Math.max(0, Math.round(Number(seconds) || 0));
+  const h = Math.floor(total / 3600);
+  const m = Math.floor((total % 3600) / 60);
+  const s = total % 60;
+
+  const pad = (n) => String(n).padStart(2, '0');
+
+  if (h > 0) {
+    return `${h}:${pad(m)}:${pad(s)}`;
+  }
+  return `${pad(m)}:${pad(s)}`;
+};
+
 const RELATIVE_UNITS = [
   { unit: 'year', seconds: 31536000 },
   { unit: 'month', seconds: 2592000 },

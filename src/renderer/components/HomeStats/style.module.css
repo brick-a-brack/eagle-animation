@@ -5,7 +5,8 @@
     display: flex;
     flex-wrap: wrap;
     gap: var(--space-small);
-    padding: var(--space-small) var(--space-medium);
+    padding: var(--space-small) 0;
+    user-select: none;
 }
 
 .stat {
@@ -15,7 +16,7 @@
     flex: 1 1 auto;
     gap: var(--space-small);
     justify-content: center;
-    padding: var(--space-small) var(--space-medium);
+    padding: var(--space-small) 0;
     position: relative;
     white-space: nowrap;
 }
@@ -53,10 +54,20 @@
 
 @media screen and (width <= 768px) {
     .stat {
-        flex: 1 1 40%;
+        flex: 1 1 auto;
+        gap: var(--space-small);
     }
 
-    .stat:not(:last-child)::after {
+    .value {
+        font-size: var(--font-size-6);
+    }
+
+    .icon {
+        height: 14px;
+        width: 14px;
+    }
+
+    .label {
         display: none;
     }
 }

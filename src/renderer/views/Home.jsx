@@ -4,6 +4,7 @@ import HomeStats from '@components/HomeStats';
 import HomeToolbar from '@components/HomeToolbar';
 import Logo from '@components/Logo';
 import MobileNavigation from '@components/MobileNavigation';
+import NewProjectCard from '@components/NewProjectCard';
 import PageContent from '@components/PageContent';
 import PageLayout from '@components/PageLayout';
 import ProjectCard from '@components/ProjectCard';
@@ -29,7 +30,6 @@ import { useNavigate } from 'react-router-dom';
 
 import * as style from './Home.module.css';
 
-const LS_HOME_VIEW = 'EA_HOME_VIEW';
 const LS_HOME_SORT = 'EA_HOME_SORT';
 
 const HomeView = ({ t }) => {
@@ -43,7 +43,6 @@ const HomeView = ({ t }) => {
 
   const [search, setSearch] = useState('');
   const [favoritesOnly, setFavoritesOnly] = useState(false);
-  const [view, setView] = useLocalStorage(LS_HOME_VIEW, 'GRID');
   const [sort, setSort] = useLocalStorage(LS_HOME_SORT, 'UPDATED');
 
   useEffect(() => {
@@ -172,21 +171,12 @@ const HomeView = ({ t }) => {
             {hasProjects && (
               <div className={style.header}>
                 <HomeStats projectsCount={stats.projectsCount} photosCount={stats.photosCount} durationSeconds={stats.durationSeconds} favoritesCount={stats.favoritesCount} />
-                <HomeToolbar
-                  search={search}
-                  onSearchChange={setSearch}
-                  sort={sort}
-                  onSortChange={setSort}
-                  favoritesOnly={favoritesOnly}
-                  onToggleFavorites={setFavoritesOnly}
-                  view={view}
-                  onViewChange={setView}
-                />
+                <HomeToolbar search={search} onSearchChange={setSearch} sort={sort} onSortChange={setSort} favoritesOnly={favoritesOnly} onToggleFavorites={setFavoritesOnly} />
               </div>
             )}
 
-            <div className={view === 'LIST' ? style.list : style.grid}>
-              {!isFiltering && <ProjectCard placeholder={t('New project')} onClick={handleCreateProject} icon="ADD" layout={view} />}
+            <div className={style.grid}>
+              <NewProjectCard onClick={handleCreateProject} />
               {visibleProjects.map((e) => (
                 <ProjectCard
                   key={e.id}
@@ -194,7 +184,7 @@ const HomeView = ({ t }) => {
                   title={e.project.title}
                   picture={e.preview}
                   nbFrames={e?.stats?.frames || 0}
-                  framerate={e?.stats?.framerate}
+                  nbScenes={e?.stats?.scenes || 0}
                   duration={e?.stats?.duration}
                   creation={e.creation}
                   updated={e.updated}
@@ -202,7 +192,6 @@ const HomeView = ({ t }) => {
                   onClick={handleOpenProject}
                   onTitleChange={handleRenameProject}
                   onFavoriteToggle={handleFavoriteProject}
-                  layout={view}
                 />
               ))}
             </div>

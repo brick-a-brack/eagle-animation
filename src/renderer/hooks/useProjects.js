@@ -2,6 +2,9 @@ import { useCallback, useEffect, useState } from 'react';
 
 const getDefaultFrame = (data) => {
   for (let i = 0; i < (data?.project?.scenes?.length || 0); i++) {
+    if (data?.project?.scenes?.[i]?.deleted) {
+      continue;
+    }
     for (const picture of data?.project?.scenes?.[i]?.pictures || []) {
       if (!picture?.deleted && !picture?.hidden) {
         return { projectId: data?.id, sceneId: i, picture };
@@ -9,6 +12,9 @@ const getDefaultFrame = (data) => {
     }
   }
   for (let i = 0; i < (data?.project?.scenes?.length || 0); i++) {
+    if (data?.project?.scenes?.[i]?.deleted) {
+      continue;
+    }
     for (const picture of data?.project?.scenes?.[i]?.pictures || []) {
       if (!picture?.deleted) {
         return { projectId: data?.id, sceneId: i, picture };
@@ -22,11 +28,26 @@ const getDefaultFrame = (data) => {
 const countFrames = (project) => {
   let count = 0;
   for (const scene of project.scenes) {
+    if (scene.deleted) {
+      continue;
+    }
     for (const picture of scene.pictures) {
       if (!picture.deleted) {
         count++;
       }
     }
+  }
+  return count;
+};
+
+// Number of non-deleted scenes (including empty ones)
+const countScenes = (project) => {
+  let count = 0;
+  for (const scene of project.scenes) {
+    if (scene.deleted) {
+      continue;
+    }
+    count++;
   }
   return count;
 };
@@ -128,6 +149,7 @@ function useProjects(options) {
           frames: countFrames(e.project),
           duration: computeDuration(e.project),
           framerate: getFramerate(e.project),
+          scenes: countScenes(e.project),
         },
         favorite: Boolean(e?.project?.favorite),
         creation: e?.project?.creation || null,

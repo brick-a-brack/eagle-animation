@@ -14,14 +14,9 @@
 }
 
 .grid {
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
     gap: var(--space-big);
-}
-
-.list {
-    display: flex;
-    flex-direction: column;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
 }
 
 .empty {
@@ -41,4 +36,11 @@
     height: 32px;
     margin-bottom: var(--space-small);
     width: 32px;
+}
+
+
+@media screen and (width <=768px) {
+    .container {
+        padding: var(--space-big) var(--space-small) var(--space-small);
+    }
 }

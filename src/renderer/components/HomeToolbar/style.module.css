@@ -5,6 +5,15 @@
     gap: var(--space-small);
 }
 
+.filters {
+    align-items: center;
+    display: flex;
+    flex: 0 0 auto;
+    flex-wrap: nowrap;
+    gap: var(--space-small);
+    min-width: 0;
+}
+
 /* ---------- Search ---------- */
 
 .search {
@@ -18,6 +27,7 @@
     min-width: 200px;
     padding: 0 var(--space-medium);
     transition: border-color 0.2s ease-in-out;
+    user-select: none;
 }
 
 .search:focus-within {
@@ -42,6 +52,7 @@
     height: 40px;
     min-width: 0;
     outline: none;
+    user-select: text;
 }
 
 .search input::placeholder {
@@ -68,6 +79,7 @@
 
 .sort {
     position: relative;
+    user-select: none;
 }
 
 .sortButton,
@@ -83,6 +95,7 @@
     font-size: var(--font-size-6);
     gap: var(--space-small);
     height: 42px;
+    min-width: 0;
     padding: 0 var(--space-medium);
     transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out, color 0.2s ease-in-out;
     white-space: nowrap;
@@ -93,7 +106,22 @@
     background-color: var(--color-theme-light);
 }
 
+/* Fixed width so the button doesn't resize with the selected value */
+.sortButton {
+    justify-content: space-between;
+    width: 190px;
+}
+
+.sortLabel {
+    flex: 1 1 auto;
+    overflow: hidden;
+    text-align: left;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
 .chevron {
+    flex: 0 0 auto;
     height: 12px;
     opacity: 0.6;
     transition: transform 0.2s ease-in-out;
@@ -168,41 +196,28 @@
     opacity: 1;
 }
 
-/* ---------- View toggle ---------- */
+/* ---------- Mobile ---------- */
 
-.viewToggle {
-    background-color: var(--color-theme-medium);
-    border-radius: var(--border-radius-medium);
-    display: flex;
-    gap: 2px;
-    padding: 4px;
-}
+@media screen and (width <= 768px) {
+    .search {
+        flex: 1 1 100%;
+        min-width: 0;
+    }
 
-.viewToggle button {
-    align-items: center;
-    background: transparent;
-    border: none;
-    border-radius: var(--border-radius-small);
-    color: var(--color-white);
-    cursor: pointer;
-    display: flex;
-    height: 34px;
-    justify-content: center;
-    opacity: 0.5;
-    transition: background-color 0.2s ease-in-out, opacity 0.2s ease-in-out;
-    width: 38px;
-}
+    .filters {
+        flex: 1 1 100%;
+    }
 
-.viewToggle button:hover {
-    opacity: 1;
-}
+    .sort {
+        flex: 1 1 auto;
+        min-width: 0;
+    }
 
-.viewToggle svg {
-    height: 18px;
-    width: 18px;
-}
+    .sortButton {
+        width: 100%;
+    }
 
-.viewActive {
-    background-color: var(--color-theme-light) !important;
-    opacity: 1 !important;
+    .toggle {
+        flex: 0 0 auto;
+    }
 }
