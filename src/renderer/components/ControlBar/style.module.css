@@ -54,8 +54,8 @@
 
 }
 
-@media (orientation: landscape) and (width <= 700px),
-(orientation: landscape) and (height <= 500px) {
+@media (orientation: landscape) and (width <=700px),
+(orientation: landscape) and (height <=500px) {
   .container {
     display: none;
   }
@@ -74,7 +74,7 @@
 }
 
 /* Hide image actions + preview indicator */
-@media (width <= 1050px) {
+@media (width <=1050px) {
   .imageGroupActions {
     display: none;
   }
@@ -90,7 +90,7 @@
 
 
 /* Hide preview indicator */
-@media (width <= 768px) {
+@media (width <=768px) {
   .liveViewActions {
     display: none;
   }
@@ -129,5 +129,9 @@
 
   .imageMoreButton {
     display: none;
+  }
+
+  .container {
+    gap: 0;
   }
 }
