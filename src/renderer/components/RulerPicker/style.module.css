@@ -5,7 +5,6 @@
   position: relative;
   touch-action: none;
   user-select: none;
-  user-select: none;
   width: 100%;
 }
 
@@ -48,8 +47,16 @@
   width: 1px;
 }
 
-.medium { height: 10px; opacity: 0.7; }
-.major  { background: #c8c8c8; height: 16px; opacity: 1; }
+.medium {
+  height: 10px;
+  opacity: 0.7;
+}
+
+.major {
+  background: #c8c8c8;
+  height: 16px;
+  opacity: 1;
+}
 
 .label {
   color: #b8b8b8;

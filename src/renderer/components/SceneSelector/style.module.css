@@ -34,14 +34,14 @@
     width: 100%;
 }
 
-.button:hover:not(:disabled) {
-    background: var(--color-theme-light);
-    border-color: var(--color-primary);
-}
-
 .button:disabled {
     cursor: not-allowed;
     opacity: 0.4;
+}
+
+.button:hover:not(:disabled) {
+    background: var(--color-theme-light);
+    border-color: var(--color-primary);
 }
 
 .buttonContent {

@@ -47,6 +47,8 @@
 .center {
   border-color: var(--pp-border-strong);
   color: var(--pp-accent);
+  grid-column: 2;
+  grid-row: 2;
 }
 
 .center:hover {
@@ -55,16 +57,38 @@
 }
 
 /* grid placement */
-.roll-left  { grid-column: 1; grid-row: 1; }
-.up         { grid-column: 2; grid-row: 1; }
-.roll-right { grid-column: 3; grid-row: 1; }
-.left       { grid-column: 1; grid-row: 2; }
-.center     { grid-column: 2; grid-row: 2; }
-.right      { grid-column: 3; grid-row: 2; }
-.down       { grid-column: 2; grid-row: 3; }
+.rollLeft {
+  grid-column: 1;
+  grid-row: 1;
+}
 
-.roll-left,
-.roll-right {
+.up {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.rollRight {
+  grid-column: 3;
+  grid-row: 1;
+}
+
+.left {
+  grid-column: 1;
+  grid-row: 2;
+}
+
+.right {
+  grid-column: 3;
+  grid-row: 2;
+}
+
+.down {
+  grid-column: 2;
+  grid-row: 3;
+}
+
+.rollLeft,
+.rollRight {
   border-style: dashed;
   color: var(--pp-text-dim);
 }

@@ -1,6 +1,6 @@
 .dropZone {
     align-items: center;
-    animation: fadeIn 0.15s ease-out;
+    animation: fade-in 0.15s ease-out;
     background: rgb(0 0 0 / 70%);
     box-sizing: border-box;
     display: flex;
@@ -41,7 +41,7 @@
 
 .importOverlay {
     align-items: center;
-    animation: fadeIn 0.2s ease-out;
+    animation: fade-in 0.2s ease-out;
     background: rgb(0 0 0 / 95%);
     box-sizing: border-box;
     display: flex;
@@ -81,7 +81,7 @@
     width: 90%;
 }
 
-@keyframes fadeIn {
+@keyframes fade-in {
     from {
         opacity: 0;
     }

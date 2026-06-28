@@ -21,7 +21,7 @@ const Button = ({ icon, className = '', onClick, title = '', tag = '', disabled 
         <FontAwesomeIcon icon={icon} />
         {tag !== '' && tag !== null && <span className={style.tag}>{tag}</span>}
       </div>
-      {title && <Tooltip content={title} place={tooltipPosition.toLowerCase()} id={`button-${uid}`} />}
+      {title && tooltipPosition.toLowerCase() !== 'none' && <Tooltip content={title} place={tooltipPosition.toLowerCase()} id={`button-${uid}`} />}
     </div>
   );
 };

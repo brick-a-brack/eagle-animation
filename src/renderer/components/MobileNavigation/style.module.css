@@ -19,21 +19,13 @@
     right: 0;
 }
 
-.headerBar .top {
-    padding-top: 5px;
-}
-
-.headerBar .bottom {
-    padding-bottom: 5px;
-}
-
 .top,
 .center,
 .bottom {
-    place-content: center center;
     align-items: center;
     display: flex;
     flex-direction: column;
+    place-content: center center;
     position: absolute;
     width: 100%;
 
@@ -53,6 +45,14 @@
 
 .bottom {
     bottom: 0;
+    padding-bottom: 5px;
+}
+
+.headerBar .top {
+    padding-top: 5px;
+}
+
+.headerBar .bottom {
     padding-bottom: 5px;
 }
 

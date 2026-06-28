@@ -100,7 +100,6 @@
   width: calc(100% - 4px);
 }
 
-span[data-selected="true"] .title,
 .selected .title {
   background-color: var(--color-alert);
   opacity: 1;
