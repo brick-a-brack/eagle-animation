@@ -160,8 +160,8 @@ const Timeline = ({ onSelect, onMove, select = false, pictures = [], playing = f
     picturesKey += p.id + ',' + (p.hidden ? 1 : 0) + ',' + (p.masking ? 1 : 0) + ',' + (p.length || 0) + ',' + (p.link || '') + ';';
   }
 
-  const sortableItemIds = useMemo(() => pictures.map((p) => p.id), [picturesKey]); // eslint-disable-line react-hooks/exhaustive-deps
-  const visiblePictures = useMemo(() => pictures.filter((e) => !e.deleted), [picturesKey]); // eslint-disable-line react-hooks/exhaustive-deps
+  const sortableItemIds = useMemo(() => pictures.map((p) => p.id), [picturesKey]);
+  const visiblePictures = useMemo(() => pictures.filter((e) => !e.deleted), [picturesKey]);
 
   // Imperative .selected class toggling: avoids passing `select` as a prop to SortableItem,
   // which would defeat memoization. Runs after each pictures/select change, before paint.
@@ -197,7 +197,7 @@ const Timeline = ({ onSelect, onMove, select = false, pictures = [], playing = f
         horizontalOffset: (-window.innerWidth + document.querySelector(target).getBoundingClientRect().width) / 2,
       }).then(updateShadows);
     }
-  }, [select, picturesKey, playing]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [select, picturesKey, playing]);
 
   // Short play id: same O(n) walk as before.
   const shortPlayFrameId = useMemo(() => {
@@ -217,7 +217,7 @@ const Timeline = ({ onSelect, onMove, select = false, pictures = [], playing = f
       position += len;
     }
     return null;
-  }, [picturesKey, shortPlayStatus, shortPlayFrames]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [picturesKey, shortPlayStatus, shortPlayFrames]);
 
   return (
     <div className={style.wrapper}>
