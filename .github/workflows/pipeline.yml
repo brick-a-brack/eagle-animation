@@ -99,6 +99,6 @@ jobs:
         run: |
           mv out/web/index.html ./
           mv out/web/sw.js ./ || true
-          rclone --config /tmp/rclone.conf copy out/web/ r2:/eagle-animation-web/
-          rclone --config /tmp/rclone.conf copy index.html r2:/eagle-animation-web/
-          rclone --config /tmp/rclone.conf copy sw.js r2:/eagle-animation-web/ || true
+          rclone --config /tmp/rclone.conf copy out/web/ backblaze:/eagle-app/
+          rclone --config /tmp/rclone.conf copy index.html backblaze:/eagle-app/
+          rclone --config /tmp/rclone.conf copy sw.js backblaze:/eagle-app/ || true

@@ -12,7 +12,7 @@
   "Duplicate frame": "Duobligi la kadron",
   "Deduplicate frame": "Malduobligi la kadron",
   "Difference": "Diferenco",
-  "Onion blending": "Surskribo",
+  "Onion skin": "Cibra haŭto",
   "Live": "Vivi",
   "Play": "Ludi",
   "Pause": "Paŭzi",
@@ -368,5 +368,16 @@
   "Delete the scene and all its photos": "Forigi la scenon kaj ĉiujn ĝiajn fotojn",
   "Use camera compatibility mode": "Uzi la kameran kongruecan reĝimon",
   "Disables DSLR and remote cameras, may limit available camera settings": "Malŝaltas DSLR kaj malproksimajn kameron, povas limigi disponeblajn kamerajn agordojn",
-  "Untitled scene #{{index}}": "Sen titolo sceno #{{index}}"
+  "Untitled scene #{{index}}": "Sen titolo sceno #{{index}}",
+  "Privacy": "Konfidencialeco",
+  "Allow telemetry": "Permesi telemetriecon",
+  "Send anonymous usage data to help improve the application": "Sendi anonimajn uzadatumojn por helpi plibonigi la aplikon",
+  "Undo last action": "Malfari la lastan agon",
+  "Redo last undone action": "Refari la lastan malfaritan agon",
+  "Add new scene": "Aldoni novan scenon",
+  "Tools & playback": "Iloj & reprodukto",
+  "Speed": "Rapideco",
+  "More": "Pli",
+  "Frame actions": "Kadroagadoj",
+  "Project name": "Projekto-nomo"
 }

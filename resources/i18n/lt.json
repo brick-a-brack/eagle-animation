@@ -12,7 +12,7 @@
   "Duplicate frame": "Dubliuoti kadrą",
   "Deduplicate frame": "Pašalinti dublikatus",
   "Difference": "Skirtumas",
-  "Onion blending": "Svogūno maišymas",
+  "Onion skin": "Svogūnų oda",
   "Live": "Tiesiogiai",
   "Play": "Leisti",
   "Pause": "Pauzė",
@@ -379,5 +379,16 @@
   "Delete the scene and all its photos": "Ištrinti sceną ir visas jos nuotraukas",
   "Use camera compatibility mode": "Naudoti kameros suderinamumo režimą",
   "Disables DSLR and remote cameras, may limit available camera settings": "Išjungia DSLR ir nuotolines kameras, gali apriboti prieinamus kameros nustatymus",
-  "Untitled scene #{{index}}": "Be pavadinimo scena #{{index}}"
+  "Untitled scene #{{index}}": "Be pavadinimo scena #{{index}}",
+  "Privacy": "Privatumas",
+  "Allow telemetry": "Leisti telemetriją",
+  "Send anonymous usage data to help improve the application": "Siųsti anoniminius naudojimo duomenis, kad padėtų tobulinti programą",
+  "Undo last action": "Atšaukti paskutinį veiksmą",
+  "Redo last undone action": "Pakartoti paskutinį atšauktą veiksmą",
+  "Add new scene": "Pridėti naują sceną",
+  "Tools & playback": "Įrankiai ir atkūrimas",
+  "Speed": "Greitis",
+  "More": "Daugiau",
+  "Frame actions": "Kadrų veiksmai",
+  "Project name": "Projekto pavadinimas"
 }

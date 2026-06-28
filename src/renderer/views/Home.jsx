@@ -1,20 +1,28 @@
 import { isIos } from '@braintree/browser-detection';
-import HeaderBar from '@components/HeaderBar';
+import DesktopNavigation from '@components/DesktopNavigation';
 import HomeStats from '@components/HomeStats';
 import HomeToolbar from '@components/HomeToolbar';
 import Logo from '@components/Logo';
+import MobileNavigation from '@components/MobileNavigation';
 import PageContent from '@components/PageContent';
 import PageLayout from '@components/PageLayout';
 import ProjectCard from '@components/ProjectCard';
 import VersionUpdater from '@components/VersionUpdater';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import useAppCapabilities from '@hooks/useAppCapabilities';
 import useAppVersion from '@hooks/useAppVersion';
 import useDiscordActivity from '@hooks/useDiscordActivity';
 import useFullscreen from '@hooks/useFullscreen';
 import useLocalStorage from '@hooks/useLocalStorage';
 import useProjects from '@hooks/useProjects';
 import useSettings from '@hooks/useSettings';
+import faArrowLeft from '@icons/faArrowLeft';
+import faDownLeftAndUpRightToCenter from '@icons/faDownLeftAndUpRightToCenter';
+import faGear from '@icons/faGear';
+import faKeyboard from '@icons/faKeyboard';
+import faListCheck from '@icons/faListCheck';
 import faMagnifyingGlass from '@icons/faMagnifyingGlass';
+import faUpRightAndDownLeftFromCenter from '@icons/faUpRightAndDownLeftFromCenter';
 import { useEffect, useMemo, useState } from 'react';
 import { withTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
@@ -26,6 +34,7 @@ const LS_HOME_SORT = 'EA_HOME_SORT';
 
 const HomeView = ({ t }) => {
   const { version, latestVersion, actions: versionActions } = useAppVersion();
+  const { appCapabilities } = useAppCapabilities();
   const { projects, actions: projectsActions } = useProjects();
   const { settings } = useSettings();
   const navigate = useNavigate();
@@ -67,7 +76,7 @@ const HomeView = ({ t }) => {
     versionActions.openUpdatePage();
   };
 
-  const handleAction = (action) => {
+  const handleAction = (action) => () => {
     if (action === 'SETTINGS') {
       navigate('/settings?back=/');
     }
@@ -82,6 +91,9 @@ const HomeView = ({ t }) => {
     }
     if (action === 'EXIT_FULLSCREEN') {
       exitFullscreen();
+    }
+    if (action === 'RETURN_TO_WEBSITE') {
+      window.EA('OPEN_LINK', { link: 'https://eagle-animation.com/' });
     }
   };
 
@@ -126,16 +138,34 @@ const HomeView = ({ t }) => {
   const isFiltering = search.trim() !== '' || favoritesOnly;
   const hasProjects = realProjects.length > 0;
 
+  /////=======
+  const primaryActions = [...(appCapabilities.includes('RETURN_TO_WEBSITE') ? [{ label: t('Back'), icon: faArrowLeft, onClick: handleAction('RETURN_TO_WEBSITE') }] : [])];
+
+  const secondaryActions = [
+    ...(settings?.EVENT_MODE_ENABLED ? [{ label: t('Sync list'), icon: faListCheck, onClick: handleAction('SYNC_LIST') }] : []),
+    ...(!isIos()
+      ? [
+          isFullscreen
+            ? { label: t('Exit fullscreen'), icon: faDownLeftAndUpRightToCenter, onClick: handleAction('EXIT_FULLSCREEN') }
+            : { label: t('Fullscreen'), icon: faUpRightAndDownLeftFromCenter, onClick: handleAction('ENTER_FULLSCREEN') },
+        ]
+      : []),
+    { label: t('Shortcuts'), icon: faKeyboard, onClick: handleAction('SHORTCUTS') },
+    { label: t('Settings'), icon: faGear, onClick: handleAction('SETTINGS') },
+  ];
+
   return (
-    <PageLayout>
-      <HeaderBar
+    <PageLayout hasMobileLeftBar={true}>
+      <DesktopNavigation
         leftChildren={<VersionUpdater onClick={handleLink} version={version} latestVersion={latestVersion} onLink={handleLink} />}
-        rightActions={[...(settings?.EVENT_MODE_ENABLED ? ['SYNC_LIST'] : []), ...(!isIos() ? [isFullscreen ? 'EXIT_FULLSCREEN' : 'ENTER_FULLSCREEN'] : []), 'SHORTCUTS', 'SETTINGS']}
+        leftActions={primaryActions}
+        rightActions={secondaryActions}
         onAction={handleAction}
         withBorder
       >
         <Logo />
-      </HeaderBar>
+      </DesktopNavigation>
+      <MobileNavigation showLogo={true} topLeftActions={primaryActions} bottomLeftActions={secondaryActions} showLeftActions={true} withBorder={true} />
       <PageContent>
         {projects !== null && (
           <div className={style.container}>

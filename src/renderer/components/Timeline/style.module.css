@@ -1,3 +1,8 @@
+.wrapper {
+  position: relative;
+  width: 100%;
+}
+
 .container {
   /* Height img + scollbar */
   background: linear-gradient(0deg, var(--color-theme-light) 0%, var(--color-theme-dark) 100%);
@@ -7,17 +12,48 @@
   padding-right: 2px;
   white-space: nowrap;
   width: 100%;
+
+  --size: 80px;
+  --title-size: calc(var(--size) * 0.3125);
+  --title-font: calc(var(--size) * 0.1625);
+  --tag-size: calc(var(--size) * 0.175);
+  --padding-bottom: 0px;
+  --padding-top: 0px;
+}
+
+.shadow {
+  bottom: 0;
+  opacity: 0;
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+  transition: opacity 0.2s ease;
+  width: 50px;
+  z-index: 10;
+}
+
+.shadow.visible {
+  opacity: 1;
+}
+
+.shadowLeft {
+  background: linear-gradient(90deg, rgb(14 25 40 / 100%) 0%, rgb(14 25 40 / 0%) 100%);
+  left: 0;
+}
+
+.shadowRight {
+  background: linear-gradient(270deg, rgb(14 25 40 / 100%) 0%, rgb(14 25 40 / 0%) 100%);
+  right: 0;
 }
 
 .containerImg {
   background: rgb(0 0 0 / 0%);
   cursor: pointer;
   display: inline-block;
-  height: 80px;
-  min-width: 80px;
+  height: var(--size);
+  min-width: var(--size) !important;
   overflow: hidden;
-  padding-left: 2px;
-  padding-right: 2px;
+  padding: var(--padding-top) 2px var(--padding-bottom) 2px;
   position: relative;
   user-select: none;
   vertical-align: bottom;
@@ -27,8 +63,8 @@
   background: rgb(0 0 0 / 0%);
   cursor: pointer;
   display: inline-block;
-  height: 80px;
-  min-width: 80px;
+  height: var(--size);
+  min-width: var(--size);
   overflow: hidden;
   position: absolute;
   user-select: none;
@@ -37,8 +73,8 @@
 .imgcontent {
   height: 100%;
   margin-left: 50%;
-  min-height: 80px;
-  min-width: 80px;
+  min-height: var(--size);
+  min-width: var(--size);
   position: absolute;
   transform: translateX(-50%);
   user-select: none;
@@ -51,11 +87,11 @@
 .title {
   background-color: var(--color-primary);
   color: var(--color-white);
-  font-size: 13px;
+  font-size: var(--title-font);
   font-weight: 600;
-  height: 25px;
+  height: var(--title-size);
   letter-spacing: 1px;
-  line-height: 25px;
+  line-height: var(--title-size);
   opacity: 0;
   position: absolute;
   text-align: center;
@@ -64,7 +100,7 @@
   width: calc(100% - 4px);
 }
 
-span[data-selected="true"] .title, .selected .title {
+.selected .title {
   background-color: var(--color-alert);
   opacity: 1;
 }
@@ -107,12 +143,32 @@ span[data-selected="true"] .title, .selected .title {
   background-color: rgb(0 0 0 / 0%);
 }
 
+@media (pointer: coarse) {
+  .container {
+    scrollbar-width: none;
+
+    --padding-bottom: 4px;
+    --padding-top: 4px;
+  }
+
+  .container::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@media (orientation: landscape) and (width <=700px),
+(orientation: landscape) and (height <=500px) {
+  .container {
+    --padding-top: 4px;
+  }
+}
+
 .shortPlayIcon {
   background-color: var(--color-primary);
   border-top-right-radius: var(--border-radius-small);
-  bottom: 0;
+  bottom: var(--padding-bottom);
   color: var(--color-white);
-  height: 14px;
+  height: var(--tag-size);
   left: 0;
   padding: var(--space-tiny) var(--space-small);
   pointer-events: none;
@@ -122,11 +178,11 @@ span[data-selected="true"] .title, .selected .title {
 .duplicated {
   background-color: var(--color-primary);
   border-top-left-radius: var(--border-radius-small);
-  bottom: 0;
+  bottom: var(--padding-bottom);
   color: var(--color-white);
-  font-size: var(--font-size-7);
-  height: 14px;
-  line-height: 14px;
+  font-size: calc(0.9 * var(--tag-size));
+  height: var(--tag-size);
+  line-height: var(--tag-size);
   padding: var(--space-tiny) var(--space-small);
   pointer-events: none;
   position: absolute;
@@ -136,16 +192,15 @@ span[data-selected="true"] .title, .selected .title {
 .masking {
   background-color: var(--color-primary);
   border-top-right-radius: var(--border-radius-small);
-  bottom: 0;
+  bottom: var(--padding-bottom);
   color: var(--color-white);
-  font-size: var(--font-size-7);
-  height: 14px;
+  font-size: calc(0.9 * var(--tag-size));
+  height: var(--tag-size);
   left: 2px;
-  line-height: 14px;
+  line-height: var(--tag-size);
   padding: var(--space-tiny) var(--space-small);
   pointer-events: none;
   position: absolute;
-  width: 14px;
 }
 
 .liveLayerIcon {
@@ -158,6 +213,7 @@ span[data-selected="true"] .title, .selected .title {
   position: absolute;
   text-align: center;
   width: calc(100% - 4px);
+
   --fa-primary-color: var(--color-white);
   --fa-secondary-color: var(--color-white);
 }
@@ -182,7 +238,7 @@ span[data-selected="true"] .title, .selected .title {
 
 .liveLayerText {
   background: var(--color-theme-medium);
-  bottom: 0;
+  bottom: var(--padding-bottom);
   box-sizing: border-box;
   color: var(--color-white);
   font-size: 10px;
@@ -192,4 +248,22 @@ span[data-selected="true"] .title, .selected .title {
   text-align: center;
   text-overflow: ellipsis;
   width: calc(100% - 4px);
+}
+
+@media (width <= 850px) {
+  .container {
+    --size: 70px;
+  }
+}
+
+@media (width <= 800px) {
+  .container {
+    --size: 62px;
+  }
+}
+
+@media (width <= 750px) {
+  .container {
+    --size: 54px;
+  }
 }

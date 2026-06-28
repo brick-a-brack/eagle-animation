@@ -12,7 +12,7 @@
   "Duplicate frame": "Duplica fotogramma",
   "Deduplicate frame": "Deduplica fotogramma",
   "Difference": "Differenza",
-  "Onion blending": "Sfumatura cipolla",
+  "Onion skin": "Pellicola trasparente",
   "Live": "Dal vivo",
   "Play": "Riproduci",
   "Pause": "Pausa",
@@ -371,5 +371,16 @@
   "Delete the scene and all its photos": "Elimina la scena e tutte le sue foto",
   "Use camera compatibility mode": "Usa la modalità di compatibilità della fotocamera",
   "Disables DSLR and remote cameras, may limit available camera settings": "Disabilita le fotocamere DSLR e remote, potrebbe limitare le impostazioni della fotocamera disponibili",
-  "Untitled scene #{{index}}": "Scena senza titolo #{{index}}"
+  "Untitled scene #{{index}}": "Scena senza titolo #{{index}}",
+  "Privacy": "Privacy",
+  "Allow telemetry": "Consenti la telemetria",
+  "Send anonymous usage data to help improve the application": "Invia dati di utilizzo anonimi per aiutare a migliorare l'applicazione",
+  "Undo last action": "Annulla l'ultima azione",
+  "Redo last undone action": "Ripeti l'ultima azione annullata",
+  "Add new scene": "Aggiungi una nuova scena",
+  "Tools & playback": "Strumenti & riproduzione",
+  "Speed": "Velocità",
+  "More": "Di più",
+  "Frame actions": "Azioni sul fotogramma",
+  "Project name": "Nome del progetto"
 }

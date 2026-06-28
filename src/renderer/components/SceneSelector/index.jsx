@@ -3,7 +3,7 @@ import faChevronDown from '@icons/faChevronDown';
 import faGear from '@icons/faGear';
 import faImages from '@icons/faImages';
 import faPlus from '@icons/faPlus';
-import faSlidersUp from '@icons/faSlidersUp';
+import faTrash from '@icons/faTrash';
 import { useEffect, useRef, useState } from 'react';
 import { withTranslation } from 'react-i18next';
 
@@ -13,12 +13,12 @@ const SceneSelector = ({
   t,
   scenes = [],
   currentTrack = 0,
-  onSelect = () => { },
-  onCreate = () => { },
-  onEditScene = () => { },
+  onSelect = () => {},
+  onCreate = () => {},
+  onEditScene = () => {},
   projectTitle = '',
-  onProjectTitleChange = () => { },
-  onEditProject = () => { },
+  onProjectTitleChange = () => {},
+  onProjectDelete = () => {},
   disabled = false,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -73,15 +73,15 @@ const SceneSelector = ({
           />
           <button
             type="button"
-            className={style.rowGear}
+            className={style.rowDelete}
             onClick={(e) => {
               e.stopPropagation();
               setIsOpen(false);
-              onEditProject();
+              onProjectDelete();
             }}
-            title={t('Project settings')}
+            title={t('Delete project')}
           >
-            <FontAwesomeIcon icon={faSlidersUp} />
+            <FontAwesomeIcon icon={faTrash} />
           </button>
         </div>
 
@@ -102,7 +102,11 @@ const SceneSelector = ({
               >
                 <span className={style.rowTitle}>{s.title || t('Untitled scene')}</span>
                 <div className={style.rowMeta}>
-                  {s.pictureCount > 0 && <span className={style.metaTag}>{s.pictureCount} <FontAwesomeIcon icon={faImages} style={{ position: 'relative', top: '-1px' }} /></span>}
+                  {s.pictureCount > 0 && (
+                    <span className={style.metaTag}>
+                      {s.pictureCount} <FontAwesomeIcon icon={faImages} style={{ position: 'relative', top: '-1px' }} />
+                    </span>
+                  )}
                   {s.framerate && <span className={style.metaTag}>{s.framerate} FPS</span>}
                 </div>
               </button>

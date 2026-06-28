@@ -60,7 +60,7 @@
   "Difference": "Forskel",
   "Disable grid": "Deaktiver gitter",
   "Enable grid": "Aktivér gitter",
-  "Onion blending": "Løglægning",
+  "Onion skin": "Løgskind",
   "Camera settings": "Kamera indstillinger",
   "Live": "Live",
   "Play": "Afspil",
@@ -353,5 +353,17 @@
   "Delete the scene and all its photos": "Slet scenen og alle dens fotos",
   "Use camera compatibility mode": "Brug kamerakompatibilitetsmode",
   "Disables DSLR and remote cameras, may limit available camera settings": "Deaktiverer DSLR- og fjernkameraer, kan begrænse tilgængelige kamerainstillinger",
-  "Untitled scene #{{index}}": "Uden titel scene #{{index}}"
+  "Untitled scene #{{index}}": "Uden titel scene #{{index}}",
+  "Privacy": "Privatliv",
+  "Allow telemetry": "Tillad telemetri",
+  "Send anonymous usage data to help improve the application": "Send anonym brugsdata for at hjælpe med at forbedre applikationen",
+  "Undo last action": "Fortryd sidste handling",
+  "Redo last undone action": "Gentag sidste fortrudte handling",
+  "Add new scene": "Tilføj ny scene",
+  "Tools & playback": "Værktøjer & afspilning",
+  "Speed": "Hastighed",
+  "More": "Mere",
+  "Frame actions": "Billedhandlinger",
+  "Project name": "Projekt navn",
+  "Delete project": "Slet projekt"
 }

@@ -60,7 +60,7 @@
   "Difference": "Разлика",
   "Disable grid": "Изключване на решетката",
   "Enable grid": "Активиране на решетката",
-  "Onion blending": "Смесване като луковица",
+  "Onion skin": "Лукова кожа",
   "Camera settings": "Настройки на камерата",
   "Live": "На живо",
   "Play": "Пусни",
@@ -353,5 +353,17 @@
   "Delete the scene and all its photos": "Изтрий сцената и всичките й снимки",
   "Use camera compatibility mode": "Използвай режим на съвместимост на камерата",
   "Disables DSLR and remote cameras, may limit available camera settings": "Деактивира DSLR и дистанционни камери, може да ограничи наличните настройки на камерата",
-  "Untitled scene #{{index}}": "Без заглавие #{{index}}"
+  "Untitled scene #{{index}}": "Без заглавие #{{index}}",
+  "Privacy": "Поверителност",
+  "Allow telemetry": "Позволи телеметрия",
+  "Send anonymous usage data to help improve the application": "Изпращайте анонимни данни за използване, за да помогнете за подобряване на приложението",
+  "Undo last action": "Отмени последното действие",
+  "Redo last undone action": "Повтори последното отменено действие",
+  "Add new scene": "Добави нова сцена",
+  "Tools & playback": "Инструменти и възпроизвеждане",
+  "Speed": "Скорост",
+  "More": "Повече",
+  "Frame actions": "Действия върху кадъра",
+  "Project name": "Име на проекта",
+  "Delete project": "Изтриване на проекта"
 }

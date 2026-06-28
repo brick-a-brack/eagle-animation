@@ -60,7 +60,7 @@
   "Difference": "Atšķirība",
   "Disable grid": "Atspējot režģi",
   "Enable grid": "Iespējot režģi",
-  "Onion blending": "Sīpolu sajaukšana",
+  "Onion skin": "Sīpolu āda",
   "Camera settings": "Kameras iestatījumi",
   "Live": "Tiešraide",
   "Play": "Atskaņot",
@@ -357,5 +357,17 @@
   "Delete the scene and all its photos": "Dzēst ainu un visas tās fotogrāfijas",
   "Use camera compatibility mode": "Izmantot kameras saderības režīmu",
   "Disables DSLR and remote cameras, may limit available camera settings": "Atspējo DSLR un attālinātās kameras, var ierobežot pieejamos kameras iestatījumus",
-  "Untitled scene #{{index}}": "Nenosaukta aina #{{index}}"
+  "Untitled scene #{{index}}": "Nenosaukta aina #{{index}}",
+  "Privacy": "Privātums",
+  "Allow telemetry": "Atļaut telemetriju",
+  "Send anonymous usage data to help improve the application": "Sūtīt anonīmus lietošanas datus, lai palīdzētu uzlabot lietotni",
+  "Undo last action": "Atcelt pēdējo darbību",
+  "Redo last undone action": "Atjaunot pēdējo atceltu darbību",
+  "Add new scene": "Pievienot jaunu ainu",
+  "Tools & playback": "Rīki un atskaņošana",
+  "Speed": "Ātrums",
+  "More": "Vairāk",
+  "Frame actions": "Kadru darbības",
+  "Project name": "Projekta nosaukums",
+  "Delete project": "Dzēst projektu"
 }

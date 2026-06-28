@@ -3,10 +3,10 @@
     flex-direction: column;
     gap: var(--space-big);
     margin: 0 var(--space-huge);
-    width: calc(100% - 2 * var(--space-huge));
-    max-width: 640px;
     margin: auto;
+    max-width: 640px;
     padding-bottom: var(--space-big);
+    width: calc(100% - 2 * var(--space-huge));
 }
 
 .list {
@@ -23,8 +23,8 @@
     font-size: var(--font-size-3);
     font-weight: 600;
     line-height: var(--line-size-3);
-    user-select: none;
     text-align: center;
+    user-select: none;
 }
 
 .item {

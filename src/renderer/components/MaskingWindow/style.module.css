@@ -1,8 +1,8 @@
 .container {
-    place-content: center space-between;
     display: flex;
     flex-direction: column;
     height: calc(100vh - 3px);
+    place-content: center space-between;
 }
 
 .actions {

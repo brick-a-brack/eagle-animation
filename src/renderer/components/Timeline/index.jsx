@@ -15,7 +15,7 @@ import * as style from './style.module.css';
 const MOUSE_OPTIONS = { activationConstraint: { distance: 0 } };
 const TOUCH_OPTIONS = { activationConstraint: { delay: 250, tolerance: 5 } };
 
-const SortableItem = memo(({ id, link = '', hidden = false, length = 0, hasMasking = false, maskingLabel = '', isShortPlayBegining = false, onSelect, index }) => {
+const SortableItem = memo(function SortableItem({ id, link = '', hidden = false, length = 0, hasMasking = false, maskingLabel = '', isShortPlayBegining = false, onSelect, index }) {
   const { setNodeRef, isDragging, transform, transition, listeners, attributes, active } = useSortable({ id });
   return (
     <span
@@ -28,7 +28,6 @@ const SortableItem = memo(({ id, link = '', hidden = false, length = 0, hasMaski
       style={{
         opacity: isDragging ? 1 : undefined,
         zIndex: isDragging ? 999 : undefined,
-        minWidth: `80px`,
         transform: active ? DNDCSS.Transform.toString({ ...transform, y: 0, scaleX: 1, scaleY: 1 }) : undefined,
         transition: active ? transition : undefined,
       }}
@@ -72,7 +71,7 @@ const LiveItem = ({ select, onSelect, frameCaptureMode }) => {
 
 // Memoized inner list: receives ONLY stable props. Never re-renders on play tick
 // (no `select`/`playing`), so neither DndContext nor SortableContext re-emit context.
-const SortableList = memo(({ sortableItemIds, visiblePictures, maskingLabel, shortPlayFrameId, onSelect, onDragEnd, sensors }) => {
+const SortableList = memo(function SortableList({ sortableItemIds, visiblePictures, maskingLabel, shortPlayFrameId, onSelect, onDragEnd, sensors }) {
   return (
     <DndContext sensors={sensors} onDragEnd={onDragEnd}>
       <SortableContext items={sortableItemIds} strategy={horizontalListSortingStrategy}>
@@ -97,8 +96,21 @@ const SortableList = memo(({ sortableItemIds, visiblePictures, maskingLabel, sho
 
 const Timeline = ({ onSelect, onMove, select = false, pictures = [], playing = false, shortPlayStatus = false, shortPlayFrames = 0, frameCaptureMode = false }) => {
   const ref = useRef(null);
+  const shadowLeftRef = useRef(null);
+  const shadowRightRef = useRef(null);
   const { t } = useTranslation();
   const maskingLabel = t('M');
+
+  // Imperatively toggle the edge shadows based on scroll position to avoid
+  // re-rendering the (memoized) heavy frame list on every scroll/resize tick.
+  const updateShadows = useCallback(() => {
+    const el = ref.current;
+    if (!el) return;
+    const atStart = el.scrollLeft <= 1;
+    const atEnd = el.scrollLeft + el.clientWidth >= el.scrollWidth - 1;
+    if (shadowLeftRef.current) shadowLeftRef.current.classList.toggle(style.visible, !atStart);
+    if (shadowRightRef.current) shadowRightRef.current.classList.toggle(style.visible, !atEnd);
+  }, []);
 
   // Latest-ref pattern: keep callbacks/data accessible from stable handlers without re-creating them.
   const latestRef = useRef({ pictures, onSelect, onMove });
@@ -133,6 +145,13 @@ const Timeline = ({ onSelect, onMove, select = false, pictures = [], playing = f
     return () => window.removeEventListener('keydown', callback, false);
   }, []);
 
+  // Keep shadows in sync with viewport/content size changes.
+  useEffect(() => {
+    updateShadows();
+    window.addEventListener('resize', updateShadows, false);
+    return () => window.removeEventListener('resize', updateShadows, false);
+  }, [updateShadows]);
+
   // Comprehensive signature: any prop displayed by SortableItem is captured here.
   // Re-renders of the memoized inner list happen only when this string actually changes.
   let picturesKey = '';
@@ -141,8 +160,8 @@ const Timeline = ({ onSelect, onMove, select = false, pictures = [], playing = f
     picturesKey += p.id + ',' + (p.hidden ? 1 : 0) + ',' + (p.masking ? 1 : 0) + ',' + (p.length || 0) + ',' + (p.link || '') + ';';
   }
 
-  const sortableItemIds = useMemo(() => pictures.map((p) => p.id), [picturesKey]); // eslint-disable-line react-hooks/exhaustive-deps
-  const visiblePictures = useMemo(() => pictures.filter((e) => !e.deleted), [picturesKey]); // eslint-disable-line react-hooks/exhaustive-deps
+  const sortableItemIds = useMemo(() => pictures.map((p) => p.id), [picturesKey]);
+  const visiblePictures = useMemo(() => pictures.filter((e) => !e.deleted), [picturesKey]);
 
   // Imperative .selected class toggling: avoids passing `select` as a prop to SortableItem,
   // which would defeat memoization. Runs after each pictures/select change, before paint.
@@ -156,6 +175,8 @@ const Timeline = ({ onSelect, onMove, select = false, pictures = [], playing = f
 
   const prevScrollRef = useRef({ key: null, select: null });
   useLayoutEffect(() => {
+    // Content size may have changed (add/delete/load) → refresh shadows.
+    updateShadows();
     const target = select === false ? '#timeline-frame-live' : `#timeline-frame-${select}`;
     if (document.querySelector(target)) {
       const isPicturesChange = picturesKey !== prevScrollRef.current.key;
@@ -174,7 +195,7 @@ const Timeline = ({ onSelect, onMove, select = false, pictures = [], playing = f
         maxDuration: instant ? 0 : 1500,
         cancelOnUserAction: false,
         horizontalOffset: (-window.innerWidth + document.querySelector(target).getBoundingClientRect().width) / 2,
-      });
+      }).then(updateShadows);
     }
   }, [select, picturesKey, playing]);
 
@@ -196,21 +217,25 @@ const Timeline = ({ onSelect, onMove, select = false, pictures = [], playing = f
       position += len;
     }
     return null;
-  }, [picturesKey, shortPlayStatus, shortPlayFrames]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [picturesKey, shortPlayStatus, shortPlayFrames]);
 
   return (
-    <aside className={`${style.container} ${playing ? style.playing : ''}`} ref={ref}>
-      <SortableList
-        sortableItemIds={sortableItemIds}
-        visiblePictures={visiblePictures}
-        maskingLabel={maskingLabel}
-        shortPlayFrameId={shortPlayFrameId}
-        onSelect={stableOnSelect}
-        onDragEnd={stableOnDragEnd}
-        sensors={sensors}
-      />
-      <LiveItem select={select} onSelect={stableOnSelect} frameCaptureMode={frameCaptureMode} />
-    </aside>
+    <div className={style.wrapper}>
+      <aside className={`${style.container} ${playing ? style.playing : ''}`} ref={ref} onScroll={updateShadows}>
+        <SortableList
+          sortableItemIds={sortableItemIds}
+          visiblePictures={visiblePictures}
+          maskingLabel={maskingLabel}
+          shortPlayFrameId={shortPlayFrameId}
+          onSelect={stableOnSelect}
+          onDragEnd={stableOnDragEnd}
+          sensors={sensors}
+        />
+        <LiveItem select={select} onSelect={stableOnSelect} frameCaptureMode={frameCaptureMode} />
+      </aside>
+      <div ref={shadowLeftRef} className={`${style.shadow} ${style.shadowLeft}`} />
+      <div ref={shadowRightRef} className={`${style.shadow} ${style.shadowRight}`} />
+    </div>
   );
 };
 

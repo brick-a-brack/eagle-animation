@@ -33,6 +33,8 @@ const SHORTCUTS = {
   DEDUPLICATE: ['pagedown'],
   GRID: ['g'],
   ADD_SCENE: ['ctrl+n'],
+  UNDO: ['ctrl+z'],
+  REDO: ['ctrl+y', 'ctrl+shift+z'],
 };
 
 const PARSED_SHORTCUTS = Object.keys(SHORTCUTS).reduce((acc, key) => ({ ...acc, [key]: SHORTCUTS[key].map((e) => (isMac ? e.replaceAll('ctrl', 'meta') : e)) }), {});

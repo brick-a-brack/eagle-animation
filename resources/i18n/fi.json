@@ -60,7 +60,7 @@
   "Difference": "Ero",
   "Disable grid": "Poista ruudukko käytöstä",
   "Enable grid": "Ota ruudukko käyttöön",
-  "Onion blending": "Sipulisekoitus",
+  "Onion skin": "Sipuli iho",
   "Camera settings": "Kameran asetukset",
   "Live": "Suora",
   "Play": "Toista",
@@ -353,5 +353,17 @@
   "Delete the scene and all its photos": "Poista kohtaus ja kaikki sen valokuvat",
   "Use camera compatibility mode": "Käytä kameran yhteensopivuustilaa",
   "Disables DSLR and remote cameras, may limit available camera settings": "Poistaa DSLR- ja etäkamerat käytöstä, voi rajoittaa käytettävissä olevia kameran asetuksia",
-  "Untitled scene #{{index}}": "Nimetön kohtaus #{{index}}"
+  "Untitled scene #{{index}}": "Nimetön kohtaus #{{index}}",
+  "Privacy": "Yksityisyys",
+  "Allow telemetry": "Salli telemetria",
+  "Send anonymous usage data to help improve the application": "Lähetä anonyymejä käyttödataa auttaaksesi parantamaan sovellusta",
+  "Undo last action": "Peru viimeisin toiminto",
+  "Redo last undone action": "Tee viimeinen peruttu toiminto uudelleen",
+  "Add new scene": "Lisää uusi kohtaus",
+  "Tools & playback": "Työkalut & toisto",
+  "Speed": "Nopeus",
+  "More": "Lisää",
+  "Frame actions": "Kehys toiminnot",
+  "Project name": "Projektin nimi",
+  "Delete project": "Poista projekti"
 }

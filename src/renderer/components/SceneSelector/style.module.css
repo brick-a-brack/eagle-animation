@@ -3,6 +3,18 @@
     width: 300px;
 }
 
+@media (width <= 500px) {
+    .container {
+        width: 250px;
+    }
+}
+
+@media (width <= 400px) {
+    .container {
+        width: 200px;
+    }
+}
+
 .button {
     align-items: center;
     background: transparent;
@@ -12,24 +24,24 @@
     cursor: pointer;
     display: flex;
     gap: var(--space-medium);
-    padding: 0px 6px;
+    height: 40px;
+    justify-content: center;
+    overflow: hidden;
+    padding: 0 6px;
     position: relative;
     text-align: center;
     transition: border-color 0.15s ease-in-out, background 0.15s ease-in-out;
-    justify-content: center;
     width: 100%;
-    height: 40px;
-    overflow: hidden;
-}
-
-.button:hover:not(:disabled) {
-    background: var(--color-theme-light);
-    border-color: var(--color-primary);
 }
 
 .button:disabled {
     cursor: not-allowed;
     opacity: 0.4;
+}
+
+.button:hover:not(:disabled) {
+    background: var(--color-theme-light);
+    border-color: var(--color-primary);
 }
 
 .buttonContent {
@@ -79,7 +91,7 @@
     background: var(--color-theme-dark);
     border: 1px solid var(--color-theme-light);
     border-radius: 8px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+    box-shadow: 0 8px 24px rgb(0 0 0 / 45%);
     left: 0;
     margin-top: 6px;
     opacity: 0;
@@ -118,8 +130,8 @@
     border-radius: 4px;
     display: flex;
     gap: 4px;
-    padding: 2px 0 2px 4px;
     justify-content: space-between;
+    padding: 2px 0 2px 4px;
 }
 
 .projectInput {
@@ -232,6 +244,26 @@
     opacity: 1;
 }
 
+.rowDelete {
+    align-items: center;
+    background: transparent;
+    border: none;
+    color: var(--color-white);
+    cursor: pointer;
+    display: inline-flex;
+    flex-shrink: 0;
+    height: 30px;
+    justify-content: center;
+    opacity: 0.5;
+    transition: opacity 0.15s ease-in-out, color 0.15s ease-in-out;
+    width: 30px;
+}
+
+.rowDelete:hover {
+    color: var(--color-alert);
+    opacity: 1;
+}
+
 .separator {
     background: var(--color-theme-light);
     height: 1px;
@@ -259,8 +291,8 @@
 }
 
 .scrollable {
-    overflow-y: scroll;
     max-height: calc(100vh - 300px);
+    overflow-y: scroll;
 }
 
 .scrollable::-webkit-scrollbar {

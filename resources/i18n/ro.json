@@ -60,7 +60,7 @@
   "Difference": "Diferență",
   "Disable grid": "Dezactivează grila",
   "Enable grid": "Activează grila",
-  "Onion blending": "Amestec de ceapă",
+  "Onion skin": "Piele de ceapă",
   "Camera settings": "Setările camerei",
   "Live": "Direct",
   "Play": "Redare",
@@ -357,5 +357,17 @@
   "Delete the scene and all its photos": "Șterge scena și toate fotografiile sale",
   "Use camera compatibility mode": "Utilizează modul de compatibilitate a camerei",
   "Disables DSLR and remote cameras, may limit available camera settings": "Dezactivează camerele DSLR și cele la distanță, poate limita setările disponibile ale camerei",
-  "Untitled scene #{{index}}": "Scenă fără titlu #{{index}}"
+  "Untitled scene #{{index}}": "Scenă fără titlu #{{index}}",
+  "Privacy": "Confidențialitate",
+  "Allow telemetry": "Permite telemetria",
+  "Send anonymous usage data to help improve the application": "Trimite date de utilizare anonime pentru a ajuta la îmbunătățirea aplicației",
+  "Undo last action": "Anulează ultima acțiune",
+  "Redo last undone action": "Refă ultima acțiune anulată",
+  "Add new scene": "Adaugă o nouă scenă",
+  "Tools & playback": "Instrumente & redare",
+  "Speed": "Viteză",
+  "More": "Mai mult",
+  "Frame actions": "Acțiuni pe cadru",
+  "Project name": "Numele proiectului",
+  "Delete project": "Șterge proiectul"
 }

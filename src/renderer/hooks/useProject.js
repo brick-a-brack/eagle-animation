@@ -2,8 +2,37 @@ import { mimeTypeToExtension } from '@core/frameTypes';
 import { useCallback, useEffect, useState } from 'react';
 import { v4 } from 'uuid';
 
+import { useHistory } from './useHistory';
+
+function cleanProjectData(data) {
+  const d = structuredClone(data);
+  delete d._path;
+  delete d._file;
+  for (const scene of d.project.scenes) {
+    for (const picture of scene.pictures) {
+      delete picture.link;
+      delete picture.metaLink;
+      for (const layer of ['background', 'foreground', 'transparent']) {
+        if (picture.masking?.[layer]) {
+          delete picture.masking[layer].link;
+          delete picture.masking[layer].metaLink;
+        }
+      }
+    }
+  }
+  return d;
+}
+
+function getFingerprint(data) {
+  if (!data?.project) return null;
+  const d = cleanProjectData(data);
+  return JSON.stringify({ title: d.project.title, scenes: d.project.scenes });
+}
+
 function useProject(options) {
   const [projectData, setProjectData] = useState(null);
+
+  const { push: pushHistory, undo: historyUndo, redo: historyRedo, canUndo, canRedo } = useHistory({ key: options?.id, serialize: getFingerprint });
 
   // Initial load
   useEffect(() => {
@@ -12,32 +41,16 @@ function useProject(options) {
     });
   }, [options?.id]);
 
+  // Push to history on every real projectData change
+  useEffect(() => {
+    if (!projectData) return;
+    pushHistory(projectData);
+  }, [projectData, pushHistory]);
+
   // Auto save
   useEffect(() => {
-    if (projectData) {
-      let d = structuredClone(projectData);
-      delete d._path;
-      delete d._file;
-      for (const trackIndex in d.project.scenes) {
-        for (const pictureIndex in d.project.scenes[trackIndex].pictures) {
-          delete d.project.scenes[trackIndex].pictures[pictureIndex].link;
-          delete d.project.scenes[trackIndex].pictures[pictureIndex].metaLink;
-          if (d.project.scenes[trackIndex].pictures[pictureIndex]?.masking?.background) {
-            delete d.project.scenes[trackIndex].pictures[pictureIndex].masking.background.link;
-            delete d.project.scenes[trackIndex].pictures[pictureIndex].masking.background.metaLink;
-          }
-          if (d.project.scenes[trackIndex].pictures[pictureIndex]?.masking?.foreground) {
-            delete d.project.scenes[trackIndex].pictures[pictureIndex].masking.foreground.link;
-            delete d.project.scenes[trackIndex].pictures[pictureIndex].masking.foreground.metaLink;
-          }
-          if (d.project.scenes[trackIndex].pictures[pictureIndex]?.masking?.transparent) {
-            delete d.project.scenes[trackIndex].pictures[pictureIndex].masking.transparent.link;
-            delete d.project.scenes[trackIndex].pictures[pictureIndex].masking.transparent.metaLink;
-          }
-        }
-      }
-      window.EA('SAVE_PROJECT', { project_id: options?.id, data: d });
-    }
+    if (!projectData) return;
+    window.EA('SAVE_PROJECT', { project_id: options?.id, data: cleanProjectData(projectData) });
   }, [projectData, options?.id]);
 
   // Action change FPS
@@ -334,8 +347,22 @@ function useProject(options) {
     [options?.id]
   );
 
+  // Action Undo
+  const actionUndo = useCallback(() => {
+    const prev = historyUndo();
+    if (prev) setProjectData(structuredClone(prev));
+  }, [historyUndo]);
+
+  // Action Redo
+  const actionRedo = useCallback(() => {
+    const next = historyRedo();
+    if (next) setProjectData(structuredClone(next));
+  }, [historyRedo]);
+
   return {
     project: projectData?.project || null,
+    canUndo,
+    canRedo,
     actions: {
       changeFPS: actionChangeFPS,
       changeRatio: actionChangeRatio,
@@ -350,6 +377,8 @@ function useProject(options) {
       addScene: actionAddScene,
       renameScene: actionRenameScene,
       deleteScene: actionDeleteScene,
+      undo: actionUndo,
+      redo: actionRedo,
     },
   };
 }
