@@ -110,7 +110,7 @@ const SettingsForm = ({ settings = {}, onUpdate = () => { }, t }) => {
           />
         </FormGroup>
         {watch('GRID_MODES')?.includes('GRID') && (
-          <FormGroup label={t('Grid lines')} description={t('Number of lines of the grid layer')}>
+          <FormGroup label={t('Grid rows')} description={t('Number of rows of the grid layer')}>
             <NumberInput register={register('GRID_LINES')} min={0} max={12} />
           </FormGroup>
         )}
