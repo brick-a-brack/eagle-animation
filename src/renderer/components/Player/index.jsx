@@ -1,4 +1,5 @@
 import PreviewStream from '@components/PreviewStream';
+import { drawGrid as drawGridOnCanvas } from '@core/grid';
 import { getPictureLink } from '@core/resize';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import faEyeSlash from '@icons/faEyeSlash';
@@ -8,13 +9,6 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 
 import * as style from './style.module.css';
-
-const drawArea = (ctx, x, y, width, height) => {
-  ctx.fillRect(x, y, width, 1);
-  ctx.fillRect(x, y + height, width, 1);
-  ctx.fillRect(x, y, 1, height);
-  ctx.fillRect(x + width, y, 1, height);
-};
 
 class Player extends Component {
   constructor(props) {
@@ -253,50 +247,18 @@ class Player extends Component {
   }
 
   drawGrid() {
-    const color = `rgba(255,255,255, ${this.props.gridOpacity}`;
-
     const { width, height } = this.getSize();
     const ctx = this.dom.grid.current.getContext('2d');
-    ctx.clearRect(0, 0, width, height);
-    ctx.fillStyle = color;
 
-    const videoRatio = this.getVideoRatio();
-    let widthRatio = width;
-    let heightRatio = height;
-    let marginX = 0;
-    let marginY = 0;
-
-    if (videoRatio) {
-      if (videoRatio > width / height) {
-        heightRatio = width / videoRatio;
-      } else {
-        widthRatio = height * videoRatio;
-      }
-      marginX = (width - widthRatio) / 2;
-      marginY = (height - heightRatio) / 2;
-    }
-
-    if (this.props.gridModes?.includes('GRID')) {
-      for (let i = 0; i < this.props.gridColumns - 1; i++) {
-        ctx.fillRect(Math.round(marginX + (widthRatio * (i + 1)) / this.props.gridColumns), 0, 1, height);
-      }
-      for (let i = 0; i < this.props.gridLines - 1; i++) {
-        ctx.fillRect(0, Math.round(marginY + (heightRatio * (i + 1)) / this.props.gridLines), width, 1);
-      }
-    }
-
-    if (this.props.gridModes?.includes('CENTER')) {
-      const size = Math.round((20 / 1080) * height);
-      ctx.fillRect((width - size) / 2, (height - 2) / 2, size, 2);
-      ctx.fillRect((width - 2) / 2, (height - size) / 2, 2, size);
-    }
-
-    if (this.props.gridModes?.includes('MARGINS')) {
-      // 90% and 80%
-      drawArea(ctx, Math.round(marginX + 0.05 * widthRatio), Math.round(marginY + 0.05 * heightRatio), Math.round(0.9 * widthRatio), Math.round(0.9 * heightRatio));
-      drawArea(ctx, Math.round(marginX + 0.1 * widthRatio), Math.round(marginY + 0.1 * heightRatio), Math.round(0.8 * widthRatio), Math.round(0.8 * heightRatio));
-      // drawArea(ctx, 0.035 * width, 0.035 * height, 0.93 * width, 0.93 * height);
-    }
+    drawGridOnCanvas(ctx, {
+      width,
+      height,
+      gridModes: this.props.gridModes,
+      gridOpacity: this.props.gridOpacity,
+      gridColumns: this.props.gridColumns,
+      gridLines: this.props.gridLines,
+      videoRatio: this.getVideoRatio(),
+    });
   }
 
   loadImage(link) {

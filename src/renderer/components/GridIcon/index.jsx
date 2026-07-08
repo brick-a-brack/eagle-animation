@@ -4,12 +4,17 @@ import marginsIcon from './assets/margins.png';
 
 import * as style from './style.module.css';
 
-const GridIcon = ({ title = '', selected = false, value = '', register = {} }) => (
+const GridIcon = ({ title = '', selected = false, value = '', register = {}, warning = '' }) => (
   <label className={`${style.field} ${selected ? style.selected : ''}`} title={title}>
     <input {...register} type="checkbox" className={style.input} value={value} />
     {value === 'GRID' && <img src={gridIcon} alt="grid" />}
     {value === 'MARGINS' && <img src={marginsIcon} alt="margins" />}
     {value === 'CENTER' && <img src={centerIcon} alt="center" />}
+    {warning && (
+      <span className={style.warning} title={warning}>
+        !
+      </span>
+    )}
   </label>
 );
 

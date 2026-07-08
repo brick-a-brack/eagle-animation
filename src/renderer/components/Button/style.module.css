@@ -72,3 +72,19 @@
 .disabled:hover {
     background-color: var(--color-theme-medium);
 }
+
+.warning {
+    align-items: center;
+    background: var(--color-warning);
+    border-radius: 50%;
+    color: var(--color-theme-extra-dark);
+    display: flex;
+    font-size: var(--font-size-9);
+    font-weight: bold;
+    height: 16px;
+    justify-content: center;
+    position: absolute;
+    right: -2px;
+    top: -2px;
+    width: 16px;
+}

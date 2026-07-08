@@ -32,6 +32,9 @@ const MASKING_MODES = {
 
 const ControlBar = ({
   gridStatus = false,
+  gridModes = [],
+  gridColumns = 1,
+  gridLines = 1,
   differenceStatus = false,
   onionValue = 1,
   isPlaying = false,
@@ -96,7 +99,14 @@ const ControlBar = ({
           icon={faDiamondHalfStroke}
           disabled={framePosition !== false}
         />
-        <Button title={gridStatus ? t('Disable grid') : t('Enable grid')} selected={gridStatus} onClick={handleAction('GRID')} icon={faFrame} disabled={framePosition !== false} />
+        <Button
+          title={gridStatus ? t('Disable grid') : t('Enable grid')}
+          selected={gridStatus}
+          onClick={handleAction('GRID')}
+          icon={faFrame}
+          disabled={framePosition !== false}
+          warning={gridStatus && gridModes?.includes('GRID') && Number(gridColumns) === 0 && Number(gridLines) === 0 ? t('Grid will not display with current settings!') : ''}
+        />
 
         <div className={`${style.slider} ${differenceStatus || framePosition !== false ? style.sliderDisabled : ''}`} id="onion" data-tooltip-id="onion">
           <CustomSlider step={0.01} min={0} max={1} value={onionValue} onChange={differenceStatus || framePosition !== false ? () => {} : (value) => handleAction('ONION_CHANGE', value)()} />

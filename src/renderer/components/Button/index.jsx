@@ -5,7 +5,7 @@ import { useMemo } from 'react';
 
 import * as style from './style.module.css';
 
-const Button = ({ icon, onClick, title = '', disabled = false, selected = false, color = 'normal', selectedColor = 'normal', tooltipPosition = 'TOP', ...rest }) => {
+const Button = ({ icon, onClick, title = '', disabled = false, selected = false, color = 'normal', selectedColor = 'normal', tooltipPosition = 'TOP', warning = '', ...rest }) => {
   const uid = useMemo(() => uniqueId(), []);
   return (
     <div {...{ ...rest, children: null }} className={style.mainContainer}>
@@ -18,6 +18,11 @@ const Button = ({ icon, onClick, title = '', disabled = false, selected = false,
         className={`${style.button} ${color === 'primary' && style.colorPrimary} ${selected && selectedColor === 'normal' ? style.selected : ''} ${selected && selectedColor === 'warning' ? style.selectedWarning : ''}  ${disabled ? style.disabled : ''}`}
       >
         <FontAwesomeIcon icon={icon} />
+        {warning && (
+          <span className={style.warning} title={warning}>
+            !
+          </span>
+        )}
       </div>
       {title && <Tooltip content={title} place={tooltipPosition.toLowerCase()} id={`button-${uid}`} />}
     </div>

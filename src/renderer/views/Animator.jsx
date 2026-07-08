@@ -650,6 +650,8 @@ const Animator = ({ t }) => {
             onAction={handleAction}
             showCameraSettings={activeWindow === 'camera'}
             gridModes={settings.GRID_MODES}
+            gridColumns={Number(settings.GRID_COLUMNS)}
+            gridLines={Number(settings.GRID_LINES)}
             gridStatus={gridStatus}
             differenceStatus={differenceStatus}
             onionValue={onionValue}
