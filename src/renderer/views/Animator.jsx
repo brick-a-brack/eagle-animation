@@ -15,6 +15,7 @@ import SceneSelectorWindow from '@components/SceneSelectorWindow';
 import SceneSettingsWindow from '@components/SceneSettingsWindow';
 import Timeline from '@components/Timeline';
 import ToolsWindow from '@components/ToolsWindow';
+import Tour from '@components/Tour';
 import Window from '@components/Window';
 import { parseRatio } from '@core/ratio';
 import useAppCapabilities from '@hooks/useAppCapabilities';
@@ -752,6 +753,7 @@ const Animator = ({ t }) => {
       </PageLayout>
       {activeWindow === null && !isPlaying && <ImportOverlay onPictureAdd={handleImportPicture} />}
       {activeWindow === null && <KeyboardHandler onAction={handleAction} />}
+      {activeWindow === null && <Tour tourKey="ANIMATOR" />}
       {!isPlaying && (
         <>
           <Window isOpened={activeWindow === 'camera'} onClose={() => setActiveWindow(null)}>
