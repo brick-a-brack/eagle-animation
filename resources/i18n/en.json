@@ -380,5 +380,12 @@
   "More": "More",
   "Frame actions": "Frame actions",
   "Onion blending": "Onion blending",
-  "Project name": "Project name"
+  "Project name": "Project name",
+  "General": "General",
+  "Playback and navigation": "Playback and navigation",
+  "Grid and ratio": "Grid and ratio",
+  "Preview of your grid and ratio settings": "Preview of your grid and ratio settings",
+  "Grid will not display with current settings": "Grid will not display with current settings",
+  "Grid rows": "Grid rows",
+  "Number of rows of the grid layer": "Number of rows of the grid layer"
 }

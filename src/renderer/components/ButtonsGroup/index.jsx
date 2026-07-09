@@ -16,6 +16,7 @@ const ButtonsGroup = ({ actions = [], tooltipPosition = 'NONE', merge = false, g
       disabled={action.disabled || undefined}
       selected={action.selected || undefined}
       tooltipPosition={tooltipPosition}
+      warning={action.warning || undefined}
     />
   ));
 };

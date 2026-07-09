@@ -365,5 +365,12 @@
   "More": "Több",
   "Frame actions": "Kép műveletek",
   "Project name": "Projekt neve",
-  "Delete project": "Projekt törlése"
+  "Delete project": "Projekt törlése",
+  "General": "Általános",
+  "Playback and navigation": "Lejátszás és navigáció",
+  "Grid and ratio": "Rács és arány",
+  "Preview of your grid and ratio settings": "A rács és arány beállításainak előnézete",
+  "Grid will not display with current settings": "A rács a jelenlegi beállításokkal nem jelenik meg",
+  "Grid rows": "Rács sorok",
+  "Number of rows of the grid layer": "A rács réteg sorainak száma"
 }

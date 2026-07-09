@@ -365,5 +365,12 @@
   "More": "Повече",
   "Frame actions": "Действия върху кадъра",
   "Project name": "Име на проекта",
-  "Delete project": "Изтриване на проекта"
+  "Delete project": "Изтриване на проекта",
+  "General": "Общо",
+  "Playback and navigation": "Възпроизвеждане и навигация",
+  "Grid and ratio": "Мрежа и съотношение",
+  "Preview of your grid and ratio settings": "Преглед на настройките на вашата мрежа и съотношение",
+  "Grid will not display with current settings": "Мрежата няма да се показва с текущите настройки",
+  "Grid rows": "Редове на мрежата",
+  "Number of rows of the grid layer": "Брой редове на слоя с мрежа"
 }

@@ -390,5 +390,12 @@
   "Speed": "Greitis",
   "More": "Daugiau",
   "Frame actions": "Kadrų veiksmai",
-  "Project name": "Projekto pavadinimas"
+  "Project name": "Projekto pavadinimas",
+  "General": "Bendras",
+  "Playback and navigation": "Atlikimas ir naršymas",
+  "Grid and ratio": "Tinklelis ir santykis",
+  "Preview of your grid and ratio settings": "Jūsų tinklelio ir santykio nustatymų peržiūra",
+  "Grid will not display with current settings": "Tinklelis nesirodys su dabartiniais nustatymais",
+  "Grid rows": "Tinklelio eilutės",
+  "Number of rows of the grid layer": "Tinklelio sluoksnio eilučių skaičius"
 }

@@ -382,5 +382,12 @@
   "Speed": "Velocidad",
   "More": "Más",
   "Frame actions": "Acciones en el fotograma",
-  "Project name": "Nombre del proyecto"
+  "Project name": "Nombre del proyecto",
+  "General": "General",
+  "Playback and navigation": "Reproducción y navegación",
+  "Grid and ratio": "Cuadrícula y proporción",
+  "Preview of your grid and ratio settings": "Vista previa de tus configuraciones de cuadrícula y proporción",
+  "Grid will not display with current settings": "La cuadrícula no se mostrará con la configuración actual",
+  "Grid rows": "Filas de cuadrícula",
+  "Number of rows of the grid layer": "Número de filas de la capa de cuadrícula"
 }

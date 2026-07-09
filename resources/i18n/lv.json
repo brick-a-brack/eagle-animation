@@ -369,5 +369,12 @@
   "More": "Vairāk",
   "Frame actions": "Kadru darbības",
   "Project name": "Projekta nosaukums",
-  "Delete project": "Dzēst projektu"
+  "Delete project": "Dzēst projektu",
+  "General": "Vispārējais",
+  "Playback and navigation": "Atskaņošana un navigācija",
+  "Grid and ratio": "Tīkls un attiecība",
+  "Preview of your grid and ratio settings": "Jūsu tīkla un attiecību iestatījumu priekšskatījums",
+  "Grid will not display with current settings": "Tīkls netiks rādīts ar pašreizējiem iestatījumiem",
+  "Grid rows": "Tīkla rindas",
+  "Number of rows of the grid layer": "Rindu skaits tīkla slānī"
 }

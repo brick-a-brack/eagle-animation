@@ -365,5 +365,12 @@
   "More": "Lisää",
   "Frame actions": "Kehys toiminnot",
   "Project name": "Projektin nimi",
-  "Delete project": "Poista projekti"
+  "Delete project": "Poista projekti",
+  "General": "Yleinen",
+  "Playback and navigation": "Toisto ja navigointi",
+  "Grid and ratio": "Ruudukko ja suhde",
+  "Preview of your grid and ratio settings": "Esikatselu ruudukko- ja suhdeasetuksistasi",
+  "Grid will not display with current settings": "Ruudukko ei näy nykyisillä asetuksilla",
+  "Grid rows": "Ruudukon rivit",
+  "Number of rows of the grid layer": "Ruudukon tason rivien määrä"
 }

@@ -369,5 +369,12 @@
   "More": "Mai mult",
   "Frame actions": "Acțiuni pe cadru",
   "Project name": "Numele proiectului",
-  "Delete project": "Șterge proiectul"
+  "Delete project": "Șterge proiectul",
+  "General": "General",
+  "Playback and navigation": "Redare și navigare",
+  "Grid and ratio": "Grilă și raport",
+  "Preview of your grid and ratio settings": "Previzualizare a setărilor tale de grilă și raport",
+  "Grid will not display with current settings": "Grila nu se va afișa cu setările curente",
+  "Grid rows": "Rânduri de grilă",
+  "Number of rows of the grid layer": "Numărul de rânduri ale stratului de grilă"
 }
