@@ -1,6 +1,9 @@
+import ButtonsGroup from '@components/ButtonsGroup';
 import CustomSlider from '@components/CustomSlider';
+import Divider from '@components/Divider';
 import FormGroup from '@components/FormGroup';
 import FormLayout from '@components/FormLayout';
+import GridRatioPreview from '@components/GridRatioPreview';
 import Heading from '@components/Heading';
 import Input from '@components/Input';
 import NumberInput from '@components/NumberInput';
@@ -12,10 +15,6 @@ import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { withTranslation } from 'react-i18next';
 
-import GridRatioPreview from '~/src/renderer/components/GridRatioPreview';
-
-import ButtonsGroup from '../ButtonsGroup';
-import Divider from '../Divider';
 import gridCenterIcon from './assets/center.png';
 import gridBasicIcon from './assets/grid.png';
 import gridMarginsIcon from './assets/margins.png';

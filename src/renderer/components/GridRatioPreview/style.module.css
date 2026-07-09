@@ -1,17 +1,17 @@
 .preview {
+  aspect-ratio: calc(var(--preview-width) / var(--preview-height));
   background: repeating-conic-gradient(var(--color-theme-medium) 0% 25%, var(--color-theme-dark) 0% 50%) 50% / 20px 20px;
   border: solid 1px var(--color-theme-light);
   border-radius: var(--border-radius-medium);
-  max-width: 360px;
   display: block;
-  width: 100%;
+  max-width: 360px;
   overflow: hidden;
   position: relative;
-  aspect-ratio: calc(var(--preview-width) / var(--preview-height));
+  width: 100%;
 }
 
 .canvas {
-  position: absolute;
   height: 100%;
+  position: absolute;
   width: 100%;
 }

@@ -4,8 +4,8 @@
 .borderTop,
 .borderBottom {
     background: #000;
-    position: absolute;
     pointer-events: none;
+    position: absolute;
 }
 
 .borderLeft,

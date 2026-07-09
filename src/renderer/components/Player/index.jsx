@@ -1,4 +1,6 @@
+import GridOverlay from '@components/GridOverlay';
 import PreviewStream from '@components/PreviewStream';
+import RatioBorders from '@components/RatioBorders';
 import { getPictureLink } from '@core/resize';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import faEyeSlash from '@icons/faEyeSlash';
@@ -6,9 +8,6 @@ import resizeToFit from 'intrinsic-scale';
 import { isEqual } from 'lodash';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-
-import GridOverlay from '../GridOverlay';
-import RatioBorders from '../RatioBorders';
 
 import * as style from './style.module.css';
 

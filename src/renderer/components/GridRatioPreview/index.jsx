@@ -1,5 +1,5 @@
-import GridOverlay from '../GridOverlay';
-import RatioBorders from '../RatioBorders';
+import GridOverlay from '@components/GridOverlay';
+import RatioBorders from '@components/RatioBorders';
 
 import * as style from './style.module.css';
 
