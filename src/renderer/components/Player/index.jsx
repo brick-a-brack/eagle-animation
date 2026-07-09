@@ -59,6 +59,16 @@ class Player extends Component {
       this.frames = this.props.pictures.filter((e) => !e.deleted).reduce((acc, e) => [...acc, ...new Array(e.length || 1).fill(e)], []);
     };
 
+    // Returns the last non-hidden frame, used as the onion skinning reference on the live view
+    this.getLastVisibleFrame = () => {
+      for (let i = this.frames.length - 1; i >= 0; i--) {
+        if (!this.frames[i].hidden) {
+          return this.frames[i];
+        }
+      }
+      return false;
+    };
+
     this.computeFrames();
 
     this.play = (playFromBegining = false) => {
@@ -87,7 +97,7 @@ class Player extends Component {
           newFrameIndex = this.props.shortPlayStatus && this.props.shortPlayFrames > 0 && filteredFrames.length > this.props.shortPlayFrames ? filteredFrames.length - this.props.shortPlayFrames : 0;
         }
 
-        const frame = (newFrameIndex === false ? filteredFrames[filteredFrames.length - 1] : filteredFrames[newFrameIndex]) || false;
+        const frame = (newFrameIndex === false ? this.getLastVisibleFrame() : filteredFrames[newFrameIndex]) || false;
         this.drawFrame(frame.link || false);
         this.setState({ frameIndex: newFrameIndex });
         this.props.onFrameChange(newFrameIndex !== false && frame ? frame.id : false, newFrameIndex);
@@ -127,7 +137,7 @@ class Player extends Component {
       if (this.clock) {
         clearInterval(this.clock);
       }
-      const frame = this.frames[this.frames.length - 1] || false; // Draw last frame for onion feature
+      const frame = this.getLastVisibleFrame(); // Draw last non-hidden frame for onion feature
       this.drawFrame(frame.link || false);
       this.setState({ frameIndex: false });
       this.props.onFrameChange(false);
@@ -139,7 +149,7 @@ class Player extends Component {
         clearInterval(this.clock);
       }
       if (id === false) {
-        const frame = this.frames[this.frames.length - 1] || false; // Draw last frame for onion feature
+        const frame = this.getLastVisibleFrame(); // Draw last non-hidden frame for onion feature
         this.drawFrame(frame.link || false);
         this.setState({ frameIndex: false });
         this.props.onFrameChange(false);
@@ -284,6 +294,7 @@ class Player extends Component {
 
     const reverseClassNames = `${reverseX ? style.reverseX : ''} ${reverseY ? style.reverseY : ''}`;
     const frames = this.props.pictures.filter((e) => !e.deleted).reduce((acc, e) => [...acc, ...new Array(e.length || 1).fill(e)], []);
+    const hasOnionFrame = frames.some((e) => !e.hidden);
 
     return (
       <div className={`${style.playerContainer} ${frameIndex === false ? style.live : ''}`}>
@@ -298,7 +309,7 @@ class Player extends Component {
             ref={this.dom.picture}
             className={style.layout}
             style={{
-              opacity: !isCameraReady && frameIndex === false ? 0 : frameIndex !== false || blendMode ? 1 : 1 - onionValue,
+              opacity: !isCameraReady && frameIndex === false ? 0 : frameIndex !== false || blendMode ? 1 : hasOnionFrame ? 1 - onionValue : 0,
               mixBlendMode: !blendMode ? 'normal' : 'difference',
             }}
           />
