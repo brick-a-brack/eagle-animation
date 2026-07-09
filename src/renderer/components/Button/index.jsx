@@ -17,6 +17,7 @@ const Button = ({
   selectedColor = 'normal',
   tooltipPosition = 'TOP',
   warning = '',
+  dataTour = undefined,
   ...rest
 }) => {
   const uid = useMemo(() => uniqueId(), []);
@@ -26,6 +27,7 @@ const Button = ({
       <div
         id={`button-${uid}`}
         data-tooltip-id={`button-${uid}`}
+        data-tour={dataTour}
         role="button"
         tabIndex={0}
         onClick={() => onClick && !disabled && onClick()}
