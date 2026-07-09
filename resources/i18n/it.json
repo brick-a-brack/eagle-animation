@@ -389,5 +389,22 @@
   "Preview of your grid and ratio settings": "Anteprima delle impostazioni di griglia e rapporto",
   "Grid will not display with current settings": "La griglia non verrà visualizzata con le impostazioni attuali",
   "Grid rows": "Righe della griglia",
-  "Number of rows of the grid layer": "Numero di righe del livello della griglia"
+  "Number of rows of the grid layer": "Numero di righe del livello della griglia",
+  "projects": "progetti",
+  "photos": "foto",
+  "of animation": "di animazione",
+  "starred": "preferiti",
+  "Modification date": "Data di modifica",
+  "Creation date": "Data di creazione",
+  "Name": "Nome",
+  "Number of frames": "Numero di fotogrammi",
+  "Search projects...": "Cerca progetti...",
+  "Clear": "Cancella",
+  "Starred": "Preferiti",
+  "Remove from favorites": "Rimuovi dai preferiti",
+  "Add to favorites": "Aggiungi ai preferiti",
+  "{{hours}}h{{minutes}}": "{{hours}}h{{minutes}}",
+  "{{minutes}}m": "{{minutes}}m",
+  "{{seconds}}s": "{{seconds}}s",
+  "No projects match your search": "Nessun progetto corrisponde alla tua ricerca"
 }

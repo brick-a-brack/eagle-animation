@@ -397,5 +397,22 @@
   "Preview of your grid and ratio settings": "Jūsų tinklelio ir santykio nustatymų peržiūra",
   "Grid will not display with current settings": "Tinklelis nesirodys su dabartiniais nustatymais",
   "Grid rows": "Tinklelio eilutės",
-  "Number of rows of the grid layer": "Tinklelio sluoksnio eilučių skaičius"
+  "Number of rows of the grid layer": "Tinklelio sluoksnio eilučių skaičius",
+  "projects": "projektai",
+  "photos": "nuotraukos",
+  "of animation": "animacijos",
+  "starred": "žvaigždėti",
+  "Modification date": "Pakeitimo data",
+  "Creation date": "Sukūrimo data",
+  "Name": "Pavadinimas",
+  "Number of frames": "Kadrų skaičius",
+  "Search projects...": "Ieškoti projektų...",
+  "Clear": "Išvalyti",
+  "Starred": "Žvaigždėti",
+  "Remove from favorites": "Pašalinti iš mėgstamiausių",
+  "Add to favorites": "Pridėti prie mėgstamiausių",
+  "{{hours}}h{{minutes}}": "{{hours}}h{{minutes}}",
+  "{{minutes}}m": "{{minutes}}m",
+  "{{seconds}}s": "{{seconds}}s",
+  "No projects match your search": "Joks projektas neatitinka jūsų paieškos"
 }

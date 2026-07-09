@@ -406,5 +406,9 @@
   "Preview of your grid and ratio settings": "Preview of your grid and ratio settings",
   "Grid will not display with current settings": "Grid will not display with current settings",
   "Grid rows": "Grid rows",
-  "Number of rows of the grid layer": "Number of rows of the grid layer"
+  "Number of rows of the grid layer": "Number of rows of the grid layer",
+  "Creation date": "Creation date",
+  "{{hours}}h{{minutes}}": "{{hours}}h{{minutes}}",
+  "{{minutes}}m": "{{minutes}}m",
+  "{{seconds}}s": "{{seconds}}s"
 }

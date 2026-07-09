@@ -389,5 +389,22 @@
   "Preview of your grid and ratio settings": "Prévia das suas configurações de grade e proporção",
   "Grid will not display with current settings": "A grade não será exibida com as configurações atuais",
   "Grid rows": "Linhas da grade",
-  "Number of rows of the grid layer": "Número de linhas da camada de grade"
+  "Number of rows of the grid layer": "Número de linhas da camada de grade",
+  "projects": "projetos",
+  "photos": "fotos",
+  "of animation": "de animação",
+  "starred": "favoritos",
+  "Modification date": "Data de modificação",
+  "Creation date": "Data de criação",
+  "Name": "Nome",
+  "Number of frames": "Número de quadros",
+  "Search projects...": "Pesquisar projetos...",
+  "Clear": "Limpar",
+  "Starred": "Favoritos",
+  "Remove from favorites": "Remover dos favoritos",
+  "Add to favorites": "Adicionar aos favoritos",
+  "{{hours}}h{{minutes}}": "{{hours}}h{{minutes}}",
+  "{{minutes}}m": "{{minutes}}m",
+  "{{seconds}}s": "{{seconds}}s",
+  "No projects match your search": "Nenhum projeto corresponde à sua pesquisa"
 }

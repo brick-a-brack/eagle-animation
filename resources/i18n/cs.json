@@ -379,5 +379,22 @@
   "Preview of your grid and ratio settings": "Náhled vašich nastavení mřížky a poměru",
   "Grid will not display with current settings": "Mřížka se s aktuálními nastaveními nezobrazí",
   "Grid rows": "Řádky mřížky",
-  "Number of rows of the grid layer": "Počet řádků vrstvy mřížky"
+  "Number of rows of the grid layer": "Počet řádků vrstvy mřížky",
+  "projects": "projekty",
+  "photos": "fotografie",
+  "of animation": "animace",
+  "starred": "oblíbené",
+  "Modification date": "Datum úpravy",
+  "Creation date": "Datum vytvoření",
+  "Name": "Název",
+  "Number of frames": "Počet snímků",
+  "Search projects...": "Hledat projekty...",
+  "Clear": "Vymazat",
+  "Starred": "Oblíbené",
+  "Remove from favorites": "Odebrat z oblíbených",
+  "Add to favorites": "Přidat k oblíbeným",
+  "{{hours}}h{{minutes}}": "{{hours}}h{{minutes}}",
+  "{{minutes}}m": "{{minutes}}m",
+  "{{seconds}}s": "{{seconds}}s",
+  "No projects match your search": "Žádné projekty neodpovídají vašemu hledání"
 }

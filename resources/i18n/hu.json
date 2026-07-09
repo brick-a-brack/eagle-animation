@@ -372,5 +372,22 @@
   "Preview of your grid and ratio settings": "A rács és arány beállításainak előnézete",
   "Grid will not display with current settings": "A rács a jelenlegi beállításokkal nem jelenik meg",
   "Grid rows": "Rács sorok",
-  "Number of rows of the grid layer": "A rács réteg sorainak száma"
+  "Number of rows of the grid layer": "A rács réteg sorainak száma",
+  "projects": "projektek",
+  "photos": "fotók",
+  "of animation": "animáció",
+  "starred": "kedvencek",
+  "Modification date": "Módosítás dátuma",
+  "Creation date": "Létrehozás dátuma",
+  "Name": "Név",
+  "Number of frames": "Képkockák száma",
+  "Search projects...": "Projektek keresése...",
+  "Clear": "Törlés",
+  "Starred": "Kedvencek",
+  "Remove from favorites": "Eltávolítás a kedvencek közül",
+  "Add to favorites": "Hozzáadás a kedvencekhez",
+  "{{hours}}h{{minutes}}": "{{hours}}h{{minutes}}",
+  "{{minutes}}m": "{{minutes}}m",
+  "{{seconds}}s": "{{seconds}}s",
+  "No projects match your search": "Nincs olyan projekt, amely megfelelne a keresésének"
 }

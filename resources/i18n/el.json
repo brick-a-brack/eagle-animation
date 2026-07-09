@@ -372,5 +372,22 @@
   "Preview of your grid and ratio settings": "Προεπισκόπηση των ρυθμίσεων πλέγματος και αναλογίας σας",
   "Grid will not display with current settings": "Το πλέγμα δεν θα εμφανιστεί με τις τρέχουσες ρυθμίσεις",
   "Grid rows": "Γραμμές πλέγματος",
-  "Number of rows of the grid layer": "Αριθμός γραμμών της στρώσης πλέγματος"
+  "Number of rows of the grid layer": "Αριθμός γραμμών της στρώσης πλέγματος",
+  "projects": "έργα",
+  "photos": "φωτογραφίες",
+  "of animation": "της κινούμενης εικόνας",
+  "starred": "αξιοσημείωτα",
+  "Modification date": "Ημερομηνία τροποποίησης",
+  "Creation date": "Ημερομηνία δημιουργίας",
+  "Name": "Όνομα",
+  "Number of frames": "Αριθμός καρέ",
+  "Search projects...": "Αναζήτηση έργων...",
+  "Clear": "Καθαρισμός",
+  "Starred": "Αξιοσημείωτα",
+  "Remove from favorites": "Αφαίρεση από τα αγαπημένα",
+  "Add to favorites": "Προσθήκη στα αγαπημένα",
+  "{{hours}}h{{minutes}}": "{{hours}}h{{minutes}}",
+  "{{minutes}}m": "{{minutes}}m",
+  "{{seconds}}s": "{{seconds}}s",
+  "No projects match your search": "Κανένα έργο δεν ταιριάζει στην αναζήτησή σας"
 }

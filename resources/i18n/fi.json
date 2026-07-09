@@ -372,5 +372,22 @@
   "Preview of your grid and ratio settings": "Esikatselu ruudukko- ja suhdeasetuksistasi",
   "Grid will not display with current settings": "Ruudukko ei näy nykyisillä asetuksilla",
   "Grid rows": "Ruudukon rivit",
-  "Number of rows of the grid layer": "Ruudukon tason rivien määrä"
+  "Number of rows of the grid layer": "Ruudukon tason rivien määrä",
+  "projects": "projektit",
+  "photos": "valokuvat",
+  "of animation": "animaatiosta",
+  "starred": "tähtimerkitty",
+  "Modification date": "Muokkauspäivämäärä",
+  "Creation date": "Luontipäivämäärä",
+  "Name": "Nimi",
+  "Number of frames": "Kuvien määrä",
+  "Search projects...": "Etsi projekteja...",
+  "Clear": "Tyhjennä",
+  "Starred": "Suosikit",
+  "Remove from favorites": "Poista suosikeista",
+  "Add to favorites": "Lisää suosikkeihin",
+  "{{hours}}h{{minutes}}": "{{hours}}h{{minutes}}",
+  "{{minutes}}m": "{{minutes}}m",
+  "{{seconds}}s": "{{seconds}}s",
+  "No projects match your search": "Yksikään projekti ei vastaa hakuaasi"
 }
