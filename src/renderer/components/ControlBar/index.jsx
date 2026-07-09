@@ -158,18 +158,25 @@ const ControlBar = ({
         />
 
         <div className={`${style.slider} ${differenceStatus || framePosition !== false ? style.sliderDisabled : ''}`} id="onion" data-tooltip-id="onion" data-tour="onion">
-          <CustomSlider step={0.01} min={0} max={1} value={onionValue} onChange={differenceStatus || framePosition !== false ? () => { } : (value) => handleAction('ONION_CHANGE', value)()} />
+          <CustomSlider step={0.01} min={0} max={1} value={onionValue} onChange={differenceStatus || framePosition !== false ? () => {} : (value) => handleAction('ONION_CHANGE', value)()} />
         </div>
       </div>
       <div className={`${style.subcontainer} ${style.center}`}>
-        <Button title={t('Camera settings')} selected={showCameraSettings} onClick={isPlaying ? () => { } : handleAction('CAMERA_SETTINGS')} icon={faSliders} disabled={isPlaying} dataTour="camera-settings"/>
+        <Button
+          title={t('Camera settings')}
+          selected={showCameraSettings}
+          onClick={isPlaying ? () => {} : handleAction('CAMERA_SETTINGS')}
+          icon={faSliders}
+          disabled={isPlaying}
+          dataTour="camera-settings"
+        />
         <Button disabled={isTakingPicture || !isCameraReady} onClick={handleAction('TAKE_PICTURE')} color="primary" icon={faCamera} title={t('Take a picture')} dataTour="capture" />
 
         <Button
           title={t('Masking mode ({{status}})', { status: (MASKING_MODES[maskingMode] || MASKING_MODES.DISABLED)(t) })}
           tag={maskingMode !== 'DISABLED' ? (MASKING_MODES[maskingMode] || MASKING_MODES.DISABLED)(t).slice(0, 1) : ''}
           selected={maskingMode !== 'DISABLED'}
-          onClick={framePosition === false ? handleAction('TOGGLE_MASKING_MODE') : () => { }}
+          onClick={framePosition === false ? handleAction('TOGGLE_MASKING_MODE') : () => {}}
           size="mini"
           icon={faEraser}
           disabled={isPlaying}
@@ -185,13 +192,7 @@ const ControlBar = ({
           icon={isPlaying ? faStop : faPlay}
         />
 
-        <PreviewIndicator
-          className={style.previewIndicator}
-          framePosition={framePosition}
-          frameQuantity={frameQuantity}
-          animationFrameQuantity={totalAnimationFrames}
-          fps={fps}
-        />
+        <PreviewIndicator className={style.previewIndicator} framePosition={framePosition} frameQuantity={frameQuantity} animationFrameQuantity={totalAnimationFrames} fps={fps} />
 
         <ButtonsGroup
           groupClassName={style.playingGroupActions}
