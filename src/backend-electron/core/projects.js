@@ -20,6 +20,7 @@ export const generateProjectObject = (name) => ({
   creation: time(),
   updated: time(),
   deleted: false,
+  favorite: false,
   scenes: [
     {
       id: randomUUID(),

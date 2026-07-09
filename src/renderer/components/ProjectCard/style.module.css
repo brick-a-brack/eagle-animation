@@ -1,85 +1,205 @@
-  .box {
-      background-color: var(--color-theme-medium);
-      border-radius: var(--border-radius-small);
-      color: var(--color-white);
-      display: inline-block;
-      height: 200px;
-      margin: 20px;
-      overflow: hidden;
-      position: relative;
-      width: 250px;
-  }
+/* ---------- Grid layout ---------- */
 
-  .banner {
-      background: rgb(24 24 24);
-      cursor: pointer;
-      height: 144px;
-      overflow: hidden;
-      position: relative;
-      width: 100%;
-  }
-
-  .bannerhover {
-      backdrop-filter: blur(10px);
-      background: rgb(0 0 0 / 60%);
-      cursor: pointer;
-      height: 164px;
-      line-height: 164px;
-      margin-top: -164px;
-      opacity: 0;
-      overflow: hidden;
-      position: relative;
-      transition: opacity 0.4s ease-in-out;
-      width: 100%;
-  }
-
-  .bannerhover svg {
-      display: inline-block;
-      fill: var(--color-white);
-      height: 50px;
-      transform: scale(0.7);
-      transition: transform 0.4s ease-in-out;
-      vertical-align: middle;
-      width: 20%;
-  }
-
-  .bannerhover:hover svg {
-      transform: scale(1);
-  }
-
-  .bannerhover:hover {
-      opacity: 1;
-  }
-
-  .banner img {
-      cursor: pointer;
-      left: 50%;
-      position: absolute;
-      top: 50%;
-      transform: translate(-50%, -50%);
-      user-select: none;
-      width: 100%;
-  }
-
-  .title {
-      overflow: hidden;
-      width: 100%;
-  }
-
-  .title input {
-      background: transparent;
-      border: none;
-      color: var(--color-white);
-      font-family: 'Open Sans', sans-serif;
-      font-size: 24px;
-      font-weight: 300;
-      line-height: 32px;
-      margin: 0;
-      outline: none;
-      padding: 0.5em;
-      width: calc(100% - 1em);
-  }
-
-  .title input:disabled {
+.box {
+    background-color: var(--color-theme-medium);
+    border: 2px solid transparent;
+    border-radius: var(--border-radius-medium);
+    box-sizing: border-box;
     color: var(--color-white);
-  }
+    cursor: pointer;
+    display: block;
+    height: 240px;
+    overflow: hidden;
+    position: relative;
+    text-align: left;
+    transition: border-color 0.2s ease-in-out;
+    user-select: none;
+    width: 100%;
+}
+
+.box:hover {
+    border-color: var(--color-theme-light);
+}
+
+.banner {
+    background: rgb(24 24 24);
+    cursor: pointer;
+    height: 164px;
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+}
+
+.banner img {
+    cursor: pointer;
+    height: 100%;
+    left: 50%;
+    object-fit: cover;
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    transition: transform 0.08s ease-in-out;
+    user-select: none;
+    width: 100%;
+}
+
+.box:hover .banner img {
+   transform: translate(-50%, -50%) scale(1.05);
+}
+
+.placeholderThumb {
+    background: repeating-linear-gradient(45deg, rgb(255 255 255 / 2%) 0 10px, rgb(255 255 255 / 5%) 10px 20px);
+    height: 100%;
+    width: 100%;
+}
+
+/* ---------- Badges (frames + fps) ---------- */
+
+.badges {
+    display: flex;
+    gap: var(--space-small);
+    position: absolute;
+    right: var(--space-small);
+    top: var(--space-small);
+    z-index: 2;
+}
+
+.badge {
+    align-items: center;
+    background: rgb(11 19 33 / 78%);
+    border-radius: var(--border-radius-small);
+    color: var(--color-white);
+    display: flex;
+    font-size: var(--font-size-9);
+    font-weight: 700;
+    gap: 4px;
+    line-height: 1;
+    padding: 4px 7px;
+    pointer-events: none;
+}
+
+.badge svg {
+    height: 11px;
+    width: 11px;
+}
+
+/* ---------- Favorite star ---------- */
+
+.star {
+    align-items: center;
+    background: rgb(11 19 33 / 78%);
+    border: none;
+    border-radius: 50%;
+    color: var(--color-white);
+    cursor: pointer;
+    display: flex;
+    height: 28px;
+    justify-content: center;
+    left: var(--space-small);
+    opacity: 0.65;
+    padding: 0;
+    position: absolute;
+    top: var(--space-small);
+    transition: opacity 0.2s ease-in-out, color 0.2s ease-in-out, transform 0.2s ease-in-out;
+    width: 28px;
+    z-index: 2;
+}
+
+.star svg {
+    height: 14px;
+    width: 14px;
+}
+
+.star:hover {
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+.starActive {
+    color: var(--color-warning);
+    opacity: 1;
+}
+
+.duration {
+    background: rgb(11 19 33 / 78%);
+    border-radius: var(--border-radius-small);
+    bottom: var(--space-small);
+    color: var(--color-white);
+    font-size: var(--font-size-8);
+    font-weight: 700;
+    line-height: 1;
+    padding: 4px 7px;
+    pointer-events: none;
+    position: absolute;
+    right: var(--space-small);
+    z-index: 2;
+}
+
+/* ---------- Footer ---------- */
+
+.footer {
+    overflow: hidden;
+    padding: var(--space-small) var(--space-medium) var(--space-medium);
+    width: 100%;
+}
+
+.title {
+    overflow: hidden;
+    width: 100%;
+}
+
+.title input {
+    background: transparent;
+    border: none;
+    color: var(--color-white);
+    font-family: 'Open Sans', sans-serif;
+    font-size: var(--font-size-3);
+    font-weight: 600;
+    line-height: var(--line-size-3);
+    margin: 0;
+    outline: none;
+    overflow: hidden;
+    padding: 4px 0;
+    text-overflow: ellipsis;
+    user-select: text;
+    white-space: nowrap;
+    width: 100%;
+}
+
+.title input:disabled {
+    color: var(--color-white);
+}
+
+.title input::placeholder {
+    color: var(--color-white);
+    opacity: 0.55;
+}
+
+.dates {
+    color: var(--color-white);
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-medium);
+    opacity: 0.55;
+}
+
+.dates span {
+    align-items: center;
+    display: flex;
+    font-size: var(--font-size-8);
+    gap: 5px;
+    line-height: var(--line-size-8);
+}
+
+.dates span span {
+    display: inline-block;
+}
+
+.dates span span::first-letter {
+  text-transform: uppercase;
+}
+
+.dates svg {
+    height: 11px;
+    width: 11px;
+}

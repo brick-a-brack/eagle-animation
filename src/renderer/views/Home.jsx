@@ -1,12 +1,15 @@
 import { isIos } from '@braintree/browser-detection';
 import DesktopNavigation from '@components/DesktopNavigation';
+import HomeStats from '@components/HomeStats';
+import HomeToolbar from '@components/HomeToolbar';
 import Logo from '@components/Logo';
 import MobileNavigation from '@components/MobileNavigation';
+import NewProjectCard from '@components/NewProjectCard';
 import PageContent from '@components/PageContent';
 import PageLayout from '@components/PageLayout';
 import ProjectCard from '@components/ProjectCard';
-import ProjectsGrid from '@components/ProjectsGrid';
 import VersionUpdater from '@components/VersionUpdater';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import useAppCapabilities from '@hooks/useAppCapabilities';
 import useAppVersion from '@hooks/useAppVersion';
 import useDiscordActivity from '@hooks/useDiscordActivity';
@@ -18,19 +21,27 @@ import faDownLeftAndUpRightToCenter from '@icons/faDownLeftAndUpRightToCenter';
 import faGear from '@icons/faGear';
 import faKeyboard from '@icons/faKeyboard';
 import faListCheck from '@icons/faListCheck';
+import faMagnifyingGlass from '@icons/faMagnifyingGlass';
 import faUpRightAndDownLeftFromCenter from '@icons/faUpRightAndDownLeftFromCenter';
-import { useEffect } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { withTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
+
+import * as style from './Home.module.css';
 
 const HomeView = ({ t }) => {
   const { version, latestVersion, actions: versionActions } = useAppVersion();
   const { appCapabilities } = useAppCapabilities();
   const { projects, actions: projectsActions } = useProjects();
+
   const { settings } = useSettings();
   const navigate = useNavigate();
   const { isFullscreen, enterFullscreen, exitFullscreen } = useFullscreen();
   useDiscordActivity({ description: t('Ready to animate') });
+
+  const [search, setSearch] = useState('');
+  const [favoritesOnly, setFavoritesOnly] = useState(false);
+  const [sort, setSort] = useState('UPDATED');
 
   useEffect(() => {
     // Trigger background sync
@@ -51,6 +62,11 @@ const HomeView = ({ t }) => {
   const handleRenameProject = async (id, title) => {
     projectsActions.rename(id, title || '');
     window.track('project_renamed', { projectId: id });
+  };
+
+  const handleFavoriteProject = async (id, favorite) => {
+    projectsActions.setFavorite(id, favorite);
+    window.track('project_favorited', { projectId: id, favorite });
   };
 
   const handleLink = () => {
@@ -78,6 +94,45 @@ const HomeView = ({ t }) => {
     }
   };
 
+  // Only projects that actually contain frames are listed
+  const realProjects = useMemo(() => (projects || []).filter((e) => Boolean(e?.stats?.frames || 0)), [projects]);
+
+  const stats = useMemo(
+    () => ({
+      projectsCount: realProjects.length,
+      photosCount: realProjects.reduce((acc, e) => acc + (e?.stats?.frames || 0), 0),
+      durationSeconds: realProjects.reduce((acc, e) => acc + (e?.stats?.duration || 0), 0),
+      favoritesCount: realProjects.filter((e) => e.favorite).length,
+    }),
+    [realProjects]
+  );
+
+  const visibleProjects = useMemo(() => {
+    const needle = search.trim().toLowerCase();
+    const filtered = realProjects.filter((e) => {
+      if (favoritesOnly && !e.favorite) {
+        return false;
+      }
+      if (needle && !(e.project.title || '').toLowerCase().includes(needle)) {
+        return false;
+      }
+      return true;
+    });
+
+    const sorted = [...filtered];
+    if (sort === 'CREATED') {
+      sorted.sort((a, b) => (b.creation || 0) - (a.creation || 0));
+    } else if (sort === 'NAME') {
+      sorted.sort((a, b) => (a.project.title || t('Untitled')).localeCompare(b.project.title || t('Untitled')));
+    } else if (sort === 'FRAMES') {
+      sorted.sort((a, b) => (b?.stats?.frames || 0) - (a?.stats?.frames || 0));
+    } else {
+      sorted.sort((a, b) => (b.updated || 0) - (a.updated || 0));
+    }
+    return sorted;
+  }, [realProjects, search, favoritesOnly, sort, t]);
+
+  const isFiltering = !!((search || '').trim() !== '' || favoritesOnly);
   const primaryActions = [...(appCapabilities.includes('RETURN_TO_WEBSITE') ? [{ label: t('Back'), icon: faArrowLeft, onClick: handleAction('RETURN_TO_WEBSITE') }] : [])];
 
   const secondaryActions = [
@@ -107,15 +162,42 @@ const HomeView = ({ t }) => {
       <MobileNavigation showLogo={true} topLeftActions={primaryActions} bottomLeftActions={secondaryActions} showLeftActions={true} withBorder={true} />
       <PageContent>
         {projects !== null && (
-          <ProjectsGrid>
-            <ProjectCard placeholder={t('New project')} onClick={handleCreateProject} icon="ADD" />
-            {[...projects]
-              .filter((e) => Boolean(e?.stats?.frames || 0))
-              .sort((a, b) => b.project.updated - a.project.updated)
-              .map((e) => (
-                <ProjectCard key={e.id} id={e.id} title={e.project.title} picture={e.preview} nbFrames={e?.stats?.frames || 0} onClick={handleOpenProject} onTitleChange={handleRenameProject} />
-              ))}
-          </ProjectsGrid>
+          <>
+            <div className={style.container}>
+              <div className={style.header}>
+                <HomeStats projectsCount={stats.projectsCount} photosCount={stats.photosCount} durationSeconds={stats.durationSeconds} favoritesCount={stats.favoritesCount} />
+                <HomeToolbar search={search} onSearchChange={setSearch} sort={sort} onSortChange={setSort} favoritesOnly={favoritesOnly} onToggleFavorites={setFavoritesOnly} />
+              </div>
+              {(visibleProjects.length > 0 || !isFiltering) && (
+                <div className={style.grid}>
+                  {!isFiltering && <NewProjectCard onClick={handleCreateProject} />}
+                  {visibleProjects.map((e) => (
+                    <ProjectCard
+                      key={e.id}
+                      id={e.id}
+                      title={e.project.title}
+                      picture={e.preview}
+                      nbFrames={e?.stats?.frames || 0}
+                      nbScenes={e?.stats?.scenes || 0}
+                      duration={e?.stats?.duration}
+                      creation={e.creation}
+                      updated={e.updated}
+                      favorite={e.favorite}
+                      onClick={handleOpenProject}
+                      onTitleChange={handleRenameProject}
+                      onFavoriteToggle={handleFavoriteProject}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
+            {isFiltering && visibleProjects.length === 0 && (
+              <div className={style.empty}>
+                <FontAwesomeIcon icon={faMagnifyingGlass} />
+                <span>{t('No projects match your search')}</span>
+              </div>
+            )}
+          </>
         )}
       </PageContent>
     </PageLayout>
