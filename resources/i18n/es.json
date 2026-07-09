@@ -389,5 +389,22 @@
   "Preview of your grid and ratio settings": "Vista previa de tus configuraciones de cuadrícula y proporción",
   "Grid will not display with current settings": "La cuadrícula no se mostrará con la configuración actual",
   "Grid rows": "Filas de cuadrícula",
-  "Number of rows of the grid layer": "Número de filas de la capa de cuadrícula"
+  "Number of rows of the grid layer": "Número de filas de la capa de cuadrícula",
+  "projects": "proyectos",
+  "photos": "fotos",
+  "of animation": "de animación",
+  "starred": "favoritos",
+  "Modification date": "Fecha de modificación",
+  "Creation date": "Fecha de creación",
+  "Name": "Nombre",
+  "Number of frames": "Número de imágenes",
+  "Search projects...": "Buscar proyectos...",
+  "Clear": "Borrar",
+  "Starred": "Favoritos",
+  "Remove from favorites": "Eliminar de favoritos",
+  "Add to favorites": "Agregar a favoritos",
+  "{{hours}}h{{minutes}}": "{{hours}}h{{minutes}}",
+  "{{minutes}}m": "{{minutes}}m",
+  "{{seconds}}s": "{{seconds}}s",
+  "No projects match your search": "Ningún proyecto coincide con su búsqueda"
 }

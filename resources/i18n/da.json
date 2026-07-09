@@ -372,5 +372,22 @@
   "Preview of your grid and ratio settings": "Forhåndsvisning af dine gitter- og forholdsindstillinger",
   "Grid will not display with current settings": "Gitteret vises ikke med de nuværende indstillinger",
   "Grid rows": "Gitterrækker",
-  "Number of rows of the grid layer": "Antal rækker i gitterlaget"
+  "Number of rows of the grid layer": "Antal rækker i gitterlaget",
+  "projects": "projekter",
+  "photos": "fotos",
+  "of animation": "af animation",
+  "starred": "favoritter",
+  "Modification date": "Ændringsdato",
+  "Creation date": "Oprettelsesdato",
+  "Name": "Navn",
+  "Number of frames": "Antal billeder",
+  "Search projects...": "Søg projekter...",
+  "Clear": "Ryd",
+  "Starred": "Favoritter",
+  "Remove from favorites": "Fjern fra favoritter",
+  "Add to favorites": "Tilføj til favoritter",
+  "{{hours}}h{{minutes}}": "{{hours}}h{{minutes}}",
+  "{{minutes}}m": "{{minutes}}m",
+  "{{seconds}}s": "{{seconds}}s",
+  "No projects match your search": "Ingen projekter matcher din søgning"
 }

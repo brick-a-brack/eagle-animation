@@ -376,5 +376,22 @@
   "Preview of your grid and ratio settings": "Previzualizare a setărilor tale de grilă și raport",
   "Grid will not display with current settings": "Grila nu se va afișa cu setările curente",
   "Grid rows": "Rânduri de grilă",
-  "Number of rows of the grid layer": "Numărul de rânduri ale stratului de grilă"
+  "Number of rows of the grid layer": "Numărul de rânduri ale stratului de grilă",
+  "projects": "proiecte",
+  "photos": "fotografii",
+  "of animation": "de animație",
+  "starred": "favorite",
+  "Modification date": "Data modificării",
+  "Creation date": "Data creării",
+  "Name": "Nume",
+  "Number of frames": "Număr de cadre",
+  "Search projects...": "Caută proiecte...",
+  "Clear": "Șterge",
+  "Starred": "Favorite",
+  "Remove from favorites": "Îndepărtează din favorite",
+  "Add to favorites": "Adaugă la favorite",
+  "{{hours}}h{{minutes}}": "{{hours}}h{{minutes}}",
+  "{{minutes}}m": "{{minutes}}m",
+  "{{seconds}}s": "{{seconds}}s",
+  "No projects match your search": "Niciun proiect nu corespunde căutării tale"
 }

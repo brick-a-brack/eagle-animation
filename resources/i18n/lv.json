@@ -376,5 +376,22 @@
   "Preview of your grid and ratio settings": "Jūsu tīkla un attiecību iestatījumu priekšskatījums",
   "Grid will not display with current settings": "Tīkls netiks rādīts ar pašreizējiem iestatījumiem",
   "Grid rows": "Tīkla rindas",
-  "Number of rows of the grid layer": "Rindu skaits tīkla slānī"
+  "Number of rows of the grid layer": "Rindu skaits tīkla slānī",
+  "projects": "projekti",
+  "photos": "fotogrāfijas",
+  "of animation": "animācijas",
+  "starred": "iezīmētie",
+  "Modification date": "Modifikācijas datums",
+  "Creation date": "Izveides datums",
+  "Name": "Nosaukums",
+  "Number of frames": "Kadru skaits",
+  "Search projects...": "Meklēt projektus...",
+  "Clear": "Notīrīt",
+  "Starred": "Iezīmētie",
+  "Remove from favorites": "Noņemt no iecienītajiem",
+  "Add to favorites": "Pievienot iecienītajiem",
+  "{{hours}}h{{minutes}}": "{{hours}}h{{minutes}}",
+  "{{minutes}}m": "{{minutes}}m",
+  "{{seconds}}s": "{{seconds}}s",
+  "No projects match your search": "Nav projektu, kas atbilstu jūsu meklēšanai"
 }

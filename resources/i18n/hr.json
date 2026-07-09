@@ -376,5 +376,22 @@
   "Preview of your grid and ratio settings": "Pregled vaših postavki mreže i omjera",
   "Grid will not display with current settings": "Mreža se neće prikazati s trenutnim postavkama",
   "Grid rows": "Redovi mreže",
-  "Number of rows of the grid layer": "Broj redova sloja mreže"
+  "Number of rows of the grid layer": "Broj redova sloja mreže",
+  "projects": "projekti",
+  "photos": "fotografije",
+  "of animation": "animacije",
+  "starred": "označeni",
+  "Modification date": "Datum izmjene",
+  "Creation date": "Datum kreiranja",
+  "Name": "Ime",
+  "Number of frames": "Broj slika",
+  "Search projects...": "Pretraži projekte...",
+  "Clear": "Očisti",
+  "Starred": "Označeni",
+  "Remove from favorites": "Ukloni iz favorita",
+  "Add to favorites": "Dodaj u favorite",
+  "{{hours}}h{{minutes}}": "{{hours}}h{{minutes}}",
+  "{{minutes}}m": "{{minutes}}m",
+  "{{seconds}}s": "{{seconds}}s",
+  "No projects match your search": "Nijedan projekt ne odgovara vašoj pretrazi"
 }

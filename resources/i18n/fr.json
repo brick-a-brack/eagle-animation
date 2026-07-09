@@ -408,5 +408,9 @@
   "Preview of your grid and ratio settings": "Aperçu de vos paramètres de grille et de ratio",
   "Grid will not display with current settings": "La grille ne s'affichera pas avec les paramètres actuels",
   "Grid rows": "Nombre de lignes",
-  "Number of rows of the grid layer": "Nombres de lignes sur la grille"
+  "Number of rows of the grid layer": "Nombres de lignes sur la grille",
+  "Creation date": "Date de création",
+  "{{hours}}h{{minutes}}": "{{hours}}h{{minutes}}",
+  "{{minutes}}m": "{{minutes}}m",
+  "{{seconds}}s": "{{seconds}}s"
 }

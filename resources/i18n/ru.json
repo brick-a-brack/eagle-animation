@@ -379,5 +379,22 @@
   "Preview of your grid and ratio settings": "Предварительный просмотр ваших настроек сетки и соотношения",
   "Grid will not display with current settings": "Сетка не будет отображаться с текущими настройками",
   "Grid rows": "Ряды сетки",
-  "Number of rows of the grid layer": "Количество рядов на слое сетки"
+  "Number of rows of the grid layer": "Количество рядов на слое сетки",
+  "projects": "проекты",
+  "photos": "фото",
+  "of animation": "анимации",
+  "starred": "избранное",
+  "Modification date": "Дата изменения",
+  "Creation date": "Дата создания",
+  "Name": "Имя",
+  "Number of frames": "Количество кадров",
+  "Search projects...": "Поиск проектов...",
+  "Clear": "Очистить",
+  "Starred": "Избранное",
+  "Remove from favorites": "Убрать из избранного",
+  "Add to favorites": "Добавить в избранное",
+  "{{hours}}h{{minutes}}": "{{hours}}ч{{minutes}}",
+  "{{minutes}}m": "{{minutes}}м",
+  "{{seconds}}s": "{{seconds}}с",
+  "No projects match your search": "Нет проектов, соответствующих вашему запросу"
 }

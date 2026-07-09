@@ -372,5 +372,22 @@
   "Preview of your grid and ratio settings": "Förhandsgranskning av dina inställningar för rutnät och förhållande",
   "Grid will not display with current settings": "Rutnätet kommer inte att visas med nuvarande inställningar",
   "Grid rows": "Rutnätsrader",
-  "Number of rows of the grid layer": "Antal rader i rutnätslagret"
+  "Number of rows of the grid layer": "Antal rader i rutnätslagret",
+  "projects": "projekt",
+  "photos": "foton",
+  "of animation": "av animation",
+  "starred": "favoriter",
+  "Modification date": "Ändringsdatum",
+  "Creation date": "Skapelsedatum",
+  "Name": "Namn",
+  "Number of frames": "Antal bilder",
+  "Search projects...": "Sök projekt...",
+  "Clear": "Rensa",
+  "Starred": "Favoriter",
+  "Remove from favorites": "Ta bort från favoriter",
+  "Add to favorites": "Lägg till i favoriter",
+  "{{hours}}h{{minutes}}": "{{hours}}h{{minutes}}",
+  "{{minutes}}m": "{{minutes}}m",
+  "{{seconds}}s": "{{seconds}}s",
+  "No projects match your search": "Inga projekt matchar din sökning"
 }

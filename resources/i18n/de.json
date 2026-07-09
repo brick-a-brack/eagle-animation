@@ -386,5 +386,22 @@
   "Preview of your grid and ratio settings": "Vorschau Ihrer Raster- und Verhältnis-Einstellungen",
   "Grid will not display with current settings": "Das Raster wird mit den aktuellen Einstellungen nicht angezeigt",
   "Grid rows": "Rasterzeilen",
-  "Number of rows of the grid layer": "Anzahl der Zeilen der Rasterebene"
+  "Number of rows of the grid layer": "Anzahl der Zeilen der Rasterebene",
+  "projects": "projekte",
+  "photos": "fotos",
+  "of animation": "der animation",
+  "starred": "favoriten",
+  "Modification date": "Änderungsdatum",
+  "Creation date": "Erstellungsdatum",
+  "Name": "Name",
+  "Number of frames": "Anzahl der Bilder",
+  "Search projects...": "Projekte suchen...",
+  "Clear": "Löschen",
+  "Starred": "Favoriten",
+  "Remove from favorites": "Von Favoriten entfernen",
+  "Add to favorites": "Zu Favoriten hinzufügen",
+  "{{hours}}h{{minutes}}": "{{hours}}h{{minutes}}",
+  "{{minutes}}m": "{{minutes}}m",
+  "{{seconds}}s": "{{seconds}}s",
+  "No projects match your search": "Keine Projekte entsprechen Ihrer Suche"
 }

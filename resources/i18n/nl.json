@@ -372,5 +372,22 @@
   "Preview of your grid and ratio settings": "Voorbeeld van uw raster- en verhoudingsinstellingen",
   "Grid will not display with current settings": "Raster wordt niet weergegeven met de huidige instellingen",
   "Grid rows": "Rasterrijen",
-  "Number of rows of the grid layer": "Aantal rijen van de rasterlaag"
+  "Number of rows of the grid layer": "Aantal rijen van de rasterlaag",
+  "projects": "projecten",
+  "photos": "foto's",
+  "of animation": "van animatie",
+  "starred": "favorieten",
+  "Modification date": "Wijzigingsdatum",
+  "Creation date": "Aanmaakdatum",
+  "Name": "Naam",
+  "Number of frames": "Aantal frames",
+  "Search projects...": "Zoek projecten...",
+  "Clear": "Wissen",
+  "Starred": "Favorieten",
+  "Remove from favorites": "Verwijder uit favorieten",
+  "Add to favorites": "Toevoegen aan favorieten",
+  "{{hours}}h{{minutes}}": "{{hours}}u{{minutes}}",
+  "{{minutes}}m": "{{minutes}}m",
+  "{{seconds}}s": "{{seconds}}s",
+  "No projects match your search": "Geen projecten komen overeen met uw zoekopdracht"
 }
