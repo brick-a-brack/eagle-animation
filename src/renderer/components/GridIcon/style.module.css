@@ -6,8 +6,25 @@
     height: 36px;
     margin-right: var(--space-medium);
     padding: 3px;
+    position: relative;
     user-select: none;
     width: 36px;
+}
+
+.warning {
+    align-items: center;
+    background: var(--color-warning);
+    border-radius: 50%;
+    color: var(--color-theme-extra-dark);
+    display: flex;
+    font-size: var(--font-size-9);
+    font-weight: bold;
+    height: 16px;
+    justify-content: center;
+    position: absolute;
+    right: -6px;
+    top: -6px;
+    width: 16px;
 }
 
 .field img {

@@ -35,6 +35,9 @@ const MASKING_MODES = {
 
 const ControlBar = ({
   gridStatus = false,
+  gridModes = [],
+  gridColumns = 1,
+  gridLines = 1,
   differenceStatus = false,
   onionValue = 1,
   isPlaying = false,
@@ -81,13 +84,13 @@ const ControlBar = ({
   }, [fps]);
 
   const isFrameSelected = !isPlaying && framePosition !== false;
+  const isGridUnavailable = gridModes.length === 1 && gridModes?.includes('GRID') && Number(gridColumns) === 0 && Number(gridLines) === 0;
 
   return (
     <>
       <div className={`${style.container} ${style.regularLayout}`}>
         <div className={`${style.subcontainer} ${style.left}`}>
           {isFrameSelected && <Button className={style.imageMoreButton} title={t('Frame actions')} icon={faImage} onClick={handleAction('SHOW_PICTURE_OPTIONS')} />}
-
           <Button
             className={style.moreButton}
             title={isFrameSelected ? t('Frame actions') : t('More')}
@@ -95,7 +98,6 @@ const ControlBar = ({
             onClick={handleAction(isFrameSelected ? 'SHOW_PICTURE_OPTIONS' : 'SHOW_TOOLS')}
             disabled={isPlaying}
           />
-
           {isFrameSelected && (
             <ButtonsGroup
               groupClassName={style.imageGroupActions}
@@ -148,7 +150,8 @@ const ControlBar = ({
                 selected: gridStatus,
                 onClick: handleAction('GRID'),
                 icon: faFrame,
-                disabled: framePosition !== false,
+                disabled: framePosition !== false || isGridUnavailable,
+                warning: isGridUnavailable
               },
             ]}
             tooltipPosition="TOP"
@@ -156,18 +159,18 @@ const ControlBar = ({
           />
 
           <div className={`${style.slider} ${differenceStatus || framePosition !== false ? style.sliderDisabled : ''}`} id="onion" data-tooltip-id="onion">
-            <CustomSlider step={0.01} min={0} max={1} value={onionValue} onChange={differenceStatus || framePosition !== false ? () => {} : (value) => handleAction('ONION_CHANGE', value)()} />
+            <CustomSlider step={0.01} min={0} max={1} value={onionValue} onChange={differenceStatus || framePosition !== false ? () => { } : (value) => handleAction('ONION_CHANGE', value)()} />
           </div>
         </div>
         <div className={`${style.subcontainer} ${style.center}`}>
-          <Button title={t('Camera settings')} selected={showCameraSettings} onClick={isPlaying ? () => {} : handleAction('CAMERA_SETTINGS')} icon={faSliders} disabled={isPlaying} />
+          <Button title={t('Camera settings')} selected={showCameraSettings} onClick={isPlaying ? () => { } : handleAction('CAMERA_SETTINGS')} icon={faSliders} disabled={isPlaying} />
           <Button disabled={isTakingPicture || !isCameraReady} onClick={handleAction('TAKE_PICTURE')} color="primary" icon={faCamera} title={t('Take a picture')} />
 
           <Button
             title={t('Masking mode ({{status}})', { status: (MASKING_MODES[maskingMode] || MASKING_MODES.DISABLED)(t) })}
             tag={maskingMode !== 'DISABLED' ? (MASKING_MODES[maskingMode] || MASKING_MODES.DISABLED)(t).slice(0, 1) : ''}
             selected={maskingMode !== 'DISABLED'}
-            onClick={framePosition === false ? handleAction('TOGGLE_MASKING_MODE') : () => {}}
+            onClick={framePosition === false ? handleAction('TOGGLE_MASKING_MODE') : () => { }}
             size="mini"
             icon={faEraser}
             disabled={isPlaying}

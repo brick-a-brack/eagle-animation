@@ -2,6 +2,7 @@ import CustomSlider from '@components/CustomSlider';
 import FormGroup from '@components/FormGroup';
 import FormLayout from '@components/FormLayout';
 import GridIcon from '@components/GridIcon';
+import GridPreview from '@components/GridPreview';
 import Heading from '@components/Heading';
 import Input from '@components/Input';
 import NumberInput from '@components/NumberInput';
@@ -83,8 +84,15 @@ const SettingsForm = ({ settings = {}, onUpdate = () => {}, t }) => {
           />
         </FormGroup>
         <Heading h={1}>{t('Grid')}</Heading>
+        <GridPreview gridModes={watch('GRID_MODES')} gridOpacity={parseFloat(watch('GRID_OPACITY'))} gridColumns={Number(watch('GRID_COLUMNS'))} gridLines={Number(watch('GRID_LINES'))} />
         <FormGroup label={t('Grid modes')} description={t('Grid modes to use for the grid display')}>
-          <GridIcon value="GRID" title={t('Classic grid')} register={register('GRID_MODES')} selected={(watch('GRID_MODES') || []).includes('GRID')} />
+          <GridIcon
+            value="GRID"
+            title={t('Classic grid')}
+            register={register('GRID_MODES')}
+            selected={(watch('GRID_MODES') || []).includes('GRID')}
+            warning={Number(watch('GRID_COLUMNS')) === 0 && Number(watch('GRID_LINES')) === 0 ? t('Grid will not display with current settings!') : ''}
+          />
           <GridIcon value="CENTER" title={t('Center')} register={register('GRID_MODES')} selected={(watch('GRID_MODES') || []).includes('CENTER')} />
           <GridIcon value="MARGINS" title={t('Margins')} register={register('GRID_MODES')} selected={(watch('GRID_MODES') || []).includes('MARGINS')} />
         </FormGroup>
@@ -100,13 +108,13 @@ const SettingsForm = ({ settings = {}, onUpdate = () => {}, t }) => {
           />
         </FormGroup>
         {watch('GRID_MODES')?.includes('GRID') && (
-          <FormGroup label={t('Grid lines')} description={t('Number of lines of the grid layer')}>
-            <NumberInput register={register('GRID_LINES')} min={1} max={12} />
+          <FormGroup label={t('Grid rows')} description={t('Number of rows of the grid layer')}>
+            <NumberInput register={register('GRID_LINES')} min={0} max={12} />
           </FormGroup>
         )}
         {watch('GRID_MODES')?.includes('GRID') && (
           <FormGroup label={t('Grid columns')} description={t('Number of columns of the grid layer')}>
-            <NumberInput register={register('GRID_COLUMNS')} min={1} max={12} />
+            <NumberInput register={register('GRID_COLUMNS')} min={0} max={12} />
           </FormGroup>
         )}
 

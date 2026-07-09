@@ -1,0 +1,15 @@
+.preview {
+  background: repeating-conic-gradient(var(--color-theme-medium) 0% 25%, var(--color-theme-dark) 0% 50%) 50% / 20px 20px;
+  border: solid 1px var(--color-theme-light);
+  border-radius: var(--border-radius-medium);
+  margin: var(--space-medium) 0;
+  max-width: 360px;
+  overflow: hidden;
+  width: 100%;
+}
+
+.canvas {
+  aspect-ratio: 16 / 9;
+  display: block;
+  width: 100%;
+}
