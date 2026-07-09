@@ -6,7 +6,7 @@ import * as style from './style.module.css';
 const FormGroup = ({ label = '', labelPosition = 'center', id = null, required = false, description = '', children, t }) => {
   return (
     <div className={style.formGroup}>
-      <div className={`${style.labelContainer} ${labelPosition === 'top' ? style.labelTop : ''}  ${labelPosition === 'bottom' ? style.labelBottom : ''}`}>
+      <div className={`${labelPosition === 'top' ? style.labelTop : ''}  ${labelPosition === 'bottom' ? style.labelBottom : ''}`}>
         {label && (
           <>
             <label htmlFor={id} className={style.label}>

@@ -87,8 +87,7 @@ const ControlBar = ({
   const isGridUnavailable = gridModes.length === 1 && gridModes?.includes('GRID') && Number(gridColumns) === 0 && Number(gridLines) === 0;
 
   return (
-    <>
-      <div className={`${style.container} ${style.regularLayout}`}>
+      <div className={style.container}>
         <div className={`${style.subcontainer} ${style.left}`}>
           {isFrameSelected && <Button className={style.imageMoreButton} title={t('Frame actions')} icon={faImage} onClick={handleAction('SHOW_PICTURE_OPTIONS')} />}
           <Button
@@ -228,7 +227,6 @@ const ControlBar = ({
           <Tooltip id="onion" content={t('Onion skin')} />
         </div>
       </div>
-    </>
   );
 };
 
