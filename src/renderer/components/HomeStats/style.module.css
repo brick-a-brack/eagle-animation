@@ -5,7 +5,8 @@
     display: flex;
     flex-wrap: wrap;
     gap: var(--space-small);
-    padding: var(--space-small) 0;
+    height: 44px;
+    padding: 0;
     user-select: none;
 }
 

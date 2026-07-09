@@ -94,22 +94,22 @@ const ProjectCard = ({
   const dates = (creation || updated) && (
     <div className={style.dates}>
       {creation ? (
-        <span title={t('Created')}>
+        <span>
           <FontAwesomeIcon icon={faClock} />
-          {formatRelativeTime(creation, locale)}
+          <span>{formatRelativeTime(creation, locale)}</span>
         </span>
       ) : null}
       {updated ? (
-        <span title={t('Modification date')}>
+        <span>
           <FontAwesomeIcon icon={faPen} />
-          {formatRelativeTime(updated, locale)}
+          <span>{formatRelativeTime(updated, locale)}</span>
         </span>
       ) : null}
     </div>
   );
 
   return (
-    <div className={style.box} role="button" tabIndex={0} onClick={handleClick} onKeyDown={handleKeyDown} title={t('Open')}>
+    <div className={style.box} role="button" tabIndex={0} onClick={handleClick} onKeyDown={handleKeyDown}>
       <div className={style.banner}>
         {thumbnail}
         {badges}

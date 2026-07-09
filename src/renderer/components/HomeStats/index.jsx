@@ -12,7 +12,7 @@ const HomeStats = ({ projectsCount = 0, photosCount = 0, durationSeconds = 0, fa
   const stats = [
     { icon: faRectangleHistory, value: projectsCount, label: t('projects') },
     { icon: faImages, value: photosCount, label: t('photos') },
-    { icon: faFilm, value: formatDuration(durationSeconds), label: t('of animation') },
+    { icon: faFilm, value: formatDuration(durationSeconds, t), label: t('of animation') },
     { icon: faStar, value: favoritesCount, label: t('starred'), accent: true },
   ];
 

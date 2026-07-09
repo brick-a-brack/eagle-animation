@@ -2,24 +2,23 @@
 
 .box {
     background-color: var(--color-theme-medium);
-    border: 1px solid transparent;
+    border: 2px solid transparent;
     border-radius: var(--border-radius-medium);
     box-sizing: border-box;
     color: var(--color-white);
     cursor: pointer;
     display: block;
+    height: 240px;
     overflow: hidden;
     position: relative;
     text-align: left;
-    transition: border-color 0.2s ease-in-out, transform 0.2s ease-in-out;
+    transition: border-color 0.2s ease-in-out;
     user-select: none;
-    vertical-align: top;
     width: 100%;
 }
 
 .box:hover {
     border-color: var(--color-theme-light);
-    transform: translateY(-2px);
 }
 
 .banner {
@@ -39,8 +38,13 @@
     position: absolute;
     top: 50%;
     transform: translate(-50%, -50%);
+    transition: transform 0.08s ease-in-out;
     user-select: none;
     width: 100%;
+}
+
+.box:hover .banner img {
+   transform: translate(-50%, -50%) scale(1.05);
 }
 
 .placeholderThumb {
@@ -66,7 +70,7 @@
     border-radius: var(--border-radius-small);
     color: var(--color-white);
     display: flex;
-    font-size: var(--font-size-8);
+    font-size: var(--font-size-9);
     font-weight: 700;
     gap: 4px;
     line-height: 1;
@@ -185,6 +189,14 @@
     font-size: var(--font-size-8);
     gap: 5px;
     line-height: var(--line-size-8);
+}
+
+.dates span span {
+    display: inline-block;
+}
+
+.dates span span::first-letter {
+  text-transform: uppercase;
 }
 
 .dates svg {

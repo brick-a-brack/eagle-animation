@@ -1,21 +1,24 @@
 .card {
     align-items: center;
-    background: linear-gradient(135deg, rgb(72 110 229 / 12%), rgb(72 110 229 / 4%));
-    border: 2px dashed var(--color-theme-light);
+    background: var(--color-theme-medium);
+    border: 2px dashed transparent;
     border-radius: var(--border-radius-medium);
     box-sizing: border-box;
     color: var(--color-white);
     cursor: pointer;
     display: flex;
     font-family: 'Open Sans', sans-serif;
+    height: 240px;
     transition: border-color 0.2s ease-in-out, background 0.2s ease-in-out, transform 0.08s ease-in-out;
     user-select: none;
     width: 100%;
 }
 
 .card:hover {
-    background: linear-gradient(135deg, rgb(72 110 229 / 22%), rgb(72 110 229 / 8%));
-    border-color: var(--color-primary);
+    /* background: linear-gradient(135deg, rgb(72 110 229 / 22%), rgb(72 110 229 / 8%)); */
+
+    /* border-color: var(--color-primary); */
+    border-color: var(--color-theme-light);
 }
 
 .card:active {
@@ -42,11 +45,17 @@
     font-weight: 700;
 }
 
+.cardGrid .icon {
+    height: 56px;
+    width: 56px;
+}
+
 .card:hover .icon {
     transform: scale(1.1);
 }
 
 /* ---------- Grid layout ---------- */
+
 
 .cardGrid {
     flex-direction: column;
@@ -54,11 +63,6 @@
     justify-content: center;
     min-height: 230px;
     padding: var(--space-big);
-}
-
-.cardGrid .icon {
-    height: 56px;
-    width: 56px;
 }
 
 .cardGrid .label {

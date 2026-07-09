@@ -14,7 +14,6 @@ import useAppCapabilities from '@hooks/useAppCapabilities';
 import useAppVersion from '@hooks/useAppVersion';
 import useDiscordActivity from '@hooks/useDiscordActivity';
 import useFullscreen from '@hooks/useFullscreen';
-import useLocalStorage from '@hooks/useLocalStorage';
 import useProjects from '@hooks/useProjects';
 import useSettings from '@hooks/useSettings';
 import faArrowLeft from '@icons/faArrowLeft';
@@ -30,12 +29,11 @@ import { useNavigate } from 'react-router-dom';
 
 import * as style from './Home.module.css';
 
-const LS_HOME_SORT = 'EA_HOME_SORT';
-
 const HomeView = ({ t }) => {
   const { version, latestVersion, actions: versionActions } = useAppVersion();
   const { appCapabilities } = useAppCapabilities();
   const { projects, actions: projectsActions } = useProjects();
+
   const { settings } = useSettings();
   const navigate = useNavigate();
   const { isFullscreen, enterFullscreen, exitFullscreen } = useFullscreen();
@@ -43,7 +41,7 @@ const HomeView = ({ t }) => {
 
   const [search, setSearch] = useState('');
   const [favoritesOnly, setFavoritesOnly] = useState(false);
-  const [sort, setSort] = useLocalStorage(LS_HOME_SORT, 'UPDATED');
+  const [sort, setSort] = useState('UPDATED');
 
   useEffect(() => {
     // Trigger background sync
@@ -134,10 +132,7 @@ const HomeView = ({ t }) => {
     return sorted;
   }, [realProjects, search, favoritesOnly, sort, t]);
 
-  const isFiltering = search.trim() !== '' || favoritesOnly;
-  const hasProjects = realProjects.length > 0;
-
-  /////=======
+  const isFiltering = !!((search || '').trim() !== '' || favoritesOnly);
   const primaryActions = [...(appCapabilities.includes('RETURN_TO_WEBSITE') ? [{ label: t('Back'), icon: faArrowLeft, onClick: handleAction('RETURN_TO_WEBSITE') }] : [])];
 
   const secondaryActions = [
@@ -167,42 +162,42 @@ const HomeView = ({ t }) => {
       <MobileNavigation showLogo={true} topLeftActions={primaryActions} bottomLeftActions={secondaryActions} showLeftActions={true} withBorder={true} />
       <PageContent>
         {projects !== null && (
-          <div className={style.container}>
-            {hasProjects && (
+          <>
+            <div className={style.container}>
               <div className={style.header}>
                 <HomeStats projectsCount={stats.projectsCount} photosCount={stats.photosCount} durationSeconds={stats.durationSeconds} favoritesCount={stats.favoritesCount} />
                 <HomeToolbar search={search} onSearchChange={setSearch} sort={sort} onSortChange={setSort} favoritesOnly={favoritesOnly} onToggleFavorites={setFavoritesOnly} />
               </div>
-            )}
-
-            <div className={style.grid}>
-              <NewProjectCard onClick={handleCreateProject} />
-              {visibleProjects.map((e) => (
-                <ProjectCard
-                  key={e.id}
-                  id={e.id}
-                  title={e.project.title}
-                  picture={e.preview}
-                  nbFrames={e?.stats?.frames || 0}
-                  nbScenes={e?.stats?.scenes || 0}
-                  duration={e?.stats?.duration}
-                  creation={e.creation}
-                  updated={e.updated}
-                  favorite={e.favorite}
-                  onClick={handleOpenProject}
-                  onTitleChange={handleRenameProject}
-                  onFavoriteToggle={handleFavoriteProject}
-                />
-              ))}
+              {(visibleProjects.length > 0 || !isFiltering) && (
+                <div className={style.grid}>
+                  {!isFiltering && <NewProjectCard onClick={handleCreateProject} />}
+                  {visibleProjects.map((e) => (
+                    <ProjectCard
+                      key={e.id}
+                      id={e.id}
+                      title={e.project.title}
+                      picture={e.preview}
+                      nbFrames={e?.stats?.frames || 0}
+                      nbScenes={e?.stats?.scenes || 0}
+                      duration={e?.stats?.duration}
+                      creation={e.creation}
+                      updated={e.updated}
+                      favorite={e.favorite}
+                      onClick={handleOpenProject}
+                      onTitleChange={handleRenameProject}
+                      onFavoriteToggle={handleFavoriteProject}
+                    />
+                  ))}
+                </div>
+              )}
             </div>
-
-            {hasProjects && isFiltering && visibleProjects.length === 0 && (
+            {isFiltering && visibleProjects.length === 0 && (
               <div className={style.empty}>
                 <FontAwesomeIcon icon={faMagnifyingGlass} />
                 <span>{t('No projects match your search')}</span>
               </div>
             )}
-          </div>
+          </>
         )}
       </PageContent>
     </PageLayout>

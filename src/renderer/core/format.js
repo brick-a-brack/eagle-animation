@@ -1,17 +1,18 @@
 // Format a duration (in seconds) as a compact human readable string (e.g. "1m 57s", "2h 3m", "12s")
-export const formatDuration = (seconds) => {
+export const formatDuration = (seconds, t) => {
   const total = Math.max(0, Math.round(Number(seconds) || 0));
   const h = Math.floor(total / 3600);
   const m = Math.floor((total % 3600) / 60);
   const s = total % 60;
+  const args = { hours: h, minutes: m, seconds: s };
 
   if (h > 0) {
-    return `${h}h ${m}m`;
+    return t('{{hours}}h{{minutes}}', args);
   }
   if (m > 0) {
-    return `${m}m ${s}s`;
+    return t('{{minutes}}m', args);
   }
-  return `${s}s`;
+  return t('{{seconds}}s', args);
 };
 
 // Format a duration (in seconds) as a timecode (e.g. "00:12", "01:57", "1:02:03")

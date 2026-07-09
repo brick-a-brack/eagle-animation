@@ -19,7 +19,7 @@ const NewProjectCard = ({ onClick = null, t }) => {
   };
 
   return (
-    <button type="button" className={`${style.card} ${style.cardGrid}`} onClick={handleClick} onKeyDown={handleKeyDown} title={t('New project')}>
+    <button type="button" className={`${style.card} ${style.cardGrid}`} onClick={handleClick} onKeyDown={handleKeyDown}>
       <span className={style.icon}>
         <FontAwesomeIcon icon={faPlus} />
       </span>

@@ -13,7 +13,7 @@ const HomeToolbar = ({ search = '', onSearchChange = () => {}, sort = 'UPDATED',
 
   const sortOptions = [
     { key: 'UPDATED', label: t('Modification date') },
-    { key: 'CREATED', label: t('Date created') },
+    { key: 'CREATED', label: t('Creation date') },
     { key: 'NAME', label: t('Name') },
     { key: 'FRAMES', label: t('Number of frames') },
   ];
@@ -37,6 +37,10 @@ const HomeToolbar = ({ search = '', onSearchChange = () => {}, sort = 'UPDATED',
       </div>
 
       <div className={style.filters}>
+        <button type="button" className={`${style.toggle} ${favoritesOnly ? style.toggleActive : ''}`} onClick={() => onToggleFavorites(!favoritesOnly)}>
+          <FontAwesomeIcon icon={faStar} />
+          <span>{t('Starred')}</span>
+        </button>
         <div className={style.sort}>
           <button type="button" className={style.sortButton} onClick={() => setSortOpen((v) => !v)}>
             <span className={style.sortLabel}>{currentSort.label}</span>
@@ -55,11 +59,6 @@ const HomeToolbar = ({ search = '', onSearchChange = () => {}, sort = 'UPDATED',
             </>
           ) : null}
         </div>
-
-        <button type="button" className={`${style.toggle} ${favoritesOnly ? style.toggleActive : ''}`} onClick={() => onToggleFavorites(!favoritesOnly)}>
-          <FontAwesomeIcon icon={faStar} />
-          <span>{t('Starred')}</span>
-        </button>
       </div>
     </div>
   );

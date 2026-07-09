@@ -19,8 +19,10 @@
     grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
 }
 
+
 .empty {
     align-items: center;
+    box-sizing: border-box;
     color: var(--color-white);
     display: flex;
     flex-direction: column;
