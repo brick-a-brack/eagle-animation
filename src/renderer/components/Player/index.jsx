@@ -1,5 +1,4 @@
 import PreviewStream from '@components/PreviewStream';
-import { drawGrid as drawGridOnCanvas } from '@core/grid';
 import { getPictureLink } from '@core/resize';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import faEyeSlash from '@icons/faEyeSlash';
@@ -9,6 +8,8 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 
 import * as style from './style.module.css';
+import RatioBorders from '../RatioBorders';
+import GridOverlay from '../GridOverlay';
 
 class Player extends Component {
   constructor(props) {
@@ -121,28 +122,6 @@ class Player extends Component {
           this.dom.picture.current.style.height = this.getSize().height;
         }
       }
-      if (this.dom.grid.current) {
-        let shouldRedraw = false;
-        if (this.dom.grid.current.width !== this.getSize().width) {
-          this.dom.grid.current.width = this.getSize().width;
-          shouldRedraw = true;
-        }
-        if (this.dom.grid.current.height !== this.getSize().height) {
-          this.dom.grid.current.height = this.getSize().height;
-          shouldRedraw = true;
-        }
-        if (this.dom.grid.current.style.width !== this.getSize().width) {
-          this.dom.grid.current.style.width = this.getSize().width;
-          shouldRedraw = true;
-        }
-        if (this.dom.grid.current.style.height !== this.getSize().height) {
-          this.dom.grid.current.style.height = this.getSize().height;
-          shouldRedraw = true;
-        }
-        if (shouldRedraw) {
-          this.drawGrid();
-        }
-      }
     };
 
     this.stop = () => {
@@ -210,11 +189,6 @@ class Player extends Component {
       }
     }
 
-    // Redraw grid if ratio changed
-    if (!isEqual(prevProps.videoRatio, this.props.videoRatio)) {
-      this.drawGrid();
-    }
-
     // Force to display live view if capabilities changed (only when not playing)
     if (!isEqual(prevProps.cameraCapabilities, this.props.cameraCapabilities) && !this.clock) {
       this.showFrame(false);
@@ -244,21 +218,6 @@ class Player extends Component {
       width: 720 * this.getRatio(),
       height: 720,
     };
-  }
-
-  drawGrid() {
-    const { width, height } = this.getSize();
-    const ctx = this.dom.grid.current.getContext('2d');
-
-    drawGridOnCanvas(ctx, {
-      width,
-      height,
-      gridModes: this.props.gridModes,
-      gridOpacity: this.props.gridOpacity,
-      gridColumns: this.props.gridColumns,
-      gridLines: this.props.gridLines,
-      videoRatio: this.getVideoRatio(),
-    });
   }
 
   loadImage(link) {
@@ -324,9 +283,6 @@ class Player extends Component {
     const { showGrid, onionValue, blendMode, isCameraReady, t, ratioLayerOpacity, reverseX, reverseY } = this.props;
     const { width, height, ready, frameIndex } = this.state;
 
-    const borders = resizeToFit('contain', { width: this.getVideoRatio(), height: 1 }, { width: this.getSize().width, height: this.getSize().height });
-    const borderLeftRight = (this.getSize().width - borders.width) / 2 / this.getSize().width;
-    const borderTopBottom = (this.getSize().height - borders.height) / 2 / this.getSize().height;
     const reverseClassNames = `${reverseX ? style.reverseX : ''} ${reverseY ? style.reverseY : ''}`;
     const frames = this.props.pictures.filter((e) => !e.deleted).reduce((acc, e) => [...acc, ...new Array(e.length || 1).fill(e)], []);
 
@@ -347,19 +303,27 @@ class Player extends Component {
               mixBlendMode: !blendMode ? 'normal' : 'difference',
             }}
           />
-          {this.getVideoRatio() !== null && borderLeftRight > 0 && <div className={style.borderLeft} style={{ width: `${borderLeftRight * 100}%`, opacity: ratioLayerOpacity || 1 }} />}
-          {this.getVideoRatio() !== null && borderLeftRight > 0 && <div className={style.borderRight} style={{ width: `${borderLeftRight * 100}%`, opacity: ratioLayerOpacity || 1 }} />}
-          {this.getVideoRatio() !== null && borderTopBottom > 0 && <div className={style.borderTop} style={{ height: `${borderTopBottom * 100}%`, opacity: ratioLayerOpacity || 1 }} />}
-          {this.getVideoRatio() !== null && borderTopBottom > 0 && <div className={style.borderBottom} style={{ height: `${borderTopBottom * 100}%`, opacity: ratioLayerOpacity || 1 }} />}
-
+          <RatioBorders
+            width={this.getSize().width}
+            height={this.getSize().height}
+            ratio={this.getVideoRatio()}
+            opacity={ratioLayerOpacity}
+          />
+          {isCameraReady && showGrid && frameIndex === false && <GridOverlay
+            className={style.layout}
+            width={this.getSize().width}
+            height={this.getSize().height}
+            modes={this.props.gridModes}
+            opacity={this.props.gridOpacity}
+            columns={this.props.gridColumns}
+            lines={this.props.gridLines}
+            ratio={this.getVideoRatio()}
+          />}
           {frames[frameIndex]?.hidden && !this.props.isPlaying && (
             <div className={style.hiddenLayer}>
               <FontAwesomeIcon className={style.hiddenIcon} icon={faEyeSlash} />
             </div>
           )}
-
-          <canvas ref={this.dom.grid} className={style.layout} style={{ opacity: isCameraReady && showGrid && frameIndex === false ? 1 : 0 }} />
-
           {!isCameraReady && frameIndex === false && <span className={style.loader} />}
           {!isCameraReady && frameIndex === false && <div className={style.info}>{t('If your camera does not load, try changing it in the camera settings')}</div>}
         </div>

@@ -47,12 +47,18 @@
 }
 
 
-.button>svg {
+.button>svg, .button>img {
     background-size: contain;
     display: inline-block;
     height: 20px;
     vertical-align: middle;
     width: 20px;
+}
+
+/* Little hack because icon images have transparent padding */
+.button>img {
+    height: 24px;
+    width: 24px;
 }
 
 .tag {
@@ -94,18 +100,7 @@
     background-color: var(--color-theme-medium);
 }
 
-.warning {
-    align-items: center;
+.tag.warning {
     background: var(--color-warning);
-    border-radius: 50%;
     color: var(--color-theme-extra-dark);
-    display: flex;
-    font-size: var(--font-size-9);
-    font-weight: bold;
-    height: 16px;
-    justify-content: center;
-    position: absolute;
-    right: -2px;
-    top: -2px;
-    width: 16px;
 }

@@ -1,0 +1,14 @@
+.divider {
+  background: var(--color-theme-light);
+  border: none;
+  height: 1px;
+  margin: calc(2 * var(--space-big)) auto;
+  transition: background-color .3s ease-in-out;
+  width: 100%;
+
+}
+
+.transparent {
+  background: var(--color-theme-extra-light);
+  height: 0px;
+}

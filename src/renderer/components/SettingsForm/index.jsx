@@ -1,8 +1,7 @@
 import CustomSlider from '@components/CustomSlider';
 import FormGroup from '@components/FormGroup';
 import FormLayout from '@components/FormLayout';
-import GridIcon from '@components/GridIcon';
-import GridPreview from '@components/GridPreview';
+import GridRatioPreview from '~/src/renderer/components/GridRatioPreview';
 import Heading from '@components/Heading';
 import Input from '@components/Input';
 import NumberInput from '@components/NumberInput';
@@ -13,8 +12,14 @@ import useAppCapabilities from '@hooks/useAppCapabilities';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { withTranslation } from 'react-i18next';
+import ButtonsGroup from '../ButtonsGroup';
 
-const SettingsForm = ({ settings = {}, onUpdate = () => {}, t }) => {
+import gridCenterIcon from './assets/center.png';
+import gridBasicIcon from './assets/grid.png';
+import gridMarginsIcon from './assets/margins.png';
+import Divider from '../Divider';
+
+const SettingsForm = ({ settings = {}, onUpdate = () => { }, t }) => {
   const { appCapabilities } = useAppCapabilities();
   const form = useForm({
     mode: 'all',
@@ -31,14 +36,32 @@ const SettingsForm = ({ settings = {}, onUpdate = () => {}, t }) => {
 
   const LNGS_OPTIONS = [...LANGUAGES].sort((a, b) => (a.label > b.label ? 1 : -1));
 
+  const toggleGridMode = (mode) => {
+    const currentModes = watch('GRID_MODES') || [];
+    const newModes = currentModes.includes(mode)
+      ? currentModes.filter((m) => m !== mode)
+      : [...currentModes, mode];
+    setValue('GRID_MODES', newModes);
+  };
+
   return (
     <form id="settings">
       <FormLayout>
-        <Heading h={1}>{t('Interface')}</Heading>
+        <Heading h={1}>{t('General')}</Heading>
+
         <FormGroup label={t('Language')} description={t('The application language to use')}>
           <Select options={LNGS_OPTIONS} control={control} register={register('LANGUAGE')} />
         </FormGroup>
-        <Heading h={1}>{t('Playback')}</Heading>
+        <FormGroup label={t('Allow telemetry')} description={t('Send anonymous usage data to help improve the application')}>
+          <div>
+            <Switch register={register('TELEMETRY_ENABLED')} />
+          </div>
+        </FormGroup>
+
+        <Divider />
+
+        <Heading h={1}>{t('Playback and navigation')}</Heading>
+
         <FormGroup label={t('Short play')} description={t('Number of frames to play when short play is enabled')}>
           <NumberInput register={register('SHORT_PLAY')} min={1} />
         </FormGroup>
@@ -52,13 +75,14 @@ const SettingsForm = ({ settings = {}, onUpdate = () => {}, t }) => {
             <Switch register={register('LOOP_SHOW_LIVE')} />
           </div>
         </FormGroup>
-        <Heading h={1}>{t('Navigation')}</Heading>
         <FormGroup label={t('Skip hidden frames on navigation')} description={t('Skip hidden frames when navigating through the animation using keyboard')}>
           <div>
             <Switch register={register('SKIP_HIDDEN_FRAMES')} />
           </div>
         </FormGroup>
+
         <Heading h={1}>{t('Capture')}</Heading>
+
         <FormGroup label={t('Sound effects')} description={t('Play sound effects when you take or remove a frame')}>
           <div>
             <Switch register={register('SOUNDS')} />
@@ -71,31 +95,48 @@ const SettingsForm = ({ settings = {}, onUpdate = () => {}, t }) => {
             </div>
           </FormGroup>
         )}
-        <Heading h={1}>{t('Ratio')}</Heading>
-        <FormGroup label={t('Ratio opacity')} description={t('The opacity of aspect ratio layer')}>
-          <CustomSlider
-            step={0.01}
-            min={0}
-            max={1}
-            value={watch('RATIO_OPACITY')}
-            onChange={(value) => {
-              setValue('RATIO_OPACITY', value);
-            }}
+
+        <Divider />
+
+        <Heading h={1}>{t('Grid and ratio')}</Heading>
+
+        <FormGroup label={t('Preview')} description={t('Preview of your grid and ratio settings')}>
+          <GridRatioPreview
+            gridModes={watch('GRID_MODES')}
+            gridOpacity={parseFloat(watch('GRID_OPACITY'))}
+            gridColumns={Number(watch('GRID_COLUMNS'))}
+            gridLines={Number(watch('GRID_LINES'))}
+            ratioLayerOpacity={parseFloat(watch('RATIO_OPACITY'))}
           />
         </FormGroup>
-        <Heading h={1}>{t('Grid')}</Heading>
-        <GridPreview gridModes={watch('GRID_MODES')} gridOpacity={parseFloat(watch('GRID_OPACITY'))} gridColumns={Number(watch('GRID_COLUMNS'))} gridLines={Number(watch('GRID_LINES'))} />
+
         <FormGroup label={t('Grid modes')} description={t('Grid modes to use for the grid display')}>
-          <GridIcon
-            value="GRID"
-            title={t('Classic grid')}
-            register={register('GRID_MODES')}
-            selected={(watch('GRID_MODES') || []).includes('GRID')}
-            warning={Number(watch('GRID_COLUMNS')) === 0 && Number(watch('GRID_LINES')) === 0 ? t('Grid will not display with current settings!') : ''}
+          <ButtonsGroup
+            actions={[
+              {
+                title: t('Classic grid'),
+                onClick: () => toggleGridMode('GRID'),
+                icon: gridBasicIcon,
+                selected: (watch('GRID_MODES') || []).includes('GRID'),
+                warning: Number(watch('GRID_COLUMNS')) === 0 && Number(watch('GRID_LINES')) === 0 ? t('Grid will not display with current settings!') : ''
+              },
+              {
+                title: t('Center'),
+                onClick: () => toggleGridMode('CENTER'),
+                icon: gridCenterIcon,
+                selected: (watch('GRID_MODES') || []).includes('CENTER'),
+              },
+              {
+                title: t('Margins'),
+                onClick: () => toggleGridMode('MARGINS'),
+                icon: gridMarginsIcon,
+                selected: (watch('GRID_MODES') || []).includes('MARGINS'),
+              },
+            ]}
+            merge={true}
           />
-          <GridIcon value="CENTER" title={t('Center')} register={register('GRID_MODES')} selected={(watch('GRID_MODES') || []).includes('CENTER')} />
-          <GridIcon value="MARGINS" title={t('Margins')} register={register('GRID_MODES')} selected={(watch('GRID_MODES') || []).includes('MARGINS')} />
         </FormGroup>
+
         <FormGroup label={t('Grid opacity')} description={t('The opacity of the grid layer')}>
           <CustomSlider
             step={0.01}
@@ -117,15 +158,22 @@ const SettingsForm = ({ settings = {}, onUpdate = () => {}, t }) => {
             <NumberInput register={register('GRID_COLUMNS')} min={0} max={12} />
           </FormGroup>
         )}
-
-        <Heading h={1}>{t('Privacy')}</Heading>
-        <FormGroup label={t('Allow telemetry')} description={t('Send anonymous usage data to help improve the application')}>
-          <div>
-            <Switch register={register('TELEMETRY_ENABLED')} />
-          </div>
+        <FormGroup label={t('Ratio opacity')} description={t('The opacity of aspect ratio layer')}>
+          <CustomSlider
+            step={0.01}
+            min={0}
+            max={1}
+            value={watch('RATIO_OPACITY')}
+            onChange={(value) => {
+              setValue('RATIO_OPACITY', value);
+            }}
+          />
         </FormGroup>
 
+        <Divider />
+
         <Heading h={1}>{t('Workshops features')}</Heading>
+
         <FormGroup label={t('Enable workshop features')} description={t('Enable features related to stop motion workshops')}>
           <div>
             <Switch register={register('EVENT_MODE_ENABLED')} />
@@ -156,7 +204,7 @@ const SettingsForm = ({ settings = {}, onUpdate = () => {}, t }) => {
           </>
         )}
       </FormLayout>
-    </form>
+    </form >
   );
 };
 
