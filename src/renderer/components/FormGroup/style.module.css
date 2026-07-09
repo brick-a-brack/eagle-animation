@@ -30,6 +30,14 @@
   margin-bottom: var(--space-tiny);
 }
 
+.labelTop {
+  align-self: flex-start;
+}
+
+.labelBottom {
+  align-self: flex-end;
+}
+
 .description {
   color: var(--color-theme-extra-light);
   display: block;

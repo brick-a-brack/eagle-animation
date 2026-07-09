@@ -98,7 +98,7 @@ const SettingsForm = ({ settings = {}, onUpdate = () => {}, t }) => {
 
         <Heading h={1}>{t('Grid and ratio')}</Heading>
 
-        <FormGroup label={t('Preview')} description={t('Preview of your grid and ratio settings')}>
+        <FormGroup label={t('Preview')} description={t('Preview of your grid and ratio settings')} labelPosition="top">
           <GridRatioPreview
             gridModes={watch('GRID_MODES')}
             gridOpacity={parseFloat(watch('GRID_OPACITY'))}
@@ -116,7 +116,7 @@ const SettingsForm = ({ settings = {}, onUpdate = () => {}, t }) => {
                 onClick: () => toggleGridMode('GRID'),
                 icon: gridBasicIcon,
                 selected: (watch('GRID_MODES') || []).includes('GRID'),
-                warning: Number(watch('GRID_COLUMNS')) === 0 && Number(watch('GRID_LINES')) === 0 ? t('Grid will not display with current settings!') : '',
+                warning: Number(watch('GRID_COLUMNS')) === 0 && Number(watch('GRID_LINES')) === 0 ? t('Grid will not display with current settings') : '',
               },
               {
                 title: t('Center'),
