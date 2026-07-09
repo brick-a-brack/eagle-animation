@@ -1,7 +1,6 @@
 import CustomSlider from '@components/CustomSlider';
 import FormGroup from '@components/FormGroup';
 import FormLayout from '@components/FormLayout';
-import GridRatioPreview from '~/src/renderer/components/GridRatioPreview';
 import Heading from '@components/Heading';
 import Input from '@components/Input';
 import NumberInput from '@components/NumberInput';
@@ -12,14 +11,16 @@ import useAppCapabilities from '@hooks/useAppCapabilities';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { withTranslation } from 'react-i18next';
-import ButtonsGroup from '../ButtonsGroup';
 
+import GridRatioPreview from '~/src/renderer/components/GridRatioPreview';
+
+import ButtonsGroup from '../ButtonsGroup';
+import Divider from '../Divider';
 import gridCenterIcon from './assets/center.png';
 import gridBasicIcon from './assets/grid.png';
 import gridMarginsIcon from './assets/margins.png';
-import Divider from '../Divider';
 
-const SettingsForm = ({ settings = {}, onUpdate = () => { }, t }) => {
+const SettingsForm = ({ settings = {}, onUpdate = () => {}, t }) => {
   const { appCapabilities } = useAppCapabilities();
   const form = useForm({
     mode: 'all',
@@ -38,9 +39,7 @@ const SettingsForm = ({ settings = {}, onUpdate = () => { }, t }) => {
 
   const toggleGridMode = (mode) => {
     const currentModes = watch('GRID_MODES') || [];
-    const newModes = currentModes.includes(mode)
-      ? currentModes.filter((m) => m !== mode)
-      : [...currentModes, mode];
+    const newModes = currentModes.includes(mode) ? currentModes.filter((m) => m !== mode) : [...currentModes, mode];
     setValue('GRID_MODES', newModes);
   };
 
@@ -118,7 +117,7 @@ const SettingsForm = ({ settings = {}, onUpdate = () => { }, t }) => {
                 onClick: () => toggleGridMode('GRID'),
                 icon: gridBasicIcon,
                 selected: (watch('GRID_MODES') || []).includes('GRID'),
-                warning: Number(watch('GRID_COLUMNS')) === 0 && Number(watch('GRID_LINES')) === 0 ? t('Grid will not display with current settings!') : ''
+                warning: Number(watch('GRID_COLUMNS')) === 0 && Number(watch('GRID_LINES')) === 0 ? t('Grid will not display with current settings!') : '',
               },
               {
                 title: t('Center'),
@@ -204,7 +203,7 @@ const SettingsForm = ({ settings = {}, onUpdate = () => { }, t }) => {
           </>
         )}
       </FormLayout>
-    </form >
+    </form>
   );
 };
 

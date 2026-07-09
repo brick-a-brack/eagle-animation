@@ -7,9 +7,10 @@ import { isEqual } from 'lodash';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 
-import * as style from './style.module.css';
-import RatioBorders from '../RatioBorders';
 import GridOverlay from '../GridOverlay';
+import RatioBorders from '../RatioBorders';
+
+import * as style from './style.module.css';
 
 class Player extends Component {
   constructor(props) {
@@ -19,7 +20,6 @@ class Player extends Component {
       container: React.createRef(),
       previewStream: React.createRef(),
       picture: React.createRef(),
-      grid: React.createRef(),
     };
 
     // Cached images promises
@@ -303,22 +303,19 @@ class Player extends Component {
               mixBlendMode: !blendMode ? 'normal' : 'difference',
             }}
           />
-          <RatioBorders
-            width={this.getSize().width}
-            height={this.getSize().height}
-            ratio={this.getVideoRatio()}
-            opacity={ratioLayerOpacity}
-          />
-          {isCameraReady && showGrid && frameIndex === false && <GridOverlay
-            className={style.layout}
-            width={this.getSize().width}
-            height={this.getSize().height}
-            modes={this.props.gridModes}
-            opacity={this.props.gridOpacity}
-            columns={this.props.gridColumns}
-            lines={this.props.gridLines}
-            ratio={this.getVideoRatio()}
-          />}
+          <RatioBorders width={this.getSize().width} height={this.getSize().height} ratio={this.getVideoRatio()} opacity={ratioLayerOpacity} />
+          {isCameraReady && showGrid && frameIndex === false && (
+            <GridOverlay
+              className={style.layout}
+              width={this.getSize().width}
+              height={this.getSize().height}
+              modes={this.props.gridModes}
+              opacity={this.props.gridOpacity}
+              columns={this.props.gridColumns}
+              lines={this.props.gridLines}
+              ratio={this.getVideoRatio()}
+            />
+          )}
           {frames[frameIndex]?.hidden && !this.props.isPlaying && (
             <div className={style.hiddenLayer}>
               <FontAwesomeIcon className={style.hiddenIcon} icon={faEyeSlash} />

@@ -1,6 +1,7 @@
-import * as style from './style.module.css';
-import RatioBorders from '../RatioBorders';
 import GridOverlay from '../GridOverlay';
+import RatioBorders from '../RatioBorders';
+
+import * as style from './style.module.css';
 
 const CANVAS_WIDTH = 260;
 const CANVAS_HEIGHT = 130;
