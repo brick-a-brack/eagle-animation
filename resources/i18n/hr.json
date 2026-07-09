@@ -369,5 +369,12 @@
   "More": "Više",
   "Frame actions": "Radnje na slici",
   "Project name": "Naziv projekta",
-  "Delete project": "Izbriši projekt"
+  "Delete project": "Izbriši projekt",
+  "General": "Općenito",
+  "Playback and navigation": "Reprodukcija i navigacija",
+  "Grid and ratio": "Mreža i omjer",
+  "Preview of your grid and ratio settings": "Pregled vaših postavki mreže i omjera",
+  "Grid will not display with current settings": "Mreža se neće prikazati s trenutnim postavkama",
+  "Grid rows": "Redovi mreže",
+  "Number of rows of the grid layer": "Broj redova sloja mreže"
 }

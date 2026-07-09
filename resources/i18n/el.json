@@ -365,5 +365,12 @@
   "More": "Περισσότερα",
   "Frame actions": "Ενέργειες καρέ",
   "Project name": "Όνομα έργου",
-  "Delete project": "Διαγραφή έργου"
+  "Delete project": "Διαγραφή έργου",
+  "General": "Γενικά",
+  "Playback and navigation": "Αναπαραγωγή και πλοήγηση",
+  "Grid and ratio": "Πλέγμα και αναλογία",
+  "Preview of your grid and ratio settings": "Προεπισκόπηση των ρυθμίσεων πλέγματος και αναλογίας σας",
+  "Grid will not display with current settings": "Το πλέγμα δεν θα εμφανιστεί με τις τρέχουσες ρυθμίσεις",
+  "Grid rows": "Γραμμές πλέγματος",
+  "Number of rows of the grid layer": "Αριθμός γραμμών της στρώσης πλέγματος"
 }

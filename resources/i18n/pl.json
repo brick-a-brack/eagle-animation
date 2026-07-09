@@ -386,5 +386,12 @@
   "Speed": "Prędkość",
   "More": "Więcej",
   "Frame actions": "Akcje na klatce",
-  "Project name": "Nazwa projektu"
+  "Project name": "Nazwa projektu",
+  "General": "Ogólny",
+  "Playback and navigation": "Odtwarzanie i nawigacja",
+  "Grid and ratio": "Siatka i proporcje",
+  "Preview of your grid and ratio settings": "Podgląd ustawień siatki i proporcji",
+  "Grid will not display with current settings": "Siatka nie będzie wyświetlana z aktualnymi ustawieniami",
+  "Grid rows": "Wiersze siatki",
+  "Number of rows of the grid layer": "Liczba wierszy warstwy siatki"
 }

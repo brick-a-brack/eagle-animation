@@ -382,5 +382,12 @@
   "Speed": "Velocità",
   "More": "Di più",
   "Frame actions": "Azioni sul fotogramma",
-  "Project name": "Nome del progetto"
+  "Project name": "Nome del progetto",
+  "General": "Generale",
+  "Playback and navigation": "Riproduzione e navigazione",
+  "Grid and ratio": "Griglia e rapporto",
+  "Preview of your grid and ratio settings": "Anteprima delle impostazioni di griglia e rapporto",
+  "Grid will not display with current settings": "La griglia non verrà visualizzata con le impostazioni attuali",
+  "Grid rows": "Righe della griglia",
+  "Number of rows of the grid layer": "Numero di righe del livello della griglia"
 }

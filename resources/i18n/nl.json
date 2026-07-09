@@ -365,5 +365,12 @@
   "More": "Meer",
   "Frame actions": "Acties op het frame",
   "Project name": "Projectnaam",
-  "Delete project": "Verwijder project"
+  "Delete project": "Verwijder project",
+  "General": "Algemeen",
+  "Playback and navigation": "Afspelen en navigatie",
+  "Grid and ratio": "Raster en verhouding",
+  "Preview of your grid and ratio settings": "Voorbeeld van uw raster- en verhoudingsinstellingen",
+  "Grid will not display with current settings": "Raster wordt niet weergegeven met de huidige instellingen",
+  "Grid rows": "Rasterrijen",
+  "Number of rows of the grid layer": "Aantal rijen van de rasterlaag"
 }

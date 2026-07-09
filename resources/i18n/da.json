@@ -365,5 +365,12 @@
   "More": "Mere",
   "Frame actions": "Billedhandlinger",
   "Project name": "Projekt navn",
-  "Delete project": "Slet projekt"
+  "Delete project": "Slet projekt",
+  "General": "Generelt",
+  "Playback and navigation": "Afspilning og navigation",
+  "Grid and ratio": "Gitter og forhold",
+  "Preview of your grid and ratio settings": "Forhåndsvisning af dine gitter- og forholdsindstillinger",
+  "Grid will not display with current settings": "Gitteret vises ikke med de nuværende indstillinger",
+  "Grid rows": "Gitterrækker",
+  "Number of rows of the grid layer": "Antal rækker i gitterlaget"
 }

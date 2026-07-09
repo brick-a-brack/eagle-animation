@@ -372,5 +372,12 @@
   "More": "Více",
   "Frame actions": "Akce na snímku",
   "Project name": "Název projektu",
-  "Delete project": "Smazat projekt"
+  "Delete project": "Smazat projekt",
+  "General": "Obecné",
+  "Playback and navigation": "Přehrávání a navigace",
+  "Grid and ratio": "Mřížka a poměr",
+  "Preview of your grid and ratio settings": "Náhled vašich nastavení mřížky a poměru",
+  "Grid will not display with current settings": "Mřížka se s aktuálními nastaveními nezobrazí",
+  "Grid rows": "Řádky mřížky",
+  "Number of rows of the grid layer": "Počet řádků vrstvy mřížky"
 }
