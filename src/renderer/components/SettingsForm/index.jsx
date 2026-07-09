@@ -1,3 +1,4 @@
+import Button from '@components/Button';
 import ButtonsGroup from '@components/ButtonsGroup';
 import CustomSlider from '@components/CustomSlider';
 import Divider from '@components/Divider';
@@ -11,6 +12,7 @@ import Select from '@components/Select';
 import Switch from '@components/Switch';
 import { DEVICE, LANGUAGES } from '@config-web';
 import useAppCapabilities from '@hooks/useAppCapabilities';
+import faRotate from '@icons/faRotate';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { withTranslation } from 'react-i18next';
@@ -53,6 +55,14 @@ const SettingsForm = ({ settings = {}, onUpdate = () => {}, t }) => {
         <FormGroup label={t('Allow telemetry')} description={t('Send anonymous usage data to help improve the application')}>
           <div>
             <Switch register={register('TELEMETRY_ENABLED')} />
+          </div>
+        </FormGroup>
+        <FormGroup
+          label={t('Tutorial')}
+          description={(watch('TOURS_COMPLETED') || []).length === 0 ? t('The tutorial will be shown on the next visit') : t('Show the guided tour of the interface again')}
+        >
+          <div>
+            <Button icon={faRotate} title={t('Restart the tutorial')} tooltipPosition="TOP" disabled={(watch('TOURS_COMPLETED') || []).length === 0} onClick={() => setValue('TOURS_COMPLETED', [])} />
           </div>
         </FormGroup>
 

@@ -9,6 +9,7 @@ import PageContent from '@components/PageContent';
 import PageLayout from '@components/PageLayout';
 import ProjectCard from '@components/ProjectCard';
 import VersionUpdater from '@components/VersionUpdater';
+import Tour from '@components/Tour';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import useAppCapabilities from '@hooks/useAppCapabilities';
 import useAppVersion from '@hooks/useAppVersion';
@@ -200,6 +201,7 @@ const HomeView = ({ t }) => {
           </>
         )}
       </PageContent>
+      <Tour tourKey="HOME" />
     </PageLayout>
   );
 };
