@@ -3,10 +3,10 @@ import { withTranslation } from 'react-i18next';
 
 import * as style from './style.module.css';
 
-const FormGroup = ({ label = '', id = null, required = false, description = '', children, t }) => {
+const FormGroup = ({ label = '', labelPosition = 'center', id = null, required = false, description = '', children, t }) => {
   return (
     <div className={style.formGroup}>
-      <div>
+      <div className={`${labelPosition === 'top' ? style.labelTop : ''}  ${labelPosition === 'bottom' ? style.labelBottom : ''}`}>
         {label && (
           <>
             <label htmlFor={id} className={style.label}>

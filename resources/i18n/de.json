@@ -379,5 +379,12 @@
   "Speed": "Geschwindigkeit",
   "More": "Mehr",
   "Frame actions": "Bildaktionen",
-  "Project name": "Projektname"
+  "Project name": "Projektname",
+  "General": "Allgemein",
+  "Playback and navigation": "Wiedergabe und Navigation",
+  "Grid and ratio": "Raster und Verhältnis",
+  "Preview of your grid and ratio settings": "Vorschau Ihrer Raster- und Verhältnis-Einstellungen",
+  "Grid will not display with current settings": "Das Raster wird mit den aktuellen Einstellungen nicht angezeigt",
+  "Grid rows": "Rasterzeilen",
+  "Number of rows of the grid layer": "Anzahl der Zeilen der Rasterebene"
 }

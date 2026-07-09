@@ -1,0 +1,35 @@
+
+.borderLeft,
+.borderRight,
+.borderTop,
+.borderBottom {
+    background: #000;
+    pointer-events: none;
+    position: absolute;
+}
+
+.borderLeft,
+.borderRight {
+    height: 100%;
+}
+
+.borderTop,
+.borderBottom {
+    width: 100%;
+}
+
+.borderLeft {
+    left: 0;
+}
+
+.borderRight {
+    right: 0;
+}
+
+.borderTop {
+    top: 0;
+}
+
+.borderBottom {
+    bottom: 0;
+}

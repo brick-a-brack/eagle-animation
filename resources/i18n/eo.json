@@ -379,5 +379,12 @@
   "Speed": "Rapideco",
   "More": "Pli",
   "Frame actions": "Kadroagadoj",
-  "Project name": "Projekto-nomo"
+  "Project name": "Projekto-nomo",
+  "General": "Ĝenerala",
+  "Playback and navigation": "Ludado kaj navigado",
+  "Grid and ratio": "Grido kaj proporcio",
+  "Preview of your grid and ratio settings": "Antaŭvido de viaj grido kaj proporciaj agordoj",
+  "Grid will not display with current settings": "Grido ne montros kun nunaj agordoj",
+  "Grid rows": "Gridoj",
+  "Number of rows of the grid layer": "Nombro de gridoj en la grida tavolo"
 }

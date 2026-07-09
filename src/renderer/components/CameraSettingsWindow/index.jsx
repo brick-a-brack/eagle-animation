@@ -1,4 +1,5 @@
 import Action from '@components/Action';
+import { CameraCapabilityItem } from '@components/CameraCapabilityItem';
 import FormGroup from '@components/FormGroup';
 import IconTabs from '@components/IconTabs';
 import NumberInput from '@components/NumberInput';
@@ -31,8 +32,6 @@ import faTriangle from '@icons/faTriangle';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { withTranslation } from 'react-i18next';
-
-import { CameraCapabilityItem } from '../CameraCapabilityItem';
 
 import * as style from './style.module.css';
 

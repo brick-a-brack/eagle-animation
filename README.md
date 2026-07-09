@@ -54,6 +54,8 @@ There is currently no mobile version of Eagle Animation but you can use [the Web
 
 Feel free to make pull-requests, help us to translate the software or report issues 😉
 
+To contribute, fork the project and create your branch from `dev`, not `master`. The `master` branch only contains the latest stable release, while active development happens on `dev`.
+
 The logo was created by Nishant Shukla and sound effects were obtained from [Zapsplat.com](https://zapsplat.com/).
 
 ## Build and configuration

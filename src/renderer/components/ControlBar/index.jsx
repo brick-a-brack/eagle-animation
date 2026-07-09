@@ -35,6 +35,9 @@ const MASKING_MODES = {
 
 const ControlBar = ({
   gridStatus = false,
+  gridModes = [],
+  gridColumns = 1,
+  gridLines = 1,
   differenceStatus = false,
   onionValue = 1,
   isPlaying = false,
@@ -81,13 +84,12 @@ const ControlBar = ({
   }, [fps]);
 
   const isFrameSelected = !isPlaying && framePosition !== false;
+  const isGridUnavailable = gridModes.length === 1 && gridModes?.includes('GRID') && Number(gridColumns) === 0 && Number(gridLines) === 0;
 
   return (
-    <>
-      <div className={`${style.container} ${style.regularLayout}`}>
+      <div className={style.container}>
         <div className={`${style.subcontainer} ${style.left}`}>
           {isFrameSelected && <Button className={style.imageMoreButton} title={t('Frame actions')} icon={faImage} onClick={handleAction('SHOW_PICTURE_OPTIONS')} />}
-
           <Button
             className={style.moreButton}
             title={isFrameSelected ? t('Frame actions') : t('More')}
@@ -95,7 +97,6 @@ const ControlBar = ({
             onClick={handleAction(isFrameSelected ? 'SHOW_PICTURE_OPTIONS' : 'SHOW_TOOLS')}
             disabled={isPlaying}
           />
-
           {isFrameSelected && (
             <ButtonsGroup
               groupClassName={style.imageGroupActions}
@@ -148,7 +149,8 @@ const ControlBar = ({
                 selected: gridStatus,
                 onClick: handleAction('GRID'),
                 icon: faFrame,
-                disabled: framePosition !== false,
+                disabled: framePosition !== false || isGridUnavailable,
+                warning: isGridUnavailable,
               },
             ]}
             tooltipPosition="TOP"
@@ -225,7 +227,6 @@ const ControlBar = ({
           <Tooltip id="onion" content={t('Onion skin')} />
         </div>
       </div>
-    </>
   );
 };
 

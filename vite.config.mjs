@@ -7,9 +7,9 @@ import { viteStaticCopy } from 'vite-plugin-static-copy';
 import svgr from 'vite-plugin-svgr';
 
 function serviceWorkerPlugin(options) {
-  const name = "vite-plugin-service-worker";
+  const name = 'vite-plugin-service-worker';
   const virtualModuleId = `virtual:${name}`;
-  const resolvedVirtualModuleId = "\0" + virtualModuleId;
+  const resolvedVirtualModuleId = '\0' + virtualModuleId;
   let isBuild = false;
   let resolvedConfig;
 
@@ -23,7 +23,7 @@ function serviceWorkerPlugin(options) {
         input: options.filename,
         output: {
           format: 'es',
-          inlineDynamicImports: true,
+          codeSplitting: false,
           entryFileNames: 'sw.js',
         },
       },
@@ -37,7 +37,7 @@ function serviceWorkerPlugin(options) {
   return {
     name,
     config(_, { command }) {
-      isBuild = command === "build";
+      isBuild = command === 'build';
       return {
         build: {
           rollupOptions: {
@@ -46,10 +46,10 @@ function serviceWorkerPlugin(options) {
               // SW is built separately to inline all dependencies
             },
             output: {
-              entryFileNames: "assets/[name].[hash].js",
-            }
-          }
-        }
+              entryFileNames: 'assets/[name].[hash].js',
+            },
+          },
+        },
       };
     },
     configResolved(config) {
@@ -58,7 +58,7 @@ function serviceWorkerPlugin(options) {
         // In watch mode, start a dedicated independent watcher for the SW.
         // Calling build() from closeBundle() is unreliable in watch mode,
         // so we start a parallel watcher here instead.
-        build(swBuildOptions(config.build.watch)).catch(e => {
+        build(swBuildOptions(config.build.watch)).catch((e) => {
           console.error(`[${name}] SW watch build failed:`, e.message);
         });
       }
@@ -82,7 +82,7 @@ function serviceWorkerPlugin(options) {
             build: {
               rollupOptions: {
                 input: options.filename,
-                output: { format: 'es', inlineDynamicImports: true },
+                output: { format: 'es', codeSplitting: false },
               },
               write: false,
               emptyOutDir: false,
@@ -92,7 +92,7 @@ function serviceWorkerPlugin(options) {
           for (const chunk of output) {
             if (chunk.type === 'chunk') {
               // Track every non-node_modules module so we watch it
-              for (const id of (chunk.moduleIds ?? [])) {
+              for (const id of chunk.moduleIds ?? []) {
                 if (!id.includes('node_modules')) watchedFiles.add(id);
               }
               if (chunk.isEntry) swCode = chunk.code;
@@ -147,72 +147,78 @@ export default defineConfig(({ mode }) => {
   const URL = env.VITE_PUBLIC_URL || process.env.VITE_PUBLIC_URL || '';
 
   return {
-  ...(URL ? { base: URL } : {}),
-  root: resolve(__dirname, 'src/renderer/'),
-  define: {
-    'import.meta.env.VITE_COMMIT_HASH': JSON.stringify(env.VITE_COMMIT_HASH),
-  },
-  build: {
-    cssTarget: ['chrome100'],
-    sourcemap: true,
-    outDir: resolve(__dirname, 'out/web/'),  },
-  worker: {
-    format: 'es',
-  },
-  optimizeDeps: {
-    exclude: ["@ffmpeg/ffmpeg", "@ffmpeg/util", "web-gphoto2"],
-  },
-  resolve: {
-    alias: {
-      '~': resolve(__dirname),
-      '@components': resolve(__dirname, 'src/renderer/components/'),
-      '@core': resolve(__dirname, 'src/renderer/core/'),
-      '@views': resolve(__dirname, 'src/renderer/views/'),
-      '@icons': resolve(__dirname, 'src/renderer/icons/'),
-      '@hooks': resolve(__dirname, 'src/renderer/hooks/'),
-      '@config-web': resolve(__dirname, 'src/renderer/config.js'),
-      '@i18n': resolve(__dirname, 'src/renderer/i18n.js'),
-      '@common': resolve(__dirname, 'src/common/'),
+    ...(URL ? { base: URL } : {}),
+    root: resolve(__dirname, 'src/renderer/'),
+    define: {
+      'import.meta.env.VITE_COMMIT_HASH': JSON.stringify(env.VITE_COMMIT_HASH),
     },
-  },
-  css: {
-    postcss: {
-      plugins: [mediaMinMax],
+    build: {
+      cssTarget: ['chrome100'],
+      sourcemap: true,
+      outDir: resolve(__dirname, 'out/web/'),
     },
-  },
-  plugins: [
-    react(),
-    svgr({
-      include: '**/*.svg?jsx',
-      svgrOptions: {
-        // svgr options
+    worker: {
+      format: 'es',
+    },
+    optimizeDeps: {
+      exclude: ['@ffmpeg/ffmpeg', '@ffmpeg/util', 'web-gphoto2'],
+    },
+    resolve: {
+      alias: {
+        '~': resolve(__dirname),
+        '@components': resolve(__dirname, 'src/renderer/components/'),
+        '@core': resolve(__dirname, 'src/renderer/core/'),
+        '@views': resolve(__dirname, 'src/renderer/views/'),
+        '@icons': resolve(__dirname, 'src/renderer/icons/'),
+        '@hooks': resolve(__dirname, 'src/renderer/hooks/'),
+        '@config-web': resolve(__dirname, 'src/renderer/config.js'),
+        '@i18n': resolve(__dirname, 'src/renderer/i18n.js'),
+        '@common': resolve(__dirname, 'src/common/'),
       },
-    }),
-    viteStaticCopy({
-      targets: [
-        {
-          src: normalizePath(resolve(__dirname, './resources/*')),
-          dest: '.',
-        },
-        {
-          src: normalizePath(resolve(__dirname, 'node_modules/@ffmpeg/core/dist/esm/*')),
-          dest: '.',
-        },
-        {
-          src: normalizePath(resolve(__dirname, 'node_modules/web-gphoto2/build/*')),
-          dest: '.',
-        },
-      ],
-    }),
-    serviceWorkerPlugin({
-      filename: resolve(__dirname, 'src/backend-web/sw-web.js'),
-    }),
-  ],
-  server: {
-    headers: {
-      "Cross-Origin-Opener-Policy": "same-origin",
-      "Cross-Origin-Embedder-Policy": "require-corp",
     },
-  },
+    css: {
+      postcss: {
+        plugins: [mediaMinMax],
+      },
+    },
+    plugins: [
+      react(),
+      svgr({
+        include: '**/*.svg?jsx',
+        svgrOptions: {
+          // svgr options
+        },
+      }),
+      viteStaticCopy({
+        targets: [
+          {
+            // vite-plugin-static-copy 4 mirrors the source tree relative to the Vite root, so each
+            // source has to be globbed recursively and its leading segments stripped back off.
+            src: normalizePath(resolve(__dirname, './resources/**/*')),
+            dest: '.',
+            rename: { stripBase: 1 },
+          },
+          {
+            src: normalizePath(resolve(__dirname, 'node_modules/@ffmpeg/core/dist/esm/*')),
+            dest: '.',
+            rename: { stripBase: true },
+          },
+          {
+            src: normalizePath(resolve(__dirname, 'node_modules/web-gphoto2/build/*')),
+            dest: '.',
+            rename: { stripBase: true },
+          },
+        ],
+      }),
+      serviceWorkerPlugin({
+        filename: resolve(__dirname, 'src/backend-web/sw-web.js'),
+      }),
+    ],
+    server: {
+      headers: {
+        'Cross-Origin-Opener-Policy': 'same-origin',
+        'Cross-Origin-Embedder-Policy': 'require-corp',
+      },
+    },
   };
 });
