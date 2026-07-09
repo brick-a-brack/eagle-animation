@@ -6,6 +6,7 @@ import PageContent from '@components/PageContent';
 import PageLayout from '@components/PageLayout';
 import ProjectCard from '@components/ProjectCard';
 import ProjectsGrid from '@components/ProjectsGrid';
+import Tour from '@components/Tour';
 import VersionUpdater from '@components/VersionUpdater';
 import useAppCapabilities from '@hooks/useAppCapabilities';
 import useAppVersion from '@hooks/useAppVersion';
@@ -108,7 +109,7 @@ const HomeView = ({ t }) => {
       <PageContent>
         {projects !== null && (
           <ProjectsGrid>
-            <ProjectCard placeholder={t('New project')} onClick={handleCreateProject} icon="ADD" />
+            <ProjectCard placeholder={t('New project')} onClick={handleCreateProject} icon="ADD" dataTour="new-project" />
             {[...projects]
               .filter((e) => Boolean(e?.stats?.frames || 0))
               .sort((a, b) => b.project.updated - a.project.updated)
@@ -118,6 +119,7 @@ const HomeView = ({ t }) => {
           </ProjectsGrid>
         )}
       </PageContent>
+      <Tour tourKey="HOME" />
     </PageLayout>
   );
 };

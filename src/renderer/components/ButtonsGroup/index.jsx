@@ -17,6 +17,7 @@ const ButtonsGroup = ({ actions = [], tooltipPosition = 'NONE', merge = false, g
       selected={action.selected || undefined}
       tooltipPosition={tooltipPosition}
       warning={action.warning || undefined}
+      {...(action.dataTour ? { 'data-tour': action.dataTour } : {})}
     />
   ));
 };

@@ -12,7 +12,7 @@ import * as style from './style.module.css';
 
 let renameEvents = {};
 
-const ProjectCard = ({ id = '', placeholder = '', title = '', picture = '', onClick = null, onTitleChange = null, nbFrames = null, icon = 'EDIT', t }) => {
+const ProjectCard = ({ id = '', placeholder = '', title = '', picture = '', onClick = null, onTitleChange = null, nbFrames = null, icon = 'EDIT', dataTour = '', t }) => {
   const ref = useRef(null);
 
   const handleClick = () => {
@@ -35,7 +35,7 @@ const ProjectCard = ({ id = '', placeholder = '', title = '', picture = '', onCl
   };
 
   return (
-    <div className={style.box}>
+    <div className={style.box} {...(dataTour ? { 'data-tour': dataTour } : {})}>
       <div className={style.banner}>{picture && <img alt="" src={getPictureLink(picture, { w: 300, h: 200, m: 'cover', f: 'jpg' })} loading="lazy" />}</div>
       {nbFrames !== null && <Tag tag={`${nbFrames || 0}`} icon={faImages} position="TOP-RIGHT" />}
       <div role="button" tabIndex={0} className={style.bannerhover} onClick={handleClick}>
