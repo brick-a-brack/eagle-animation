@@ -1,81 +1,77 @@
 .headerBar {
-    background: var(--color-theme-extra-dark);
-    border: none;
-    box-sizing: border-box;
-    display: none;
-    flex-direction: column;
-    height: 100%;
-    overflow: hidden;
-    position: fixed;
-    width: 60px;
-    z-index: 99;
+  background: var(--color-theme-extra-dark);
+  border: none;
+  box-sizing: border-box;
+  display: none;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  position: fixed;
+  width: 60px;
+  z-index: 99;
 }
 
 .headerBarLeft {
-    left: 0;
+  left: 0;
 }
 
 .headerBarRight {
-    right: 0;
+  right: 0;
 }
 
 .top,
 .center,
 .bottom {
-    align-items: center;
-    display: flex;
-    flex-direction: column;
-    place-content: center center;
-    position: absolute;
-    width: 100%;
-
-
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  place-content: center center;
+  position: absolute;
+  width: 100%;
 }
 
 .top {
-    padding-top: 5px;
-    top: 0;
-
+  padding-top: 5px;
+  top: 0;
 }
 
 .center {
-    top: 50%;
-    transform: translateY(-50%);
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .bottom {
-    bottom: 0;
-    padding-bottom: 5px;
+  bottom: 0;
+  padding-bottom: 5px;
 }
 
 .headerBar .top {
-    padding-top: 5px;
+  padding-top: 5px;
 }
 
 .headerBar .bottom {
-    padding-bottom: 5px;
+  padding-bottom: 5px;
 }
 
 .logo {
-    cursor: pointer;
-    height: 42px;
-    margin: 5px;
-    user-select: none;
-    width: 42px;
+  cursor: pointer;
+  height: 42px;
+  margin: 5px;
+  user-select: none;
+  width: 42px;
 }
 
 .headerBarLeft.withBorder {
-    /* border-right: 3px solid var(--color-primary); */
+  /* border-right: 3px solid var(--color-primary); */
 }
 
 .headerBarRight.withBorder {
-    /* border-left: 3px solid var(--color-primary); */
+  /* border-left: 3px solid var(--color-primary); */
 }
 
 /* Show it on mobile view */
-@media (orientation: landscape) and (width <= 700px),
-       (orientation: landscape) and (height <= 500px) {
-    .headerBar {
-        display: block;
-    }
+@media (orientation: landscape) and (width <= 700px), (orientation: landscape) and (height <= 500px) {
+  .headerBar {
+    display: block;
+  }
 }

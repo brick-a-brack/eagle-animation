@@ -107,7 +107,7 @@
 
 .isHidden .img {
   filter: grayscale(1);
-  opacity: 0.2
+  opacity: 0.2;
 }
 
 .icon {
@@ -156,8 +156,7 @@
   }
 }
 
-@media (orientation: landscape) and (width <=700px),
-(orientation: landscape) and (height <=500px) {
+@media (orientation: landscape) and (width <=700px), (orientation: landscape) and (height <=500px) {
   .container {
     --padding-top: 4px;
   }

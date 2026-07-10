@@ -10,7 +10,7 @@
   line-height: var(--line-size-6);
   margin: 0;
   overflow: hidden;
-  padding:0 var(--space-small);
+  padding: 0 var(--space-small);
   width: 250px;
 }
 

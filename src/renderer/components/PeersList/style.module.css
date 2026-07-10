@@ -1,162 +1,162 @@
 .container {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-big);
-    margin: 0 var(--space-huge);
-    margin: auto;
-    max-width: 640px;
-    padding-bottom: var(--space-big);
-    width: calc(100% - 2 * var(--space-huge));
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-big);
+  margin: 0 var(--space-huge);
+  margin: auto;
+  max-width: 640px;
+  padding-bottom: var(--space-big);
+  width: calc(100% - 2 * var(--space-huge));
 }
 
 .list {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-medium);
-    list-style: none;
-    margin: 0;
-    padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-medium);
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
 .title {
-    color: var(--color-white);
-    font-size: var(--font-size-3);
-    font-weight: 600;
-    line-height: var(--line-size-3);
-    text-align: center;
-    user-select: none;
+  color: var(--color-white);
+  font-size: var(--font-size-3);
+  font-weight: 600;
+  line-height: var(--line-size-3);
+  text-align: center;
+  user-select: none;
 }
 
 .item {
-    align-items: center;
-    background-color: var(--color-theme-medium);
-    border: 2px solid var(--color-theme-light);
-    border-radius: var(--border-radius-small);
-    box-sizing: border-box;
-    display: flex;
-    gap: var(--space-medium);
-    padding: var(--space-small) var(--space-medium);
-    width: 100%;
+  align-items: center;
+  background-color: var(--color-theme-medium);
+  border: 2px solid var(--color-theme-light);
+  border-radius: var(--border-radius-small);
+  box-sizing: border-box;
+  display: flex;
+  gap: var(--space-medium);
+  padding: var(--space-small) var(--space-medium);
+  width: 100%;
 }
 
 .info {
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-    gap: var(--space-tiny);
-    min-width: 0;
-    overflow: hidden;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--space-tiny);
+  min-width: 0;
+  overflow: hidden;
 }
 
 .serverTag {
-    color: var(--color-theme-extra-light);
-    font-size: var(--font-size-8);
-    font-weight: 700;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    user-select: none;
+  color: var(--color-theme-extra-light);
+  font-size: var(--font-size-8);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  user-select: none;
 }
 
 .fieldIcon {
-    margin-right: var(--space-small);
-    opacity: 0.5;
+  margin-right: var(--space-small);
+  opacity: 0.5;
 }
 
 .url {
-    align-items: center;
-    color: var(--color-white);
-    display: flex;
-    font-size: var(--font-size-5);
-    font-weight: 600;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+  align-items: center;
+  color: var(--color-white);
+  display: flex;
+  font-size: var(--font-size-5);
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .token {
-    align-items: center;
-    color: var(--color-white);
-    display: flex;
-    font-size: var(--font-size-7);
-    opacity: 0.6;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+  align-items: center;
+  color: var(--color-white);
+  display: flex;
+  font-size: var(--font-size-7);
+  opacity: 0.6;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 /* Form card */
 
 .formCard {
-    background-color: var(--color-theme-medium);
-    border: 2px solid var(--color-theme-light);
-    border-radius: var(--border-radius-small);
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-medium);
-    padding: var(--space-medium);
-    width: 100%;
+  background-color: var(--color-theme-medium);
+  border: 2px solid var(--color-theme-light);
+  border-radius: var(--border-radius-small);
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-medium);
+  padding: var(--space-medium);
+  width: 100%;
 }
 
 .formDescription {
-    color: var(--color-white);
-    font-size: var(--font-size-7);
-    margin: 0;
-    opacity: 0.7;
-    user-select: none;
+  color: var(--color-white);
+  font-size: var(--font-size-7);
+  margin: 0;
+  opacity: 0.7;
+  user-select: none;
 }
 
 .form {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-medium);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-medium);
 }
 
 .fieldGroup {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-tiny);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-tiny);
 }
 
 .fieldLabel {
-    color: var(--color-white);
-    font-size: var(--font-size-7);
-    font-weight: 600;
-    opacity: 0.8;
-    user-select: none;
+  color: var(--color-white);
+  font-size: var(--font-size-7);
+  font-weight: 600;
+  opacity: 0.8;
+  user-select: none;
 }
 
 .field {
-    width: 100%;
+  width: 100%;
 }
 
 .errorMessage {
-    color: var(--color-alert);
-    font-size: var(--font-size-7);
-    margin: 0;
+  color: var(--color-alert);
+  font-size: var(--font-size-7);
+  margin: 0;
 }
 
 .submitButton {
-    align-items: center;
-    background-color: var(--color-primary);
-    border: none;
-    border-radius: var(--border-radius-small);
-    color: var(--color-white);
-    cursor: pointer;
-    display: flex;
-    font-size: var(--font-size-6);
-    font-weight: 600;
-    gap: var(--space-small);
-    justify-content: center;
-    padding: var(--space-small) var(--space-medium);
-    width: 100%;
+  align-items: center;
+  background-color: var(--color-primary);
+  border: none;
+  border-radius: var(--border-radius-small);
+  color: var(--color-white);
+  cursor: pointer;
+  display: flex;
+  font-size: var(--font-size-6);
+  font-weight: 600;
+  gap: var(--space-small);
+  justify-content: center;
+  padding: var(--space-small) var(--space-medium);
+  width: 100%;
 }
 
 .submitButton:hover:not(:disabled) {
-    filter: brightness(1.15);
+  filter: brightness(1.15);
 }
 
 .submitButtonDisabled {
-    cursor: not-allowed;
-    opacity: 0.4;
+  cursor: not-allowed;
+  opacity: 0.4;
 }

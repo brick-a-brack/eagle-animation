@@ -5,13 +5,13 @@
   width: 100%;
 }
 
-.formGroup>div:nth-child(1) {
+.formGroup > div:nth-child(1) {
   display: flex;
   flex-direction: column;
   width: 75%;
 }
 
-.formGroup>div:nth-child(2) {
+.formGroup > div:nth-child(2) {
   display: flex;
   justify-content: flex-end;
   width: 25%;
@@ -53,14 +53,12 @@
   margin-bottom: 0;
 } */
 
-
 @media screen and (width <= 700px) {
-  .formGroup>div:nth-child(1) {
+  .formGroup > div:nth-child(1) {
     width: 60%;
   }
 
-  .formGroup>div:nth-child(2) {
+  .formGroup > div:nth-child(2) {
     width: 40%;
   }
-
 }
