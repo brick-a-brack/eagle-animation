@@ -1,0 +1,18 @@
+.tag {
+  color: var(--color-white);
+  font-size: var(--font-size-7);
+  font-weight: 600;
+  left: 10px;
+  line-height: var(--line-size-7);
+  pointer-events: none;
+  position: fixed;
+  top: 7px;
+  white-space: nowrap;
+  z-index: 999;
+}
+
+@media (width <=800px) {
+  .tag {
+    display: none !important;
+  }
+}

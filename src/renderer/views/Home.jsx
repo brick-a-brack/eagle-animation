@@ -8,6 +8,7 @@ import PageContent from '@components/PageContent';
 import PageLayout from '@components/PageLayout';
 import ProjectCard from '@components/ProjectCard';
 import UpdateBanner from '@components/UpdateBanner';
+import VersionTagOverlay from '@components/VersionTagOverlay';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import useAppCapabilities from '@hooks/useAppCapabilities';
 import useDiscordActivity from '@hooks/useDiscordActivity';
@@ -145,6 +146,7 @@ const HomeView = ({ t }) => {
     <PageLayout hasMobileLeftBar={true}>
       <DesktopNavigation showLogo={true} leftActions={primaryActions} rightActions={secondaryActions} />
       <MobileNavigation showLogo={true} topLeftActions={primaryActions} bottomLeftActions={secondaryActions} showLeftActions={true} />
+      <VersionTagOverlay />
       <PageContent>
         {projects !== null && (
           <>
