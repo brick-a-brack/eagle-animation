@@ -1,7 +1,7 @@
 import ButtonsGroup from '@components/ButtonsGroup';
+import Logo from '@components/Logo';
 
 import * as style from './style.module.css';
-import Logo from '@components/Logo';
 
 const MobileNavigation = ({
   topLeftActions = [],

@@ -1,4 +1,4 @@
-import { DOWNLOAD_LINK, VERSION, CONTRIBUTE_REPOSITORY } from '@config-web';
+import { CONTRIBUTE_REPOSITORY, DOWNLOAD_LINK, VERSION } from '@config-web';
 import { BUILD, IS_DEV } from '@config-web';
 import { compareVersions } from 'compare-versions';
 import { useCallback, useEffect, useState } from 'react';

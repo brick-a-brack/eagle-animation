@@ -1,5 +1,5 @@
-import LogoSVG from './assets/logo.svg?jsx';
 import IconSVG from './assets/icon.svg?jsx';
+import LogoSVG from './assets/logo.svg?jsx';
 
 import * as style from './style.module.css';
 

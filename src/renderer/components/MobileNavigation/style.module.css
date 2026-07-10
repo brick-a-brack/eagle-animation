@@ -54,7 +54,7 @@
 }
 
 .logo {
-  cursor: normal !important;
+  cursor: default !important;
   height: 42px !important;
   margin: 5px;
   user-select: none;
@@ -70,8 +70,7 @@
 }
 
 /* Show it on mobile view */
-@media (orientation: landscape) and (width <=700px),
-(orientation: landscape) and (height <=500px) {
+@media (orientation: landscape) and (width <=700px), (orientation: landscape) and (height <=500px) {
   .headerBar {
     display: block;
   }

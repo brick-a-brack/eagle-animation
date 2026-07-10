@@ -17,23 +17,23 @@
 }
 
 .logoMobile {
-  cursor: normal !important;
+  cursor: default !important;
+  display: none !important;
   height: 42px !important;
   margin: 5px;
   user-select: none;
   width: 42px !important;
-  display: none !important;
 }
 
 .logoDesktop {
-  cursor: normal !important;
+  cursor: default !important;
   height: 32px !important;
+  left: 50%;
+  position: absolute;
+  top: 15px;
+  transform: translateX(-50%);
   user-select: none;
   width: auto !important;
-  left: 50%;
-  top:15px;
-  position: absolute;
-  transform: translateX(-50%);
 }
 
 @media (width <=800px) {
@@ -67,8 +67,7 @@
 }
 
 /* Hide it on mobile view */
-@media (orientation: landscape) and (width <=700px),
-(orientation: landscape) and (height <=500px) {
+@media (orientation: landscape) and (width <=700px), (orientation: landscape) and (height <=500px) {
   .headerBar {
     display: none;
   }

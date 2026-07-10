@@ -17,9 +17,7 @@ const DesktopNavigation = ({ leftActions = [], rightActions = [], children = nul
           {!children && title && <div className={style.title}>{title}</div>}
         </div>
       )}
-      <div className={style.right}>
-        {rightActions.length > 0 && <ButtonsGroup actions={rightActions} tooltipPosition="NONE" />}
-      </div>
+      <div className={style.right}>{rightActions.length > 0 && <ButtonsGroup actions={rightActions} tooltipPosition="NONE" />}</div>
     </div>
   );
 };

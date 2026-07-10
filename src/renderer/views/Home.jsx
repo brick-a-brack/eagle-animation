@@ -2,7 +2,6 @@ import { isIos } from '@braintree/browser-detection';
 import DesktopNavigation from '@components/DesktopNavigation';
 import HomeStats from '@components/HomeStats';
 import HomeToolbar from '@components/HomeToolbar';
-import Logo from '@components/Logo';
 import MobileNavigation from '@components/MobileNavigation';
 import NewProjectCard from '@components/NewProjectCard';
 import PageContent from '@components/PageContent';
@@ -133,10 +132,10 @@ const HomeView = ({ t }) => {
     ...(settings?.EVENT_MODE_ENABLED ? [{ label: t('Sync list'), icon: faListCheck, onClick: handleAction('SYNC_LIST') }] : []),
     ...(!isIos()
       ? [
-        isFullscreen
-          ? { label: t('Exit fullscreen'), icon: faDownLeftAndUpRightToCenter, onClick: handleAction('EXIT_FULLSCREEN') }
-          : { label: t('Fullscreen'), icon: faUpRightAndDownLeftFromCenter, onClick: handleAction('ENTER_FULLSCREEN') },
-      ]
+          isFullscreen
+            ? { label: t('Exit fullscreen'), icon: faDownLeftAndUpRightToCenter, onClick: handleAction('EXIT_FULLSCREEN') }
+            : { label: t('Fullscreen'), icon: faUpRightAndDownLeftFromCenter, onClick: handleAction('ENTER_FULLSCREEN') },
+        ]
       : []),
     { label: t('Shortcuts'), icon: faKeyboard, onClick: handleAction('SHORTCUTS') },
     { label: t('Settings'), icon: faGear, onClick: handleAction('SETTINGS') },
@@ -144,17 +143,8 @@ const HomeView = ({ t }) => {
 
   return (
     <PageLayout hasMobileLeftBar={true}>
-      <DesktopNavigation
-        showLogo={true}
-        leftActions={primaryActions}
-        rightActions={secondaryActions}
-        />
-      <MobileNavigation
-        showLogo={true}
-        topLeftActions={primaryActions}
-        bottomLeftActions={secondaryActions}
-        showLeftActions={true}
-      />
+      <DesktopNavigation showLogo={true} leftActions={primaryActions} rightActions={secondaryActions} />
+      <MobileNavigation showLogo={true} topLeftActions={primaryActions} bottomLeftActions={secondaryActions} showLeftActions={true} />
       <PageContent>
         {projects !== null && (
           <>
@@ -196,7 +186,7 @@ const HomeView = ({ t }) => {
           </>
         )}
       </PageContent>
-    </PageLayout >
+    </PageLayout>
   );
 };
 
