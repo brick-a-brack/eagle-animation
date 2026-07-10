@@ -16,3 +16,9 @@
     display: none !important;
   }
 }
+
+@media (orientation: landscape) and (width <=700px), (orientation: landscape) and (height <=500px) {
+  .tag {
+    display: none !important;
+  }
+}

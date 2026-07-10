@@ -200,7 +200,7 @@
 
 /* ---------- Mobile ---------- */
 
-@media screen and (width <= 768px) {
+@media screen and (width <= 650px) {
   .search {
     flex: 1 1 100%;
     min-width: 0;
