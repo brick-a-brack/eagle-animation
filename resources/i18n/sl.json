@@ -397,5 +397,11 @@
   "{{hours}}h{{minutes}}": "{{hours}}h{{minutes}}",
   "{{minutes}}m": "{{minutes}}m",
   "{{seconds}}s": "{{seconds}}s",
-  "No projects match your search": "Noben projekt ne ustreza vašemu iskanju"
+  "No projects match your search": "Noben projekt ne ustreza vašemu iskanju",
+  "Update": "Posodobitev",
+  "Stay up to date to enjoy the latest features and improvements": "Ostanite na tekočem, da uživate v najnovejših funkcijah in izboljšavah",
+  "Update to {{version}}": "Posodobite na {{version}}",
+  "Already up to date ({{version}})": "Že ste na tekočem ({{version}})",
+  "A new version is available": "Na voljo je nova različica",
+  "Update now": "Posodobite zdaj"
 }

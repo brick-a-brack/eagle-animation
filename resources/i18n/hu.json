@@ -389,5 +389,11 @@
   "{{hours}}h{{minutes}}": "{{hours}}h{{minutes}}",
   "{{minutes}}m": "{{minutes}}m",
   "{{seconds}}s": "{{seconds}}s",
-  "No projects match your search": "Nincs olyan projekt, amely megfelelne a keresésének"
+  "No projects match your search": "Nincs olyan projekt, amely megfelelne a keresésének",
+  "Update": "Frissítés",
+  "Stay up to date to enjoy the latest features and improvements": "Maradjon naprakész, hogy élvezhesse a legújabb funkciókat és fejlesztéseket",
+  "Update to {{version}}": "Frissítés {{version}}-ra",
+  "Already up to date ({{version}})": "Már naprakész ({{version}})",
+  "A new version is available": "Új verzió érhető el",
+  "Update now": "Frissítés most"
 }

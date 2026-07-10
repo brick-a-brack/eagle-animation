@@ -389,5 +389,11 @@
   "{{hours}}h{{minutes}}": "{{hours}}h{{minutes}}",
   "{{minutes}}m": "{{minutes}}m",
   "{{seconds}}s": "{{seconds}}s",
-  "No projects match your search": "Yksikään projekti ei vastaa hakuaasi"
+  "No projects match your search": "Yksikään projekti ei vastaa hakuaasi",
+  "Update": "Päivitys",
+  "Stay up to date to enjoy the latest features and improvements": "Pysy ajan tasalla nauttiaksesi uusimmista ominaisuuksista ja parannuksista",
+  "Update to {{version}}": "Päivitä {{version}}",
+  "Already up to date ({{version}})": "Jo ajan tasalla ({{version}})",
+  "A new version is available": "Uusi versio on saatavilla",
+  "Update now": "Päivitä nyt"
 }

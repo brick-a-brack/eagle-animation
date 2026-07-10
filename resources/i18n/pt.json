@@ -406,5 +406,11 @@
   "{{hours}}h{{minutes}}": "{{hours}}h{{minutes}}",
   "{{minutes}}m": "{{minutes}}m",
   "{{seconds}}s": "{{seconds}}s",
-  "No projects match your search": "Nenhum projeto corresponde à sua pesquisa"
+  "No projects match your search": "Nenhum projeto corresponde à sua pesquisa",
+  "Update": "Atualização",
+  "Stay up to date to enjoy the latest features and improvements": "Mantenha-se atualizado para aproveitar os últimos recursos e melhorias",
+  "Update to {{version}}": "Atualizar para {{version}}",
+  "Already up to date ({{version}})": "Já está atualizado ({{version}})",
+  "A new version is available": "Uma nova versão está disponível",
+  "Update now": "Atualizar agora"
 }

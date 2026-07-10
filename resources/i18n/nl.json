@@ -389,5 +389,11 @@
   "{{hours}}h{{minutes}}": "{{hours}}u{{minutes}}",
   "{{minutes}}m": "{{minutes}}m",
   "{{seconds}}s": "{{seconds}}s",
-  "No projects match your search": "Geen projecten komen overeen met uw zoekopdracht"
+  "No projects match your search": "Geen projecten komen overeen met uw zoekopdracht",
+  "Update": "Bijwerken",
+  "Stay up to date to enjoy the latest features and improvements": "Blijf op de hoogte om te genieten van de nieuwste functies en verbeteringen",
+  "Update to {{version}}": "Bijwerken naar {{version}}",
+  "Already up to date ({{version}})": "Al op de hoogte ({{version}})",
+  "A new version is available": "Een nieuwe versie is beschikbaar",
+  "Update now": "Nu bijwerken"
 }
