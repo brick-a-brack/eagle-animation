@@ -83,6 +83,8 @@ const SettingsForm = ({ settings = {}, onUpdate = () => {}, t }) => {
           </div>
         </FormGroup>
 
+        <Divider />
+
         <Heading h={1}>{t('Capture')}</Heading>
 
         <FormGroup label={t('Sound effects')} description={t('Play sound effects when you take or remove a frame')}>
