@@ -1,4 +1,6 @@
-import { CONTRIBUTE_REPOSITORY, VERSION } from '@config-web';
+import { DOWNLOAD_LINK, VERSION, CONTRIBUTE_REPOSITORY } from '@config-web';
+import { BUILD, IS_DEV } from '@config-web';
+import { compareVersions } from 'compare-versions';
 import { useCallback, useEffect, useState } from 'react';
 
 function useAppVersion() {
@@ -13,7 +15,7 @@ function useAppVersion() {
 
   // Action open update page
   const actionOpenUpdatePage = useCallback(() => {
-    window.EA('OPEN_LINK', { link: `https://github.com/${CONTRIBUTE_REPOSITORY}/releases` });
+    window.EA('OPEN_LINK', { link: DOWNLOAD_LINK });
   }, []);
 
   // Action report
@@ -21,9 +23,16 @@ function useAppVersion() {
     window.EA('OPEN_LINK', { link: `https://github.com/${CONTRIBUTE_REPOSITORY}/issues` });
   }, []);
 
+  // Prepare variables
+  const canBeUpdated = !IS_DEV && !!latestVersion && compareVersions(latestVersion, VERSION || '0.0.0') === 1;
+  const currentVersionLabel = `v${VERSION}${IS_DEV ? '-dev' : ''}`;
+  const latestVersionLabel = IS_DEV ? currentVersionLabel : `v${latestVersion}`;
+
   return {
-    version: VERSION,
-    latestVersion,
+    build: BUILD,
+    currentVersion: currentVersionLabel,
+    latestVersion: latestVersionLabel,
+    canBeUpdated,
     actions: {
       openUpdatePage: actionOpenUpdatePage,
       openReportErrorPage: actionReportErrorPage,

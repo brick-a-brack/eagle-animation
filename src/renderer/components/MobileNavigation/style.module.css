@@ -7,7 +7,7 @@
   height: 100%;
   overflow: hidden;
   position: fixed;
-  width: 60px;
+  width: 62px;
   z-index: 99;
 }
 
@@ -54,23 +54,24 @@
 }
 
 .logo {
-  cursor: pointer;
-  height: 42px;
+  cursor: normal !important;
+  height: 42px !important;
   margin: 5px;
   user-select: none;
-  width: 42px;
+  width: 42px !important;
 }
 
 .headerBarLeft.withBorder {
-  /* border-right: 3px solid var(--color-primary); */
+  border-right: 2px solid var(--color-theme-medium);
 }
 
 .headerBarRight.withBorder {
-  /* border-left: 3px solid var(--color-primary); */
+  border-left: 2px solid var(--color-theme-medium);
 }
 
 /* Show it on mobile view */
-@media (orientation: landscape) and (width <= 700px), (orientation: landscape) and (height <= 500px) {
+@media (orientation: landscape) and (width <=700px),
+(orientation: landscape) and (height <=500px) {
   .headerBar {
     display: block;
   }

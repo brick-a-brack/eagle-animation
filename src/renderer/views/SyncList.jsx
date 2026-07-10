@@ -30,8 +30,8 @@ const SyncListView = ({ t }) => {
     <>
       <LoadingPage show={!items} />
       <PageLayout hasMobileLeftBar={true}>
-        <DesktopNavigation leftActions={primaryActions} onAction={handleBack} title={t('Sync list')} withBorder />
-        <MobileNavigation topLeftActions={primaryActions} showLeftActions={true} withBorder={true} />
+        <DesktopNavigation leftActions={primaryActions} title={t('Sync list')} />
+        <MobileNavigation topLeftActions={primaryActions} showLeftActions={true} />
         <PageContent>
           {orderedItems.length === 0 && <EmptyState message={t('No items to sync')} icon={faFilm} />}
           {orderedItems.length > 0 && (

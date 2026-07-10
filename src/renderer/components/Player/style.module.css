@@ -7,8 +7,8 @@
 
 .playerContainer {
   background: #000;
-  border-bottom: solid var(--color-primary) 3px;
-  border-top: solid var(--color-primary) 3px;
+  border-bottom: solid var(--color-primary) 2px;
+  border-top: solid var(--color-primary) 2px;
   display: flex;
   flex-direction: row;
   height: 100%;
@@ -17,8 +17,8 @@
 }
 
 .live.playerContainer {
-  border-bottom: solid var(--color-alert) 3px;
-  border-top: solid var(--color-alert) 3px;
+  border-bottom: solid var(--color-alert) 2px;
+  border-top: solid var(--color-alert) 2px;
 }
 
 .layout {

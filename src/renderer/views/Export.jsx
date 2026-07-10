@@ -207,7 +207,7 @@ const Export = ({ t }) => {
       <>
         <LoadingPage show={true} />
         <PageLayout>
-          <DesktopNavigation leftActions={['BACK']} onAction={handleBack} title={t('Export')} withBorder />
+          <DesktopNavigation leftActions={primaryActions} title={t('Export')} />
           <MobileNavigation topLeftActions={primaryActions} showLeftActions={true} />
           <PageContent></PageContent>
         </PageLayout>
@@ -337,8 +337,8 @@ const Export = ({ t }) => {
     <>
       <LoadingPage show={!settings} />
       <PageLayout hasMobileLeftBar={true}>
-        <DesktopNavigation leftActions={primaryActions} onAction={handleBack} title={t('Export')} withBorder />
-        <MobileNavigation topLeftActions={primaryActions} showLeftActions={true} withBorder={true} />
+        <DesktopNavigation leftActions={primaryActions} title={t('Export')} />
+        <MobileNavigation topLeftActions={primaryActions} showLeftActions={true} />
         <PageContent>
           {settings && (
             <form id="export">

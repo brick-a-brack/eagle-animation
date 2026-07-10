@@ -9,6 +9,7 @@ import Input from '@components/Input';
 import NumberInput from '@components/NumberInput';
 import Select from '@components/Select';
 import Switch from '@components/Switch';
+import UpdateAppButton from '@components/UpdateAppButton';
 import { DEVICE, LANGUAGES } from '@config-web';
 import useAppCapabilities from '@hooks/useAppCapabilities';
 import { useEffect } from 'react';
@@ -54,6 +55,9 @@ const SettingsForm = ({ settings = {}, onUpdate = () => {}, t }) => {
           <div>
             <Switch register={register('TELEMETRY_ENABLED')} />
           </div>
+        </FormGroup>
+        <FormGroup label={t('Update')} description={t('Stay up to date to enjoy the latest features and improvements')}>
+          <UpdateAppButton />
         </FormGroup>
 
         <Divider />

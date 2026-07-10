@@ -8,10 +8,9 @@ import NewProjectCard from '@components/NewProjectCard';
 import PageContent from '@components/PageContent';
 import PageLayout from '@components/PageLayout';
 import ProjectCard from '@components/ProjectCard';
-import VersionUpdater from '@components/VersionUpdater';
+import UpdateBanner from '@components/UpdateBanner';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import useAppCapabilities from '@hooks/useAppCapabilities';
-import useAppVersion from '@hooks/useAppVersion';
 import useDiscordActivity from '@hooks/useDiscordActivity';
 import useFullscreen from '@hooks/useFullscreen';
 import useProjects from '@hooks/useProjects';
@@ -30,7 +29,6 @@ import { useNavigate } from 'react-router-dom';
 import * as style from './Home.module.css';
 
 const HomeView = ({ t }) => {
-  const { version, latestVersion, actions: versionActions } = useAppVersion();
   const { appCapabilities } = useAppCapabilities();
   const { projects, actions: projectsActions } = useProjects();
 
@@ -67,10 +65,6 @@ const HomeView = ({ t }) => {
   const handleFavoriteProject = async (id, favorite) => {
     projectsActions.setFavorite(id, favorite);
     window.track('project_favorited', { projectId: id, favorite });
-  };
-
-  const handleLink = () => {
-    versionActions.openUpdatePage();
   };
 
   const handleAction = (action) => () => {
@@ -139,10 +133,10 @@ const HomeView = ({ t }) => {
     ...(settings?.EVENT_MODE_ENABLED ? [{ label: t('Sync list'), icon: faListCheck, onClick: handleAction('SYNC_LIST') }] : []),
     ...(!isIos()
       ? [
-          isFullscreen
-            ? { label: t('Exit fullscreen'), icon: faDownLeftAndUpRightToCenter, onClick: handleAction('EXIT_FULLSCREEN') }
-            : { label: t('Fullscreen'), icon: faUpRightAndDownLeftFromCenter, onClick: handleAction('ENTER_FULLSCREEN') },
-        ]
+        isFullscreen
+          ? { label: t('Exit fullscreen'), icon: faDownLeftAndUpRightToCenter, onClick: handleAction('EXIT_FULLSCREEN') }
+          : { label: t('Fullscreen'), icon: faUpRightAndDownLeftFromCenter, onClick: handleAction('ENTER_FULLSCREEN') },
+      ]
       : []),
     { label: t('Shortcuts'), icon: faKeyboard, onClick: handleAction('SHORTCUTS') },
     { label: t('Settings'), icon: faGear, onClick: handleAction('SETTINGS') },
@@ -151,19 +145,21 @@ const HomeView = ({ t }) => {
   return (
     <PageLayout hasMobileLeftBar={true}>
       <DesktopNavigation
-        leftChildren={<VersionUpdater onClick={handleLink} version={version} latestVersion={latestVersion} onLink={handleLink} />}
+        showLogo={true}
         leftActions={primaryActions}
         rightActions={secondaryActions}
-        onAction={handleAction}
-        withBorder
-      >
-        <Logo />
-      </DesktopNavigation>
-      <MobileNavigation showLogo={true} topLeftActions={primaryActions} bottomLeftActions={secondaryActions} showLeftActions={true} withBorder={true} />
+        />
+      <MobileNavigation
+        showLogo={true}
+        topLeftActions={primaryActions}
+        bottomLeftActions={secondaryActions}
+        showLeftActions={true}
+      />
       <PageContent>
         {projects !== null && (
           <>
             <div className={style.container}>
+              <UpdateBanner />
               <div className={style.header}>
                 <HomeStats projectsCount={stats.projectsCount} photosCount={stats.photosCount} durationSeconds={stats.durationSeconds} favoritesCount={stats.favoritesCount} />
                 <HomeToolbar search={search} onSearchChange={setSearch} sort={sort} onSortChange={setSort} favoritesOnly={favoritesOnly} onToggleFavorites={setFavoritesOnly} />
@@ -200,7 +196,7 @@ const HomeView = ({ t }) => {
           </>
         )}
       </PageContent>
-    </PageLayout>
+    </PageLayout >
   );
 };
 

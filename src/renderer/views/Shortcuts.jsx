@@ -23,8 +23,8 @@ const SettingsView = ({ t }) => {
 
   return (
     <PageLayout hasMobileLeftBar={true}>
-      <DesktopNavigation leftActions={primaryActions} onAction={handleBack} title={t('Shortcuts')} withBorder />
-      <MobileNavigation topLeftActions={primaryActions} showLeftActions={true} withBorder={true} />
+      <DesktopNavigation leftActions={primaryActions} title={t('Shortcuts')} />
+      <MobileNavigation topLeftActions={primaryActions} showLeftActions={true} />
       <PageContent>
         <FormLayout>
           <ShortcutsList shortcuts={SHORTCUTS} />

@@ -13,7 +13,37 @@
 }
 
 .withBorder {
-  /* border-bottom: 3px solid var(--color-primary); */
+  border-bottom: 2px solid var(--color-theme-medium);
+}
+
+.logoMobile {
+  cursor: normal !important;
+  height: 42px !important;
+  margin: 5px;
+  user-select: none;
+  width: 42px !important;
+  display: none !important;
+}
+
+.logoDesktop {
+  cursor: normal !important;
+  height: 32px !important;
+  user-select: none;
+  width: auto !important;
+  left: 50%;
+  top:15px;
+  position: absolute;
+  transform: translateX(-50%);
+}
+
+@media (width <=800px) {
+  .logoDesktop {
+    display: none !important;
+  }
+
+  .logoMobile {
+    display: block !important;
+  }
 }
 
 .title {
@@ -37,7 +67,8 @@
 }
 
 /* Hide it on mobile view */
-@media (orientation: landscape) and (width <= 700px), (orientation: landscape) and (height <= 500px) {
+@media (orientation: landscape) and (width <=700px),
+(orientation: landscape) and (height <=500px) {
   .headerBar {
     display: none;
   }
