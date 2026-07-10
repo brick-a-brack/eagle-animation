@@ -3,7 +3,7 @@ import RatioBorders from '@components/RatioBorders';
 
 import * as style from './style.module.css';
 
-const CANVAS_WIDTH = 260;
+const CANVAS_WIDTH = 175;
 const CANVAS_HEIGHT = 130;
 const RATIO = 4 / 3;
 

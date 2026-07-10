@@ -4,7 +4,7 @@
   border: solid 1px var(--color-theme-light);
   border-radius: var(--border-radius-medium);
   display: block;
-  max-width: 360px;
+  max-width: 100px;
   overflow: hidden;
   position: relative;
   width: 100%;
