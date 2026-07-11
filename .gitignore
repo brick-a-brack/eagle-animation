@@ -36,3 +36,4 @@ debug.log
 
 # Claude files
 .claude/settings.local.json
+android/

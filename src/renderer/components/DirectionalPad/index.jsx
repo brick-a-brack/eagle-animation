@@ -6,6 +6,8 @@ const REPEAT_MS = 120;
 
 const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
 
+const dirClassKey = (dir) => ({ 'roll-left': 'rollLeft', 'roll-right': 'rollRight' })[dir] || dir;
+
 const ArrowIcon = ({ dir }) => {
   if (dir === 'roll-left') {
     return (
@@ -94,7 +96,7 @@ const DirectionalPad = ({ pan, tilt, roll, onCapabilityChange, onCenter }) => {
         type="button"
         aria-label={`Move ${dir}`}
         disabled={disabled}
-        className={`${styles.dbtn} ${styles[dir]} ${pressed === dir ? styles.active : ''}`}
+        className={`${styles.dbtn} ${styles[dirClassKey(dir)]} ${pressed === dir ? styles.active : ''}`}
         onMouseDown={() => start(dir)}
         onMouseUp={stop}
         onMouseLeave={stop}

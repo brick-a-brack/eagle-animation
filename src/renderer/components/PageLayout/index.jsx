@@ -1,7 +1,7 @@
 import * as style from './style.module.css';
 
-const PageLayout = ({ children }) => {
-  return <div className={style.pageLayout}>{children}</div>;
+const PageLayout = ({ children, hasMobileLeftBar = false, hasMobileRightBar = false }) => {
+  return <div className={`${style.pageLayout} ${hasMobileLeftBar ? style.hasMobileLeftBar : ''} ${hasMobileRightBar ? style.hasMobileRightBar : ''}`}>{children}</div>;
 };
 
 export default PageLayout;

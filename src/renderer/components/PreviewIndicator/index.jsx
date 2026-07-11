@@ -4,7 +4,7 @@ import { withTranslation } from 'react-i18next';
 
 import * as style from './style.module.css';
 
-const PreviewIndicator = ({ framePosition = false, frameQuantity = 0, animationFrameQuantity = 0, fps = 12, t }) => {
+const PreviewIndicator = ({ className = '', framePosition = false, frameQuantity = 0, animationFrameQuantity = 0, fps = 12, t }) => {
   const [mode, setMode] = useState(0);
 
   const handleModeChange = () => {
@@ -67,7 +67,7 @@ const PreviewIndicator = ({ framePosition = false, frameQuantity = 0, animationF
 
   return (
     <>
-      <div onClick={handleModeChange} className={style.progress} data-tooltip-id="preview-indicator">
+      <div onClick={handleModeChange} className={`${style.progress} ${className}`} data-tooltip-id="preview-indicator">
         {childrenComponent}
       </div>
       {label && <Tooltip id="preview-indicator" content={label} />}
