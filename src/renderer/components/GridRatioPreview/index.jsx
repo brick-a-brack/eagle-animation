@@ -4,7 +4,7 @@ import RatioBorders from '@components/RatioBorders';
 import * as style from './style.module.css';
 
 const CANVAS_WIDTH = 175;
-const CANVAS_HEIGHT = 130;
+const CANVAS_HEIGHT = 100;
 const RATIO = 4 / 3;
 
 const GridRatioPreview = ({ gridModes = [], gridOpacity = 0, gridColumns = 1, gridLines = 1, ratioLayerOpacity = 0.5 }) => {
