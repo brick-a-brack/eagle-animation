@@ -113,7 +113,7 @@ const getCapabilitiesTabs = (capabilities, t = (v) => v) => {
     },
     {
       title: t('Focus'),
-      properties: ['focus_auto', 'focus'],
+      properties: ['focus_auto', 'focus_mode', 'focus'],
       icon: faFaceViewfinder,
     },
     {
