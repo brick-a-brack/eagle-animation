@@ -58,12 +58,9 @@ const SettingsForm = ({ settings = {}, onUpdate = () => {}, t }) => {
             <Switch register={register('TELEMETRY_ENABLED')} />
           </div>
         </FormGroup>
-        <FormGroup
-          label={t('Tutorial')}
-          description={(watch('TOURS_COMPLETED') || []).length === 0 ? t('The tutorial will be shown on the next visit') : t('Show the guided tour of the interface again')}
-        >
+        <FormGroup label={t('Tutorial')} description={t('Reset the tutorial, it will be shown on the next visit')}>
           <div>
-            <Button icon={faRotate} title={t('Restart the tutorial')} tooltipPosition="TOP" disabled={(watch('TOURS_COMPLETED') || []).length === 0} onClick={() => setValue('TOURS_COMPLETED', [])} />
+            <Button icon={faRotate} disabled={(watch('TOURS_COMPLETED') || []).length === 0} onClick={() => setValue('TOURS_COMPLETED', [])} />
           </div>
         </FormGroup>
         <FormGroup label={t('Update')} description={t('Stay up to date to enjoy the latest features and improvements')}>
