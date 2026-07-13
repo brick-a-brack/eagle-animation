@@ -393,5 +393,11 @@
   "{{hours}}h{{minutes}}": "{{hours}}h{{minutes}}",
   "{{minutes}}m": "{{minutes}}m",
   "{{seconds}}s": "{{seconds}}s",
-  "No projects match your search": "Niciun proiect nu corespunde căutării tale"
+  "No projects match your search": "Niciun proiect nu corespunde căutării tale",
+  "Update": "Actualizare",
+  "Stay up to date to enjoy the latest features and improvements": "Rămâneți la curent pentru a profita de cele mai recente funcții și îmbunătățiri",
+  "Update to {{version}}": "Actualizați la {{version}}",
+  "Already up to date ({{version}})": "Deja la curent ({{version}})",
+  "A new version is available": "O nouă versiune este disponibilă",
+  "Update now": "Actualizați acum"
 }

@@ -389,5 +389,11 @@
   "{{hours}}h{{minutes}}": "{{hours}}h{{minutes}}",
   "{{minutes}}m": "{{minutes}}m",
   "{{seconds}}s": "{{seconds}}s",
-  "No projects match your search": "Няма проекти, които да отговарят на вашето търсене"
+  "No projects match your search": "Няма проекти, които да отговарят на вашето търсене",
+  "Update": "Актуализация",
+  "Stay up to date to enjoy the latest features and improvements": "Останете в течение, за да се насладите на последните функции и подобрения",
+  "Update to {{version}}": "Актуализирайте до {{version}}",
+  "Already up to date ({{version}})": "Вече сте актуализирани ({{version}})",
+  "A new version is available": "Нова версия е налична",
+  "Update now": "Актуализирайте сега"
 }

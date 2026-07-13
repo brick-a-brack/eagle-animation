@@ -389,5 +389,11 @@
   "{{hours}}h{{minutes}}": "{{hours}}h{{minutes}}",
   "{{minutes}}m": "{{minutes}}m",
   "{{seconds}}s": "{{seconds}}s",
-  "No projects match your search": "Inga projekt matchar din sökning"
+  "No projects match your search": "Inga projekt matchar din sökning",
+  "Update": "Uppdatering",
+  "Stay up to date to enjoy the latest features and improvements": "Håll dig uppdaterad för att njuta av de senaste funktionerna och förbättringarna",
+  "Update to {{version}}": "Uppdatera till {{version}}",
+  "Already up to date ({{version}})": "Redan uppdaterad ({{version}})",
+  "A new version is available": "En ny version är tillgänglig",
+  "Update now": "Uppdatera nu"
 }

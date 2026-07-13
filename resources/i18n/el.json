@@ -389,5 +389,11 @@
   "{{hours}}h{{minutes}}": "{{hours}}h{{minutes}}",
   "{{minutes}}m": "{{minutes}}m",
   "{{seconds}}s": "{{seconds}}s",
-  "No projects match your search": "Κανένα έργο δεν ταιριάζει στην αναζήτησή σας"
+  "No projects match your search": "Κανένα έργο δεν ταιριάζει στην αναζήτησή σας",
+  "Update": "Ενημέρωση",
+  "Stay up to date to enjoy the latest features and improvements": "Μείνετε ενημερωμένοι για να απολαύσετε τις τελευταίες δυνατότητες και βελτιώσεις",
+  "Update to {{version}}": "Ενημέρωση σε {{version}}",
+  "Already up to date ({{version}})": "Ήδη ενημερωμένο ({{version}})",
+  "A new version is available": "Μια νέα έκδοση είναι διαθέσιμη",
+  "Update now": "Ενημέρωση τώρα"
 }

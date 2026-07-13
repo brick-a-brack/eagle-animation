@@ -1,45 +1,74 @@
 .headerBar {
-    align-items: center;
-    background: var(--color-theme-extra-dark);
-    box-sizing: border-box;
-    display: flex;
-    height: 62px;
-    justify-content: space-between;
-    min-height: 62px;
-    padding: 0 5px;
-    text-align: center;
-    width: 100%;
-    z-index: 2;
+  align-items: center;
+  background: var(--color-theme-extra-dark);
+  box-sizing: border-box;
+  display: flex;
+  height: 62px;
+  justify-content: space-between;
+  min-height: 62px;
+  padding: 0 5px;
+  text-align: center;
+  width: 100%;
+  z-index: 2;
 }
 
 .withBorder {
-    /* border-bottom: 3px solid var(--color-primary); */
+  border-bottom: 2px solid var(--color-theme-medium);
+}
+
+.logoMobile {
+  cursor: default !important;
+  display: none !important;
+  height: 42px !important;
+  margin: 5px;
+  user-select: none;
+  width: 42px !important;
+}
+
+.logoDesktop {
+  cursor: default !important;
+  height: 32px !important;
+  left: 50%;
+  position: absolute;
+  top: 15px;
+  transform: translateX(-50%);
+  user-select: none;
+  width: auto !important;
+}
+
+@media (width <=800px) {
+  .logoDesktop {
+    display: none !important;
+  }
+
+  .logoMobile {
+    display: block !important;
+  }
 }
 
 .title {
-    color: var(--color-white);
-    font-size: var(--font-size-3);
-    font-weight: 600;
-    line-height: var(--line-size-3);
-    user-select: none;
+  color: var(--color-white);
+  font-size: var(--font-size-3);
+  font-weight: 600;
+  line-height: var(--line-size-3);
+  user-select: none;
 }
 
 .left,
 .right,
 .center {
-    display: flex;
+  display: flex;
 }
 
 .center {
-    left: 50%;
-    position: absolute;
-    transform: translateX(-50%);
+  left: 50%;
+  position: absolute;
+  transform: translateX(-50%);
 }
 
 /* Hide it on mobile view */
-@media (orientation: landscape) and (width <= 700px),
-(orientation: landscape) and (height <= 500px) {
-    .headerBar {
-        display: none;
-    }
+@media (orientation: landscape) and (width <=700px), (orientation: landscape) and (height <=500px) {
+  .headerBar {
+    display: none;
+  }
 }

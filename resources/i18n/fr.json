@@ -412,5 +412,11 @@
   "Creation date": "Date de création",
   "{{hours}}h{{minutes}}": "{{hours}}h{{minutes}}",
   "{{minutes}}m": "{{minutes}}m",
-  "{{seconds}}s": "{{seconds}}s"
+  "{{seconds}}s": "{{seconds}}s",
+  "Update": "Mise à jour",
+  "Stay up to date to enjoy the latest features and improvements": "Restez à jour pour profiter des dernières fonctionnalités et améliorations",
+  "Update to {{version}}": "Mettre à jour {{version}}",
+  "Already up to date ({{version}})": "Déjà à jour ({{version}})",
+  "A new version is available": "Une nouvelle version est disponible",
+  "Update now": "Mettre à jour"
 }

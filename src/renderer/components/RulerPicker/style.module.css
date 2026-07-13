@@ -8,12 +8,14 @@
   width: 100%;
 }
 
-.slider.dragging { cursor: grabbing; }
+.slider.dragging {
+  cursor: grabbing;
+}
 
 .slider::before,
 .slider::after {
   bottom: 0;
-  content: "";
+  content: '';
   pointer-events: none;
   position: absolute;
   top: 0;
@@ -60,7 +62,7 @@
 
 .label {
   color: #b8b8b8;
-  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-size: 14px;
   font-variant-numeric: tabular-nums;
   font-weight: 400;

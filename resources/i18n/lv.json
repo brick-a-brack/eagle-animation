@@ -393,5 +393,11 @@
   "{{hours}}h{{minutes}}": "{{hours}}h{{minutes}}",
   "{{minutes}}m": "{{minutes}}m",
   "{{seconds}}s": "{{seconds}}s",
-  "No projects match your search": "Nav projektu, kas atbilstu jūsu meklēšanai"
+  "No projects match your search": "Nav projektu, kas atbilstu jūsu meklēšanai",
+  "Update": "Atjauninājums",
+  "Stay up to date to enjoy the latest features and improvements": "Palieciet informēti, lai izbaudītu jaunākās funkcijas un uzlabojumus",
+  "Update to {{version}}": "Atjaunināt uz {{version}}",
+  "Already up to date ({{version}})": "Jau ir atjaunināts ({{version}})",
+  "A new version is available": "Jauna versija ir pieejama",
+  "Update now": "Atjaunināt tagad"
 }

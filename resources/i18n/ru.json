@@ -396,5 +396,11 @@
   "{{hours}}h{{minutes}}": "{{hours}}ч{{minutes}}",
   "{{minutes}}m": "{{minutes}}м",
   "{{seconds}}s": "{{seconds}}с",
-  "No projects match your search": "Нет проектов, соответствующих вашему запросу"
+  "No projects match your search": "Нет проектов, соответствующих вашему запросу",
+  "Update": "Обновление",
+  "Stay up to date to enjoy the latest features and improvements": "Оставайтесь в курсе, чтобы наслаждаться последними функциями и улучшениями",
+  "Update to {{version}}": "Обновить до {{version}}",
+  "Already up to date ({{version}})": "Уже обновлено ({{version}})",
+  "A new version is available": "Доступна новая версия",
+  "Update now": "Обновить сейчас"
 }

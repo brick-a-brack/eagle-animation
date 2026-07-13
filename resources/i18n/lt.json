@@ -414,5 +414,11 @@
   "{{hours}}h{{minutes}}": "{{hours}}h{{minutes}}",
   "{{minutes}}m": "{{minutes}}m",
   "{{seconds}}s": "{{seconds}}s",
-  "No projects match your search": "Joks projektas neatitinka jūsų paieškos"
+  "No projects match your search": "Joks projektas neatitinka jūsų paieškos",
+  "Update": "Atnaujinimas",
+  "Stay up to date to enjoy the latest features and improvements": "Būkite informuoti, kad galėtumėte mėgautis naujausiomis funkcijomis ir patobulinimais",
+  "Update to {{version}}": "Atnaujinti į {{version}}",
+  "Already up to date ({{version}})": "Jau atnaujinta ({{version}})",
+  "A new version is available": "Yra nauja versija",
+  "Update now": "Atnaujinti dabar"
 }

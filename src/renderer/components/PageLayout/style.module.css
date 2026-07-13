@@ -1,20 +1,16 @@
 .pageLayout {
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-    justify-content: space-between;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  justify-content: space-between;
 }
 
-
-@media (orientation: landscape) and (width <= 700px),
-(orientation: landscape) and (height <= 500px) {
+@media (orientation: landscape) and (width <= 700px), (orientation: landscape) and (height <= 500px) {
   .hasMobileLeftBar {
     padding-left: 62px;
   }
 
-
   .hasMobileRightBar {
     padding-right: 62px;
   }
-
 }

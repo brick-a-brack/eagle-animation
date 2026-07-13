@@ -15,8 +15,11 @@
   display: grid;
   padding: 0;
   place-items: center;
-  transition: transform 0.08s ease, background 0.12s ease,
-    border-color 0.12s ease, color 0.12s ease;
+  transition:
+    transform 0.08s ease,
+    background 0.12s ease,
+    border-color 0.12s ease,
+    color 0.12s ease;
 }
 
 .dbtn:disabled {

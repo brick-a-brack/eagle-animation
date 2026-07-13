@@ -389,5 +389,11 @@
   "{{hours}}h{{minutes}}": "{{hours}}h{{minutes}}",
   "{{minutes}}m": "{{minutes}}m",
   "{{seconds}}s": "{{seconds}}s",
-  "No projects match your search": "Ingen projekter matcher din søgning"
+  "No projects match your search": "Ingen projekter matcher din søgning",
+  "Update": "Opdatering",
+  "Stay up to date to enjoy the latest features and improvements": "Hold dig opdateret for at nyde de nyeste funktioner og forbedringer",
+  "Update to {{version}}": "Opdater til {{version}}",
+  "Already up to date ({{version}})": "Allerede opdateret ({{version}})",
+  "A new version is available": "En ny version er tilgængelig",
+  "Update now": "Opdater nu"
 }

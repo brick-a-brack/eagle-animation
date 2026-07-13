@@ -1,6 +1,5 @@
 import ButtonsGroup from '@components/ButtonsGroup';
-
-import iconUrl from './assets/icon.svg';
+import Logo from '@components/Logo';
 
 import * as style from './style.module.css';
 
@@ -21,7 +20,7 @@ const MobileNavigation = ({
       {showLeftActions && (
         <div className={`${style.headerBar} ${style.headerBarLeft} ${withBorder ? style.withBorder : ''}`}>
           <div className={style.top}>
-            {showLogo && <img src={iconUrl} className={style.logo} alt="Logo" />}
+            {showLogo && <Logo type="ICON" className={style.logo} />}
             {topLeftActions.length > 0 && <ButtonsGroup actions={topLeftActions} tooltipPosition="NONE" />}
           </div>
           <div className={style.center}>{middleLeftActions.length > 0 && <ButtonsGroup actions={middleLeftActions} tooltipPosition="NONE" />}</div>

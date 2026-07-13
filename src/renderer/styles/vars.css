@@ -27,11 +27,11 @@ body {
   --line-size-7: calc(var(--font-size-7) * 1.5);
   --line-size-8: calc(var(--font-size-8) * 1.5);
   --line-size-9: calc(var(--font-size-9) * 1.5);
-  --font: "Open Sans";
+  --font: 'Open Sans';
   --input-height: 30px;
   --color-primary: #486ee5;
   --color-success: #5bdb4d;
-  --color-alert:  #e24949;
+  --color-alert: #e24949;
   --color-warning: #d6aa50;
   --color-info: #c34ddb;
   --color-white: #ccd2e2;

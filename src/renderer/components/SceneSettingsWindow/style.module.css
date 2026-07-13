@@ -1,8 +1,8 @@
 .actions {
-    margin: 0 var(--space-huge) ;
-    width:calc(100% - 2 * var(--space-huge));
+  margin: 0 var(--space-huge);
+  width: calc(100% - 2 * var(--space-huge));
 }
 
 .title {
-    margin-top: var(--space-medium);
+  margin-top: var(--space-medium);
 }

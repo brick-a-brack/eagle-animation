@@ -403,5 +403,11 @@
   "{{hours}}h{{minutes}}": "{{hours}}h{{minutes}}",
   "{{minutes}}m": "{{minutes}}m",
   "{{seconds}}s": "{{seconds}}s",
-  "No projects match your search": "Neniu projekto kongruas kun via serĉo"
+  "No projects match your search": "Neniu projekto kongruas kun via serĉo",
+  "Update": "Ĝisdatigo",
+  "Stay up to date to enjoy the latest features and improvements": "Restu ĝisdatigita por ĝui la plej novajn funkciojn kaj plibonigojn",
+  "Update to {{version}}": "Ĝisdatigi al {{version}}",
+  "Already up to date ({{version}})": "Jam ĝisdatigita ({{version}})",
+  "A new version is available": "Nova versio disponeblas",
+  "Update now": "Ĝisdatigi nun"
 }

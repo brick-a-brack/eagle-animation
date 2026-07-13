@@ -1,3 +1,4 @@
+import Divider from '@components/Divider';
 import Heading from '@components/Heading';
 import { Fragment } from 'react';
 import { withTranslation } from 'react-i18next';
@@ -121,7 +122,7 @@ const ShortcutsList = ({ t, shortcuts }) => {
               </div>
             </div>
           ))}
-          <br />
+          <Divider />
         </Fragment>
       ))}
     </div>

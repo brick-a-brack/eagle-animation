@@ -1,7 +1,7 @@
 {
   "name": "@brick-a-brack/eagle-animation",
   "description": "EagleAnimation is an awesome, modern, free and open-source animation software",
-  "version": "2.16.0",
+  "version": "2.17.0",
   "private": false,
   "author": {
     "name": "Brick à Brack",
@@ -31,9 +31,11 @@
     "build:linux": "electron-vite build && electron-builder --linux",
     "postinstall": "install-electron && electron-builder install-app-deps && node scripts/install-toucan-camera-server.js",
     "extract-strings": "i18next-scanner",
-    "lint": "eslint ./src/ --ext .js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --ignore-path .gitignore --fix --max-warnings 0 --no-ignore",
-    "stylelint": "stylelint src/**/*.css --ignore-path .gitignore --fix",
-    "prepare": "husky install"
+    "lint:eslint": "eslint ./src/ --ext .js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --ignore-path .gitignore --fix --max-warnings 0 --no-ignore",
+    "lint:stylelint": "stylelint src/**/*.css --ignore-path .gitignore --fix",
+    "lint:prettier": "prettier --write src/**/*.{js,jsx,ts,tsx,css,json,md,html}",
+    "prepare": "husky install",
+    "lint": "npm run lint:eslint && npm run lint:stylelint && npm run lint:prettier"
   },
   "dependencies": {
     "@braintree/browser-detection": "^2.1.1",

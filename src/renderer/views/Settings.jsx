@@ -26,8 +26,8 @@ const SettingsView = ({ t }) => {
     <>
       <LoadingPage show={!settings} />
       <PageLayout hasMobileLeftBar={true}>
-        <DesktopNavigation leftActions={primaryActions} onAction={handleBack} title={t('Settings')} withBorder />
-        <MobileNavigation topLeftActions={primaryActions} showLeftActions={true} withBorder={true} />
+        <DesktopNavigation leftActions={primaryActions} title={t('Settings')} />
+        <MobileNavigation topLeftActions={primaryActions} showLeftActions={true} />
         <PageContent>{settings && <SettingsForm settings={settings} onUpdate={settingsActions.setSettings} />}</PageContent>
       </PageLayout>
     </>

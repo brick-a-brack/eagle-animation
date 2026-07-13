@@ -10,6 +10,7 @@ import Input from '@components/Input';
 import NumberInput from '@components/NumberInput';
 import Select from '@components/Select';
 import Switch from '@components/Switch';
+import UpdateAppButton from '@components/UpdateAppButton';
 import { DEVICE, LANGUAGES } from '@config-web';
 import useAppCapabilities from '@hooks/useAppCapabilities';
 import faRotate from '@icons/faRotate';
@@ -65,6 +66,9 @@ const SettingsForm = ({ settings = {}, onUpdate = () => {}, t }) => {
             <Button icon={faRotate} title={t('Restart the tutorial')} tooltipPosition="TOP" disabled={(watch('TOURS_COMPLETED') || []).length === 0} onClick={() => setValue('TOURS_COMPLETED', [])} />
           </div>
         </FormGroup>
+        <FormGroup label={t('Update')} description={t('Stay up to date to enjoy the latest features and improvements')}>
+          <UpdateAppButton />
+        </FormGroup>
 
         <Divider />
 
@@ -88,6 +92,8 @@ const SettingsForm = ({ settings = {}, onUpdate = () => {}, t }) => {
             <Switch register={register('SKIP_HIDDEN_FRAMES')} />
           </div>
         </FormGroup>
+
+        <Divider />
 
         <Heading h={1}>{t('Capture')}</Heading>
 
