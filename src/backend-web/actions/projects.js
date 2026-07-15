@@ -42,6 +42,7 @@ export const createProject = async (name) => {
 };
 
 export const getAllProjects = async () => {
+  return [];
   const db = await getDB();
   const projects = await db.getAll('projects');
   // Guard against malformed rows: a row without a `project` must not throw here,
