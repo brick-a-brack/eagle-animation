@@ -2,7 +2,7 @@ import './i18n';
 
 import { EA, EAEvents } from '@core/bindings';
 import { Buffer } from 'buffer';
-import posthog from 'posthog-js';
+//import posthog from 'posthog-js';
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 
@@ -22,7 +22,7 @@ window.addEventListener('keydown', (e) => {
 
 try {
   if (!IS_DEV && POSTHOG_TOKEN) {
-    posthog.init(POSTHOG_TOKEN, {
+    /*posthog.init(POSTHOG_TOKEN, {
       api_host: POSTHOG_HOST,
       person_profiles: 'always',
       autocapture: false,
@@ -33,7 +33,7 @@ try {
     posthog.register({
       app_version: VERSION,
       app_build: BUILD,
-    });
+    });*/
   }
 } catch (err) {} // eslint-disable-line no-empty
 
@@ -41,9 +41,9 @@ window.setTelemetryEnabled = (enabled) => {
   try {
     if (!IS_DEV && POSTHOG_TOKEN) {
       if (enabled) {
-        posthog.opt_in_capturing();
+        //posthog.opt_in_capturing();
       } else {
-        posthog.opt_out_capturing();
+        //posthog.opt_out_capturing();
       }
     }
   } catch (err) {} // eslint-disable-line no-empty
@@ -53,7 +53,7 @@ window.track = (eventName, data = {}) => {
   try {
     if (!IS_DEV && POSTHOG_TOKEN) {
       console.log(`📊 Tracking event: ${eventName}`, data);
-      posthog.capture(eventName, data);
+      //posthog.capture(eventName, data);
     }
   } catch (err) {} // eslint-disable-line no-empty
 };
@@ -62,7 +62,7 @@ window.trackException = (error) => {
   try {
     if (!IS_DEV && POSTHOG_TOKEN) {
       console.log(`📊 Tracking exception:`, error);
-      posthog.captureException(error);
+      //posthog.captureException(error);
     }
   } catch (err) {} // eslint-disable-line no-empty
 };
