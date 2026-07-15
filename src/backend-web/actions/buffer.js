@@ -1,41 +1,43 @@
-import Dexie from 'dexie';
+import { createDbAccessor } from './db';
 
-class TemporaryBufferDatabase extends Dexie {
-  constructor() {
-    console.log('Initializing TemporaryBufferDatabase');
-    super('TemporaryBufferDatabase');
-    this.version(1).stores({
-      buffers: '++id,[buffer_id],buffer',
-    });
-    // Drop the useless index on `buffer`: buffers are only looked up by
-    // `[buffer_id]` (see getBuffer), so indexing the full ArrayBuffer just
-    // duplicated every export buffer into the index for nothing (see issue #584).
-    // The primary key is unchanged, so Dexie only calls deleteIndex — no data reload.
-    this.version(2).stores({
-      buffers: '++id,[buffer_id]',
-    });
-    console.log('Initializing TemporaryBufferDatabase done');
+// Scratch storage for export buffers, cleared after every export run. Because it
+// holds no durable user data, the upgrade simply (re)sets the store to a plain
+// `buffer_id`-keyed shape instead of migrating the old Dexie layout.
+function upgrade(db) {
+  if (db.objectStoreNames.contains('buffers')) {
+    db.deleteObjectStore('buffers');
   }
+  db.createObjectStore('buffers', { keyPath: 'buffer_id' });
 }
 
-const db = new TemporaryBufferDatabase();
-const openedDb = db.open();
+// Upgrade when the store is missing, or still carries the old Dexie shape
+// (auto-increment `id` keyPath) instead of our `buffer_id` keyPath.
+const getDB = createDbAccessor('TemporaryBufferDatabase', {
+  needsUpgrade: (db) => {
+    if (!db.objectStoreNames.contains('buffers')) {
+      return true;
+    }
+    try {
+      return db.transaction('buffers').store.keyPath !== 'buffer_id';
+    } catch {
+      return true;
+    }
+  },
+  upgrade,
+});
 
 export const createBuffer = async (bufferId, buffer) => {
-  await openedDb;
-  return db.buffers.add({ buffer_id: bufferId, buffer });
+  const db = await getDB();
+  return db.put('buffers', { buffer_id: `${bufferId}`, buffer });
 };
 
 export const getBuffer = async (bufferId) => {
-  await openedDb;
-  const buffer = await db.buffers
-    .where('[buffer_id]')
-    .equals([`${bufferId}`])
-    .first();
-  return buffer.buffer || null;
+  const db = await getDB();
+  const record = await db.get('buffers', `${bufferId}`);
+  return record?.buffer ?? null;
 };
 
 export const flushBuffers = async () => {
-  await openedDb;
-  db.buffers.clear();
+  const db = await getDB();
+  return db.clear('buffers');
 };

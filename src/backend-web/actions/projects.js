@@ -1,28 +1,20 @@
 import { DEFAULT_FPS, VERSION } from '@config-web';
-import Dexie from 'dexie';
 import { v4 as uuidv4 } from 'uuid';
 
-class ProjectsDatabase extends Dexie {
-  constructor() {
-    console.log('Initializing ProjectsDatabase');
-    super('ProjectDatabase');
-    this.version(1).stores({
-      projects: '++id,project',
-    });
-    // Drop the useless index on `project`: projects are only read by primary key
-    // or via toArray() + JS filtering, never queried through this index. A plain
-    // object isn't a valid IndexedDB key anyway, so the index was always empty.
-    // The primary key is unchanged, so Dexie only calls deleteIndex — no data reload.
-    this.version(2).stores({
-      projects: '++id',
-    });
+import { createDbAccessor } from './db';
 
-    console.log('Initializing ProjectsDatabase done');
+function upgrade(db) {
+  if (!db.objectStoreNames.contains('projects')) {
+    db.createObjectStore('projects', { keyPath: 'id', autoIncrement: true });
   }
 }
 
-const db = new ProjectsDatabase();
-const openedDb = db.open();
+// Existing databases already have the `projects` store, so upgrade only runs for
+// a brand-new install (to create it).
+const getDB = createDbAccessor('ProjectDatabase', {
+  needsUpgrade: (db) => !db.objectStoreNames.contains('projects'),
+  upgrade,
+});
 
 const time = () => Math.floor(new Date().getTime() / 1000);
 
@@ -45,29 +37,35 @@ export const generateProjectObject = (name) => ({
 });
 
 export const createProject = async (name) => {
-  await openedDb;
-  return db.projects.add({ project: generateProjectObject(name) });
+  const db = await getDB();
+  return db.add('projects', { project: generateProjectObject(name) });
 };
 
 export const getAllProjects = async () => {
-  await openedDb;
-  const projects = await db.projects.toArray();
-  return projects.filter((e) => e.project.deleted === false);
+  const db = await getDB();
+  const projects = await db.getAll('projects');
+  // Guard against malformed rows: a row without a `project` must not throw here,
+  // it would take down the whole project list (and the home screen with it).
+  return projects.filter((e) => e?.project?.deleted === false);
 };
 
 export const getProject = async (id) => {
-  await openedDb;
-  const project = await db.projects.get(Number(id));
+  const db = await getDB();
+  const project = await db.get('projects', Number(id));
   return project || null;
 };
 
 export const deleteProject = async (id) => {
-  await openedDb;
-  const data = await db.projects.get(Number(id));
-  db.projects.update(Number(id), { project: { ...data.project, deleted: true } });
+  const db = await getDB();
+  const data = await db.get('projects', Number(id));
+  if (!data) {
+    return null;
+  }
+  return db.put('projects', { ...data, project: { ...data.project, deleted: true } });
 };
 
 export const saveProject = async (projectId, data) => {
-  await openedDb;
-  return db.projects.update(Number(projectId), { project: { ...(data?.project || {}) } });
+  const db = await getDB();
+  const existing = await db.get('projects', Number(projectId));
+  return db.put('projects', { ...(existing || {}), id: Number(projectId), project: { ...(data?.project || {}) } });
 };

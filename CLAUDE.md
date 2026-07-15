@@ -12,7 +12,7 @@ Stop motion animation software by Brick à Brack, available as an **Electron des
 | Build (Electron) | electron-vite 5 |
 | Build (web) | Vite 7 |
 | Storage (Electron) | Node.js filesystem (`~/EagleAnimation/`) |
-| Storage (web) | Dexie / IndexedDB |
+| Storage (web) | idb / IndexedDB |
 | Image processing (Electron) | Sharp |
 | Image processing (web) | OffscreenCanvas in Service Worker |
 | Video export (Electron) | ffmpeg-static (native child process) |
@@ -40,7 +40,8 @@ src/
 │   ├── sw-web.js        # Service Worker — intercepts /api/pictures/* (compiled to /sw.js)
 │   └── actions/
 │       ├── index.js     # Web action handlers + event bus
-│       ├── projects.js  # Dexie project CRUD
+│       ├── db.js        # Shared IndexedDB opener (idb) — open/upgrade/blocking lifecycle
+│       ├── projects.js  # IndexedDB project CRUD (idb)
 │       ├── frames.js    # IndexedDB frame blob storage
 │       ├── buffer.js    # Temporary buffer for exports
 │       └── ffmpeg.js    # FFmpeg.wasm init
@@ -191,9 +192,11 @@ Both handlers receive `(event, data)` — `event` is the Electron IPC event on d
         └── {frame_filename}     # JPEG/PNG frame images
 ```
 
-**Web (IndexedDB via Dexie):**
-- `projects` table — serialised project JSON
-- Frame blobs stored separately, keyed by frame ID
+**Web (IndexedDB via idb):**
+- `ProjectDatabase` → `projects` store — serialised project JSON (auto-increment id)
+- `BlobFramesDatabase` → `framesById` store — frame blobs keyed by string frame id
+- `TemporaryBufferDatabase` → `buffers` store — throwaway export scratch, cleared after each export
+- All three are opened through `db.js` (`createDbAccessor`), which owns the open/upgrade/`blocking` lifecycle. Both the page and the Service Worker open `BlobFramesDatabase`, so upgrades must let the other connection step aside — never let a store open silently hang.
 
 ---
 
