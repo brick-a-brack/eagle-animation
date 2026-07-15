@@ -4,6 +4,7 @@ import { extensionToMimeType } from '@core/frameTypes';
 import { fetchFile } from '@ffmpeg/util';
 import { saveAs } from 'file-saver';
 import JSZip from 'jszip';
+import { v4 as uuidv4 } from 'uuid';
 
 import { createBuffer, flushBuffers, getBuffer } from './buffer';
 import { getFFmpeg } from './ffmpeg';
@@ -43,7 +44,7 @@ const computeProject = async (data) => {
     copiedData?.project?.scenes?.map(async (scene) => {
       return {
         ...scene,
-        id: scene.id || crypto.randomUUID(),
+        id: scene.id || uuidv4(),
         deleted: scene.deleted || false,
         pictures: await Promise.all(
           scene.pictures.map(async (picture) => ({
