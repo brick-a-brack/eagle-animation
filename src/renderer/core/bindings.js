@@ -1,4 +1,6 @@
 export const EA = async (action, data) => {
+  console.log('EA action', action, data);
+
   // IPC (Electron backend)
   if (typeof window.IPC !== 'undefined') {
     return window.IPC.call(action, data);
@@ -8,7 +10,9 @@ export const EA = async (action, data) => {
   if (typeof window.IPC === 'undefined') {
     return import('../../backend-web/actions').then(({ Actions: WebActions }) => {
       if (WebActions[action]) {
-        return WebActions[action](null, data);
+        const output = WebActions[action](null, data);
+        console.log('EA action result', action, data, output);
+        return output;
       }
     });
   }

@@ -4,6 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 class ProjectsDatabase extends Dexie {
   constructor() {
+    console.log('Initializing ProjectsDatabase');
     super('ProjectDatabase');
     this.version(1).stores({
       projects: '++id,project',
@@ -15,6 +16,8 @@ class ProjectsDatabase extends Dexie {
     this.version(2).stores({
       projects: '++id',
     });
+
+    console.log('Initializing ProjectsDatabase done');
   }
 }
 

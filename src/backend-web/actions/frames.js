@@ -4,6 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 class BlobFramesDatabase extends Dexie {
   constructor() {
+    console.log('Initializing BlobFramesDatabase');
     super('BlobFramesDatabase');
     this.version(2).stores({
       frames: '++id,blob,extension',
@@ -14,6 +15,7 @@ class BlobFramesDatabase extends Dexie {
         framesById: 'id,buffer,extension',
       })
       .upgrade(async (tx) => {
+        console.log('BlobFramesDatabase migration');
         // Migrate frame by frame in small batches: loading every buffer at once
         // (toArray()) would pull the whole image library into RAM and crash the
         // tab on large projects (see issue #584).
@@ -32,6 +34,7 @@ class BlobFramesDatabase extends Dexie {
             }))
           );
         }
+        console.log('BlobFramesDatabase migration ended');
       });
     // Drop the useless indexes on `buffer` and `extension`: frames are only ever
     // read/written by their primary key `id`, so indexing them wasted storage —
@@ -41,6 +44,7 @@ class BlobFramesDatabase extends Dexie {
     this.version(4).stores({
       framesById: 'id',
     });
+    console.log('Initializing BlobFramesDatabase done');
   }
 }
 

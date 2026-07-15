@@ -2,6 +2,7 @@ import Dexie from 'dexie';
 
 class TemporaryBufferDatabase extends Dexie {
   constructor() {
+    console.log('Initializing TemporaryBufferDatabase');
     super('TemporaryBufferDatabase');
     this.version(1).stores({
       buffers: '++id,[buffer_id],buffer',
@@ -13,6 +14,7 @@ class TemporaryBufferDatabase extends Dexie {
     this.version(2).stores({
       buffers: '++id,[buffer_id]',
     });
+    console.log('Initializing TemporaryBufferDatabase done');
   }
 }
 
