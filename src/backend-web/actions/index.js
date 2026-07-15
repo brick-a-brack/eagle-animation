@@ -166,8 +166,8 @@ export const Actions = {
   },
   APP_CAPABILITIES: async () => {
     const capabilities = ['EXPORT_VIDEO', 'EXPORT_VIDEO_H264', 'EXPORT_VIDEO_VP8', 'EXPORT_VIDEO_PRORES', 'EXPORT_FRAMES', 'EXPORT_FRAMES_ZIP'];
-    if (await isWebCodecsAvailable('hevc')) capabilities.push('EXPORT_VIDEO_HEVC');
-    if (await isWebCodecsAvailable('vp9')) capabilities.push('EXPORT_VIDEO_VP9');
+    //if (await isWebCodecsAvailable('hevc')) capabilities.push('EXPORT_VIDEO_HEVC');
+    //if (await isWebCodecsAvailable('vp9')) capabilities.push('EXPORT_VIDEO_VP9');
     if (new URLSearchParams(window.location.search).get('source') === 'website') capabilities.push('RETURN_TO_WEBSITE');
     return capabilities;
   },
