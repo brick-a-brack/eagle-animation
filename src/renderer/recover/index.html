@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+    <head>
+            <link rel="stylesheet" href="../styles/global.css">
+    </head>
+    <body>
+        <h2 style="color:white;">Emergency File Recovery for Eagle Animation</h2>
+        <p id="link"></p>
+        <script>
+        // Concept from https://gist.github.com/dfahlander/6c1980a0b934f3d16c97c0835fa6113b
+        const theDBName = 'BlobFramesDatabase';
+        (async () => {
+            await import('https://unpkg.com/dexie@3.2.2');
+            await import('https://unpkg.com/dexie-export-import@1.0.3');
+            let theDB = new Dexie(theDBName);
+            let {verno, tables} = await theDB.open();
+            theDB.close();
+            theDB = new Dexie(theDBName);
+            theDB.version(verno).stores(tables.reduce((p,c) => {p[c.name] = c.schema.primKey.keyPath || ""; return p;}, {}));
+            theBlob = await theDB.export();
+            const aEl = document.createElement('a');
+            aEl.href = URL.createObjectURL(theBlob);
+            aEl.download = `${theDBName}.json`;
+            aEl.click();
+                document.getElementById("link").innerHTML = ` <a href="${URL.createObjectURL(theBlob)}" download="${theDBName}.json">Right-click to download database export</a>`;
+        })();
+        </script>
+    </body>
+</html>
