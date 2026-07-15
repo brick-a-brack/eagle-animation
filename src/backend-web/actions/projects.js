@@ -1,5 +1,6 @@
 import { DEFAULT_FPS, VERSION } from '@config-web';
 import Dexie from 'dexie';
+import { v4 as uuidv4 } from 'uuid';
 
 class ProjectsDatabase extends Dexie {
   constructor() {
@@ -31,7 +32,7 @@ export const generateProjectObject = (name) => ({
   favorite: false,
   scenes: [
     {
-      id: crypto.randomUUID(),
+      id: uuidv4(),
       title: '',
       framerate: DEFAULT_FPS,
       pictures: [],

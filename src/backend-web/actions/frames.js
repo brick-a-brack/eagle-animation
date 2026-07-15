@@ -1,5 +1,6 @@
 import { extensionToMimeType } from '@core/frameTypes';
 import Dexie from 'dexie';
+import { v4 as uuidv4 } from 'uuid';
 
 class BlobFramesDatabase extends Dexie {
   constructor() {
@@ -27,7 +28,7 @@ class BlobFramesDatabase extends Dexie {
             batch.filter(Boolean).map((frame) => ({
               buffer: frame?.buffer || frame?.blob,
               extension: frame?.extension,
-              id: frame?.id ? String(frame.id) : crypto.randomUUID(),
+              id: frame?.id ? String(frame.id) : uuidv4(),
             }))
           );
         }
@@ -49,7 +50,7 @@ const framesTable = () => db.table('framesById');
 
 export const createFrame = async (buffer, extension) => {
   await openedDb;
-  const id = crypto.randomUUID();
+  const id = uuidv4();
   await framesTable().put({ id, buffer, extension });
   return id;
 };
