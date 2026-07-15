@@ -6,6 +6,13 @@ class TemporaryBufferDatabase extends Dexie {
     this.version(1).stores({
       buffers: '++id,[buffer_id],buffer',
     });
+    // Drop the useless index on `buffer`: buffers are only looked up by
+    // `[buffer_id]` (see getBuffer), so indexing the full ArrayBuffer just
+    // duplicated every export buffer into the index for nothing (see issue #584).
+    // The primary key is unchanged, so Dexie only calls deleteIndex — no data reload.
+    this.version(2).stores({
+      buffers: '++id,[buffer_id]',
+    });
   }
 }
 

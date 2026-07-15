@@ -5,21 +5,40 @@ import { useMemo } from 'react';
 
 import * as style from './style.module.css';
 
-const Button = ({ icon, onClick, title = '', disabled = false, selected = false, color = 'normal', selectedColor = 'normal', tooltipPosition = 'TOP', ...rest }) => {
+const Button = ({
+  icon,
+  className = '',
+  onClick,
+  title = '',
+  tag = '',
+  disabled = false,
+  selected = false,
+  color = 'normal',
+  selectedColor = 'normal',
+  tooltipPosition = 'TOP',
+  warning = '',
+  ...rest
+}) => {
   const uid = useMemo(() => uniqueId(), []);
+
   return (
-    <div {...{ ...rest, children: null }} className={style.mainContainer}>
+    <div {...{ ...rest, children: null }} className={`${style.mainContainer} ${className || ''}`}>
       <div
         id={`button-${uid}`}
         data-tooltip-id={`button-${uid}`}
         role="button"
         tabIndex={0}
-        onClick={() => onClick && onClick()}
+        onClick={() => onClick && !disabled && onClick()}
         className={`${style.button} ${color === 'primary' && style.colorPrimary} ${selected && selectedColor === 'normal' ? style.selected : ''} ${selected && selectedColor === 'warning' ? style.selectedWarning : ''}  ${disabled ? style.disabled : ''}`}
       >
-        <FontAwesomeIcon icon={icon} />
+        {typeof icon === 'string' ? <img src={icon} /> : <FontAwesomeIcon icon={icon} />}
+        {(warning || tag) && (
+          <span className={`${style.tag} ${warning ? style.warning : ''}`} title={warning || ''}>
+            {warning ? '!' : tag}
+          </span>
+        )}
       </div>
-      {title && <Tooltip content={title} place={tooltipPosition.toLowerCase()} id={`button-${uid}`} />}
+      {title && tooltipPosition.toLowerCase() !== 'none' && <Tooltip content={title} place={tooltipPosition.toLowerCase()} id={`button-${uid}`} />}
     </div>
   );
 };

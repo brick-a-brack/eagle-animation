@@ -1,4 +1,5 @@
 import Action from '@components/Action';
+import { CameraCapabilityItem } from '@components/CameraCapabilityItem';
 import FormGroup from '@components/FormGroup';
 import IconTabs from '@components/IconTabs';
 import NumberInput from '@components/NumberInput';
@@ -17,12 +18,12 @@ import faCrosshairs from '@icons/faCrosshairs';
 import faExposure from '@icons/faExposure';
 import faFaceViewfinder from '@icons/faFaceViewfinder';
 import faFilm from '@icons/faFilm';
+import faGamma from '@icons/faGamma';
 import faIso from '@icons/faIso';
 import faLightbulbOn from '@icons/faLightbulbOn';
 import faMagnifyingGlass from '@icons/faMagnifyingGlass';
 import faMobileSignalOut from '@icons/faMobileSignalOut';
 import faQuestion from '@icons/faQuestion';
-import faGamma from '@icons/faGamma';
 import faRotate from '@icons/faRotate';
 import faShutterSpeed from '@icons/faShutterSpeed';
 import faSun from '@icons/faSun';
@@ -31,8 +32,6 @@ import faTriangle from '@icons/faTriangle';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { withTranslation } from 'react-i18next';
-
-import { CameraCapabilityItem } from '../CameraCapabilityItem';
 
 import * as style from './style.module.css';
 
@@ -114,7 +113,7 @@ const getCapabilitiesTabs = (capabilities, t = (v) => v) => {
     },
     {
       title: t('Focus'),
-      properties: ['focus_auto', 'focus'],
+      properties: ['focus_auto', 'focus_mode', 'focus'],
       icon: faFaceViewfinder,
     },
     {

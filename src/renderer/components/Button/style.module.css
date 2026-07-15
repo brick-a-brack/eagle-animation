@@ -1,74 +1,105 @@
 .button.colorPrimary {
-    background-color: var(--color-primary);
+  background-color: var(--color-primary);
 }
 
 .button.colorPrimary:hover {
-    background-color: hsl(225deg 75% 62% / 100%);
+  background-color: hsl(225deg 75% 62% / 100%);
 }
 
 .button {
-    --size:42px;
+  --size: 42px;
 
-    align-items: center;
-    background-color: var(--color-theme-medium);
-    border-radius: 50%;
-    cursor: pointer;
-    display: flex;
-    height: var(--size);
-    line-height: var(--size);
-    margin: 5px;
-    place-content: center center;
-    position: relative;
-    text-align: center;
-    transition: all .3s ease-in-out;
-    user-select: none;
-    width: var(--size);
+  align-items: center;
+  background-color: var(--color-theme-medium);
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  height: var(--size);
+  line-height: var(--size);
+  margin: 5px;
+  place-content: center center;
+  position: relative;
+  text-align: center;
+  transition: all 0.3s ease-in-out;
+  user-select: none;
+  width: var(--size);
 }
 
 .button:hover {
-    background-color: var(--color-theme-light);
+  background-color: var(--color-theme-light);
 }
 
 .button.selected {
-    background-color: var(--color-primary);
+  background-color: var(--color-primary);
 }
 
 .button.selectedWarning {
-    background-color: var(--color-alert);
+  background-color: var(--color-alert);
 }
 
-
 .button.selected:hover {
-    background-color: hsl(225deg 75% 62% / 100%);
+  background-color: hsl(225deg 75% 62% / 100%);
 }
 
 .button.selectedWarning:hover {
-    background-color: hsl(0deg 75% 62% / 100%);
+  background-color: hsl(0deg 75% 62% / 100%);
 }
 
-
-.button>svg {
-    background-size: contain;
-    display: inline-block;
-    height: 20px;
-    vertical-align: middle;
-    width: 20px;
+.button > svg,
+.button > img {
+  background-size: contain;
+  display: inline-block;
+  height: 20px;
+  vertical-align: middle;
+  width: 20px;
 }
 
-.button>svg path {
-    fill: var(--color-white);
+/* Little hack because icon images have transparent padding */
+.button > img {
+  height: 24px;
+  width: 24px;
+}
+
+.tag {
+  align-items: center;
+  background-color: var(--color-white);
+  border: 2px solid var(--color-theme-dark);
+  border-radius: 999px;
+  box-sizing: border-box;
+  color: var(--color-theme-dark);
+  display: flex;
+  font-size: 0.65rem;
+  font-weight: 700;
+  height: 18px;
+  justify-content: center;
+  line-height: 1;
+  min-width: 18px;
+  position: absolute;
+  right: -4px;
+  text-transform: uppercase;
+  top: -4px;
+  z-index: 9;
+}
+
+.button > svg path {
+  fill: var(--color-white);
 }
 
 .mainContainer {
-    display: inline-block;
-    height: auto;
+  display: inline-block;
+  height: auto;
 }
 
 .disabled {
-    cursor:not-allowed;
-    opacity: 0.2 !important;
+  cursor: not-allowed;
+  opacity: 0.2 !important;
 }
 
 .disabled:hover {
-    background-color: var(--color-theme-medium);
+  background-color: var(--color-theme-medium);
+}
+
+.tag.warning {
+  background: var(--color-warning);
+  color: var(--color-theme-extra-dark);
 }

@@ -13,15 +13,33 @@ class BlobFramesDatabase extends Dexie {
         framesById: 'id,buffer,extension',
       })
       .upgrade(async (tx) => {
-        const frames = await tx.table('frames').toArray();
-        await tx.table('framesById').bulkPut(
-          frames.map((frame) => ({
-            buffer: frame?.buffer || frame?.blob,
-            extension: frame?.extension,
-            id: frame?.id ? String(frame.id) : crypto.randomUUID(),
-          }))
-        );
+        // Migrate frame by frame in small batches: loading every buffer at once
+        // (toArray()) would pull the whole image library into RAM and crash the
+        // tab on large projects (see issue #584).
+        const MIGRATION_BATCH_SIZE = 4;
+        const source = tx.table('frames');
+        const target = tx.table('framesById');
+        // primaryKeys() only reads the ids, not the buffers, so it stays cheap.
+        const keys = await source.toCollection().primaryKeys();
+        for (let i = 0; i < keys.length; i += MIGRATION_BATCH_SIZE) {
+          const batch = await source.bulkGet(keys.slice(i, i + MIGRATION_BATCH_SIZE));
+          await target.bulkPut(
+            batch.filter(Boolean).map((frame) => ({
+              buffer: frame?.buffer || frame?.blob,
+              extension: frame?.extension,
+              id: frame?.id ? String(frame.id) : crypto.randomUUID(),
+            }))
+          );
+        }
       });
+    // Drop the useless indexes on `buffer` and `extension`: frames are only ever
+    // read/written by their primary key `id`, so indexing them wasted storage —
+    // the `buffer` index in particular duplicated every full image blob into the
+    // index, bloating IndexedDB and worsening the memory pressure of issue #584.
+    // The primary key is unchanged, so Dexie re-indexes existing rows automatically.
+    this.version(4).stores({
+      framesById: 'id',
+    });
   }
 }
 

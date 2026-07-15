@@ -7,6 +7,13 @@ class ProjectsDatabase extends Dexie {
     this.version(1).stores({
       projects: '++id,project',
     });
+    // Drop the useless index on `project`: projects are only read by primary key
+    // or via toArray() + JS filtering, never queried through this index. A plain
+    // object isn't a valid IndexedDB key anyway, so the index was always empty.
+    // The primary key is unchanged, so Dexie only calls deleteIndex — no data reload.
+    this.version(2).stores({
+      projects: '++id',
+    });
   }
 }
 
@@ -21,6 +28,7 @@ export const generateProjectObject = (name) => ({
   creation: time(),
   updated: time(),
   deleted: false,
+  favorite: false,
   scenes: [
     {
       id: crypto.randomUUID(),

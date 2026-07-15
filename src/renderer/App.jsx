@@ -1,5 +1,6 @@
 import Container from '@components/Container';
 import CustomErrorBoundary from '@components/CustomErrorBoundary';
+import useWakeLock from '@hooks/useWakeLock';
 import AnimatorView from '@views/Animator';
 import ExportView from '@views/Export';
 import HomeView from '@views/Home';
@@ -8,22 +9,27 @@ import ShortcutsView from '@views/Shortcuts';
 import SyncListView from '@views/SyncList';
 import { MemoryRouter as Router, Route, Routes } from 'react-router-dom';
 
-const App = () => (
-  <CustomErrorBoundary>
-    <Container>
-      <Router>
-        <Routes>
-          <Route exact path="/" element={<HomeView />} />
-          <Route exact path="/settings" element={<SettingsView />} />
-          <Route exact path="/shortcuts" element={<ShortcutsView />} />
-          <Route exact path="/animator/:id/:track" element={<AnimatorView />} />
-          <Route exact path="/export/:id/:track" element={<ExportView />} />
-          <Route exact path="/sync-list" element={<SyncListView />} />
-          <Route path="*" element={null} />
-        </Routes>
-      </Router>
-    </Container>
-  </CustomErrorBoundary>
-);
+const App = () => {
+  // Keep the screen awake while the app is open
+  useWakeLock();
+
+  return (
+    <CustomErrorBoundary>
+      <Container>
+        <Router>
+          <Routes>
+            <Route exact path="/" element={<HomeView />} />
+            <Route exact path="/settings" element={<SettingsView />} />
+            <Route exact path="/shortcuts" element={<ShortcutsView />} />
+            <Route exact path="/animator/:id/:track" element={<AnimatorView />} />
+            <Route exact path="/export/:id/:track" element={<ExportView />} />
+            <Route exact path="/sync-list" element={<SyncListView />} />
+            <Route path="*" element={null} />
+          </Routes>
+        </Router>
+      </Container>
+    </CustomErrorBoundary>
+  );
+};
 
 export default App;
