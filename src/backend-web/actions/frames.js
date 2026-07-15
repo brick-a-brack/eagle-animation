@@ -32,6 +32,14 @@ class BlobFramesDatabase extends Dexie {
           );
         }
       });
+    // Drop the useless indexes on `buffer` and `extension`: frames are only ever
+    // read/written by their primary key `id`, so indexing them wasted storage —
+    // the `buffer` index in particular duplicated every full image blob into the
+    // index, bloating IndexedDB and worsening the memory pressure of issue #584.
+    // The primary key is unchanged, so Dexie re-indexes existing rows automatically.
+    this.version(4).stores({
+      framesById: 'id',
+    });
   }
 }
 
