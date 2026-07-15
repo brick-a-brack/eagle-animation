@@ -1,6 +1,6 @@
 # EagleAnimation
 
-[![Official Website](docs/tags/website.svg)](https://brickfilms.com/) [![Discord](docs/tags/discord.svg)](https://discord.com/invite/mmU2sVAJUq)
+[![Official Website](docs/tags/website.svg)](https://brickfilms.com/) [![Discord](docs/tags/discord.svg)](https://discord.gg/S9R6bXeU7m)
 
 ![Eagle Animation in use by Théo Aron](docs/imgs/img_2.png)
 
