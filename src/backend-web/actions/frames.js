@@ -2,6 +2,26 @@ import { extensionToMimeType } from '@core/frameTypes';
 import Dexie from 'dexie';
 import { v4 as uuidv4 } from 'uuid';
 
+// One-shot migration: rewrite every legacy `buffer` frame as a `Blob` frame, in
+// small batches so we never pull the whole image library into RAM at once (same
+// reasoning as the v3 migration / issue #584). Rows already stored as a Blob are
+// kept as-is, so a DB whose conversion was interrupted still finishes cleanly.
+const migrateBuffersToBlobs = async (tx) => {
+  const MIGRATION_BATCH_SIZE = 4;
+  const table = tx.table('framesById');
+  const keys = await table.toCollection().primaryKeys();
+  for (let i = 0; i < keys.length; i += MIGRATION_BATCH_SIZE) {
+    const batch = await table.bulkGet(keys.slice(i, i + MIGRATION_BATCH_SIZE));
+    await table.bulkPut(
+      batch.filter(Boolean).map((frame) => ({
+        id: frame.id,
+        extension: frame.extension,
+        blob: frame.blob instanceof Blob ? frame.blob : new Blob([frame.buffer], { type: extensionToMimeType(frame.extension) }),
+      }))
+    );
+  }
+};
+
 class BlobFramesDatabase extends Dexie {
   constructor() {
     super('BlobFramesDatabase');
@@ -41,6 +61,19 @@ class BlobFramesDatabase extends Dexie {
     this.version(4).stores({
       framesById: 'id',
     });
+    this.version(5).stores({
+      framesById: 'id',
+    });
+    // Store frames as Blobs instead of raw buffers (Uint8Array/ArrayBuffer):
+    // browsers persist Blobs as out-of-line file references instead of
+    // structured-cloning the bytes into the record, which is cheaper and avoids
+    // the known IndexedDB issues with large binary buffers. Schema (indexes) is
+    // unchanged; the upgrade just converts every frame from a buffer to a Blob.
+    this.version(6)
+      .stores({
+        framesById: 'id',
+      })
+      .upgrade(migrateBuffersToBlobs);
   }
 }
 
@@ -51,7 +84,8 @@ const framesTable = () => db.table('framesById');
 export const createFrame = async (buffer, extension) => {
   await openedDb;
   const id = uuidv4();
-  await framesTable().put({ id, buffer, extension });
+  const blob = new Blob([buffer], { type: extensionToMimeType(extension) });
+  await framesTable().put({ id, blob, extension });
   return id;
 };
 
@@ -65,14 +99,10 @@ export const getFrameBlobUrl = async (id) => {
   }
   await openedDb;
   const frame = await framesTable().get(frameId);
-  if (!frame) {
+  if (!frame?.blob) {
     return null;
   }
-  const blob = new Blob([frame.buffer], { type: extensionToMimeType(frame?.extension) });
-  if (!blob) {
-    return null;
-  }
-  cachedUrls[frameId] = URL.createObjectURL(blob);
+  cachedUrls[frameId] = URL.createObjectURL(frame.blob);
   return cachedUrls[frameId];
 };
 
@@ -80,12 +110,5 @@ export const getFrameBlob = async (id) => {
   const frameId = String(id);
   await openedDb;
   const frame = await framesTable().get(frameId);
-  if (!frame) {
-    return null;
-  }
-  const blob = new Blob([frame.buffer], { type: extensionToMimeType(frame?.extension) });
-  if (!blob) {
-    return null;
-  }
-  return blob;
+  return frame?.blob || null;
 };
