@@ -1,0 +1,533 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Eagle Animation - Recovery page</title>
+    <style>
+      :root {
+        --bg: #0f1115;
+        --panel: #191c23;
+        --panel-2: #21252e;
+        --border: #2c313c;
+        --text: #e6e8ec;
+        --muted: #9aa2b1;
+        --accent: #4f8cff;
+        --accent-2: #2ecc71;
+        --danger: #ff5c5c;
+        --radius: 10px;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        line-height: 1.45;
+      }
+      header {
+        padding: 22px 28px;
+        border-bottom: 1px solid var(--border);
+        background: var(--panel);
+      }
+      header h1 { margin: 0 0 4px; font-size: 20px; }
+      header p { margin: 0; color: var(--muted); font-size: 13px; }
+      main { padding: 24px 28px; max-width: 980px; margin: 0 auto; }
+      .toolbar { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-bottom: 20px; }
+      button {
+        font: inherit;
+        cursor: pointer;
+        border: 1px solid var(--border);
+        background: var(--panel-2);
+        color: var(--text);
+        padding: 8px 14px;
+        border-radius: 8px;
+        transition: filter 0.15s, opacity 0.15s;
+      }
+      button:hover:not(:disabled) { filter: brightness(1.2); }
+      button:disabled { opacity: 0.5; cursor: not-allowed; }
+      button.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+      .db-card {
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        margin-bottom: 16px;
+        overflow: hidden;
+      }
+      .db-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+        padding: 16px 18px;
+        flex-wrap: wrap;
+      }
+      .db-title { font-size: 16px; font-weight: 600; }
+      .db-meta { color: var(--muted); font-size: 12px; margin-top: 2px; }
+      .stores { border-top: 1px solid var(--border); padding: 6px 18px 14px; }
+      .store-row {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 6px 0;
+        font-size: 13px;
+        color: var(--muted);
+        border-bottom: 1px dashed var(--border);
+      }
+      .store-row:last-child { border-bottom: none; }
+      .store-row .name { color: var(--text); font-family: ui-monospace, monospace; }
+      .progress {
+        height: 6px;
+        background: var(--panel-2);
+        border-radius: 999px;
+        overflow: hidden;
+        margin-top: 10px;
+        display: none;
+      }
+      .progress.active { display: block; }
+      .progress > div { height: 100%; width: 0; background: var(--accent-2); transition: width 0.1s; }
+      .status { font-size: 12px; color: var(--muted); margin-top: 8px; min-height: 16px; }
+      .status.err { color: var(--danger); }
+      .status.ok { color: var(--accent-2); }
+      .empty { color: var(--muted); padding: 40px 0; text-align: center; }
+      code { background: var(--panel-2); padding: 1px 5px; border-radius: 4px; font-size: 12px; }
+      .note {
+        background: var(--panel-2);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 12px 14px;
+        font-size: 12px;
+        color: var(--muted);
+        margin-bottom: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>IndexedDB — Explorer &amp; Export</h1>
+      <p>Lists the IndexedDB databases of the current origin and exports them without saturating RAM.</p>
+    </header>
+    <main>
+      <div class="note" id="fsNote"></div>
+      <div class="toolbar">
+        <button class="primary" id="refresh">↻ Refresh</button>
+        <button id="exportAll">⭳ Export all</button>
+        <span id="estimate" style="color: var(--muted); font-size: 12px;"></span>
+      </div>
+      <div id="list"></div>
+    </main>
+
+    <script>
+      'use strict';
+
+      // Memory strategy: never load a whole database into RAM. Keys are read
+      // first (no blobs), then each record is fetched in its own short IDB
+      // transaction and written straight to disk in streaming mode. Blobs are
+      // base64-encoded in 192 KB chunks (multiple of 3, so chunks concatenate
+      // without intermediate padding), keeping peak memory to a single chunk.
+
+      const BASE64_CHUNK = 0x30000; // 196608 bytes, multiple of 3
+      const FLUSH_THRESHOLD = 1 << 20; // flush the text buffer every ~1 MB
+
+      const b64abc = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
+
+      function bytesToBase64(bytes) {
+        let out = '';
+        const len = bytes.length;
+        const rem = len % 3;
+        const main = len - rem;
+        for (let i = 0; i < main; i += 3) {
+          const n = (bytes[i] << 16) | (bytes[i + 1] << 8) | bytes[i + 2];
+          out += b64abc[(n >> 18) & 63] + b64abc[(n >> 12) & 63] + b64abc[(n >> 6) & 63] + b64abc[n & 63];
+        }
+        if (rem === 1) {
+          const n = bytes[main] << 16;
+          out += b64abc[(n >> 18) & 63] + b64abc[(n >> 12) & 63] + '==';
+        } else if (rem === 2) {
+          const n = (bytes[main] << 16) | (bytes[main + 1] << 8);
+          out += b64abc[(n >> 18) & 63] + b64abc[(n >> 12) & 63] + b64abc[(n >> 6) & 63] + '=';
+        }
+        return out;
+      }
+
+      // Buffered writer over a WritableStream (File System Access).
+      function createWriter(writable) {
+        const encoder = new TextEncoder();
+        let buffer = '';
+        let bytesWritten = 0;
+        return {
+          get bytesWritten() { return bytesWritten; },
+          async write(text) {
+            buffer += text;
+            if (buffer.length >= FLUSH_THRESHOLD) {
+              const chunk = encoder.encode(buffer);
+              bytesWritten += chunk.byteLength;
+              buffer = '';
+              await writable.write(chunk);
+            }
+          },
+          // Stream a Blob as base64, chunk by chunk.
+          async writeBlobBase64(blob) {
+            for (let offset = 0; offset < blob.size; offset += BASE64_CHUNK) {
+              const slice = blob.slice(offset, Math.min(offset + BASE64_CHUNK, blob.size));
+              const bytes = new Uint8Array(await slice.arrayBuffer());
+              await this.write(bytesToBase64(bytes));
+            }
+          },
+          async close() {
+            if (buffer) {
+              const chunk = encoder.encode(buffer);
+              bytesWritten += chunk.byteLength;
+              buffer = '';
+              await writable.write(chunk);
+            }
+            await writable.close();
+          },
+          async abort() {
+            try { await writable.abort(); } catch (_) {}
+          },
+        };
+      }
+
+      // Streaming JSON serializer. Binary values become tagged, re-importable
+      // objects: { "__type": "...", "data": "<base64>" }.
+      async function writeValue(w, value) {
+        if (value === null || value === undefined) { await w.write('null'); return; }
+        const t = typeof value;
+        if (t === 'number') { await w.write(Number.isFinite(value) ? String(value) : 'null'); return; }
+        if (t === 'boolean') { await w.write(value ? 'true' : 'false'); return; }
+        if (t === 'string') { await w.write(JSON.stringify(value)); return; }
+        if (t === 'bigint') { await w.write(JSON.stringify(value.toString())); return; }
+
+        if (value instanceof Blob) {
+          await w.write('{"__type":"' + (value instanceof File ? 'File' : 'Blob') + '","mime":' + JSON.stringify(value.type || ''));
+          if (value instanceof File) await w.write(',"name":' + JSON.stringify(value.name) + ',"lastModified":' + value.lastModified);
+          await w.write(',"size":' + value.size + ',"data":"');
+          await w.writeBlobBase64(value);
+          await w.write('"}');
+          return;
+        }
+        if (value instanceof ArrayBuffer) {
+          await w.write('{"__type":"ArrayBuffer","size":' + value.byteLength + ',"data":"');
+          await w.writeBlobBase64(new Blob([value]));
+          await w.write('"}');
+          return;
+        }
+        if (ArrayBuffer.isView(value)) {
+          const ab = value.buffer.slice(value.byteOffset, value.byteOffset + value.byteLength);
+          await w.write('{"__type":"' + value.constructor.name + '","size":' + value.byteLength + ',"data":"');
+          await w.writeBlobBase64(new Blob([ab]));
+          await w.write('"}');
+          return;
+        }
+        if (value instanceof Date) { await w.write('{"__type":"Date","iso":' + JSON.stringify(value.toISOString()) + '}'); return; }
+
+        if (Array.isArray(value)) {
+          await w.write('[');
+          for (let i = 0; i < value.length; i++) {
+            if (i) await w.write(',');
+            await writeValue(w, value[i]);
+          }
+          await w.write(']');
+          return;
+        }
+        if (value instanceof Map) {
+          await w.write('{"__type":"Map","entries":[');
+          let first = true;
+          for (const [k, v] of value) {
+            if (!first) await w.write(','); first = false;
+            await w.write('['); await writeValue(w, k); await w.write(','); await writeValue(w, v); await w.write(']');
+          }
+          await w.write(']}');
+          return;
+        }
+        if (value instanceof Set) {
+          await w.write('{"__type":"Set","values":[');
+          let first = true;
+          for (const v of value) { if (!first) await w.write(','); first = false; await writeValue(w, v); }
+          await w.write(']}');
+          return;
+        }
+        if (t === 'object') {
+          await w.write('{');
+          let first = true;
+          for (const key of Object.keys(value)) {
+            const v = value[key];
+            if (v === undefined) continue;
+            if (!first) await w.write(','); first = false;
+            await w.write(JSON.stringify(key) + ':');
+            await writeValue(w, v);
+          }
+          await w.write('}');
+          return;
+        }
+        await w.write('null');
+      }
+
+      // IndexedDB helpers ------------------------------------------------
+
+      function openDB(name, version) {
+        return new Promise((resolve, reject) => {
+          const req = version ? indexedDB.open(name, version) : indexedDB.open(name);
+          req.onsuccess = () => resolve(req.result);
+          req.onerror = () => reject(req.error);
+          req.onblocked = () => reject(new Error('Open blocked (database in use elsewhere)'));
+        });
+      }
+
+      function countStore(db, storeName) {
+        return new Promise((resolve, reject) => {
+          const req = db.transaction(storeName, 'readonly').objectStore(storeName).count();
+          req.onsuccess = () => resolve(req.result);
+          req.onerror = () => reject(req.error);
+        });
+      }
+
+      // Keys only (no values, hence no blobs): cheap even on a large store.
+      function getAllKeys(db, storeName) {
+        return new Promise((resolve, reject) => {
+          const req = db.transaction(storeName, 'readonly').objectStore(storeName).getAllKeys();
+          req.onsuccess = () => resolve(req.result);
+          req.onerror = () => reject(req.error);
+        });
+      }
+
+      // Read one record in its own short transaction. Reading is kept separate
+      // from the async disk write on purpose: awaiting a non-IDB promise while
+      // a cursor is open would auto-close the transaction (TransactionInactive).
+      function getRecord(db, storeName, key) {
+        return new Promise((resolve, reject) => {
+          const req = db.transaction(storeName, 'readonly').objectStore(storeName).get(key);
+          req.onsuccess = () => resolve(req.result);
+          req.onerror = () => reject(req.error);
+        });
+      }
+
+      // Export -----------------------------------------------------------
+
+      async function exportDatabase(info, ui) {
+        const setStatus = (msg, cls) => { ui.status.textContent = msg; ui.status.className = 'status' + (cls ? ' ' + cls : ''); };
+        const setProgress = (frac) => { ui.bar.parentElement.classList.add('active'); ui.bar.style.width = Math.round(frac * 100) + '%'; };
+
+        let db;
+        let writer;
+        try {
+          setStatus('Opening…');
+          db = await openDB(info.name, info.version);
+          const storeNames = Array.from(db.objectStoreNames);
+
+          let totalRecords = 0;
+          const counts = {};
+          for (const s of storeNames) { counts[s] = await countStore(db, s); totalRecords += counts[s]; }
+
+          const suggested = 'indexeddb-' + info.name.replace(/[^a-z0-9_-]+/gi, '_') + '.json';
+          let writable;
+          if (window.showSaveFilePicker) {
+            const handle = await window.showSaveFilePicker({
+              suggestedName: suggested,
+              types: [{ description: 'Export JSON', accept: { 'application/json': ['.json'] } }],
+            });
+            writable = await handle.createWritable();
+          } else {
+            writable = memoryWritable(suggested); // fallback: buffered in RAM
+          }
+
+          writer = createWriter(writable);
+          await writer.write('{\n"formatVersion":1,\n"database":' + JSON.stringify(info.name) + ',\n"version":' + db.version + ',\n"exportedAt":' + JSON.stringify(new Date().toISOString()) + ',\n"stores":[');
+
+          let done = 0;
+          for (let si = 0; si < storeNames.length; si++) {
+            const storeName = storeNames[si];
+            const store = db.transaction(storeName, 'readonly').objectStore(storeName);
+            const indexes = Array.from(store.indexNames).map((n) => {
+              const idx = store.index(n);
+              return { name: idx.name, keyPath: idx.keyPath, unique: idx.unique, multiEntry: idx.multiEntry };
+            });
+
+            if (si) await writer.write(',');
+            await writer.write('\n{"name":' + JSON.stringify(storeName) + ',"keyPath":' + JSON.stringify(store.keyPath) + ',"autoIncrement":' + (store.autoIncrement ? 'true' : 'false') + ',"indexes":' + JSON.stringify(indexes) + ',"count":' + counts[storeName] + ',"records":[');
+
+            const keys = await getAllKeys(db, storeName);
+            for (let ki = 0; ki < keys.length; ki++) {
+              const key = keys[ki];
+              const value = await getRecord(db, storeName, key); // one record at a time
+              if (ki) await writer.write(',');
+              await writer.write('\n{"key":');
+              await writeValue(writer, key);
+              await writer.write(',"value":');
+              await writeValue(writer, value);
+              await writer.write('}');
+              done++;
+              if (totalRecords) setProgress(done / totalRecords);
+              if (done % 25 === 0) setStatus('Exporting: ' + done + ' / ' + totalRecords + ' records — ' + formatBytes(writer.bytesWritten));
+            }
+
+            await writer.write('\n]}');
+          }
+
+          await writer.write('\n]}\n');
+          await writer.close();
+          setProgress(1);
+          setStatus('Done — ' + done + ' records, ' + formatBytes(writer.bytesWritten) + '.', 'ok');
+        } catch (err) {
+          if (writer) await writer.abort();
+          if (err && err.name === 'AbortError') setStatus('Cancelled.', '');
+          else { console.error(err); setStatus('Error: ' + (err && err.message ? err.message : String(err)), 'err'); }
+          throw err;
+        } finally {
+          if (db) db.close();
+        }
+      }
+
+      // Fallback when File System Access is unavailable: buffer then download.
+      function memoryWritable(filename) {
+        const chunks = [];
+        return {
+          async write(chunk) { chunks.push(chunk); },
+          async close() {
+            const url = URL.createObjectURL(new Blob(chunks, { type: 'application/json' }));
+            const a = document.createElement('a');
+            a.href = url; a.download = filename; document.body.appendChild(a); a.click(); a.remove();
+            setTimeout(() => URL.revokeObjectURL(url), 60000);
+          },
+          async abort() { chunks.length = 0; },
+        };
+      }
+
+      // UI ---------------------------------------------------------------
+
+      function formatBytes(n) {
+        if (!n) return '0 B';
+        const u = ['B', 'KB', 'MB', 'GB', 'TB'];
+        const i = Math.floor(Math.log(n) / Math.log(1024));
+        return (n / Math.pow(1024, i)).toFixed(i ? 1 : 0) + ' ' + u[i];
+      }
+
+      function escapeHtml(s) {
+        return String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+      }
+
+      const listEl = document.getElementById('list');
+      const refreshBtn = document.getElementById('refresh');
+      const exportAllBtn = document.getElementById('exportAll');
+      const estimateEl = document.getElementById('estimate');
+      const fsNote = document.getElementById('fsNote');
+
+      fsNote.innerHTML = window.showSaveFilePicker
+        ? '✅ Streaming disk writes available: the export keeps only one record in memory at a time.'
+        : '⚠️ Your browser does not support <code>showSaveFilePicker</code>: the export will be buffered in memory before download. Use Chrome / Edge / the Electron app for streaming mode.';
+
+      let currentDatabases = [];
+
+      async function refresh() {
+        listEl.innerHTML = '<div class="empty">Loading…</div>';
+        if (!indexedDB.databases) {
+          listEl.innerHTML = '<div class="empty">Your browser does not support <code>indexedDB.databases()</code>.</div>';
+          return;
+        }
+        try {
+          currentDatabases = await indexedDB.databases();
+        } catch (e) {
+          listEl.innerHTML = '<div class="empty">Error: ' + escapeHtml(e.message) + '</div>';
+          return;
+        }
+
+        if (navigator.storage && navigator.storage.estimate) {
+          try {
+            const est = await navigator.storage.estimate();
+            estimateEl.textContent = 'Storage: ' + formatBytes(est.usage) + ' / ' + formatBytes(est.quota);
+          } catch (_) {}
+        }
+
+        if (!currentDatabases.length) {
+          listEl.innerHTML = '<div class="empty">No IndexedDB database on this origin (<code>' + escapeHtml(location.origin) + '</code>).<br>Open this page from the <b>same origin/port</b> as the application.</div>';
+          return;
+        }
+
+        listEl.innerHTML = '';
+        for (const info of currentDatabases) {
+          const card = renderCard(info);
+          listEl.appendChild(card.el);
+          loadStores(info, card);
+        }
+      }
+
+      function renderCard(info) {
+        const el = document.createElement('div');
+        el.className = 'db-card';
+        el.innerHTML =
+          '<div class="db-head">' +
+          '  <div><div class="db-title"></div><div class="db-meta"></div></div>' +
+          '  <button class="primary export-btn">⭳ Export</button>' +
+          '</div>' +
+          '<div class="stores"><div style="color:var(--muted);font-size:12px">Reading stores…</div></div>' +
+          '<div class="db-head" style="padding-top:0"><div style="flex:1">' +
+          '  <div class="progress"><div></div></div><div class="status"></div>' +
+          '</div></div>';
+        el.querySelector('.db-title').textContent = info.name;
+        el.querySelector('.db-meta').textContent = 'version ' + info.version;
+        const card = {
+          el,
+          storesEl: el.querySelector('.stores'),
+          exportBtn: el.querySelector('.export-btn'),
+          bar: el.querySelector('.progress > div'),
+          status: el.querySelector('.status'),
+        };
+        card.exportBtn.addEventListener('click', async () => {
+          setBusy(true);
+          card.exportBtn.disabled = true;
+          try { await exportDatabase(info, card); } catch (_) {} finally { card.exportBtn.disabled = false; setBusy(false); }
+        });
+        return card;
+      }
+
+      async function loadStores(info, card) {
+        let db;
+        try {
+          db = await openDB(info.name, info.version);
+          const names = Array.from(db.objectStoreNames);
+          if (!names.length) { card.storesEl.innerHTML = '<div style="color:var(--muted);font-size:12px">No object store.</div>'; return; }
+          const rows = [];
+          for (const n of names) {
+            let count = '?';
+            try { count = await countStore(db, n); } catch (_) {}
+            rows.push('<div class="store-row"><span class="name">' + escapeHtml(n) + '</span><span>' + count + ' records</span></div>');
+          }
+          card.storesEl.innerHTML = rows.join('');
+        } catch (e) {
+          card.storesEl.innerHTML = '<div style="color:var(--danger);font-size:12px">Error: ' + escapeHtml(e.message) + '</div>';
+        } finally {
+          if (db) db.close();
+        }
+      }
+
+      let busyCount = 0;
+      function setBusy(b) {
+        busyCount += b ? 1 : -1;
+        refreshBtn.disabled = busyCount > 0;
+        exportAllBtn.disabled = busyCount > 0;
+      }
+
+      exportAllBtn.addEventListener('click', async () => {
+        const cards = Array.from(listEl.querySelectorAll('.db-card'));
+        setBusy(true);
+        try {
+          for (let i = 0; i < currentDatabases.length; i++) {
+            const card = {
+              el: cards[i],
+              exportBtn: cards[i].querySelector('.export-btn'),
+              bar: cards[i].querySelector('.progress > div'),
+              status: cards[i].querySelector('.status'),
+            };
+            try { await exportDatabase(currentDatabases[i], card); } catch (_) {}
+          }
+        } finally {
+          setBusy(false);
+        }
+      });
+
+      refreshBtn.addEventListener('click', refresh);
+      refresh();
+    </script>
+  </body>
+</html>
