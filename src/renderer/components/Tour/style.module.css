@@ -1,0 +1,71 @@
+.overlay {
+  inset: 0;
+  pointer-events: none;
+  position: fixed;
+  user-select: none;
+  z-index: 9999999;
+}
+
+.panel {
+  background: rgb(0 13 22 / 75%);
+  pointer-events: all;
+  position: absolute;
+}
+
+.ring {
+  border: 2px solid var(--color-primary);
+  border-radius: var(--border-radius-medium);
+  box-shadow: 0 0 18px 0 rgb(72 110 229 / 60%);
+  box-sizing: border-box;
+  pointer-events: all;
+  position: absolute;
+}
+
+.ringInteractive {
+  pointer-events: none;
+}
+
+.card {
+  background: var(--color-theme-dark);
+  border-radius: var(--border-radius-medium);
+  border: solid 3px var(--color-primary);
+  box-shadow: 0 6px 30px 0 rgb(0 0 0 / 50%);
+  box-sizing: border-box;
+  color: var(--color-white);
+  font-family: var(--font), sans-serif;
+  padding: var(--space-big);
+  pointer-events: all;
+  position: absolute;
+}
+
+.title {
+  font-size: var(--font-size-3);
+  font-weight: 700;
+  line-height: var(--line-size-3);
+  margin: 0 0 var(--space-small);
+}
+
+.content {
+  font-size: var(--font-size-6);
+  line-height: var(--line-size-6);
+  margin: 0 0 var(--space-big);
+  opacity: 0.9;
+}
+
+.footer {
+  align-items: center;
+  display: flex;
+  gap: var(--space-small);
+  justify-content: space-between;
+}
+
+.counter {
+  font-size: var(--font-size-8);
+  opacity: 0.6;
+}
+
+.actions {
+  align-items: center;
+  display: flex;
+  gap: var(--space-small);
+}

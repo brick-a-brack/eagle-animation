@@ -220,7 +220,7 @@ const Timeline = ({ onSelect, onMove, select = false, pictures = [], playing = f
   }, [picturesKey, shortPlayStatus, shortPlayFrames]);
 
   return (
-    <div className={style.wrapper}>
+    <div className={style.wrapper} data-tour="timeline">
       <aside className={`${style.container} ${playing ? style.playing : ''}`} ref={ref} onScroll={updateShadows}>
         <SortableList
           sortableItemIds={sortableItemIds}

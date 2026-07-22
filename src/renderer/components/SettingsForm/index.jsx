@@ -1,3 +1,4 @@
+import Button from '@components/Button';
 import ButtonsGroup from '@components/ButtonsGroup';
 import CustomSlider from '@components/CustomSlider';
 import Divider from '@components/Divider';
@@ -54,6 +55,11 @@ const SettingsForm = ({ settings = {}, onUpdate = () => {}, t }) => {
         <FormGroup label={t('Allow telemetry')} description={t('Send anonymous usage data to help improve the application')}>
           <div>
             <Switch register={register('TELEMETRY_ENABLED')} />
+          </div>
+        </FormGroup>
+        <FormGroup label={t('Tutorial')} description={t('Reset the tutorial, it will be shown on the next visit')}>
+          <div>
+            <Button size="small" label={t('Reset')} disabled={(watch('TOURS_COMPLETED') || []).length === 0} onClick={() => setValue('TOURS_COMPLETED', [])} />
           </div>
         </FormGroup>
         <FormGroup label={t('Update')} description={t('Stay up to date to enjoy the latest features and improvements')}>
