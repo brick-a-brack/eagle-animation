@@ -186,10 +186,10 @@ const HomeView = ({ t }) => {
                 <span>{t('No projects match your search')}</span>
               </div>
             )}
+            <Tour tourKey="HOME" />
           </>
         )}
       </PageContent>
-      <Tour tourKey="HOME" />
     </PageLayout>
   );
 };

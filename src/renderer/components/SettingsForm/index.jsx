@@ -13,7 +13,6 @@ import Switch from '@components/Switch';
 import UpdateAppButton from '@components/UpdateAppButton';
 import { DEVICE, LANGUAGES } from '@config-web';
 import useAppCapabilities from '@hooks/useAppCapabilities';
-import faRotate from '@icons/faRotate';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { withTranslation } from 'react-i18next';
@@ -60,7 +59,7 @@ const SettingsForm = ({ settings = {}, onUpdate = () => {}, t }) => {
         </FormGroup>
         <FormGroup label={t('Tutorial')} description={t('Reset the tutorial, it will be shown on the next visit')}>
           <div>
-            <Button icon={faRotate} disabled={(watch('TOURS_COMPLETED') || []).length === 0} onClick={() => setValue('TOURS_COMPLETED', [])} />
+            <Button size="small" label={t('Reset')} disabled={(watch('TOURS_COMPLETED') || []).length === 0} onClick={() => setValue('TOURS_COMPLETED', [])} />
           </div>
         </FormGroup>
         <FormGroup label={t('Update')} description={t('Stay up to date to enjoy the latest features and improvements')}>

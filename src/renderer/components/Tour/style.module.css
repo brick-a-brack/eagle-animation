@@ -28,7 +28,7 @@
 .card {
   background: var(--color-theme-dark);
   border-radius: var(--border-radius-medium);
-  border-top: solid 3px var(--color-primary);
+  border: solid 3px var(--color-primary);
   box-shadow: 0 6px 30px 0 rgb(0 0 0 / 50%);
   box-sizing: border-box;
   color: var(--color-white);
@@ -68,40 +68,4 @@
   align-items: center;
   display: flex;
   gap: var(--space-small);
-}
-
-.button {
-  background: var(--color-primary);
-  border: none;
-  border-radius: 21px;
-  color: var(--color-white);
-  cursor: pointer;
-  font-family: inherit;
-  font-size: var(--font-size-7);
-  padding: var(--space-small) var(--space-big);
-}
-
-.button:hover {
-  opacity: 0.85;
-}
-
-.buttonGhost {
-  background: transparent;
-  border: solid 1px var(--color-theme-light);
-}
-
-.skip {
-  background: none;
-  border: none;
-  color: var(--color-white);
-  cursor: pointer;
-  font-family: inherit;
-  font-size: var(--font-size-8);
-  opacity: 0.6;
-  padding: 0;
-  text-decoration: underline;
-}
-
-.skip:hover {
-  opacity: 1;
 }

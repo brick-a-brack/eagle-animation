@@ -1,3 +1,6 @@
+import Button from '@components/Button';
+import faChevronLeft from '@icons/faChevronLeft';
+
 import * as style from './style.module.css';
 
 // The step card: title, content and navigation controls. Purely presentational —
@@ -9,17 +12,9 @@ const TourCard = ({ step, stepIndex, stepCount, cardStyle, onNext, onPrevious, o
     <div className={style.footer}>
       <span className={style.counter}>{`${stepIndex + 1}/${stepCount}`}</span>
       <div className={style.actions}>
-        <button type="button" className={style.skip} onClick={onSkip}>
-          {t('Skip')}
-        </button>
-        {stepIndex > 0 && (
-          <button type="button" className={`${style.button} ${style.buttonGhost}`} onClick={onPrevious}>
-            {t('Back')}
-          </button>
-        )}
-        <button type="button" className={style.button} onClick={onNext}>
-          {stepIndex === stepCount - 1 ? t('Finish') : t('Next')}
-        </button>
+        <Button color="link" size="small" label={t('Skip')} onClick={onSkip} />
+        {stepIndex > 0 && <Button color="ghost" size="small" icon={faChevronLeft} onClick={onPrevious} />}
+        <Button color="primary" size="small" label={stepIndex === stepCount - 1 ? t('Finish') : t('Next')} onClick={onNext} />
       </div>
     </div>
   </div>

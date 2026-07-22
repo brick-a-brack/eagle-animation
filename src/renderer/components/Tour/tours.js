@@ -26,7 +26,7 @@ const TOURS = {
     {
       selector: '[data-tour="new-project"]',
       title: t('Create your first project'),
-      content: t('Click here to create a new project, you will be taken to the animator where a quick tour of the main tools awaits you.'),
+      content: t('Ready to start? Create a new project and we will show you around the animator.'),
       interactive: true,
       completeOnTargetClick: true,
     },
