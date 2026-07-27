@@ -12,10 +12,16 @@ const { execFileSync } = require('child_process');
 // invalid", errno=1), so the server aborts (SIGABRT) on launch and the camera
 // list stays empty.
 //
-// We fix this by re-signing EVERY Mach-O file and bundle in the toucan tree —
-// inside-out — so dyld will load them. The set of shipped binaries changes
-// between toucan releases, so we discover them dynamically rather than hardcode
-// a list.
+// We fix this by re-signing EVERY Mach-O file in the toucan tree so dyld will
+// load them. The set of shipped binaries changes between toucan releases, so we
+// discover them dynamically rather than hardcode a list.
+//
+// We sign the versioned Mach-O binaries directly rather than the .framework /
+// .bundle directories. The frameworks are extracted from a zip, which flattens
+// their Versions/ symlinks into real duplicate files; `codesign` on such a bundle
+// fails with "bundle format is ambiguous (could be app or framework)". Since dyld
+// validates the signature of the individual Mach-O it loads (not the bundle's
+// CodeResources seal), per-file signing is what actually fixes the runtime load.
 //
 // Identity:
 //   - ad-hoc ("-") by default: no Apple Developer account needed. Fixes the crash
@@ -79,8 +85,6 @@ function isMachO(file) {
   }
 }
 
-const isInsideBundle = (p) => /\.(framework|bundle)[\\/]/.test(p);
-
 // codesign fails when a bundle contains .DS_Store / resource-fork detritus.
 function stripDetritus(root) {
   for (const file of walk(root)) {
@@ -90,12 +94,8 @@ function stripDetritus(root) {
   }
 }
 
-function sign(target, identity, { deep = false, entitlements } = {}) {
-  const args = ['--force'];
-  if (deep) {
-    args.push('--deep');
-  }
-  args.push('--sign', identity);
+function sign(target, identity, { entitlements } = {}) {
+  const args = ['--force', '--sign', identity];
 
   if (identity !== '-') {
     // Hardened runtime + timestamp are required for notarization.
@@ -131,31 +131,13 @@ exports.default = async function afterPack(context) {
 
   stripDetritus(binDir);
 
-  const files = walk(binDir);
-
-  // 1. Standalone Mach-O libraries/plugins (dylibs, .so) that are NOT inside a
-  //    framework/bundle and are NOT the main executable. dyld dlopen's these by
-  //    path, so each needs its own valid signature.
-  const standalone = files.filter((f) => f !== binary && !isInsideBundle(f) && isMachO(f));
-  for (const f of standalone) {
+  // Sign every Mach-O file individually (standalone dylibs/.so plugins as well as
+  // the binaries nested inside frameworks/bundles), then the main executable last
+  // since it is the loader and carries the entitlements.
+  const machos = walk(binDir).filter((f) => f !== binary && isMachO(f));
+  for (const f of machos) {
     sign(f, identity);
   }
-
-  // 2. Top-level frameworks/bundles — signed with --deep so their internal
-  //    binaries and nested bundles are covered in one pass.
-  const bundles = files
-    .map((f) => f.slice(binDir.length + 1).split(path.sep))
-    .filter((parts) => parts.some((p) => /\.(framework|bundle)$/.test(p)))
-    // Keep the path up to and including the FIRST bundle/framework segment (the
-    // outermost one), so nested bundles are handled by --deep instead of twice.
-    .map((parts) => parts.slice(0, parts.findIndex((p) => /\.(framework|bundle)$/.test(p)) + 1).join(path.sep))
-    .filter((rel, i, arr) => arr.indexOf(rel) === i)
-    .map((rel) => path.join(binDir, rel));
-  for (const b of bundles) {
-    sign(b, identity, { deep: true });
-  }
-
-  // 3. Main executable last — it's the loader, and it carries the entitlements.
   sign(binary, identity, { entitlements: ENTITLEMENTS });
 
   // Best-effort verification (non blocking).
@@ -165,5 +147,5 @@ exports.default = async function afterPack(context) {
     console.warn('🐦 [afterPack] codesign --verify failed (non blocking)');
   }
 
-  console.log(`🐦 [afterPack] signed ${standalone.length} libraries + ${bundles.length} bundles + main executable`);
+  console.log(`🐦 [afterPack] signed ${machos.length} Mach-O files + main executable`);
 };
