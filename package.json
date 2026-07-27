@@ -72,7 +72,7 @@
     "rc-slider": "^11.1.9",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
-    "react-hook-form": "^7.81.0",
+    "react-hook-form": "^7.82.0",
     "react-i18next": "^17.0.10",
     "react-keyboard-event-handler": "^1.5.4",
     "react-router-dom": "^7.18.1",
