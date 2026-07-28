@@ -17,10 +17,17 @@
         --danger: #ff5c5c;
         --radius: 10px;
       }
-      * { box-sizing: border-box; }
+      * {
+        box-sizing: border-box;
+      }
       body {
         margin: 0;
-        font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+        font-family:
+          system-ui,
+          -apple-system,
+          'Segoe UI',
+          Roboto,
+          sans-serif;
         background: var(--bg);
         color: var(--text);
         line-height: 1.45;
@@ -30,10 +37,27 @@
         border-bottom: 1px solid var(--border);
         background: var(--panel);
       }
-      header h1 { margin: 0 0 4px; font-size: 20px; }
-      header p { margin: 0; color: var(--muted); font-size: 13px; }
-      main { padding: 24px 28px; max-width: 980px; margin: 0 auto; }
-      .toolbar { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-bottom: 20px; }
+      header h1 {
+        margin: 0 0 4px;
+        font-size: 20px;
+      }
+      header p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 13px;
+      }
+      main {
+        padding: 24px 28px;
+        max-width: 980px;
+        margin: 0 auto;
+      }
+      .toolbar {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        align-items: center;
+        margin-bottom: 20px;
+      }
       button {
         font: inherit;
         cursor: pointer;
@@ -42,11 +66,22 @@
         color: var(--text);
         padding: 8px 14px;
         border-radius: 8px;
-        transition: filter 0.15s, opacity 0.15s;
+        transition:
+          filter 0.15s,
+          opacity 0.15s;
       }
-      button:hover:not(:disabled) { filter: brightness(1.2); }
-      button:disabled { opacity: 0.5; cursor: not-allowed; }
-      button.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+      button:hover:not(:disabled) {
+        filter: brightness(1.2);
+      }
+      button:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+      button.primary {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: #fff;
+      }
       .db-card {
         background: var(--panel);
         border: 1px solid var(--border);
@@ -62,9 +97,19 @@
         padding: 16px 18px;
         flex-wrap: wrap;
       }
-      .db-title { font-size: 16px; font-weight: 600; }
-      .db-meta { color: var(--muted); font-size: 12px; margin-top: 2px; }
-      .stores { border-top: 1px solid var(--border); padding: 6px 18px 14px; }
+      .db-title {
+        font-size: 16px;
+        font-weight: 600;
+      }
+      .db-meta {
+        color: var(--muted);
+        font-size: 12px;
+        margin-top: 2px;
+      }
+      .stores {
+        border-top: 1px solid var(--border);
+        padding: 6px 18px 14px;
+      }
       .store-row {
         display: flex;
         justify-content: space-between;
@@ -74,8 +119,13 @@
         color: var(--muted);
         border-bottom: 1px dashed var(--border);
       }
-      .store-row:last-child { border-bottom: none; }
-      .store-row .name { color: var(--text); font-family: ui-monospace, monospace; }
+      .store-row:last-child {
+        border-bottom: none;
+      }
+      .store-row .name {
+        color: var(--text);
+        font-family: ui-monospace, monospace;
+      }
       .progress {
         height: 6px;
         background: var(--panel-2);
@@ -84,13 +134,38 @@
         margin-top: 10px;
         display: none;
       }
-      .progress.active { display: block; }
-      .progress > div { height: 100%; width: 0; background: var(--accent-2); transition: width 0.1s; }
-      .status { font-size: 12px; color: var(--muted); margin-top: 8px; min-height: 16px; }
-      .status.err { color: var(--danger); }
-      .status.ok { color: var(--accent-2); }
-      .empty { color: var(--muted); padding: 40px 0; text-align: center; }
-      code { background: var(--panel-2); padding: 1px 5px; border-radius: 4px; font-size: 12px; }
+      .progress.active {
+        display: block;
+      }
+      .progress > div {
+        height: 100%;
+        width: 0;
+        background: var(--accent-2);
+        transition: width 0.1s;
+      }
+      .status {
+        font-size: 12px;
+        color: var(--muted);
+        margin-top: 8px;
+        min-height: 16px;
+      }
+      .status.err {
+        color: var(--danger);
+      }
+      .status.ok {
+        color: var(--accent-2);
+      }
+      .empty {
+        color: var(--muted);
+        padding: 40px 0;
+        text-align: center;
+      }
+      code {
+        background: var(--panel-2);
+        padding: 1px 5px;
+        border-radius: 4px;
+        font-size: 12px;
+      }
       .note {
         background: var(--panel-2);
         border: 1px solid var(--border);
@@ -112,7 +187,7 @@
       <div class="toolbar">
         <button class="primary" id="refresh">↻ Refresh</button>
         <button id="exportAll">⭳ Export all</button>
-        <span id="estimate" style="color: var(--muted); font-size: 12px;"></span>
+        <span id="estimate" style="color: var(--muted); font-size: 12px"></span>
       </div>
       <div id="list"></div>
     </main>
@@ -156,7 +231,9 @@
         let buffer = '';
         let bytesWritten = 0;
         return {
-          get bytesWritten() { return bytesWritten; },
+          get bytesWritten() {
+            return bytesWritten;
+          },
           async write(text) {
             buffer += text;
             if (buffer.length >= FLUSH_THRESHOLD) {
@@ -184,7 +261,9 @@
             await writable.close();
           },
           async abort() {
-            try { await writable.abort(); } catch (_) {}
+            try {
+              await writable.abort();
+            } catch (_) {}
           },
         };
       }
@@ -192,12 +271,27 @@
       // Streaming JSON serializer. Binary values become tagged, re-importable
       // objects: { "__type": "...", "data": "<base64>" }.
       async function writeValue(w, value) {
-        if (value === null || value === undefined) { await w.write('null'); return; }
+        if (value === null || value === undefined) {
+          await w.write('null');
+          return;
+        }
         const t = typeof value;
-        if (t === 'number') { await w.write(Number.isFinite(value) ? String(value) : 'null'); return; }
-        if (t === 'boolean') { await w.write(value ? 'true' : 'false'); return; }
-        if (t === 'string') { await w.write(JSON.stringify(value)); return; }
-        if (t === 'bigint') { await w.write(JSON.stringify(value.toString())); return; }
+        if (t === 'number') {
+          await w.write(Number.isFinite(value) ? String(value) : 'null');
+          return;
+        }
+        if (t === 'boolean') {
+          await w.write(value ? 'true' : 'false');
+          return;
+        }
+        if (t === 'string') {
+          await w.write(JSON.stringify(value));
+          return;
+        }
+        if (t === 'bigint') {
+          await w.write(JSON.stringify(value.toString()));
+          return;
+        }
 
         if (value instanceof Blob) {
           await w.write('{"__type":"' + (value instanceof File ? 'File' : 'Blob') + '","mime":' + JSON.stringify(value.type || ''));
@@ -220,7 +314,10 @@
           await w.write('"}');
           return;
         }
-        if (value instanceof Date) { await w.write('{"__type":"Date","iso":' + JSON.stringify(value.toISOString()) + '}'); return; }
+        if (value instanceof Date) {
+          await w.write('{"__type":"Date","iso":' + JSON.stringify(value.toISOString()) + '}');
+          return;
+        }
 
         if (Array.isArray(value)) {
           await w.write('[');
@@ -235,8 +332,13 @@
           await w.write('{"__type":"Map","entries":[');
           let first = true;
           for (const [k, v] of value) {
-            if (!first) await w.write(','); first = false;
-            await w.write('['); await writeValue(w, k); await w.write(','); await writeValue(w, v); await w.write(']');
+            if (!first) await w.write(',');
+            first = false;
+            await w.write('[');
+            await writeValue(w, k);
+            await w.write(',');
+            await writeValue(w, v);
+            await w.write(']');
           }
           await w.write(']}');
           return;
@@ -244,7 +346,11 @@
         if (value instanceof Set) {
           await w.write('{"__type":"Set","values":[');
           let first = true;
-          for (const v of value) { if (!first) await w.write(','); first = false; await writeValue(w, v); }
+          for (const v of value) {
+            if (!first) await w.write(',');
+            first = false;
+            await writeValue(w, v);
+          }
           await w.write(']}');
           return;
         }
@@ -254,7 +360,8 @@
           for (const key of Object.keys(value)) {
             const v = value[key];
             if (v === undefined) continue;
-            if (!first) await w.write(','); first = false;
+            if (!first) await w.write(',');
+            first = false;
             await w.write(JSON.stringify(key) + ':');
             await writeValue(w, v);
           }
@@ -306,8 +413,14 @@
       // Export -----------------------------------------------------------
 
       async function exportDatabase(info, ui) {
-        const setStatus = (msg, cls) => { ui.status.textContent = msg; ui.status.className = 'status' + (cls ? ' ' + cls : ''); };
-        const setProgress = (frac) => { ui.bar.parentElement.classList.add('active'); ui.bar.style.width = Math.round(frac * 100) + '%'; };
+        const setStatus = (msg, cls) => {
+          ui.status.textContent = msg;
+          ui.status.className = 'status' + (cls ? ' ' + cls : '');
+        };
+        const setProgress = (frac) => {
+          ui.bar.parentElement.classList.add('active');
+          ui.bar.style.width = Math.round(frac * 100) + '%';
+        };
 
         let db;
         let writer;
@@ -318,7 +431,10 @@
 
           let totalRecords = 0;
           const counts = {};
-          for (const s of storeNames) { counts[s] = await countStore(db, s); totalRecords += counts[s]; }
+          for (const s of storeNames) {
+            counts[s] = await countStore(db, s);
+            totalRecords += counts[s];
+          }
 
           const suggested = 'indexeddb-' + info.name.replace(/[^a-z0-9_-]+/gi, '_') + '.json';
           let writable;
@@ -333,7 +449,9 @@
           }
 
           writer = createWriter(writable);
-          await writer.write('{\n"formatVersion":1,\n"database":' + JSON.stringify(info.name) + ',\n"version":' + db.version + ',\n"exportedAt":' + JSON.stringify(new Date().toISOString()) + ',\n"stores":[');
+          await writer.write(
+            '{\n"formatVersion":1,\n"database":' + JSON.stringify(info.name) + ',\n"version":' + db.version + ',\n"exportedAt":' + JSON.stringify(new Date().toISOString()) + ',\n"stores":['
+          );
 
           let done = 0;
           for (let si = 0; si < storeNames.length; si++) {
@@ -345,7 +463,19 @@
             });
 
             if (si) await writer.write(',');
-            await writer.write('\n{"name":' + JSON.stringify(storeName) + ',"keyPath":' + JSON.stringify(store.keyPath) + ',"autoIncrement":' + (store.autoIncrement ? 'true' : 'false') + ',"indexes":' + JSON.stringify(indexes) + ',"count":' + counts[storeName] + ',"records":[');
+            await writer.write(
+              '\n{"name":' +
+                JSON.stringify(storeName) +
+                ',"keyPath":' +
+                JSON.stringify(store.keyPath) +
+                ',"autoIncrement":' +
+                (store.autoIncrement ? 'true' : 'false') +
+                ',"indexes":' +
+                JSON.stringify(indexes) +
+                ',"count":' +
+                counts[storeName] +
+                ',"records":['
+            );
 
             const keys = await getAllKeys(db, storeName);
             for (let ki = 0; ki < keys.length; ki++) {
@@ -372,7 +502,10 @@
         } catch (err) {
           if (writer) await writer.abort();
           if (err && err.name === 'AbortError') setStatus('Cancelled.', '');
-          else { console.error(err); setStatus('Error: ' + (err && err.message ? err.message : String(err)), 'err'); }
+          else {
+            console.error(err);
+            setStatus('Error: ' + (err && err.message ? err.message : String(err)), 'err');
+          }
           throw err;
         } finally {
           if (db) db.close();
@@ -383,14 +516,22 @@
       function memoryWritable(filename) {
         const chunks = [];
         return {
-          async write(chunk) { chunks.push(chunk); },
+          async write(chunk) {
+            chunks.push(chunk);
+          },
           async close() {
             const url = URL.createObjectURL(new Blob(chunks, { type: 'application/json' }));
             const a = document.createElement('a');
-            a.href = url; a.download = filename; document.body.appendChild(a); a.click(); a.remove();
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
             setTimeout(() => URL.revokeObjectURL(url), 60000);
           },
-          async abort() { chunks.length = 0; },
+          async abort() {
+            chunks.length = 0;
+          },
         };
       }
 
@@ -404,7 +545,7 @@
       }
 
       function escapeHtml(s) {
-        return String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+        return String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
       }
 
       const listEl = document.getElementById('list');
@@ -440,7 +581,8 @@
         }
 
         if (!currentDatabases.length) {
-          listEl.innerHTML = '<div class="empty">No IndexedDB database on this origin (<code>' + escapeHtml(location.origin) + '</code>).<br>Open this page from the <b>same origin/port</b> as the application.</div>';
+          listEl.innerHTML =
+            '<div class="empty">No IndexedDB database on this origin (<code>' + escapeHtml(location.origin) + '</code>).<br>Open this page from the <b>same origin/port</b> as the application.</div>';
           return;
         }
 
@@ -476,7 +618,13 @@
         card.exportBtn.addEventListener('click', async () => {
           setBusy(true);
           card.exportBtn.disabled = true;
-          try { await exportDatabase(info, card); } catch (_) {} finally { card.exportBtn.disabled = false; setBusy(false); }
+          try {
+            await exportDatabase(info, card);
+          } catch (_) {
+          } finally {
+            card.exportBtn.disabled = false;
+            setBusy(false);
+          }
         });
         return card;
       }
@@ -486,11 +634,16 @@
         try {
           db = await openDB(info.name, info.version);
           const names = Array.from(db.objectStoreNames);
-          if (!names.length) { card.storesEl.innerHTML = '<div style="color:var(--muted);font-size:12px">No object store.</div>'; return; }
+          if (!names.length) {
+            card.storesEl.innerHTML = '<div style="color:var(--muted);font-size:12px">No object store.</div>';
+            return;
+          }
           const rows = [];
           for (const n of names) {
             let count = '?';
-            try { count = await countStore(db, n); } catch (_) {}
+            try {
+              count = await countStore(db, n);
+            } catch (_) {}
             rows.push('<div class="store-row"><span class="name">' + escapeHtml(n) + '</span><span>' + count + ' records</span></div>');
           }
           card.storesEl.innerHTML = rows.join('');
@@ -519,7 +672,9 @@
               bar: cards[i].querySelector('.progress > div'),
               status: cards[i].querySelector('.status'),
             };
-            try { await exportDatabase(currentDatabases[i], card); } catch (_) {}
+            try {
+              await exportDatabase(currentDatabases[i], card);
+            } catch (_) {}
           }
         } finally {
           setBusy(false);
