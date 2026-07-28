@@ -173,8 +173,16 @@ const actions = {
       'EXPORT_VIDEO_PRORES',
       'EXPORT_VIDEO_VP8',
       'EXPORT_VIDEO_VP9',
+      'LOCAL_DATA_FOLDER',
     ];
     return capabilities;
+  },
+  GET_DATA_FOLDER: async () => {
+    return PROJECTS_PATH;
+  },
+  OPEN_DATA_FOLDER: async () => {
+    await shell.openPath(PROJECTS_PATH);
+    return null;
   },
   EXPORT_SELECT_PATH: async (
     evt,
