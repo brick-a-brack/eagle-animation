@@ -11,6 +11,7 @@ function useCamera(options = {}) {
   const [isReady, setIsReady] = useState(false);
   const [cameraCapabilities, setCameraCapabilities] = useState([]);
   const setStreamRef = useRef(null);
+  const activeCameraIdRef = useRef(null);
   const eventsRefs = useRef([
     ...(typeof options?.eventsHandlers?.connect === 'function' ? [['connect', options?.eventsHandlers?.connect]] : []),
     ...(typeof options?.eventsHandlers?.disconnect === 'function' ? [['disconnect', options?.eventsHandlers?.disconnect]] : []),
@@ -29,6 +30,7 @@ function useCamera(options = {}) {
     let cancelled = false;
     setDevices(null);
     setCurrentCameraId(null);
+    activeCameraIdRef.current = null;
     getCameras(compatibilityMode).then((cameras) => {
       if (cancelled) return;
       setDevices(cameras.map(applyCameraLabel));
@@ -59,29 +61,39 @@ function useCamera(options = {}) {
     getCameras(compatibilityMode).then((cameras) => setDevices(cameras.map(applyCameraLabel)));
   }, [compatibilityMode]);
 
+  // Connect a camera instance and wire up its stream.
+  const connectCamera = useCallback(
+    async (camera, cameraId) => {
+      if (!camera || !setStreamRef.current || activeCameraIdRef.current === cameraId) {
+        return;
+      }
+      activeCameraIdRef.current = cameraId;
+      await camera.connect({ setStream: setStreamRef.current });
+      // Refresh device list after getUserMedia so real deviceIds become available
+      // (browsers return empty deviceIds before permission is granted).
+      const updatedCameras = await getCameras(compatibilityMode);
+      setDevices(updatedCameras.map(applyCameraLabel));
+      triggerEvent('connect');
+      camera.getCapabilities().then((caps) => {
+        setCameraCapabilities(caps);
+        const cameraInfo = updatedCameras.find((e) => e.id === cameraId);
+        window.track('camera_connected', {
+          camera_label: cameraInfo?.label || null,
+          camera_module: cameraInfo?.module || null,
+          camera_capabilities: caps.map((c) => c.id),
+        });
+      });
+    },
+    [triggerEvent, compatibilityMode]
+  );
+
   // Action to set stream callback
   const actionSetStream = useCallback(
     async (setStream) => {
       setStreamRef.current = setStream;
-      if (currentCamera) {
-        await currentCamera.connect({ setStream: setStreamRef.current }, options);
-        // Refresh device list after getUserMedia so real deviceIds become available
-        // (browsers return empty deviceIds before permission is granted).
-        const updatedCameras = await getCameras(compatibilityMode);
-        setDevices(updatedCameras.map(applyCameraLabel));
-        triggerEvent('connect');
-        currentCamera.getCapabilities().then((caps) => {
-          setCameraCapabilities(caps);
-          const cameraInfo = updatedCameras.find((e) => e.id === currentCameraId);
-          window.track('camera_connected', {
-            camera_label: cameraInfo?.label || null,
-            camera_module: cameraInfo?.module || null,
-            camera_capabilities: caps.map((c) => c.id),
-          });
-        });
-      }
+      await connectCamera(currentCamera, currentCameraId);
     },
-    [currentCamera, options, triggerEvent, compatibilityMode, currentCameraId]
+    [currentCamera, currentCameraId, connectCamera]
   );
 
   // Action set camera
@@ -96,24 +108,14 @@ function useCamera(options = {}) {
           } catch (e) {
             console.error(e);
           }
+          activeCameraIdRef.current = null;
           triggerEvent('disconnect');
         }
         if (deviceId) {
           setCurrentCameraId(deviceId);
           const camera = getCamera(deviceId);
           if (setStreamRef?.current) {
-            await camera?.connect({ setStream: setStreamRef.current }, options);
-            await getCameras(compatibilityMode).then((cams) => setDevices(cams.map(applyCameraLabel)));
-            triggerEvent('connect');
-            camera?.getCapabilities().then((caps) => {
-              setCameraCapabilities(caps);
-              const cameraInfo = cameras.find((e) => e.id === deviceId);
-              window.track('camera_connected', {
-                camera_label: cameraInfo?.label || null,
-                camera_module: cameraInfo?.module || null,
-                camera_capabilities: caps.map((c) => c.id),
-              });
-            });
+            await connectCamera(camera, deviceId);
           } else {
             camera?.getCapabilities().then(setCameraCapabilities);
           }
@@ -126,7 +128,7 @@ function useCamera(options = {}) {
       // Force refresh devices list, to handle permission issues on specific browsers
       getCameras(compatibilityMode).then((cameras) => setDevices(cameras.map(applyCameraLabel)));
     },
-    [currentCameraId, currentCamera, options, triggerEvent, compatibilityMode]
+    [currentCameraId, currentCamera, triggerEvent, compatibilityMode, connectCamera]
   );
 
   // Action take picture
@@ -170,6 +172,7 @@ function useCamera(options = {}) {
         } catch (e) {
           console.error(e);
         }
+        activeCameraIdRef.current = null;
         triggerEvent('disconnect');
       }
     };

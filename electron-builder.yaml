@@ -3,6 +3,12 @@ productName: Eagle Animation
 #compression: maximum
 nativeRebuilder: legacy
 
+# Re-signs toucan-camera-server and every bundled third-party Mach-O library
+# (Canon/Sony/Nikon SDKs, libgphoto2 plugins, ...) after packaging. Without this,
+# dyld rejects some of them ("code signature invalid") and the server crashes on
+# launch -> empty camera list on mac builds.
+afterPack: ./scripts/sign-toucan-macos.js
+
 directories:
   output: binaries
   buildResources: out

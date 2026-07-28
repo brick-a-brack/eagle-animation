@@ -13,6 +13,8 @@ import Switch from '@components/Switch';
 import UpdateAppButton from '@components/UpdateAppButton';
 import { DEVICE, LANGUAGES } from '@config-web';
 import useAppCapabilities from '@hooks/useAppCapabilities';
+import useDataFolder from '@hooks/useDataFolder';
+import faFolder from '@icons/faFolder';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { withTranslation } from 'react-i18next';
@@ -23,6 +25,7 @@ import gridMarginsIcon from './assets/margins.png';
 
 const SettingsForm = ({ settings = {}, onUpdate = () => {}, t }) => {
   const { appCapabilities } = useAppCapabilities();
+  const { path: dataFolderPath, actions: dataFolderActions } = useDataFolder();
   const form = useForm({
     mode: 'all',
     defaultValues: settings,
@@ -65,6 +68,11 @@ const SettingsForm = ({ settings = {}, onUpdate = () => {}, t }) => {
         <FormGroup label={t('Update')} description={t('Stay up to date to enjoy the latest features and improvements')}>
           <UpdateAppButton />
         </FormGroup>
+        {appCapabilities.includes('LOCAL_DATA_FOLDER') && (
+          <FormGroup label={t('Data folder')} description={dataFolderPath || t('(Unknwown)')}>
+            <Button icon={faFolder} title={t('Open folder')} onClick={dataFolderActions.openDataFolder} />
+          </FormGroup>
+        )}
 
         <Divider />
 
