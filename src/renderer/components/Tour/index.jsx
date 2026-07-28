@@ -19,12 +19,12 @@ const Tour = ({ tourKey, t }) => {
 
   const vw = window.innerWidth;
   const vh = window.innerHeight;
-  const hole = computeHole(rect, vw, vh);
+  const hole = computeHole(rect);
   const cardStyle = computeCardStyle(hole, vw, vh);
 
   return (
     <div className={style.overlay}>
-      <Spotlight hole={hole} interactive={step.interactive} vw={vw} vh={vh} />
+      <Spotlight hole={hole} vw={vw} vh={vh} />
       <TourCard step={step} stepIndex={stepIndex} stepCount={stepCount} cardStyle={cardStyle} onNext={goNext} onPrevious={goPrevious} onSkip={() => finish('skipped')} t={t} />
     </div>
   );

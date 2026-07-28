@@ -1,5 +1,6 @@
 .overlay {
   inset: 0;
+  overflow: hidden;
   pointer-events: none;
   position: fixed;
   user-select: none;
@@ -21,14 +22,10 @@
   position: absolute;
 }
 
-.ringInteractive {
-  pointer-events: none;
-}
-
 .card {
   background: var(--color-theme-dark);
-  border-radius: var(--border-radius-medium);
   border: solid 3px var(--color-primary);
+  border-radius: var(--border-radius-medium);
   box-shadow: 0 6px 30px 0 rgb(0 0 0 / 50%);
   box-sizing: border-box;
   color: var(--color-white);

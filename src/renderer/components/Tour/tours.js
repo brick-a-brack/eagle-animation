@@ -9,9 +9,9 @@
 //                  layouts (desktop vs mobile) or in some states.
 //   - `title`      Title of the step card.
 //   - `content`    Body of the step card.
-//   - `interactive` (optional) Allow clicks on the highlighted element.
-//   - `completeOnTargetClick` (optional) Mark the tour as completed when the
-//                  highlighted element is clicked.
+//
+// The whole app is non-interactive during a tour (the spotlight overlay swallows
+// pointer events); navigation happens only through the step card.
 //
 // To add a new tour: add an entry here and mount `<Tour tourKey="MY_TOUR" />` in
 // the related view. Completion is stored in the `TOURS_COMPLETED` setting and can
@@ -27,8 +27,6 @@ const TOURS = {
       selector: '[data-tour="new-project"]',
       title: t('Create your first project'),
       content: t('Ready to start? Create a new project and we will show you around the animator.'),
-      interactive: true,
-      completeOnTargetClick: true,
     },
   ],
   ANIMATOR: (t) => [

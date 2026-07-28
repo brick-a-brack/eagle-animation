@@ -24,17 +24,20 @@ export const measureStep = (selector) => {
   return { left, top, right, bottom };
 };
 
-// The transparent cut-out around the highlighted element, padded and clamped to
-// the viewport. Returns `null` for centered steps (no highlighted element).
-export const computeHole = (rect, vw, vh) => {
+// The transparent cut-out around the highlighted element, padded around the real
+// element bounds. Intentionally not clamped to the viewport so the highlight ring
+// wraps the whole element even when it extends off-screen; the dimming panels are
+// clamped where they are rendered (see Spotlight). Returns `null` for centered
+// steps (no highlighted element).
+export const computeHole = (rect) => {
   if (!rect) {
     return null;
   }
   return {
-    left: Math.max(rect.left - SPOTLIGHT_PADDING, 0),
-    top: Math.max(rect.top - SPOTLIGHT_PADDING, 0),
-    right: Math.min(rect.right + SPOTLIGHT_PADDING, vw),
-    bottom: Math.min(rect.bottom + SPOTLIGHT_PADDING, vh),
+    left: rect.left - SPOTLIGHT_PADDING,
+    top: rect.top - SPOTLIGHT_PADDING,
+    right: rect.right + SPOTLIGHT_PADDING,
+    bottom: rect.bottom + SPOTLIGHT_PADDING,
   };
 };
 

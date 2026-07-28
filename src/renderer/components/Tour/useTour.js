@@ -79,20 +79,59 @@ const useTour = (tourKey, steps) => {
       }
       setRect((previous) => (JSON.stringify(previous) === JSON.stringify(r) ? previous : r));
     };
+
+    // Coalesce bursts of scroll/resize events into a single measure per frame so
+    // the spotlight stays glued to the target without thrashing layout.
+    let frame = null;
+    const scheduleMeasure = () => {
+      if (frame !== null) {
+        return;
+      }
+      frame = requestAnimationFrame(() => {
+        frame = null;
+        measure();
+      });
+    };
+
     measure();
     const clock = setInterval(measure, 300);
-    window.addEventListener('resize', measure);
+    window.addEventListener('resize', scheduleMeasure);
+    // Capture phase so scrolls inside nested scrollable containers are caught too
+    // (scroll events do not bubble).
+    window.addEventListener('scroll', scheduleMeasure, true);
     return () => {
       clearInterval(clock);
-      window.removeEventListener('resize', measure);
+      if (frame !== null) {
+        cancelAnimationFrame(frame);
+      }
+      window.removeEventListener('resize', scheduleMeasure);
+      window.removeEventListener('scroll', scheduleMeasure, true);
     };
   }, [isOpen, stepIndex, activeSteps, finish]);
+
+  // Lock scrolling while the tour is open so the highlighted element stays put
+  // under its spotlight. The overlay panels can't prevent it on their own: a wheel
+  // event still bubbles to a scrollable DOM ancestor of the (nested) overlay.
+  useEffect(() => {
+    if (!isOpen) {
+      return undefined;
+    }
+    const preventScroll = (e) => e.preventDefault();
+    window.addEventListener('wheel', preventScroll, { capture: true, passive: false });
+    window.addEventListener('touchmove', preventScroll, { capture: true, passive: false });
+    return () => {
+      window.removeEventListener('wheel', preventScroll, { capture: true });
+      window.removeEventListener('touchmove', preventScroll, { capture: true });
+    };
+  }, [isOpen]);
 
   // Keyboard navigation, captured on window to keep app shortcuts inactive during the tour
   useEffect(() => {
     if (!isOpen) {
       return undefined;
     }
+    // Keys that would otherwise scroll the page; blocked to keep the tour static.
+    const scrollKeys = [' ', 'ArrowUp', 'ArrowDown', 'PageUp', 'PageDown', 'Home', 'End'];
     const handleKeyDown = (e) => {
       e.stopPropagation();
       if (e.key === 'Escape') {
@@ -105,25 +144,13 @@ const useTour = (tourKey, steps) => {
         goPrevious();
       } else if (e.key === 'Enter' && e.target === document.body) {
         goNext();
+      } else if (scrollKeys.includes(e.key) && e.target === document.body) {
+        e.preventDefault();
       }
     };
     window.addEventListener('keydown', handleKeyDown, true);
     return () => window.removeEventListener('keydown', handleKeyDown, true);
   }, [isOpen, finish, goNext, goPrevious]);
-
-  // Complete the tour when the highlighted element is clicked
-  useEffect(() => {
-    if (!isOpen || !step?.completeOnTargetClick || !step?.selector) {
-      return undefined;
-    }
-    const handleClick = (e) => {
-      if (e.target?.closest?.(step.selector)) {
-        finish('completed');
-      }
-    };
-    document.addEventListener('click', handleClick, true);
-    return () => document.removeEventListener('click', handleClick, true);
-  }, [isOpen, step, finish]);
 
   return { isOpen, step, stepIndex, stepCount, rect, goNext, goPrevious, finish };
 };
