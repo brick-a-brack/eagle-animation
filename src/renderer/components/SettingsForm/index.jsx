@@ -70,7 +70,7 @@ const SettingsForm = ({ settings = {}, onUpdate = () => {}, t }) => {
           />
         </FormGroup>
         {appCapabilities.includes('LOCAL_DATA_FOLDER') && (
-          <FormGroup label={t('Data folder')} description={dataFolderPath || t('(Unknwown)')}>
+          <FormGroup label={t('Data folder')} description={dataFolderPath || t('(Unknown)')}>
             <Button size="small" label={t('Open folder')} onClick={dataFolderActions.openDataFolder} />
           </FormGroup>
         )}
