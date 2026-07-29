@@ -70,7 +70,7 @@
     "posthog-js": "^1.405.2",
     "prop-types": "^15.8.1",
     "rc-slider": "^11.1.9",
-    "react": "^19.2.7",
+    "react": "^19.2.8",
     "react-dom": "^19.2.7",
     "react-hook-form": "^7.82.0",
     "react-i18next": "^17.0.10",
