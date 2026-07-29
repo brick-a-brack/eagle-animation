@@ -7,21 +7,28 @@ const CARD_MARGIN = 12;
 const CARD_WIDTH = 340;
 const CARD_ESTIMATED_HEIGHT = 210;
 
-// Union of the rects of all visible elements matching the selector.
+// Union of the rects of all visible elements matching a selector. `selectors` may
+// be a single CSS selector or an ordered list of fallbacks (e.g. desktop then
+// mobile): the first entry matching at least one visible element wins, so a step
+// can target whichever layout is currently on screen.
 // Returns `null` for selector-less (centered) steps and `false` if nothing matches.
-export const measureStep = (selector) => {
-  if (!selector) {
+export const measureStep = (selectors) => {
+  if (!selectors) {
     return null;
   }
-  const rects = [...document.querySelectorAll(selector)].map((el) => el.getBoundingClientRect()).filter((r) => r.width > 0 && r.height > 0);
-  if (!rects.length) {
-    return false;
+  const candidates = Array.isArray(selectors) ? selectors : [selectors];
+  for (const selector of candidates) {
+    const rects = [...document.querySelectorAll(selector)].map((el) => el.getBoundingClientRect()).filter((r) => r.width > 0 && r.height > 0);
+    if (!rects.length) {
+      continue;
+    }
+    const left = Math.min(...rects.map((r) => r.left));
+    const top = Math.min(...rects.map((r) => r.top));
+    const right = Math.max(...rects.map((r) => r.right));
+    const bottom = Math.max(...rects.map((r) => r.bottom));
+    return { left, top, right, bottom };
   }
-  const left = Math.min(...rects.map((r) => r.left));
-  const top = Math.min(...rects.map((r) => r.top));
-  const right = Math.max(...rects.map((r) => r.right));
-  const bottom = Math.max(...rects.map((r) => r.bottom));
-  return { left, top, right, bottom };
+  return false;
 };
 
 // The transparent cut-out around the highlighted element, padded around the real

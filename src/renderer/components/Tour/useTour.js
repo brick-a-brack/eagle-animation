@@ -14,23 +14,45 @@ const useTour = (tourKey, steps) => {
   const [activeSteps, setActiveSteps] = useState(null); // null = presence not resolved yet
   const directionRef = useRef(1);
   const startedRef = useRef(false);
+  const activeStepsRef = useRef(null);
+  const stepRef = useRef(null);
 
   const isOpen = !dismissed && !!settings && !(settings.TOURS_COMPLETED || []).includes(tourKey) && steps.length > 0;
 
-  // Resolve which steps actually apply to the current layout once, when the tour
-  // opens: keep centered steps (no selector) and steps whose target is present.
-  // This keeps the step counter honest on layouts where some targets are hidden
-  // (e.g. mobile), instead of counting steps that would be silently skipped.
+  // Resolve which steps actually apply to the current layout: keep centered steps
+  // (no selectors) and steps whose target is present. This keeps the step counter
+  // honest on layouts where some targets are hidden (e.g. mobile), instead of
+  // counting steps that would be silently skipped. Recomputed on resize, because
+  // crossing a layout breakpoint can show or hide targets and the counter must
+  // follow; the user is kept on their current step whenever it survives.
   useLayoutEffect(() => {
     if (!isOpen) {
       setActiveSteps(null);
-      return;
+      activeStepsRef.current = null;
+      return undefined;
     }
-    setActiveSteps((current) => current ?? steps.filter((s) => measureStep(s.selector) !== false));
+    const resolve = () => {
+      const next = steps.filter((s) => measureStep(s.selectors) !== false);
+      const previous = activeStepsRef.current;
+      if (previous && previous.length === next.length && previous.every((s, i) => s === next[i])) {
+        return;
+      }
+      activeStepsRef.current = next;
+      const current = stepRef.current;
+      const target = current ? next.indexOf(current) : -1;
+      setStepIndex((i) => (target !== -1 ? target : Math.min(i, Math.max(0, next.length - 1))));
+      setActiveSteps(next);
+    };
+    resolve();
+    window.addEventListener('resize', resolve);
+    return () => window.removeEventListener('resize', resolve);
   }, [isOpen, steps]);
 
   const step = isOpen && activeSteps ? activeSteps[stepIndex] : null;
   const stepCount = activeSteps ? activeSteps.length : 0;
+
+  // Track the current step so a resize-driven recompute can keep the user on it.
+  stepRef.current = step;
 
   const finish = useCallback(
     (reason) => {
@@ -72,7 +94,7 @@ const useTour = (tourKey, steps) => {
     }
     const currentStep = activeSteps[stepIndex];
     const measure = () => {
-      const r = measureStep(currentStep.selector);
+      const r = measureStep(currentStep.selectors);
       if (r === false) {
         setStepIndex((i) => (i + directionRef.current < 0 ? i + 1 : i + directionRef.current));
         return;

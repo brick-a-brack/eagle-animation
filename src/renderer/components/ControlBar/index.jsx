@@ -133,29 +133,30 @@ const ControlBar = ({
             tooltipPosition="TOP"
           />
         )}
-
-        <ButtonsGroup
-          groupClassName={style.liveViewActions}
-          actions={[
-            {
-              title: t('Difference'),
-              selected: differenceStatus,
-              onClick: handleAction('DIFFERENCE'),
-              icon: faDiamondHalfStroke,
-              disabled: framePosition !== false,
-            },
-            {
-              title: gridStatus ? t('Disable grid') : t('Enable grid'),
-              selected: gridStatus,
-              onClick: handleAction('GRID'),
-              icon: faFrame,
-              disabled: framePosition !== false || isGridUnavailable,
-              warning: isGridUnavailable,
-            },
-          ]}
-          tooltipPosition="TOP"
-          merge={true}
-        />
+        <div data-tour="overlays">
+          <ButtonsGroup
+            groupClassName={style.liveViewActions}
+            actions={[
+              {
+                title: t('Difference'),
+                selected: differenceStatus,
+                onClick: handleAction('DIFFERENCE'),
+                icon: faDiamondHalfStroke,
+                disabled: framePosition !== false,
+              },
+              {
+                title: gridStatus ? t('Disable grid') : t('Enable grid'),
+                selected: gridStatus,
+                onClick: handleAction('GRID'),
+                icon: faFrame,
+                disabled: framePosition !== false || isGridUnavailable,
+                warning: isGridUnavailable,
+              },
+            ]}
+            tooltipPosition="TOP"
+            merge={true}
+          />
+        </div>
 
         <div className={`${style.slider} ${differenceStatus || framePosition !== false ? style.sliderDisabled : ''}`} id="onion" data-tooltip-id="onion" data-tour="onion">
           <CustomSlider step={0.01} min={0} max={1} value={onionValue} onChange={differenceStatus || framePosition !== false ? () => {} : (value) => handleAction('ONION_CHANGE', value)()} />
@@ -194,44 +195,48 @@ const ControlBar = ({
 
         <PreviewIndicator className={style.previewIndicator} framePosition={framePosition} frameQuantity={frameQuantity} animationFrameQuantity={totalAnimationFrames} fps={fps} />
 
-        <ButtonsGroup
-          groupClassName={style.playingGroupActions}
-          actions={[
-            {
-              selectedColor: 'warning',
-              title: !isPlaying ? t('Play') : t('Stop'),
-              selected: isPlaying,
-              onClick: handleAction('PLAY'),
-              icon: isPlaying ? faStop : faPlay,
-            },
-            {
-              title: t('Loop'),
-              onClick: handleAction('LOOP'),
-              selected: loopStatus,
-              icon: faArrowsRepeat,
-            },
-            {
-              title: t('Short play'),
-              onClick: handleAction('SHORT_PLAY'),
-              selected: shortPlayStatus,
-              icon: faForwardFast,
-            },
-          ]}
-          tooltipPosition="TOP"
-          merge={true}
-        />
+        <div data-tour="playback">
+          <ButtonsGroup
+            groupClassName={style.playingGroupActions}
+            actions={[
+              {
+                selectedColor: 'warning',
+                title: !isPlaying ? t('Play') : t('Stop'),
+                selected: isPlaying,
+                onClick: handleAction('PLAY'),
+                icon: isPlaying ? faStop : faPlay,
+              },
+              {
+                title: t('Loop'),
+                onClick: handleAction('LOOP'),
+                selected: loopStatus,
+                icon: faArrowsRepeat,
+              },
+              {
+                title: t('Short play'),
+                onClick: handleAction('SHORT_PLAY'),
+                selected: shortPlayStatus,
+                icon: faForwardFast,
+              },
+            ]}
+            tooltipPosition="TOP"
+            merge={true}
+          />
+        </div>
 
-        <NumberInput
-          className={style.fpsInput}
-          onBlur={() => handleAction('FPS_BLUR')()}
-          onFocus={() => handleAction('FPS_FOCUS')()}
-          style={{ marginLeft: '5px', height: '42px', borderRadius: '21px' }}
-          min={1}
-          max={60}
-          tag={t('FPS')}
-          register={register('fps')}
-        />
-        <Tooltip id="onion" content={t('Onion skin')} />
+        <div data-tour="fps">
+          <NumberInput
+            className={style.fpsInput}
+            onBlur={() => handleAction('FPS_BLUR')()}
+            onFocus={() => handleAction('FPS_FOCUS')()}
+            style={{ marginLeft: '5px', height: '42px', borderRadius: '21px' }}
+            min={1}
+            max={60}
+            tag={t('FPS')}
+            register={register('fps')}
+          />
+          <Tooltip id="onion" content={t('Onion skin')} />
+        </div>
       </div>
     </div>
   );
