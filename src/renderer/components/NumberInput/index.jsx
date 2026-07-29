@@ -12,7 +12,7 @@ const setValueAndEmitEvent = (dom, value) => {
   dom.dispatchEvent(ev2);
 };
 
-const NumberInput = ({ register = {}, className = '', tag = '', step = 1, style = {}, min = -Infinity, max = Infinity, onFocus, onBlur, onValueChange = null, ...rest }) => {
+const NumberInput = ({ register = {}, className = '', tag = '', step = 1, style = {}, min = -Infinity, max = Infinity, onFocus, onBlur, onValueChange = null, dataTour = '', ...rest }) => {
   const handleButtonClick =
     (applyValue = 0) =>
     (evt) => {
@@ -64,7 +64,7 @@ const NumberInput = ({ register = {}, className = '', tag = '', step = 1, style 
   };
 
   return (
-    <div className={`${styleCss.container} ${!tag ? styleCss.noTag : ''} ${className || ''}`} style={style}>
+    <div className={`${styleCss.container} ${!tag ? styleCss.noTag : ''} ${className || ''}`} style={style} {...(dataTour ? { 'data-tour': dataTour } : {})}>
       <button
         onKeyDown={(e) => {
           e.preventDefault();

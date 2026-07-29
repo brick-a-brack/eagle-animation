@@ -10,11 +10,10 @@ import Input from '@components/Input';
 import NumberInput from '@components/NumberInput';
 import Select from '@components/Select';
 import Switch from '@components/Switch';
-import UpdateAppButton from '@components/UpdateAppButton';
 import { DEVICE, LANGUAGES } from '@config-web';
 import useAppCapabilities from '@hooks/useAppCapabilities';
+import useAppVersion from '@hooks/useAppVersion';
 import useDataFolder from '@hooks/useDataFolder';
-import faFolder from '@icons/faFolder';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { withTranslation } from 'react-i18next';
@@ -26,6 +25,7 @@ import gridMarginsIcon from './assets/margins.png';
 const SettingsForm = ({ settings = {}, onUpdate = () => {}, t }) => {
   const { appCapabilities } = useAppCapabilities();
   const { path: dataFolderPath, actions: dataFolderActions } = useDataFolder();
+  const { currentVersion, latestVersion, canBeUpdated, actions: appVersionActions } = useAppVersion();
   const form = useForm({
     mode: 'all',
     defaultValues: settings,
@@ -61,13 +61,24 @@ const SettingsForm = ({ settings = {}, onUpdate = () => {}, t }) => {
           </div>
         </FormGroup>
         <FormGroup label={t('Update')} description={t('Stay up to date to enjoy the latest features and improvements')}>
-          <UpdateAppButton />
+          <Button
+            size="small"
+            color="primary"
+            disabled={!canBeUpdated}
+            onClick={canBeUpdated ? appVersionActions.openUpdatePage : undefined}
+            label={canBeUpdated ? t('Update to {{version}}', { version: latestVersion }) : t('Already up to date ({{version}})', { version: currentVersion || t('Unknown') })}
+          />
         </FormGroup>
         {appCapabilities.includes('LOCAL_DATA_FOLDER') && (
-          <FormGroup label={t('Data folder')} description={dataFolderPath || t('(Unknwown)')}>
-            <Button icon={faFolder} title={t('Open folder')} onClick={dataFolderActions.openDataFolder} />
+          <FormGroup label={t('Data folder')} description={dataFolderPath || t('(Unknown)')}>
+            <Button size="small" label={t('Open folder')} onClick={dataFolderActions.openDataFolder} />
           </FormGroup>
         )}
+        <FormGroup label={t('Tutorial')} description={t('Reset the tutorial, it will be shown on the next visit')}>
+          <div>
+            <Button size="small" label={t('Reset')} disabled={(watch('TOURS_COMPLETED') || []).length === 0} onClick={() => setValue('TOURS_COMPLETED', [])} />
+          </div>
+        </FormGroup>
 
         <Divider />
 

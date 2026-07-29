@@ -8,12 +8,14 @@
 
 .button {
   --size: 42px;
+  --font-size: var(--font-size-7);
 
   align-items: center;
   background-color: var(--color-theme-medium);
   border-radius: 50%;
   cursor: pointer;
   display: flex;
+  gap: 8px;
   height: var(--size);
   line-height: var(--size);
   margin: 5px;
@@ -25,8 +27,69 @@
   width: var(--size);
 }
 
+.sizeSmall {
+  --size: 34px;
+  --font-size: var(--font-size-8);
+
+  margin: 2px;
+}
+
+.sizeNormal {
+  --size: 42px;
+  --font-size: var(--font-size-7);
+}
+
+.sizeLarge {
+  --size: 52px;
+  --font-size: var(--font-size-5);
+}
+
+/* Text (pill) mode: a label turns the circle into an auto-width pill */
+.hasLabel {
+  border-radius: 999px;
+  line-height: normal;
+  padding: 0 calc(var(--size) / 2.2);
+  width: auto;
+}
+
+.label {
+  color: var(--color-white);
+  font-family: inherit;
+  font-size: var(--font-size);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
 .button:hover {
   background-color: var(--color-theme-light);
+}
+
+/* Ghost: transparent with an outline */
+.button.colorGhost {
+  background-color: transparent;
+  border: solid 1px var(--color-theme-light);
+}
+
+.button.colorGhost:hover {
+  background-color: var(--color-theme-medium);
+}
+
+/* Link: text-only, no chrome */
+.button.colorLink {
+  background-color: transparent;
+}
+
+.button.colorLink:hover {
+  background-color: transparent;
+}
+
+.button.colorLink .label {
+  opacity: 0.6;
+  text-decoration: underline;
+}
+
+.button.colorLink:hover .label {
+  opacity: 1;
 }
 
 .button.selected {
@@ -58,6 +121,16 @@
 .button > img {
   height: 24px;
   width: 24px;
+}
+
+.sizeSmall > svg {
+  height: 14px;
+  width: 14px;
+}
+
+.sizeSmall > img {
+  height: 18px;
+  width: 18px;
 }
 
 .tag {

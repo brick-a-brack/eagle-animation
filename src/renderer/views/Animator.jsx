@@ -15,6 +15,7 @@ import SceneSelectorWindow from '@components/SceneSelectorWindow';
 import SceneSettingsWindow from '@components/SceneSettingsWindow';
 import Timeline from '@components/Timeline';
 import ToolsWindow from '@components/ToolsWindow';
+import Tour from '@components/Tour';
 import Window from '@components/Window';
 import { parseRatio } from '@core/ratio';
 import useAppCapabilities from '@hooks/useAppCapabilities';
@@ -626,6 +627,7 @@ const Animator = ({ t }) => {
     {
       title: currentFrame === false || isPlaying ? t('More') : t('Frame actions'),
       icon: currentFrame === false || isPlaying ? faEllipsisVertical : faImage,
+      dataTour: currentFrame === false || isPlaying ? 'playback-tools-settings' : '',
       onClick: handleAction.bind(null, currentFrame === false || isPlaying ? 'SHOW_TOOLS' : 'SHOW_PICTURE_OPTIONS'),
       disabled: isPlaying,
     },
@@ -640,15 +642,22 @@ const Animator = ({ t }) => {
       selected: maskingMode !== 'DISABLED',
       disabled: isPlaying,
     },
-    { title: t('Take a picture'), icon: faCamera, onClick: handleAction.bind(null, 'TAKE_PICTURE'), color: 'primary', disabled: isTakingPicture || !isCameraReady },
-    { title: t('Camera settings'), icon: faSliders, onClick: handleAction.bind(null, 'CAMERA_SETTINGS'), disabled: isPlaying },
+    { title: t('Take a picture'), icon: faCamera, onClick: handleAction.bind(null, 'TAKE_PICTURE'), color: 'primary', disabled: isTakingPicture || !isCameraReady, dataTour: 'capture-mobile' },
+    { title: t('Camera settings'), icon: faSliders, onClick: handleAction.bind(null, 'CAMERA_SETTINGS'), disabled: isPlaying, dataTour: 'camera-settings-mobile' },
   ];
 
   const mobileActionsBottom = [
-    { title: !isPlaying ? t('Play') : t('Stop'), icon: isPlaying ? faStop : faPlay, onClick: handleAction.bind(null, 'PLAY'), selectedColor: 'warning', selected: isPlaying },
+    {
+      title: !isPlaying ? t('Play') : t('Stop'),
+      icon: isPlaying ? faStop : faPlay,
+      onClick: handleAction.bind(null, 'PLAY'),
+      selectedColor: 'warning',
+      selected: isPlaying,
+      dataTour: 'playback-mobile',
+    },
   ];
 
-  const projectAction = { title: t('Project'), icon: faFolder, onClick: handleAction.bind(null, 'PROJECT') };
+  const projectAction = { title: t('Project'), icon: faFolder, onClick: handleAction.bind(null, 'PROJECT'), dataTour: 'project-settings-mobile' };
 
   return (
     <>
@@ -752,6 +761,7 @@ const Animator = ({ t }) => {
       </PageLayout>
       {activeWindow === null && !isPlaying && <ImportOverlay onPictureAdd={handleImportPicture} />}
       {activeWindow === null && <KeyboardHandler onAction={handleAction} />}
+      {activeWindow === null && <Tour tourKey="ANIMATOR" />}
       {!isPlaying && (
         <>
           <Window isOpened={activeWindow === 'camera'} onClose={() => setActiveWindow(null)}>

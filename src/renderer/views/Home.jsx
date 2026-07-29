@@ -7,6 +7,7 @@ import NewProjectCard from '@components/NewProjectCard';
 import PageContent from '@components/PageContent';
 import PageLayout from '@components/PageLayout';
 import ProjectCard from '@components/ProjectCard';
+import Tour from '@components/Tour';
 import UpdateBanner from '@components/UpdateBanner';
 import VersionTagOverlay from '@components/VersionTagOverlay';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -185,6 +186,7 @@ const HomeView = ({ t }) => {
                 <span>{t('No projects match your search')}</span>
               </div>
             )}
+            <Tour tourKey="HOME" />
           </>
         )}
       </PageContent>
