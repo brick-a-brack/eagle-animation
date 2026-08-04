@@ -14,13 +14,14 @@ const MobileNavigation = ({
   showLeftActions = false,
   showRightActions = false,
   withBorder = false,
+  onLogoClick = null,
 }) => {
   return (
     <>
       {showLeftActions && (
         <div className={`${style.headerBar} ${style.headerBarLeft} ${withBorder ? style.withBorder : ''}`}>
           <div className={style.top}>
-            {showLogo && <Logo type="ICON" className={style.logo} />}
+            {showLogo && <Logo type="ICON" className={style.logo} onClick={onLogoClick} />}
             {topLeftActions.length > 0 && <ButtonsGroup actions={topLeftActions} tooltipPosition="NONE" />}
           </div>
           <div className={style.center}>{middleLeftActions.length > 0 && <ButtonsGroup actions={middleLeftActions} tooltipPosition="NONE" />}</div>
