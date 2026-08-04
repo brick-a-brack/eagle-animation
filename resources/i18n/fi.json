@@ -447,5 +447,18 @@
   "Project and scenes": "Projekti ja kohtaukset",
   "Rename your project and organize your animation in several scenes.": "Nimeä projektisi uudelleen ja järjestä animaatiosi useisiin kohtauksiin.",
   "You are ready!": "Olet valmis!",
-  "Once your animation is done, use the export button to save it as a video or as images. Have fun animating!": "Kun animaatiosi on valmis, käytä vientipainiketta tallentaaksesi sen videona tai kuvina. Pidä hauskaa animoinnissa!"
+  "Once your animation is done, use the export button to save it as a video or as images. Have fun animating!": "Kun animaatiosi on valmis, käytä vientipainiketta tallentaaksesi sen videona tai kuvina. Pidä hauskaa animoinnissa!",
+  "Fluorescent: Warm White": "Loisteputki: Lämmin valkoinen",
+  "Fluorescent: Cool White": "Loisteputki: Kylmä valkoinen",
+  "Fluorescent: Day White": "Loisteputki: Päivänvalkoinen",
+  "Fluorescent: Daylight": "Loisteputki: Päivänvalo",
+  "Underwater Auto": "Vedenalainen auto",
+  "Custom 1": "Mukautettu 1",
+  "Custom 2": "Mukautettu 2",
+  "Custom 3": "Mukautettu 3",
+  "DMF": "DMF",
+  "Extra Fine": "Erittäin hieno",
+  "Fine": "Hieno",
+  "Standard": "Vakio",
+  "Light": "Kevyt"
 }

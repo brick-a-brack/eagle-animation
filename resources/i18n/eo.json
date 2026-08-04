@@ -461,5 +461,18 @@
   "Project and scenes": "Projekto kaj scenoj",
   "Rename your project and organize your animation in several scenes.": "Renomu vian projekton kaj organizu vian animacion en pluraj scenoj.",
   "You are ready!": "Vi estas preta!",
-  "Once your animation is done, use the export button to save it as a video or as images. Have fun animating!": "Kiam via animacio estas preta, uzu la eksportbutonon por konservi ĝin kiel videon aŭ kiel bildojn. Amuziĝu animaciante!"
+  "Once your animation is done, use the export button to save it as a video or as images. Have fun animating!": "Kiam via animacio estas preta, uzu la eksportbutonon por konservi ĝin kiel videon aŭ kiel bildojn. Amuziĝu animaciante!",
+  "Fluorescent: Warm White": "Flureska: varma blanka",
+  "Fluorescent: Cool White": "Flureska: malvarma blanka",
+  "Fluorescent: Day White": "Flureska: taga blanka",
+  "Fluorescent: Daylight": "Flureska: taglumo",
+  "Underwater Auto": "Subakva aŭtomata",
+  "Custom 1": "Propra 1",
+  "Custom 2": "Propra 2",
+  "Custom 3": "Propra 3",
+  "DMF": "DMF",
+  "Extra Fine": "Ekstra fajna",
+  "Fine": "Fajna",
+  "Standard": "Norma",
+  "Light": "Malpeza"
 }

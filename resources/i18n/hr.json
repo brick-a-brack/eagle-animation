@@ -451,5 +451,18 @@
   "Project and scenes": "Projekt i scene",
   "Rename your project and organize your animation in several scenes.": "Preimenujte projekt i organizirajte animaciju u nekoliko scena.",
   "You are ready!": "Spremni ste!",
-  "Once your animation is done, use the export button to save it as a video or as images. Have fun animating!": "Kad je animacija gotova, upotrijebite gumb za izvoz kako biste je spremili kao video ili slike. Zabavite se animiranjem!"
+  "Once your animation is done, use the export button to save it as a video or as images. Have fun animating!": "Kad je animacija gotova, upotrijebite gumb za izvoz kako biste je spremili kao video ili slike. Zabavite se animiranjem!",
+  "Fluorescent: Warm White": "Fluorescentno: toplo bijela",
+  "Fluorescent: Cool White": "Fluorescentno: hladno bijela",
+  "Fluorescent: Day White": "Fluorescentno: dnevno bijela",
+  "Fluorescent: Daylight": "Fluorescentno: dnevno svjetlo",
+  "Underwater Auto": "Podvodno automatski",
+  "Custom 1": "Prilagođeno 1",
+  "Custom 2": "Prilagođeno 2",
+  "Custom 3": "Prilagođeno 3",
+  "DMF": "DMF",
+  "Extra Fine": "Ekstra fino",
+  "Fine": "Fino",
+  "Standard": "Standardno",
+  "Light": "Lagano"
 }

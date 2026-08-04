@@ -447,5 +447,18 @@
   "Project and scenes": "Projekt och scener",
   "Rename your project and organize your animation in several scenes.": "Byt namn på ditt projekt och organisera din animation i flera scener.",
   "You are ready!": "Du är redo!",
-  "Once your animation is done, use the export button to save it as a video or as images. Have fun animating!": "När din animation är klar, använd exportknappen för att spara den som en video eller som bilder. Ha kul med animeringen!"
+  "Once your animation is done, use the export button to save it as a video or as images. Have fun animating!": "När din animation är klar, använd exportknappen för att spara den som en video eller som bilder. Ha kul med animeringen!",
+  "Fluorescent: Warm White": "Lysrör: Varmvit",
+  "Fluorescent: Cool White": "Lysrör: Kallvit",
+  "Fluorescent: Day White": "Lysrör: Dagsvit",
+  "Fluorescent: Daylight": "Lysrör: Dagsljus",
+  "Underwater Auto": "Undervatten auto",
+  "Custom 1": "Anpassad 1",
+  "Custom 2": "Anpassad 2",
+  "Custom 3": "Anpassad 3",
+  "DMF": "DMF",
+  "Extra Fine": "Extra fin",
+  "Fine": "Fin",
+  "Standard": "Standard",
+  "Light": "Lätt"
 }

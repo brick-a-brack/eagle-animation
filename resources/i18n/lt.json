@@ -472,5 +472,18 @@
   "Project and scenes": "Projektas ir scenos",
   "Rename your project and organize your animation in several scenes.": "Pervadinkite savo projektą ir organizuokite animaciją keliose scenose.",
   "You are ready!": "Jūs pasiruošę!",
-  "Once your animation is done, use the export button to save it as a video or as images. Have fun animating!": "Kai animacija bus baigta, naudokite eksportavimo mygtuką, kad išsaugotumėte ją kaip vaizdo įrašą arba kaip nuotraukas. Smagios animacijos!"
+  "Once your animation is done, use the export button to save it as a video or as images. Have fun animating!": "Kai animacija bus baigta, naudokite eksportavimo mygtuką, kad išsaugotumėte ją kaip vaizdo įrašą arba kaip nuotraukas. Smagios animacijos!",
+  "Fluorescent: Warm White": "Fluorescencinė: šiltai balta",
+  "Fluorescent: Cool White": "Fluorescencinė: šaltai balta",
+  "Fluorescent: Day White": "Fluorescencinė: dienos balta",
+  "Fluorescent: Daylight": "Fluorescencinė: dienos šviesa",
+  "Underwater Auto": "Povandeninis auto",
+  "Custom 1": "Pasirinktinis 1",
+  "Custom 2": "Pasirinktinis 2",
+  "Custom 3": "Pasirinktinis 3",
+  "DMF": "DMF",
+  "Extra Fine": "Ypač aukšta",
+  "Fine": "Aukšta",
+  "Standard": "Standartinė",
+  "Light": "Žema"
 }

@@ -447,5 +447,18 @@
   "Project and scenes": "Project en scènes",
   "Rename your project and organize your animation in several scenes.": "Hernoem je project en organiseer je animatie in meerdere scènes.",
   "You are ready!": "Je bent klaar!",
-  "Once your animation is done, use the export button to save it as a video or as images. Have fun animating!": "Zodra je animatie klaar is, gebruik je de exportknop om deze op te slaan als video of als afbeeldingen. Veel plezier met animeren!"
+  "Once your animation is done, use the export button to save it as a video or as images. Have fun animating!": "Zodra je animatie klaar is, gebruik je de exportknop om deze op te slaan als video of als afbeeldingen. Veel plezier met animeren!",
+  "Fluorescent: Warm White": "Tl-licht: Warmwit",
+  "Fluorescent: Cool White": "Tl-licht: Koelwit",
+  "Fluorescent: Day White": "Tl-licht: Daglichtwit",
+  "Fluorescent: Daylight": "Tl-licht: Daglicht",
+  "Underwater Auto": "Onderwater automatisch",
+  "Custom 1": "Aangepast 1",
+  "Custom 2": "Aangepast 2",
+  "Custom 3": "Aangepast 3",
+  "DMF": "DMF",
+  "Extra Fine": "Extra fijn",
+  "Fine": "Fijn",
+  "Standard": "Standaard",
+  "Light": "Licht"
 }

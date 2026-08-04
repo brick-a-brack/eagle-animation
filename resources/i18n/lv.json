@@ -451,5 +451,18 @@
   "Project and scenes": "Projekts un ainas",
   "Rename your project and organize your animation in several scenes.": "Pārdēvējiet savu projektu un sakārtojiet animāciju vairākās ainās.",
   "You are ready!": "Jūs esat gatavi!",
-  "Once your animation is done, use the export button to save it as a video or as images. Have fun animating!": "Kad animācija ir pabeigta, izmantojiet eksportēšanas pogu, lai to saglabātu kā video vai kā attēlus. Priecīgu animēšanu!"
+  "Once your animation is done, use the export button to save it as a video or as images. Have fun animating!": "Kad animācija ir pabeigta, izmantojiet eksportēšanas pogu, lai to saglabātu kā video vai kā attēlus. Priecīgu animēšanu!",
+  "Fluorescent: Warm White": "Luminiscējošs: silti balts",
+  "Fluorescent: Cool White": "Luminiscējošs: vēsi balts",
+  "Fluorescent: Day White": "Luminiscējošs: dienas balts",
+  "Fluorescent: Daylight": "Luminiscējošs: dienas gaisma",
+  "Underwater Auto": "Zemūdens auto",
+  "Custom 1": "Pielāgots 1",
+  "Custom 2": "Pielāgots 2",
+  "Custom 3": "Pielāgots 3",
+  "DMF": "DMF",
+  "Extra Fine": "Īpaši augsta",
+  "Fine": "Augsta",
+  "Standard": "Standarta",
+  "Light": "Zema"
 }

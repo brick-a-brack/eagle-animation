@@ -447,5 +447,18 @@
   "Project and scenes": "Έργο και σκηνές",
   "Rename your project and organize your animation in several scenes.": "Μετονομάστε το έργο σας και οργανώστε την animation σας σε πολλές σκηνές.",
   "You are ready!": "Είστε έτοιμοι!",
-  "Once your animation is done, use the export button to save it as a video or as images. Have fun animating!": "Μόλις ολοκληρωθεί η animation σας, χρησιμοποιήστε το κουμπί εξαγωγής για να την αποθηκεύσετε ως βίντεο ή ως εικόνες. Καλή διασκέδαση!"
+  "Once your animation is done, use the export button to save it as a video or as images. Have fun animating!": "Μόλις ολοκληρωθεί η animation σας, χρησιμοποιήστε το κουμπί εξαγωγής για να την αποθηκεύσετε ως βίντεο ή ως εικόνες. Καλή διασκέδαση!",
+  "Fluorescent: Warm White": "Φθορισμού: θερμό λευκό",
+  "Fluorescent: Cool White": "Φθορισμού: ψυχρό λευκό",
+  "Fluorescent: Day White": "Φθορισμού: λευκό ημέρας",
+  "Fluorescent: Daylight": "Φθορισμού: φως ημέρας",
+  "Underwater Auto": "Υποβρύχιο αυτόματο",
+  "Custom 1": "Προσαρμοσμένο 1",
+  "Custom 2": "Προσαρμοσμένο 2",
+  "Custom 3": "Προσαρμοσμένο 3",
+  "DMF": "DMF",
+  "Extra Fine": "Εξαιρετικά υψηλή",
+  "Fine": "Υψηλή",
+  "Standard": "Τυπική",
+  "Light": "Ελαφριά"
 }

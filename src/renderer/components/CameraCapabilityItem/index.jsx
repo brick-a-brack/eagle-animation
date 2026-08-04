@@ -8,7 +8,7 @@ import { useCallback, useMemo, useRef, useState } from 'react';
 import { withTranslation } from 'react-i18next';
 
 const getCapabilitySelectLabel = (label, t) => {
-  const properId = label?.toLowerCase().replace(/ /g, '_').trim();
+  const properId = label?.toLowerCase().replace(':', '').replace(/ /g, '_').trim();
   const map = {
     disabled: t('Disabled'),
     off: t('Disabled'),
@@ -72,6 +72,19 @@ const getCapabilitySelectLabel = (label, t) => {
     'af-s': t('AF-S'),
     'af-c': t('AF-C'),
     'af-a': t('AF-A'),
+    fluorescent_warm_white: t('Fluorescent: Warm White'),
+    fluorescent_cool_white: t('Fluorescent: Cool White'),
+    fluorescent_day_white: t('Fluorescent: Day White'),
+    fluorescent_daylight: t('Fluorescent: Daylight'),
+    underwater_auto: t('Underwater Auto'),
+    custom_1: t('Custom 1'),
+    custom_2: t('Custom 2'),
+    custom_3: t('Custom 3'),
+    dmf: t('DMF'),
+    extra_fine: t('Extra Fine'),
+    fine: t('Fine'),
+    standard: t('Standard'),
+    light: t('Light'),
   };
   return map?.[properId] || label || t('Unknown');
 };

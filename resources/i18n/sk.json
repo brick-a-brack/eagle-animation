@@ -454,5 +454,18 @@
   "Project and scenes": "Projekt a scény",
   "Rename your project and organize your animation in several scenes.": "Premenujte projekt a usporiadajte animáciu do viacerých scén.",
   "You are ready!": "Ste pripravení!",
-  "Once your animation is done, use the export button to save it as a video or as images. Have fun animating!": "Keď je vaša animácia hotová, použite tlačidlo exportu na jej uloženie ako videa alebo obrázkov. Užite si animovanie!"
+  "Once your animation is done, use the export button to save it as a video or as images. Have fun animating!": "Keď je vaša animácia hotová, použite tlačidlo exportu na jej uloženie ako videa alebo obrázkov. Užite si animovanie!",
+  "Fluorescent: Warm White": "Žiarivka: teplá biela",
+  "Fluorescent: Cool White": "Žiarivka: studená biela",
+  "Fluorescent: Day White": "Žiarivka: denná biela",
+  "Fluorescent: Daylight": "Žiarivka: denné svetlo",
+  "Underwater Auto": "Pod vodou (auto)",
+  "Custom 1": "Vlastné 1",
+  "Custom 2": "Vlastné 2",
+  "Custom 3": "Vlastné 3",
+  "DMF": "DMF",
+  "Extra Fine": "Extra jemná",
+  "Fine": "Jemná",
+  "Standard": "Štandardná",
+  "Light": "Nízka"
 }

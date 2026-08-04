@@ -461,5 +461,18 @@
   "Project and scenes": "Projekt und Szenen",
   "Rename your project and organize your animation in several scenes.": "Benenne dein Projekt um und organisiere deine Animation in mehreren Szenen.",
   "You are ready!": "Du bist startklar!",
-  "Once your animation is done, use the export button to save it as a video or as images. Have fun animating!": "Wenn deine Animation fertig ist, speichere sie mit der Exportschaltfläche als Video oder als Bilder. Viel Spaß beim Animieren!"
+  "Once your animation is done, use the export button to save it as a video or as images. Have fun animating!": "Wenn deine Animation fertig ist, speichere sie mit der Exportschaltfläche als Video oder als Bilder. Viel Spaß beim Animieren!",
+  "Fluorescent: Warm White": "Leuchtstoff: Warmweiß",
+  "Fluorescent: Cool White": "Leuchtstoff: Kaltweiß",
+  "Fluorescent: Day White": "Leuchtstoff: Tageslichtweiß",
+  "Fluorescent: Daylight": "Leuchtstoff: Tageslicht",
+  "Underwater Auto": "Unterwasser Auto",
+  "Custom 1": "Benutzerdefiniert 1",
+  "Custom 2": "Benutzerdefiniert 2",
+  "Custom 3": "Benutzerdefiniert 3",
+  "DMF": "DMF",
+  "Extra Fine": "Extrafein",
+  "Fine": "Fein",
+  "Standard": "Standard",
+  "Light": "Leicht"
 }

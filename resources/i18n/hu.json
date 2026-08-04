@@ -447,5 +447,18 @@
   "Project and scenes": "Projekt és jelenetek",
   "Rename your project and organize your animation in several scenes.": "Nevezd át a projektedet, és rendezd az animációdat több jelenetbe.",
   "You are ready!": "Készen állsz!",
-  "Once your animation is done, use the export button to save it as a video or as images. Have fun animating!": "Ha elkészült az animációd, használd az exportálás gombot, hogy videóként vagy képekként mentsd el. Jó szórakozást az animáláshoz!"
+  "Once your animation is done, use the export button to save it as a video or as images. Have fun animating!": "Ha elkészült az animációd, használd az exportálás gombot, hogy videóként vagy képekként mentsd el. Jó szórakozást az animáláshoz!",
+  "Fluorescent: Warm White": "Fénycső: meleg fehér",
+  "Fluorescent: Cool White": "Fénycső: hideg fehér",
+  "Fluorescent: Day White": "Fénycső: nappali fehér",
+  "Fluorescent: Daylight": "Fénycső: nappali fény",
+  "Underwater Auto": "Víz alatti automatikus",
+  "Custom 1": "Egyéni 1",
+  "Custom 2": "Egyéni 2",
+  "Custom 3": "Egyéni 3",
+  "DMF": "DMF",
+  "Extra Fine": "Extra finom",
+  "Fine": "Finom",
+  "Standard": "Normál",
+  "Light": "Könnyű"
 }

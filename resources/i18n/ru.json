@@ -454,5 +454,18 @@
   "Project and scenes": "Проект и сцены",
   "Rename your project and organize your animation in several scenes.": "Переименуйте проект и организуйте анимацию в несколько сцен.",
   "You are ready!": "Вы готовы!",
-  "Once your animation is done, use the export button to save it as a video or as images. Have fun animating!": "Когда анимация будет готова, используйте кнопку экспорта, чтобы сохранить её как видео или изображения. Приятной анимации!"
+  "Once your animation is done, use the export button to save it as a video or as images. Have fun animating!": "Когда анимация будет готова, используйте кнопку экспорта, чтобы сохранить её как видео или изображения. Приятной анимации!",
+  "Fluorescent: Warm White": "Лампа: тёплый белый",
+  "Fluorescent: Cool White": "Лампа: холодный белый",
+  "Fluorescent: Day White": "Лампа: дневной белый",
+  "Fluorescent: Daylight": "Лампа: дневной свет",
+  "Underwater Auto": "Под водой (авто)",
+  "Custom 1": "Пользоват. 1",
+  "Custom 2": "Пользоват. 2",
+  "Custom 3": "Пользоват. 3",
+  "DMF": "DMF",
+  "Extra Fine": "Экстра",
+  "Fine": "Высокое",
+  "Standard": "Стандартное",
+  "Light": "Лёгкое"
 }

@@ -447,5 +447,18 @@
   "Project and scenes": "Projekt og scener",
   "Rename your project and organize your animation in several scenes.": "Omdøb dit projekt, og organiser din animation i flere scener.",
   "You are ready!": "Du er klar!",
-  "Once your animation is done, use the export button to save it as a video or as images. Have fun animating!": "Når din animation er færdig, kan du bruge eksportknappen til at gemme den som en video eller som billeder. God fornøjelse med at animere!"
+  "Once your animation is done, use the export button to save it as a video or as images. Have fun animating!": "Når din animation er færdig, kan du bruge eksportknappen til at gemme den som en video eller som billeder. God fornøjelse med at animere!",
+  "Fluorescent: Warm White": "Lysstofrør: Varm hvid",
+  "Fluorescent: Cool White": "Lysstofrør: Kold hvid",
+  "Fluorescent: Day White": "Lysstofrør: Dagshvid",
+  "Fluorescent: Daylight": "Lysstofrør: Dagslys",
+  "Underwater Auto": "Undervand auto",
+  "Custom 1": "Brugerdefineret 1",
+  "Custom 2": "Brugerdefineret 2",
+  "Custom 3": "Brugerdefineret 3",
+  "DMF": "DMF",
+  "Extra Fine": "Ekstra fin",
+  "Fine": "Fin",
+  "Standard": "Standard",
+  "Light": "Let"
 }
