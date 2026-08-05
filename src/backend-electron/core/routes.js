@@ -51,6 +51,26 @@ const pathExists = (filePath) =>
     .then(() => true)
     .catch(() => false);
 
+// Encode a Sharp instance to the requested format (defaults to JPEG).
+const encodeImage = async (img, f, quality) => {
+  if (f === 'png') return { data: await img.png({ quality }).toBuffer(), mimeType: 'image/png' };
+  if (f === 'webp') return { data: await img.webp({ quality }).toBuffer(), mimeType: 'image/webp' };
+  if (f === 'avif') return { data: await img.avif({ quality }).toBuffer(), mimeType: 'image/avif' };
+  return { data: await img.jpeg({ quality }).toBuffer(), mimeType: 'image/jpeg' };
+};
+
+// Solid black placeholder, used when the source file cannot be decoded
+// (missing, truncated or unsupported image format).
+const createBlackImage = (width, height) =>
+  sharp({
+    create: {
+      width,
+      height,
+      channels: 3,
+      background: { r: 0, g: 0, b: 0 },
+    },
+  });
+
 const writeCacheFile = async (cacheKey, mimeType, data) => {
   try {
     await mkdir(join(PROJECTS_PATH, '.cache', cacheKey.slice(0, 2)), { recursive: true });
@@ -143,24 +163,7 @@ export const ImageRoute = async (request) => {
 
     // Format conversion
     const quality = q ? parseInt(q, 10) : 80;
-    let outputBuffer = null;
-    let mimeType = null;
-    if (!outputBuffer && f === 'png') {
-      outputBuffer = await img.png({ quality }).toBuffer();
-      mimeType = 'image/png';
-    }
-    if (!outputBuffer && f === 'webp') {
-      outputBuffer = await img.webp({ quality }).toBuffer();
-      mimeType = 'image/webp';
-    }
-    if (!outputBuffer && f === 'avif') {
-      outputBuffer = await img.avif({ quality }).toBuffer();
-      mimeType = 'image/avif';
-    }
-    if (!outputBuffer) {
-      outputBuffer = await img.jpeg({ quality }).toBuffer();
-      mimeType = 'image/jpeg';
-    }
+    const { data: outputBuffer, mimeType } = await encodeImage(img, f, quality);
 
     // Write to disk cache
     if (c) {
@@ -174,7 +177,33 @@ export const ImageRoute = async (request) => {
       },
     });
   } catch (err) {
-    console.error('ea handler error', err);
-    return net.fetch(url.pathToFileURL(diskPath).toString());
+    // Don't log the expected "unsupported image format" case: it happens for
+    // files still being written and would flood the logs. Log anything else.
+    if (!`${err?.message || ''}`.includes('unsupported image format')) {
+      console.error('ea handler error', err);
+    }
+
+    // The source file could not be decoded (missing, truncated or unsupported
+    // format). Serve a black placeholder so the app keeps working instead of a
+    // broken image. Not cached, so it self-heals once the file becomes valid.
+    const width = w ? parseInt(w, 10) : 1280;
+    const height = h ? parseInt(h, 10) : 720;
+
+    if (i === 'json') {
+      return new Response(JSON.stringify({ width, height }), {
+        headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
+      });
+    }
+
+    try {
+      const quality = q ? parseInt(q, 10) : 80;
+      const { data, mimeType } = await encodeImage(createBlackImage(width, height), f, quality);
+      return new Response(data, {
+        headers: { 'content-type': mimeType, 'Cache-Control': 'no-store' },
+      });
+    } catch (fallbackErr) {
+      console.error('ea handler fallback error', fallbackErr);
+      return new Response(null, { status: 500 });
+    }
   }
 };
