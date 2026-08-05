@@ -4,6 +4,9 @@ import { getCamera, getCameras, takePicture } from './modules';
 
 const applyCameraLabel = (e, i) => ({ ...e, label: `[${i + 1}] ${e.label || ''}` });
 
+// Delay between devices list refreshes in ms
+const DEVICES_POLL_INTERVAL = 3000;
+
 function useCamera(options = {}) {
   const compatibilityMode = !!options?.compatibilityMode;
   const [devices, setDevices] = useState(null);
@@ -40,6 +43,21 @@ function useCamera(options = {}) {
     };
   }, [compatibilityMode]);
 
+  // Auto refresh the device list every few seconds
+  useEffect(() => {
+    let cancelled = false;
+    const interval = setInterval(() => {
+      getCameras(compatibilityMode).then((cameras) => {
+        if (cancelled) return;
+        setDevices(cameras.map(applyCameraLabel));
+      });
+    }, DEVICES_POLL_INTERVAL);
+    return () => {
+      cancelled = true;
+      clearInterval(interval);
+    };
+  }, [compatibilityMode]);
+
   // Trigger event
   const triggerEvent = useCallback((name, data = null) => {
     if (['connect', 'disconnect'].includes(name)) {
@@ -60,6 +78,24 @@ function useCamera(options = {}) {
   const actionRefreshDevices = useCallback(() => {
     getCameras(compatibilityMode).then((cameras) => setDevices(cameras.map(applyCameraLabel)));
   }, [compatibilityMode]);
+
+  // Tear the connection down when the active camera disappears from the devices list
+  useEffect(() => {
+    const activeId = activeCameraIdRef.current;
+    if (!activeId || devices === null) {
+      return;
+    }
+    if (devices.some((e) => `${e.id}` === `${activeId}`)) {
+      return;
+    }
+    try {
+      getCamera(activeId)?.disconnect();
+    } catch (e) {
+      console.error(e);
+    }
+    activeCameraIdRef.current = null;
+    triggerEvent('disconnect');
+  }, [devices, triggerEvent]);
 
   // Connect a camera instance and wire up its stream.
   const connectCamera = useCallback(
