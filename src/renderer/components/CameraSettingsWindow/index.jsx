@@ -24,7 +24,6 @@ import faLightbulbOn from '@icons/faLightbulbOn';
 import faMagnifyingGlass from '@icons/faMagnifyingGlass';
 import faMobileSignalOut from '@icons/faMobileSignalOut';
 import faQuestion from '@icons/faQuestion';
-import faRotate from '@icons/faRotate';
 import faShutterSpeed from '@icons/faShutterSpeed';
 import faSun from '@icons/faSun';
 import faTemperatureHalf from '@icons/faTemperatureHalf';
@@ -226,10 +225,6 @@ const BasicCameraSettingsTab = withTranslation()(({ t, onDevicesListRefresh = ()
           ]}
           register={register('CAMERA_ID')}
         />
-        <Action title={t('Refresh camera list')} className={style.refreshIcon} onClick={() => onDevicesListRefresh()}>
-          <FontAwesomeIcon icon={faRotate} />
-        </Action>
-
         {appCapabilities.includes('REMOTE_CAMERAS') && !settings?.COMPATIBILITY_MODE_CAMERAS && (
           <Action title={t('Remote cameras')} className={style.refreshIcon} onClick={() => setIsPeerDevicesListOpen(true)}>
             <FontAwesomeIcon icon={faMobileSignalOut} />
