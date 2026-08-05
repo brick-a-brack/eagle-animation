@@ -1,7 +1,8 @@
 on:
   release:
+    types: [published, released, prereleased, created, edited]
 jobs:
   debug:
     runs-on: ubuntu-latest
     steps:
-      - run: echo "EVENT: ${{ toJson(github.event) }}"
+      - run: echo "action=${{ github.event.action }} prerelease=${{ github.event.release.prerelease }}"
