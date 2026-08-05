@@ -176,11 +176,20 @@ const RemoteCameraSettingsWindow = withTranslation()(({ onDevicesListRefresh }) 
 });
 
 const BasicCameraSettingsTab = withTranslation()(({ t, onDevicesListRefresh = () => {}, onSettingsChange = () => {}, devices = [], settings = {}, currentCameraId = null }) => {
+  // Only seed the fields this form actually edits. Spreading the whole settings
+  // object would make the form re-emit unrelated keys (e.g. TOURS_COMPLETED) on
+  // every change, overwriting values owned by other code paths with a stale
+  // snapshot. This is what caused the tutorial to relaunch on each camera change,
+  // especially on Linux where camera enumeration churns currentCameraId.
   const form = useForm({
     mode: 'all',
     defaultValues: {
-      ...settings,
       CAMERA_ID: currentCameraId || settings?.CAMERA_ID || null,
+      CAPTURE_FRAMES: settings?.CAPTURE_FRAMES,
+      REVERSE_X: settings?.REVERSE_X,
+      REVERSE_Y: settings?.REVERSE_Y,
+      AVERAGING_ENABLED: settings?.AVERAGING_ENABLED,
+      AVERAGING_VALUE: settings?.AVERAGING_VALUE,
     },
   });
   const { appCapabilities } = useAppCapabilities();
