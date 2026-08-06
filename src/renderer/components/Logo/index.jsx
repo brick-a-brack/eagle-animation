@@ -3,12 +3,12 @@ import LogoSVG from './assets/logo.svg?jsx';
 
 import * as style from './style.module.css';
 
-const Logo = ({ type = 'logo', className = '' }) => {
+const Logo = ({ type = 'logo', className = '', onClick = null }) => {
   const classNames = `${style.logo} ${className}`.trim();
 
   if (type === 'LOGO') {
     return (
-      <div className={classNames}>
+      <div className={classNames} onClick={onClick}>
         <LogoSVG />
       </div>
     );
@@ -16,7 +16,7 @@ const Logo = ({ type = 'logo', className = '' }) => {
 
   if (type === 'ICON') {
     return (
-      <div className={classNames}>
+      <div className={classNames} onClick={onClick}>
         <IconSVG />
       </div>
     );

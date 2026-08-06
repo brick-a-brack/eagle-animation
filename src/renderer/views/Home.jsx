@@ -7,15 +7,14 @@ import NewProjectCard from '@components/NewProjectCard';
 import PageContent from '@components/PageContent';
 import PageLayout from '@components/PageLayout';
 import ProjectCard from '@components/ProjectCard';
+import Tour from '@components/Tour';
 import UpdateBanner from '@components/UpdateBanner';
 import VersionTagOverlay from '@components/VersionTagOverlay';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import useAppCapabilities from '@hooks/useAppCapabilities';
 import useDiscordActivity from '@hooks/useDiscordActivity';
 import useFullscreen from '@hooks/useFullscreen';
 import useProjects from '@hooks/useProjects';
 import useSettings from '@hooks/useSettings';
-import faArrowLeft from '@icons/faArrowLeft';
 import faDownLeftAndUpRightToCenter from '@icons/faDownLeftAndUpRightToCenter';
 import faGear from '@icons/faGear';
 import faKeyboard from '@icons/faKeyboard';
@@ -29,7 +28,6 @@ import { useNavigate } from 'react-router-dom';
 import * as style from './Home.module.css';
 
 const HomeView = ({ t }) => {
-  const { appCapabilities } = useAppCapabilities();
   const { projects, actions: projectsActions } = useProjects();
 
   const { settings } = useSettings();
@@ -83,8 +81,8 @@ const HomeView = ({ t }) => {
     if (action === 'EXIT_FULLSCREEN') {
       exitFullscreen();
     }
-    if (action === 'RETURN_TO_WEBSITE') {
-      window.EA('OPEN_LINK', { link: 'https://eagle-animation.com/' });
+    if (action === 'OPEN_WEBSITE') {
+      window.EA('OPEN_LINK', { link: 'https://eagle-animation.com/?source=app' });
     }
   };
 
@@ -127,7 +125,7 @@ const HomeView = ({ t }) => {
   }, [realProjects, search, favoritesOnly, sort, t]);
 
   const isFiltering = !!((search || '').trim() !== '' || favoritesOnly);
-  const primaryActions = [...(appCapabilities.includes('RETURN_TO_WEBSITE') ? [{ label: t('Back'), icon: faArrowLeft, onClick: handleAction('RETURN_TO_WEBSITE') }] : [])];
+  const primaryActions = [];
 
   const secondaryActions = [
     ...(settings?.EVENT_MODE_ENABLED ? [{ label: t('Sync list'), icon: faListCheck, onClick: handleAction('SYNC_LIST') }] : []),
@@ -144,8 +142,8 @@ const HomeView = ({ t }) => {
 
   return (
     <PageLayout hasMobileLeftBar={true}>
-      <DesktopNavigation showLogo={true} leftActions={primaryActions} rightActions={secondaryActions} />
-      <MobileNavigation showLogo={true} topLeftActions={primaryActions} bottomLeftActions={secondaryActions} showLeftActions={true} />
+      <DesktopNavigation showLogo={true} leftActions={primaryActions} rightActions={secondaryActions} onLogoClick={handleAction('OPEN_WEBSITE')} />
+      <MobileNavigation showLogo={true} topLeftActions={primaryActions} bottomLeftActions={secondaryActions} showLeftActions={true} onLogoClick={handleAction('OPEN_WEBSITE')} />
       <VersionTagOverlay />
       <PageContent>
         {projects !== null && (
@@ -185,6 +183,7 @@ const HomeView = ({ t }) => {
                 <span>{t('No projects match your search')}</span>
               </div>
             )}
+            <Tour tourKey="HOME" />
           </>
         )}
       </PageContent>

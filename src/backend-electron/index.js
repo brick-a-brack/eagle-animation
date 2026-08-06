@@ -21,7 +21,7 @@ function createWindow() {
     height: 720,
     minWidth: 640,
     minHeight: 360,
-    title: 'Eagle Animation by Brick à Brack (Brickfilms.com)',
+    title: 'Eagle Animation by Brick à Brack',
     show: false,
     autoHideMenuBar: true,
     ...(process.platform === 'linux' ? { icon } : {}),

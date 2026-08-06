@@ -90,6 +90,10 @@ class ToucanCameraServer {
       },
     });
 
+    if (!request.ok) {
+      throw new Error(`Failed to capture picture (HTTP ${request.status})`);
+    }
+
     const capturedFrame = await request.arrayBuffer();
 
     return { type: request.headers.get('Content-Type'), buffer: capturedFrame };

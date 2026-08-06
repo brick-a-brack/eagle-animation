@@ -49,7 +49,7 @@ const SceneSelector = ({
   const currentScene = scenes.find((s) => s.index === Number(currentTrack)) || scenes[0] || null;
 
   return (
-    <div className={style.container} ref={containerRef}>
+    <div className={style.container} ref={containerRef} data-tour="scenes">
       <button type="button" className={style.button} onClick={() => setIsOpen((v) => !v)} disabled={disabled}>
         <div className={style.buttonContent}>
           <span className={style.projectLabel}>{projectTitle || t('Untitled project')}</span>
