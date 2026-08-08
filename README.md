@@ -4,7 +4,7 @@
 
 💬 **Join our [Discord community](https://discord.gg/S9R6bXeU7m)!** Get help with the app, share your animations, suggest features and chat with other animators and the team.
 
-![Eagle Animation in use by Gwen Movies and Nanomega](docs/imgs/img_5.png)
+![Eagle Animation in use by Gwen Movies and Nanomega](docs/imgs/img_5.jpg)
 
 **EagleAnimation** is an awesome, free and open-source stop motion animation software. It is available for Windows, macOS, Linux and also works with any web browser. It's a great alternative to _Stop
 Motion Studio_, _Dragon Frame_ and _Boats Animator_.
