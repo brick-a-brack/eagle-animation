@@ -460,5 +460,10 @@
   "Extra Fine": "Extra fijn",
   "Fine": "Fijn",
   "Standard": "Standaard",
-  "Light": "Licht"
+  "Light": "Licht",
+  "Cache": "Cache",
+  "The cache is there to improve the application's performance and can be safely deleted": "De cache verbetert de prestaties van de applicatie en kan veilig worden verwijderd",
+  "Clearing cache…": "Bezig met wissen…",
+  "Clear cache": "Cache wissen",
+  "Clear cache ({{size}})": "Cache wissen ({{size}})"
 }

@@ -467,5 +467,10 @@
   "Extra Fine": "Extra jemná",
   "Fine": "Jemná",
   "Standard": "Standardní",
-  "Light": "Nízká"
+  "Light": "Nízká",
+  "Cache": "Mezipaměť",
+  "The cache is there to improve the application's performance and can be safely deleted": "Mezipaměť slouží ke zlepšení výkonu aplikace a lze ji bezpečně smazat",
+  "Clearing cache…": "Mazání mezipaměti…",
+  "Clear cache": "Vymazat mezipaměť",
+  "Clear cache ({{size}})": "Vymazat mezipaměť ({{size}})"
 }

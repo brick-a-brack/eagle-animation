@@ -481,5 +481,10 @@
   "Extra Fine": "Ekstra dokładna",
   "Fine": "Dokładna",
   "Standard": "Standardowa",
-  "Light": "Lekka"
+  "Light": "Lekka",
+  "Cache": "Pamięć podręczna",
+  "The cache is there to improve the application's performance and can be safely deleted": "Pamięć podręczna służy do poprawy wydajności aplikacji i można ją bezpiecznie usunąć",
+  "Clearing cache…": "Czyszczenie pamięci podręcznej…",
+  "Clear cache": "Wyczyść pamięć podręczną",
+  "Clear cache ({{size}})": "Wyczyść pamięć podręczną ({{size}})"
 }

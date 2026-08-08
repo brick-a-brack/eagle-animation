@@ -467,5 +467,10 @@
   "Extra Fine": "Экстра",
   "Fine": "Высокое",
   "Standard": "Стандартное",
-  "Light": "Лёгкое"
+  "Light": "Лёгкое",
+  "Cache": "Кэш",
+  "The cache is there to improve the application's performance and can be safely deleted": "Кэш служит для повышения производительности приложения и может быть безопасно удалён",
+  "Clearing cache…": "Очистка кэша…",
+  "Clear cache": "Очистить кэш",
+  "Clear cache ({{size}})": "Очистить кэш ({{size}})"
 }

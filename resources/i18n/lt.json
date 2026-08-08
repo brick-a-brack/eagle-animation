@@ -485,5 +485,10 @@
   "Extra Fine": "Ypač aukšta",
   "Fine": "Aukšta",
   "Standard": "Standartinė",
-  "Light": "Žema"
+  "Light": "Žema",
+  "Cache": "Podėlis",
+  "The cache is there to improve the application's performance and can be safely deleted": "Podėlis skirtas programos našumui pagerinti ir jį galima saugiai ištrinti",
+  "Clearing cache…": "Valomas podėlis…",
+  "Clear cache": "Išvalyti podėlį",
+  "Clear cache ({{size}})": "Išvalyti podėlį ({{size}})"
 }

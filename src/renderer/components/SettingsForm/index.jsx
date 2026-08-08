@@ -11,8 +11,10 @@ import NumberInput from '@components/NumberInput';
 import Select from '@components/Select';
 import Switch from '@components/Switch';
 import { DEVICE, LANGUAGES } from '@config-web';
+import { formatFileSize } from '@core/format';
 import useAppCapabilities from '@hooks/useAppCapabilities';
 import useAppVersion from '@hooks/useAppVersion';
+import useCache from '@hooks/useCache';
 import useDataFolder from '@hooks/useDataFolder';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
@@ -26,6 +28,7 @@ const SettingsForm = ({ settings = {}, onUpdate = () => {}, t }) => {
   const { appCapabilities } = useAppCapabilities();
   const { path: dataFolderPath, actions: dataFolderActions } = useDataFolder();
   const { currentVersion, latestVersion, canBeUpdated, actions: appVersionActions } = useAppVersion();
+  const { size: cacheSize, isClearing: isClearingCache, actions: cacheActions } = useCache(appCapabilities.includes('CLEAR_CACHE'));
   const form = useForm({
     mode: 'all',
     defaultValues: settings,
@@ -72,6 +75,18 @@ const SettingsForm = ({ settings = {}, onUpdate = () => {}, t }) => {
         {appCapabilities.includes('LOCAL_DATA_FOLDER') && (
           <FormGroup label={t('Data folder')} description={dataFolderPath || t('(Unknown)')}>
             <Button size="small" label={t('Open folder')} onClick={dataFolderActions.openDataFolder} />
+          </FormGroup>
+        )}
+        {appCapabilities.includes('CLEAR_CACHE') && (
+          <FormGroup label={t('Cache')} description={t("The cache is there to improve the application's performance and can be safely deleted")}>
+            <div>
+              <Button
+                size="small"
+                disabled={isClearingCache || cacheSize === 0}
+                onClick={cacheActions.clearCache}
+                label={isClearingCache ? t('Clearing cache…') : cacheSize === null ? t('Clear cache') : t('Clear cache ({{size}})', { size: formatFileSize(cacheSize) })}
+              />
+            </div>
           </FormGroup>
         )}
         <FormGroup label={t('Tutorial')} description={t('Reset the tutorial, it will be shown on the next visit')}>

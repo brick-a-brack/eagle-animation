@@ -1,3 +1,13 @@
+// Format a size (in bytes) as a human readable string (e.g. "0 B", "1.5 MB", "1.02 GB")
+export const formatFileSize = (bytes) => {
+  const total = Math.max(0, Number(bytes) || 0);
+  if (total === 0) return '0 B';
+  const k = 1024;
+  const sizes = ['B', 'KB', 'MB', 'GB'];
+  const i = Math.min(Math.floor(Math.log(total) / Math.log(k)), sizes.length - 1);
+  return `${Math.round((total / Math.pow(k, i)) * 100) / 100} ${sizes[i]}`;
+};
+
 // Format a duration (in seconds) as a compact human readable string (e.g. "1m 57s", "2h 3m", "12s")
 export const formatDuration = (seconds, t) => {
   const total = Math.max(0, Math.round(Number(seconds) || 0));

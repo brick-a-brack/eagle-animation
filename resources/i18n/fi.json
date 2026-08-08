@@ -460,5 +460,10 @@
   "Extra Fine": "Erittäin hieno",
   "Fine": "Hieno",
   "Standard": "Vakio",
-  "Light": "Kevyt"
+  "Light": "Kevyt",
+  "Cache": "Välimuisti",
+  "The cache is there to improve the application's performance and can be safely deleted": "Välimuisti parantaa sovelluksen suorituskykyä, ja sen voi poistaa turvallisesti",
+  "Clearing cache…": "Tyhjennetään välimuistia…",
+  "Clear cache": "Tyhjennä välimuisti",
+  "Clear cache ({{size}})": "Tyhjennä välimuisti ({{size}})"
 }

@@ -460,5 +460,10 @@
   "Extra Fine": "Extra finom",
   "Fine": "Finom",
   "Standard": "Normál",
-  "Light": "Könnyű"
+  "Light": "Könnyű",
+  "Cache": "Gyorsítótár",
+  "The cache is there to improve the application's performance and can be safely deleted": "A gyorsítótár az alkalmazás teljesítményét javítja, és biztonságosan törölhető",
+  "Clearing cache…": "Ürítés folyamatban…",
+  "Clear cache": "Gyorsítótár ürítése",
+  "Clear cache ({{size}})": "Gyorsítótár ürítése ({{size}})"
 }

@@ -460,5 +460,10 @@
   "Extra Fine": "Extra fin",
   "Fine": "Fin",
   "Standard": "Standard",
-  "Light": "Lätt"
+  "Light": "Lätt",
+  "Cache": "Cache",
+  "The cache is there to improve the application's performance and can be safely deleted": "Cachen finns för att förbättra programmets prestanda och kan tas bort utan risk",
+  "Clearing cache…": "Rensar cachen…",
+  "Clear cache": "Rensa cachen",
+  "Clear cache ({{size}})": "Rensa cachen ({{size}})"
 }
