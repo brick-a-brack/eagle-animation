@@ -49,7 +49,7 @@ Eagle Animation is available in English, French, German, Spanish, Italian, Portu
 
 ### Is Eagle Animation compatible with my camera?
 
-Eagle Animation is compatible webcams and some DSLR cameras on the desktop version.
+Eagle Animation is compatible webcams and some DSLR cameras. The list of supported cameras is available on our website: [https://eagle-animation.com/cameras](https://eagle-animation.com/cameras).
 
 ### Is there a mobile version of Eagle Animation?
 
