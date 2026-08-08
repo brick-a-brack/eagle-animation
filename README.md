@@ -1,6 +1,7 @@
 # EagleAnimation
 
-[![Official Website](docs/tags/website.svg)](https://eagle-animation.com/) [![Web App](docs/tags/webapp.svg)](https://app.eagle-animation.com/) [![Discord](docs/tags/discord.svg)](https://discord.gg/S9R6bXeU7m) [![Brickfilms.com](docs/tags/brickfilms.svg)](https://brickfilms.com/)
+[![Official Website](docs/tags/website.svg)](https://eagle-animation.com/) [![Web App](docs/tags/webapp.svg)](https://app.eagle-animation.com/)
+[![Discord](docs/tags/discord.svg)](https://discord.gg/S9R6bXeU7m) [![Brickfilms.com](docs/tags/brickfilms.svg)](https://brickfilms.com/)
 
 **EagleAnimation** is an awesome, free and open-source stop motion animation software. It is available for Windows, macOS, Linux and also works with any web browser. It's a great alternative to _Stop
 Motion Studio_, _Dragon Frame_, Zu3D, AnimaShooter and _Boats Animator_.
@@ -37,13 +38,15 @@ without ads!_ 🎥
 ### How to fix: "Eagle Animation" is damaged and can't be opened. You should move it to Trash.
 
 This error occurs because Eagle Animation files are not signed. You can fix the issue by following these instructions:
+
 - Install the app using the .dmg file like any other app
 - Open a terminal
 - Type `xattr -dr com.apple.quarantine "/Applications/Eagle Animation.app"` and press enter
 
 ### What languages does Eagle Animation support?
 
-Eagle Animation is available in English, French, German, Spanish, Italian, Portuguese, Polish, Esperanto, Bulgarian, Czech, Danish, Greek, Croatian, Latvian, Hungarian, Dutch, Romanian, Slovak, Lithuanian, Slovenian, Finnish, Swedish and Russian.
+Eagle Animation is available in English, French, German, Spanish, Italian, Portuguese, Polish, Esperanto, Bulgarian, Czech, Danish, Greek, Croatian, Latvian, Hungarian, Dutch, Romanian, Slovak,
+Lithuanian, Slovenian, Finnish, Swedish and Russian.
 
 ### Is Eagle Animation compatible with my camera?
 
@@ -65,11 +68,11 @@ The logo was created by Nishant Shukla and sound effects were obtained from [Zap
 
 Some variables can be configured using a `.env` file, values with a "\*" are required.
 
-| **Name**                      | **Description**                                                                                         | **Example**                                |
-| ----------------------------- | ------------------------------------------------------------------------------------------------------- | ------------------------------------------ |
+| **Name**                      | **Description**                                                                                      | **Example**                                |
+| ----------------------------- | ---------------------------------------------------------------------------------------------------- | ------------------------------------------ |
 | VITE_PUBLIC_URL               | The full URL of the assets server, must end with a slash "/". If it is not defined, we will use "/". | `https://app.eagle-animation.com/`         |
-| VITE_COMMIT_HASH              | The hash of the current git commit, if it is not provided, the bundle will be flagged as "local".       | `cda02bf88498ce97d947fb357a6e4f459812122a` |
-| VITE_TOUCAN_CAMERA_SERVER_URL | Used for development, to choose the Toucan Camera Server instance.                                      | `http://192.168.1.14:8040/?token=RH6EH3`   |
+| VITE_COMMIT_HASH              | The hash of the current git commit, if it is not provided, the bundle will be flagged as "local".    | `cda02bf88498ce97d947fb357a6e4f459812122a` |
+| VITE_TOUCAN_CAMERA_SERVER_URL | Used for development, to choose the Toucan Camera Server instance.                                   | `http://192.168.1.14:8040/?token=RH6EH3`   |
 
 ### Build process
 
