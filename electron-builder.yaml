@@ -27,6 +27,7 @@ asarUnpack:
 extraMetadata:
   main: out/main/index.js
   name: eagle-animation
+  desktopName: eagle-animation.desktop
 
 win:
   artifactName: Eagle-Animation-${version}-win.${ext}
@@ -53,6 +54,7 @@ mac:
 linux:
   artifactName: Eagle-Animation-${version}-linux.${ext}
   executableName: eagle-animation
+  syncDesktopName: true
   category: Photography
   synopsis: EagleAnimation is an awesome, free and open-source animation software.
   description: EagleAnimation is an awesome, free and open-source animation software.
