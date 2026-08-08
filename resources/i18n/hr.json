@@ -464,5 +464,10 @@
   "Extra Fine": "Ekstra fino",
   "Fine": "Fino",
   "Standard": "Standardno",
-  "Light": "Lagano"
+  "Light": "Lagano",
+  "Cache": "Predmemorija",
+  "The cache is there to improve the application's performance and can be safely deleted": "Predmemorija služi za poboljšanje performansi aplikacije i može se sigurno izbrisati",
+  "Clearing cache…": "Brisanje predmemorije…",
+  "Clear cache": "Obriši predmemoriju",
+  "Clear cache ({{size}})": "Obriši predmemoriju ({{size}})"
 }

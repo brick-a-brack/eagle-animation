@@ -464,5 +464,10 @@
   "Extra Fine": "Extra fină",
   "Fine": "Fină",
   "Standard": "Standard",
-  "Light": "Ușoară"
+  "Light": "Ușoară",
+  "Cache": "Cache",
+  "The cache is there to improve the application's performance and can be safely deleted": "Cache-ul există pentru a îmbunătăți performanța aplicației și poate fi șters în siguranță",
+  "Clearing cache…": "Se golește cache-ul…",
+  "Clear cache": "Golește cache-ul",
+  "Clear cache ({{size}})": "Golește cache-ul ({{size}})"
 }

@@ -9,6 +9,7 @@ import { getEncodingProfile } from '../common/ffmpeg';
 import { CONTRIBUTE_REPOSITORY } from '../config';
 import { PROJECTS_PATH } from './config';
 import { uploadFile } from './core/api';
+import { clearCache, getCacheSize } from './core/cache';
 import { setDiscordActivity } from './core/discord';
 import { exportProjectScene, exportSaveTemporaryBuffer, getSyncList, saveSyncList } from './core/export';
 import { createProject, deleteProject, getProjectData, getProjectsList, projectSave, savePicture } from './core/projects';
@@ -174,6 +175,7 @@ const actions = {
       'EXPORT_VIDEO_VP8',
       'EXPORT_VIDEO_VP9',
       'LOCAL_DATA_FOLDER',
+      'CLEAR_CACHE',
     ];
     return capabilities;
   },
@@ -183,6 +185,12 @@ const actions = {
   OPEN_DATA_FOLDER: async () => {
     await shell.openPath(PROJECTS_PATH);
     return null;
+  },
+  GET_CACHE_SIZE: async () => {
+    return getCacheSize();
+  },
+  CLEAR_CACHE: async () => {
+    return clearCache();
   },
   EXPORT_SELECT_PATH: async (
     evt,

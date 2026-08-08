@@ -481,5 +481,10 @@
   "Extra Fine": "Extra Fine",
   "Fine": "Fine",
   "Standard": "Standard",
-  "Light": "Light"
+  "Light": "Light",
+  "Cache": "Cache",
+  "The cache is there to improve the application's performance and can be safely deleted": "The cache is there to improve the application's performance and can be safely deleted",
+  "Clearing cache…": "Clearing cache…",
+  "Clear cache": "Clear cache",
+  "Clear cache ({{size}})": "Clear cache ({{size}})"
 }

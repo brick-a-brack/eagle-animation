@@ -474,5 +474,10 @@
   "Extra Fine": "Ekstra fajna",
   "Fine": "Fajna",
   "Standard": "Norma",
-  "Light": "Malpeza"
+  "Light": "Malpeza",
+  "Cache": "Kaŝmemoro",
+  "The cache is there to improve the application's performance and can be safely deleted": "La kaŝmemoro servas por plibonigi la rendimenton de la aplikaĵo kaj povas esti forigita sendanĝere",
+  "Clearing cache…": "Malplenigado de la kaŝmemoro…",
+  "Clear cache": "Malplenigi la kaŝmemoron",
+  "Clear cache ({{size}})": "Malplenigi la kaŝmemoron ({{size}})"
 }

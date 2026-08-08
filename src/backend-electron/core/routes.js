@@ -7,7 +7,7 @@ import { net } from 'electron';
 import sharp from 'sharp';
 
 import { parseResizeArguments } from '../../common/resizer';
-import { PROJECTS_PATH } from '../config';
+import { PROJECTS_PATH, RESIZER_CACHE_PATH } from '../config';
 
 const getUniqueCacheKey = ({ w, h, m, q, i, f, path }) => {
   let key = '';
@@ -21,7 +21,7 @@ const getUniqueCacheKey = ({ w, h, m, q, i, f, path }) => {
   return createHash('sha256').update(key).digest('hex');
 };
 
-const getCachePath = (cacheKey) => join(PROJECTS_PATH, '.cache', cacheKey.slice(0, 2), `${cacheKey.slice(2)}.bin`);
+const getCachePath = (cacheKey) => join(RESIZER_CACHE_PATH, cacheKey.slice(0, 2), `${cacheKey.slice(2)}.bin`);
 
 const encodeCachedImage = (mimeType, data) => {
   const mimeTypeBuffer = Buffer.from(mimeType, 'utf8');
@@ -73,7 +73,7 @@ const createBlackImage = (width, height) =>
 
 const writeCacheFile = async (cacheKey, mimeType, data) => {
   try {
-    await mkdir(join(PROJECTS_PATH, '.cache', cacheKey.slice(0, 2)), { recursive: true });
+    await mkdir(join(RESIZER_CACHE_PATH, cacheKey.slice(0, 2)), { recursive: true });
     const cachedFile = getCachePath(cacheKey);
     await writeFile(cachedFile, encodeCachedImage(mimeType, data));
   } catch (err) {

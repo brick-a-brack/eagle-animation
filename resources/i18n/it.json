@@ -477,5 +477,10 @@
   "Extra Fine": "Extra fine",
   "Fine": "Fine",
   "Standard": "Standard",
-  "Light": "Leggero"
+  "Light": "Leggero",
+  "Cache": "Cache",
+  "The cache is there to improve the application's performance and can be safely deleted": "La cache serve a migliorare le prestazioni dell'applicazione e può essere eliminata senza rischi",
+  "Clearing cache…": "Svuotamento della cache…",
+  "Clear cache": "Svuota la cache",
+  "Clear cache ({{size}})": "Svuota la cache ({{size}})"
 }

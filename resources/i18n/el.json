@@ -460,5 +460,10 @@
   "Extra Fine": "Εξαιρετικά υψηλή",
   "Fine": "Υψηλή",
   "Standard": "Τυπική",
-  "Light": "Ελαφριά"
+  "Light": "Ελαφριά",
+  "Cache": "Προσωρινή μνήμη",
+  "The cache is there to improve the application's performance and can be safely deleted": "Η προσωρινή μνήμη υπάρχει για να βελτιώνει τις επιδόσεις της εφαρμογής και μπορεί να διαγραφεί με ασφάλεια",
+  "Clearing cache…": "Γίνεται εκκαθάριση…",
+  "Clear cache": "Εκκαθάριση προσωρινής μνήμης",
+  "Clear cache ({{size}})": "Εκκαθάριση προσωρινής μνήμης ({{size}})"
 }
