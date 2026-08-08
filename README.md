@@ -39,7 +39,7 @@ without ads!_ 🎥
 This error occurs because Eagle Animation files are not signed. You can fix the issue by following these instructions:
 - Install the app using the .dmg file like any other app
 - Open a terminal
-- Type `xattr -c "/Applications/Eagle Animation.app"` and press enter
+- Type `xattr -dr com.apple.quarantine "/Applications/Eagle Animation.app"` and press enter
 
 Video details: [https://www.youtube.com/watch?v=ceGovao817g](https://www.youtube.com/watch?v=ceGovao817g).
 
