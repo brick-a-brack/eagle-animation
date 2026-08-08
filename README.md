@@ -1,8 +1,10 @@
 # EagleAnimation
 
-[![Official Website](docs/tags/website.svg)](https://brickfilms.com/) [![Discord](docs/tags/discord.svg)](https://discord.gg/S9R6bXeU7m)
+[![Official Website](docs/tags/website.svg)](https://eagle-animation.com/) [![Web App](docs/tags/webapp.svg)](https://app.eagle-animation.com/) [![Discord](docs/tags/discord.svg)](https://discord.gg/S9R6bXeU7m) [![Brickfilms.com](docs/tags/brickfilms.svg)](https://brickfilms.com/)
 
-![Eagle Animation in use by Théo Aron](docs/imgs/img_2.png)
+💬 **Join our [Discord community](https://discord.gg/S9R6bXeU7m)!** Get help with the app, share your animations, suggest features and chat with other animators and the team.
+
+![Eagle Animation in use by Gwen Movies and Nanomega](docs/imgs/img_5.png)
 
 **EagleAnimation** is an awesome, free and open-source stop motion animation software. It is available for Windows, macOS, Linux and also works with any web browser. It's a great alternative to _Stop
 Motion Studio_, _Dragon Frame_ and _Boats Animator_.
@@ -22,6 +24,7 @@ without ads!_ 🎥
 
 ## Get started
 
+- 🌐 Visit the official website at [eagle-animation.com](https://eagle-animation.com/).
 - 🚀 Downloads are available on the [Github releases page](https://github.com/brick-a-brack/eagle-animation/releases).
 - ☁️ Try it directly in your browser using [the Web hosted version](https://app.eagle-animation.com/).
 - 🐛 You can report issues on the [Github issue tracker](https://github.com/brick-a-brack/eagle-animation/issues).
