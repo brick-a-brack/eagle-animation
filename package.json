@@ -96,7 +96,7 @@
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-simple-import-sort": "^14.0.0",
     "extract-zip": "^2.0.1",
-    "globals": "^17.10.0",
+    "globals": "^17.11.0",
     "husky": "^9.1.7",
     "i18next-scanner": "^4.6.0",
     "lightningcss": "^1.33.0",
