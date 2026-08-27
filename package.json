@@ -101,7 +101,7 @@
     "i18next-scanner": "^4.6.0",
     "lightningcss": "^1.33.0",
     "prettier": "^3.9.6",
-    "prettier-eslint": "^17.1.1",
+    "prettier-eslint": "^17.1.2",
     "process": "^0.11.10",
     "stylelint": "^17.14.1",
     "stylelint-config-standard": "^40.0.0",
