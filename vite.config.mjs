@@ -42,7 +42,7 @@ function serviceWorkerPlugin(options) {
         build: {
           rollupOptions: {
             input: {
-              main: resolve(__dirname, 'src/renderer/index.html'),
+              main: resolve(import.meta.dirname, 'src/renderer/index.html'),
               // SW is built separately to inline all dependencies
             },
             output: {
@@ -148,14 +148,14 @@ export default defineConfig(({ mode }) => {
 
   return {
     ...(URL ? { base: URL } : {}),
-    root: resolve(__dirname, 'src/renderer/'),
+    root: resolve(import.meta.dirname, 'src/renderer/'),
     define: {
       'import.meta.env.VITE_COMMIT_HASH': JSON.stringify(env.VITE_COMMIT_HASH),
     },
     build: {
       cssTarget: ['chrome100'],
       sourcemap: true,
-      outDir: resolve(__dirname, 'out/web/'),
+      outDir: resolve(import.meta.dirname, 'out/web/'),
     },
     worker: {
       format: 'es',
@@ -165,15 +165,15 @@ export default defineConfig(({ mode }) => {
     },
     resolve: {
       alias: {
-        '~': resolve(__dirname),
-        '@components': resolve(__dirname, 'src/renderer/components/'),
-        '@core': resolve(__dirname, 'src/renderer/core/'),
-        '@views': resolve(__dirname, 'src/renderer/views/'),
-        '@icons': resolve(__dirname, 'src/renderer/icons/'),
-        '@hooks': resolve(__dirname, 'src/renderer/hooks/'),
-        '@config-web': resolve(__dirname, 'src/renderer/config.js'),
-        '@i18n': resolve(__dirname, 'src/renderer/i18n.js'),
-        '@common': resolve(__dirname, 'src/common/'),
+        '~': resolve(import.meta.dirname),
+        '@components': resolve(import.meta.dirname, 'src/renderer/components/'),
+        '@core': resolve(import.meta.dirname, 'src/renderer/core/'),
+        '@views': resolve(import.meta.dirname, 'src/renderer/views/'),
+        '@icons': resolve(import.meta.dirname, 'src/renderer/icons/'),
+        '@hooks': resolve(import.meta.dirname, 'src/renderer/hooks/'),
+        '@config-web': resolve(import.meta.dirname, 'src/renderer/config.js'),
+        '@i18n': resolve(import.meta.dirname, 'src/renderer/i18n.js'),
+        '@common': resolve(import.meta.dirname, 'src/common/'),
       },
     },
     css: {
@@ -194,24 +194,24 @@ export default defineConfig(({ mode }) => {
           {
             // vite-plugin-static-copy 4 mirrors the source tree relative to the Vite root, so each
             // source has to be globbed recursively and its leading segments stripped back off.
-            src: normalizePath(resolve(__dirname, './resources/**/*')),
+            src: normalizePath(resolve(import.meta.dirname, './resources/**/*')),
             dest: '.',
             rename: { stripBase: 1 },
           },
           {
-            src: normalizePath(resolve(__dirname, 'node_modules/@ffmpeg/core/dist/esm/*')),
+            src: normalizePath(resolve(import.meta.dirname, 'node_modules/@ffmpeg/core/dist/esm/*')),
             dest: '.',
             rename: { stripBase: true },
           },
           {
-            src: normalizePath(resolve(__dirname, 'node_modules/web-gphoto2/build/*')),
+            src: normalizePath(resolve(import.meta.dirname, 'node_modules/web-gphoto2/build/*')),
             dest: '.',
             rename: { stripBase: true },
           },
         ],
       }),
       serviceWorkerPlugin({
-        filename: resolve(__dirname, 'src/backend-web/sw-web.js'),
+        filename: resolve(import.meta.dirname, 'src/backend-web/sw-web.js'),
       }),
     ],
     server: {

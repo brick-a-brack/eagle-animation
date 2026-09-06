@@ -29,6 +29,9 @@ const FRAME_TYPES = {
   FRAME: '',
 };
 
+// Scene number (1-based, deleted scenes are skipped) padded to 4 digits, used as export frame prefix
+const getScenePrefix = (scenes, trackId) => `${scenes.slice(0, trackId + 1).filter((scene) => !scene?.deleted).length}`.padStart(4, '0');
+
 const computeProject = (data) => {
   const copiedData = structuredClone(data);
   const scenes = copiedData.project.scenes.map((scene, i) => ({
@@ -239,9 +242,11 @@ const actions = {
   ) => {
     if (mode === 'frames') {
       if (output_path) {
+        const project = await getProjectData(join(PROJECTS_PATH, project_id));
+        const scenePrefix = getScenePrefix(project.project.scenes, Number(track_id));
         const bufferDirectoryPath = join(join(PROJECTS_PATH, project_id), `/.tmp/`);
         for (const frame of frames) {
-          await copyFile(join(bufferDirectoryPath, frame.buffer_id), join(output_path, `frame-${frame.index.toString().padStart(6, '0')}${FRAME_TYPES[frame.type]}.${frame.extension}`));
+          await copyFile(join(bufferDirectoryPath, frame.buffer_id), join(output_path, `${scenePrefix}_${frame.index.toString().padStart(6, '0')}${FRAME_TYPES[frame.type]}.${frame.extension}`));
         }
       }
       return true;
