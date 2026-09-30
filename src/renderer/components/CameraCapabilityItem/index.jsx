@@ -280,7 +280,7 @@ export const CameraCapabilityItem = withTranslation()(({ type, t, value, onCapab
         }, 100);
       }
     },
-    [value, onCapabilityChange]
+    [onCapabilityChange]
   );
 
   if (type === 'RANGE') {
