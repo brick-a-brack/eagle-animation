@@ -466,5 +466,6 @@
   "Clearing cache…": "Tyhjennetään välimuistia…",
   "Clear cache": "Tyhjennä välimuisti",
   "Clear cache ({{size}})": "Tyhjennä välimuisti ({{size}})",
-  "Camera disabled": "Kamera poistettu käytöstä"
+  "Camera disabled": "Kamera poistettu käytöstä",
+  "Connect an external USB camera": "Yhdistä ulkoinen USB-kamera"
 }

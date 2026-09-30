@@ -470,5 +470,6 @@
   "Clearing cache…": "Brisanje predmemorije…",
   "Clear cache": "Obriši predmemoriju",
   "Clear cache ({{size}})": "Obriši predmemoriju ({{size}})",
-  "Camera disabled": "Kamera onemogućena"
+  "Camera disabled": "Kamera onemogućena",
+  "Connect an external USB camera": "Poveži vanjsku USB kameru"
 }

@@ -466,5 +466,6 @@
   "Clearing cache…": "Rensar cachen…",
   "Clear cache": "Rensa cachen",
   "Clear cache ({{size}})": "Rensa cachen ({{size}})",
-  "Camera disabled": "Kameran är inaktiverad"
+  "Camera disabled": "Kameran är inaktiverad",
+  "Connect an external USB camera": "Anslut en extern USB-kamera"
 }

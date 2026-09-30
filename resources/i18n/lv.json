@@ -470,5 +470,6 @@
   "Clearing cache…": "Notiek kešatmiņas notīrīšana…",
   "Clear cache": "Notīrīt kešatmiņu",
   "Clear cache ({{size}})": "Notīrīt kešatmiņu ({{size}})",
-  "Camera disabled": "Kamera atspējota"
+  "Camera disabled": "Kamera atspējota",
+  "Connect an external USB camera": "Pievienot ārēju USB kameru"
 }

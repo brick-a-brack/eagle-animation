@@ -466,5 +466,6 @@
   "Clearing cache…": "Bezig met wissen…",
   "Clear cache": "Cache wissen",
   "Clear cache ({{size}})": "Cache wissen ({{size}})",
-  "Camera disabled": "Camera uitgeschakeld"
+  "Camera disabled": "Camera uitgeschakeld",
+  "Connect an external USB camera": "Een externe USB-camera verbinden"
 }

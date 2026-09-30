@@ -483,5 +483,6 @@
   "Clearing cache…": "Vaciando la caché…",
   "Clear cache": "Vaciar la caché",
   "Clear cache ({{size}})": "Vaciar la caché ({{size}})",
-  "Camera disabled": "Cámara desactivada"
+  "Camera disabled": "Cámara desactivada",
+  "Connect an external USB camera": "Conectar una cámara USB externa"
 }

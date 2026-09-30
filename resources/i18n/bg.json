@@ -466,5 +466,6 @@
   "Clearing cache…": "Кешът се изчиства…",
   "Clear cache": "Изчистване на кеша",
   "Clear cache ({{size}})": "Изчистване на кеша ({{size}})",
-  "Camera disabled": "Камерата е изключена"
+  "Camera disabled": "Камерата е изключена",
+  "Connect an external USB camera": "Свързване на външна USB камера"
 }

@@ -473,5 +473,6 @@
   "Clearing cache…": "Очистка кэша…",
   "Clear cache": "Очистить кэш",
   "Clear cache ({{size}})": "Очистить кэш ({{size}})",
-  "Camera disabled": "Камера отключена"
+  "Camera disabled": "Камера отключена",
+  "Connect an external USB camera": "Подключить внешнюю USB-камеру"
 }

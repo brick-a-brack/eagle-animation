@@ -473,5 +473,6 @@
   "Clearing cache…": "Mazání mezipaměti…",
   "Clear cache": "Vymazat mezipaměť",
   "Clear cache ({{size}})": "Vymazat mezipaměť ({{size}})",
-  "Camera disabled": "Kamera vypnuta"
+  "Camera disabled": "Kamera vypnuta",
+  "Connect an external USB camera": "Připojit externí USB kameru"
 }

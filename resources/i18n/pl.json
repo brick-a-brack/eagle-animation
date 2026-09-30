@@ -487,5 +487,6 @@
   "Clearing cache…": "Czyszczenie pamięci podręcznej…",
   "Clear cache": "Wyczyść pamięć podręczną",
   "Clear cache ({{size}})": "Wyczyść pamięć podręczną ({{size}})",
-  "Camera disabled": "Kamera wyłączona"
+  "Camera disabled": "Kamera wyłączona",
+  "Connect an external USB camera": "Podłącz zewnętrzną kamerę USB"
 }

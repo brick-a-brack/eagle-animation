@@ -483,5 +483,6 @@
   "Clearing cache…": "Svuotamento della cache…",
   "Clear cache": "Svuota la cache",
   "Clear cache ({{size}})": "Svuota la cache ({{size}})",
-  "Camera disabled": "Fotocamera disattivata"
+  "Camera disabled": "Fotocamera disattivata",
+  "Connect an external USB camera": "Collega una fotocamera USB esterna"
 }

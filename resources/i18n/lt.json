@@ -491,5 +491,6 @@
   "Clearing cache…": "Valomas podėlis…",
   "Clear cache": "Išvalyti podėlį",
   "Clear cache ({{size}})": "Išvalyti podėlį ({{size}})",
-  "Camera disabled": "Kamera išjungta"
+  "Camera disabled": "Kamera išjungta",
+  "Connect an external USB camera": "Prijungti išorinę USB kamerą"
 }

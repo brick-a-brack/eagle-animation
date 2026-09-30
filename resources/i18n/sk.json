@@ -473,5 +473,6 @@
   "Clearing cache…": "Mazanie vyrovnávacej pamäte…",
   "Clear cache": "Vymazať vyrovnávaciu pamäť",
   "Clear cache ({{size}})": "Vymazať vyrovnávaciu pamäť ({{size}})",
-  "Camera disabled": "Kamera vypnutá"
+  "Camera disabled": "Kamera vypnutá",
+  "Connect an external USB camera": "Pripojiť externú USB kameru"
 }

@@ -466,5 +466,6 @@
   "Clearing cache…": "Rydder cachen…",
   "Clear cache": "Ryd cachen",
   "Clear cache ({{size}})": "Ryd cachen ({{size}})",
-  "Camera disabled": "Kamera deaktiveret"
+  "Camera disabled": "Kamera deaktiveret",
+  "Connect an external USB camera": "Tilslut et eksternt USB-kamera"
 }

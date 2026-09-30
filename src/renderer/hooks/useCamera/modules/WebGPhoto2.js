@@ -1,4 +1,5 @@
 import { Camera as CameraAPI } from 'web-gphoto2';
+import i18n from '@i18n';
 
 const wait = (delay) => new Promise((resolve) => setTimeout(resolve, delay));
 
@@ -325,7 +326,7 @@ class WebGPhoto2Browser {
       {
         deviceId: 'GPHOTO',
         module: 'GPHOTO2',
-        label: 'Connect an external USB camera',
+        label: i18n.t('Connect an external USB camera'),
       },
     ];
   }

@@ -487,5 +487,6 @@
   "Clearing cache…": "Clearing cache…",
   "Clear cache": "Clear cache",
   "Clear cache ({{size}})": "Clear cache ({{size}})",
-  "Camera disabled": "Camera disabled"
+  "Camera disabled": "Camera disabled",
+  "Connect an external USB camera": "Connect an external USB camera"
 }

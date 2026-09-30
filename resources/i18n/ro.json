@@ -470,5 +470,6 @@
   "Clearing cache…": "Se golește cache-ul…",
   "Clear cache": "Golește cache-ul",
   "Clear cache ({{size}})": "Golește cache-ul ({{size}})",
-  "Camera disabled": "Cameră dezactivată"
+  "Camera disabled": "Cameră dezactivată",
+  "Connect an external USB camera": "Conectează o cameră USB externă"
 }
