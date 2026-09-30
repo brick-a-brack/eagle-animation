@@ -201,18 +201,23 @@ function useCamera(options = {}) {
   );
 
   useEffect(() => {
+    if (!currentCamera) {
+      return undefined;
+    }
+    const cameraId = currentCameraId;
     return () => {
-      if (currentCamera) {
-        try {
-          currentCamera?.disconnect();
-        } catch (e) {
-          console.error(e);
-        }
-        activeCameraIdRef.current = null;
-        triggerEvent('disconnect');
+      if (activeCameraIdRef.current !== cameraId) {
+        return;
       }
+      try {
+        currentCamera?.disconnect();
+      } catch (e) {
+        console.error(e);
+      }
+      activeCameraIdRef.current = null;
+      triggerEvent('disconnect');
     };
-  }, [currentCamera, triggerEvent]);
+  }, [currentCamera, currentCameraId, triggerEvent]);
 
   const isCurrentCameraConnected = currentCameraId && devices && devices.some((e) => `${e.id}` === `${currentCameraId}`);
 

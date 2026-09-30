@@ -469,5 +469,6 @@
   "The cache is there to improve the application's performance and can be safely deleted": "Kešatmiņa kalpo lietotnes veiktspējas uzlabošanai, un to var droši dzēst",
   "Clearing cache…": "Notiek kešatmiņas notīrīšana…",
   "Clear cache": "Notīrīt kešatmiņu",
-  "Clear cache ({{size}})": "Notīrīt kešatmiņu ({{size}})"
+  "Clear cache ({{size}})": "Notīrīt kešatmiņu ({{size}})",
+  "Camera disabled": "Kamera atspējota"
 }

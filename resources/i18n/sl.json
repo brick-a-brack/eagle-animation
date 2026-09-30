@@ -474,5 +474,6 @@
   "The cache is there to improve the application's performance and can be safely deleted": "Predpomnilnik izboljšuje delovanje aplikacije in ga je mogoče varno izbrisati",
   "Clearing cache…": "Praznjenje predpomnilnika…",
   "Clear cache": "Izprazni predpomnilnik",
-  "Clear cache ({{size}})": "Izprazni predpomnilnik ({{size}})"
+  "Clear cache ({{size}})": "Izprazni predpomnilnik ({{size}})",
+  "Camera disabled": "Kamera onemogočena"
 }

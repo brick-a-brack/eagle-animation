@@ -488,5 +488,6 @@
   "The cache is there to improve the application's performance and can be safely deleted": "Le cache sert à améliorer les performances de l'application et peut être supprimé sans risque",
   "Clearing cache…": "Vidage du cache…",
   "Clear cache": "Vider le cache",
-  "Clear cache ({{size}})": "Vider le cache ({{size}})"
+  "Clear cache ({{size}})": "Vider le cache ({{size}})",
+  "Camera disabled": "Caméra désactivée"
 }

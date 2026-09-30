@@ -1,11 +1,13 @@
 import { isBlink } from '@common/isBlink';
 import { DEVICE } from '@config-web';
 
+import { Camera as DisabledCamera, CameraBrowser as DisabledCameraBrowser } from './Disabled';
 import { Camera as ToucanCameraServerCamera, CameraBrowser as ToucanCameraServerBrowser } from './ToucanCameraServer';
 import { Camera as WebcamCamera, CameraBrowser as WebcamCameraBrowser } from './Webcam';
 import { Camera as WebGPhoto2Camera, CameraBrowser as WebGPhoto2CameraBrowser } from './WebGPhoto2';
 
 const getCameraModules = (compatibilityMode = false) => [
+  { browser: DisabledCameraBrowser, item: DisabledCamera },
   ...(DEVICE === 'ELECTRON' && !compatibilityMode ? [{ browser: ToucanCameraServerBrowser, item: ToucanCameraServerCamera }] : []),
   ...(DEVICE !== 'ELECTRON' || compatibilityMode ? [{ browser: WebcamCameraBrowser, item: WebcamCamera }] : []),
   ...(DEVICE === 'WEB' && isBlink() ? [{ browser: WebGPhoto2CameraBrowser, item: WebGPhoto2Camera }] : []),
@@ -32,9 +34,10 @@ export const getCameras = async (compatibilityMode = false) => {
     }
   }
 
+  const moduleWeights = { GPHOTO2: 1, DISABLED: 2 };
   availableCameras.sort((a, b) => {
-    if (a.module === 'GPHOTO2' && b.module !== 'GPHOTO2') return 1;
-    if (a.module !== 'GPHOTO2' && b.module === 'GPHOTO2') return -1;
+    const weightDiff = (moduleWeights[a.module] || 0) - (moduleWeights[b.module] || 0);
+    if (weightDiff !== 0) return weightDiff;
     return a.id.localeCompare(b.id);
   });
 

@@ -486,5 +486,6 @@
   "The cache is there to improve the application's performance and can be safely deleted": "Pamięć podręczna służy do poprawy wydajności aplikacji i można ją bezpiecznie usunąć",
   "Clearing cache…": "Czyszczenie pamięci podręcznej…",
   "Clear cache": "Wyczyść pamięć podręczną",
-  "Clear cache ({{size}})": "Wyczyść pamięć podręczną ({{size}})"
+  "Clear cache ({{size}})": "Wyczyść pamięć podręczną ({{size}})",
+  "Camera disabled": "Kamera wyłączona"
 }

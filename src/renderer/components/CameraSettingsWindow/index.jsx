@@ -41,6 +41,7 @@ const groupDevices = (devices, t) => {
     'TOUCAN-CAMERA-SERVER': t('Cameras'),
     WEBCAM: t('Webcams'),
     GPHOTO2: t('WebUSB'),
+    DISABLED: t('Other'),
   };
 
   // Categories

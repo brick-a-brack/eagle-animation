@@ -465,5 +465,6 @@
   "The cache is there to improve the application's performance and can be safely deleted": "De cache verbetert de prestaties van de applicatie en kan veilig worden verwijderd",
   "Clearing cache…": "Bezig met wissen…",
   "Clear cache": "Cache wissen",
-  "Clear cache ({{size}})": "Cache wissen ({{size}})"
+  "Clear cache ({{size}})": "Cache wissen ({{size}})",
+  "Camera disabled": "Camera uitgeschakeld"
 }

@@ -472,5 +472,6 @@
   "The cache is there to improve the application's performance and can be safely deleted": "Vyrovnávacia pamäť slúži na zlepšenie výkonu aplikácie a možno ju bezpečne odstrániť",
   "Clearing cache…": "Mazanie vyrovnávacej pamäte…",
   "Clear cache": "Vymazať vyrovnávaciu pamäť",
-  "Clear cache ({{size}})": "Vymazať vyrovnávaciu pamäť ({{size}})"
+  "Clear cache ({{size}})": "Vymazať vyrovnávaciu pamäť ({{size}})",
+  "Camera disabled": "Kamera vypnutá"
 }

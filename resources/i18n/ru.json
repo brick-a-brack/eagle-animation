@@ -472,5 +472,6 @@
   "The cache is there to improve the application's performance and can be safely deleted": "Кэш служит для повышения производительности приложения и может быть безопасно удалён",
   "Clearing cache…": "Очистка кэша…",
   "Clear cache": "Очистить кэш",
-  "Clear cache ({{size}})": "Очистить кэш ({{size}})"
+  "Clear cache ({{size}})": "Очистить кэш ({{size}})",
+  "Camera disabled": "Камера отключена"
 }

@@ -472,5 +472,6 @@
   "The cache is there to improve the application's performance and can be safely deleted": "Mezipaměť slouží ke zlepšení výkonu aplikace a lze ji bezpečně smazat",
   "Clearing cache…": "Mazání mezipaměti…",
   "Clear cache": "Vymazat mezipaměť",
-  "Clear cache ({{size}})": "Vymazat mezipaměť ({{size}})"
+  "Clear cache ({{size}})": "Vymazat mezipaměť ({{size}})",
+  "Camera disabled": "Kamera vypnuta"
 }

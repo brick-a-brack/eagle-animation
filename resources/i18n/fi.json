@@ -465,5 +465,6 @@
   "The cache is there to improve the application's performance and can be safely deleted": "Välimuisti parantaa sovelluksen suorituskykyä, ja sen voi poistaa turvallisesti",
   "Clearing cache…": "Tyhjennetään välimuistia…",
   "Clear cache": "Tyhjennä välimuisti",
-  "Clear cache ({{size}})": "Tyhjennä välimuisti ({{size}})"
+  "Clear cache ({{size}})": "Tyhjennä välimuisti ({{size}})",
+  "Camera disabled": "Kamera poistettu käytöstä"
 }
