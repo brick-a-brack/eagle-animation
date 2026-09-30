@@ -1,5 +1,5 @@
-import { Camera as CameraAPI } from 'web-gphoto2';
 import i18n from '@i18n';
+import { Camera as CameraAPI } from 'web-gphoto2';
 
 const wait = (delay) => new Promise((resolve) => setTimeout(resolve, delay));
 
