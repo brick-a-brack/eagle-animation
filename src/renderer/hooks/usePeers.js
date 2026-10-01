@@ -15,7 +15,7 @@ const fetchPeers = async () => {
 
 function usePeers(options = {}) {
   const [peers, setPeers] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(!options?.skip);
 
   // Action refresh peers list
   const actionRefresh = useCallback(async () => {
@@ -23,22 +23,40 @@ function usePeers(options = {}) {
     try {
       const data = await fetchPeers();
       setPeers(data);
+      setIsLoading(false);
       return data;
     } catch (err) {
       console.error(err);
       setPeers([]);
-      return [];
-    } finally {
       setIsLoading(false);
+      return [];
     }
   }, []);
 
   // Initial load
   useEffect(() => {
-    if (!options?.skip) {
-      actionRefresh();
+    if (options?.skip) {
+      return;
     }
-  }, [options?.skip, actionRefresh]);
+
+    let cancelled = false;
+
+    fetchPeers()
+      .catch((err) => {
+        console.error(err);
+        return [];
+      })
+      .then((data) => {
+        if (!cancelled) {
+          setPeers(data);
+          setIsLoading(false);
+        }
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [options?.skip]);
 
   // Action add a peer — url may be "host:port" or "http://host:port", token is optional.
   // The server checks reachability/token and rejects invalid peers, so we surface failures.
