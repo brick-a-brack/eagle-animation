@@ -172,9 +172,10 @@ jobs:
           mkdir -p binaries
           cp android/app/build/outputs/bundle/release/*.aab binaries/${{ env.artifact_name }}.aab
           jarsigner -sigalg SHA256withRSA -digestalg SHA-256 -storepass "${{ secrets.KS_STORE_PASS }}" -keystore keystore.jks binaries/${{ env.artifact_name }}.aab "${{ secrets.KS_ALIAS }}" -keypass "${{ secrets.KS_ALIAS_PASS }}"
-          java -jar bundletool.jar build-apks --bundle=binaries/${{ env.artifact_name }}.aab --output=binaries/${{ env.artifact_name }}.zip --ks=keystore.jks --ks-pass=pass:"${{ secrets.KS_STORE_PASS }}" --ks-key-alias="${{ secrets.KS_ALIAS }}" --key-pass=pass:"${{ secrets.KS_ALIAS_PASS }}"
+          java -jar bundletool.jar build-apks --bundle=binaries/${{ env.artifact_name }}.aab --output=binaries/splits.apks --ks=keystore.jks --ks-pass=pass:"${{ secrets.KS_STORE_PASS }}" --ks-key-alias="${{ secrets.KS_ALIAS }}" --key-pass=pass:"${{ secrets.KS_ALIAS_PASS }}"
           java -jar bundletool.jar build-apks --bundle=binaries/${{ env.artifact_name }}.aab --output=binaries/universal.apks --mode=universal --ks=keystore.jks --ks-pass=pass:"${{ secrets.KS_STORE_PASS }}" --ks-key-alias="${{ secrets.KS_ALIAS }}" --key-pass=pass:"${{ secrets.KS_ALIAS_PASS }}"
           unzip -p binaries/universal.apks universal.apk > binaries/${{ env.artifact_name }}.apk
+          mv binaries/splits.apks binaries/${{ env.artifact_name }}.zip
           rm binaries/universal.apks keystore.jks
 
       - name: Upload files
