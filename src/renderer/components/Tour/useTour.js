@@ -27,7 +27,6 @@ const useTour = (tourKey, steps) => {
   // follow; the user is kept on their current step whenever it survives.
   useLayoutEffect(() => {
     if (!isOpen) {
-      setActiveSteps(null);
       activeStepsRef.current = null;
       return undefined;
     }
@@ -48,11 +47,14 @@ const useTour = (tourKey, steps) => {
     return () => window.removeEventListener('resize', resolve);
   }, [isOpen, steps]);
 
-  const step = isOpen && activeSteps ? activeSteps[stepIndex] : null;
-  const stepCount = activeSteps ? activeSteps.length : 0;
+  const openSteps = isOpen ? activeSteps : null;
+  const step = openSteps ? openSteps[stepIndex] : null;
+  const stepCount = openSteps ? openSteps.length : 0;
 
   // Track the current step so a resize-driven recompute can keep the user on it.
-  stepRef.current = step;
+  useLayoutEffect(() => {
+    stepRef.current = step;
+  });
 
   const finish = useCallback(
     (reason) => {
@@ -68,8 +70,12 @@ const useTour = (tourKey, steps) => {
 
   const goNext = useCallback(() => {
     directionRef.current = 1;
-    setStepIndex((i) => i + 1); // Going past the last step completes the tour
-  }, []);
+    if (stepIndex >= stepCount - 1) {
+      finish('completed');
+      return;
+    }
+    setStepIndex((i) => i + 1);
+  }, [stepIndex, stepCount, finish]);
 
   const goPrevious = useCallback(() => {
     directionRef.current = -1;
@@ -89,8 +95,8 @@ const useTour = (tourKey, steps) => {
       return undefined;
     }
     if (stepIndex >= activeSteps.length) {
-      finish('completed');
-      return undefined;
+      const id = setTimeout(() => finish('completed'), 0);
+      return () => clearTimeout(id);
     }
     const currentStep = activeSteps[stepIndex];
     const measure = () => {
