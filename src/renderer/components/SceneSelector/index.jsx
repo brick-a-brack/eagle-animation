@@ -3,7 +3,7 @@ import faChevronDown from '@icons/faChevronDown';
 import faGear from '@icons/faGear';
 import faImages from '@icons/faImages';
 import faPlus from '@icons/faPlus';
-import faSlidersUp from '@icons/faSlidersUp';
+import faTrash from '@icons/faTrash';
 import { useEffect, useRef, useState } from 'react';
 import { withTranslation } from 'react-i18next';
 
@@ -18,7 +18,7 @@ const SceneSelector = ({
   onEditScene = () => {},
   projectTitle = '',
   onProjectTitleChange = () => {},
-  onEditProject = () => {},
+  onProjectDelete = () => {},
   disabled = false,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -49,7 +49,7 @@ const SceneSelector = ({
   const currentScene = scenes.find((s) => s.index === Number(currentTrack)) || scenes[0] || null;
 
   return (
-    <div className={style.container} ref={containerRef}>
+    <div className={style.container} ref={containerRef} data-tour="scenes">
       <button type="button" className={style.button} onClick={() => setIsOpen((v) => !v)} disabled={disabled}>
         <div className={style.buttonContent}>
           <span className={style.projectLabel}>{projectTitle || t('Untitled project')}</span>
@@ -73,15 +73,15 @@ const SceneSelector = ({
           />
           <button
             type="button"
-            className={style.rowGear}
+            className={style.rowDelete}
             onClick={(e) => {
               e.stopPropagation();
               setIsOpen(false);
-              onEditProject();
+              onProjectDelete();
             }}
-            title={t('Project settings')}
+            title={t('Delete project')}
           >
-            <FontAwesomeIcon icon={faSlidersUp} />
+            <FontAwesomeIcon icon={faTrash} />
           </button>
         </div>
 

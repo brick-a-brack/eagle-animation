@@ -27,6 +27,7 @@ const DEFAULT_SETTINGS = {
   EVENT_API: PARTNER_API,
   COMPATIBILITY_MODE_CAMERAS: false,
   TELEMETRY_ENABLED: true,
+  TOURS_COMPLETED: [], // Keys of the guided tours the user has already seen
 };
 
 function useSettings() {

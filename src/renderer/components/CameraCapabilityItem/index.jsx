@@ -8,7 +8,7 @@ import { useCallback, useMemo, useRef, useState } from 'react';
 import { withTranslation } from 'react-i18next';
 
 const getCapabilitySelectLabel = (label, t) => {
-  const properId = label?.toLowerCase().replace(/ /g, '_').trim();
+  const properId = label?.toLowerCase().replace(':', '').replace(/ /g, '_').trim();
   const map = {
     disabled: t('Disabled'),
     off: t('Disabled'),
@@ -54,6 +54,37 @@ const getCapabilitySelectLabel = (label, t) => {
     '10x': t('10x'),
     '15x': t('15x'),
     photo_resolution: t('Photo resolution'),
+    'jpeg_fine*': t('JPEG Fine*'),
+    jpeg_fine: t('JPEG Fine'),
+    'jpeg_normal*': t('JPEG Normal*'),
+    jpeg_normal: t('JPEG Normal'),
+    'jpeg_basic*': t('JPEG Basic*'),
+    jpeg_basic: t('JPEG Basic'),
+    sunny: t('Sunny'),
+    preset_1: t('Preset 1'),
+    preset_2: t('Preset 2'),
+    preset_3: t('Preset 3'),
+    preset_4: t('Preset 4'),
+    preset_5: t('Preset 5'),
+    preset_6: t('Preset 6'),
+    color_temperature: t('Color Temperature'),
+    natural: t('Natural'),
+    'af-s': t('AF-S'),
+    'af-c': t('AF-C'),
+    'af-a': t('AF-A'),
+    fluorescent_warm_white: t('Fluorescent: Warm White'),
+    fluorescent_cool_white: t('Fluorescent: Cool White'),
+    fluorescent_day_white: t('Fluorescent: Day White'),
+    fluorescent_daylight: t('Fluorescent: Daylight'),
+    underwater_auto: t('Underwater Auto'),
+    custom_1: t('Custom 1'),
+    custom_2: t('Custom 2'),
+    custom_3: t('Custom 3'),
+    dmf: t('DMF'),
+    extra_fine: t('Extra Fine'),
+    fine: t('Fine'),
+    standard: t('Standard'),
+    light: t('Light'),
   };
   return map?.[properId] || label || t('Unknown');
 };
@@ -93,6 +124,7 @@ const getCapabilityLabel = (id, t) => {
     roll_auto: t('Automatic roll'),
     roll: t('Roll'),
     focus_auto: t('Automatic focus'),
+    focus_mode: t('Focus mode'),
     focus: t('Focus'),
     live_view_zoom: t('Live view zoom'),
     live_view_pan: t('Live view pan'),
@@ -248,7 +280,7 @@ export const CameraCapabilityItem = withTranslation()(({ type, t, value, onCapab
         }, 100);
       }
     },
-    [value, onCapabilityChange]
+    [onCapabilityChange]
   );
 
   if (type === 'RANGE') {

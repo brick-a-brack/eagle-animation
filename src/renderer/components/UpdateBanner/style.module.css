@@ -1,0 +1,68 @@
+.banner {
+  align-items: center;
+  background: var(--color-primary);
+  border: 2px solid transparent;
+  border-radius: var(--border-radius-medium);
+  box-sizing: border-box;
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-small) var(--space-medium);
+  margin-bottom: var(--space-big);
+  padding: var(--space-medium) var(--space-big);
+  transition: border-color 0.2s ease-in-out;
+  user-select: none;
+  width: 100%;
+}
+
+.banner:hover {
+  border-color: #fff;
+}
+
+.icon {
+  color: #fff;
+  flex-shrink: 0;
+  font-size: var(--font-size-4);
+}
+
+.title {
+  font-size: var(--font-size-6);
+  font-weight: 700;
+}
+
+.versions {
+  align-items: center;
+  display: flex;
+  font-size: var(--font-size-7);
+  gap: var(--space-small);
+}
+
+.arrow {
+  opacity: 0.75;
+}
+
+.newVersion {
+  background: rgb(255 255 255 / 20%);
+  border-radius: var(--border-radius-small);
+  font-weight: 700;
+  padding: 0 var(--space-small);
+}
+
+.cta {
+  background: #fff;
+  border-radius: var(--border-radius-small);
+  color: var(--color-primary);
+  flex-shrink: 0;
+  font-size: var(--font-size-8);
+  font-weight: 700;
+  margin-left: auto;
+  padding: var(--space-small) var(--space-medium);
+  white-space: nowrap;
+}
+
+@media screen and (width <=768px) {
+  .cta {
+    display: none;
+  }
+}

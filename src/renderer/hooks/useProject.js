@@ -30,16 +30,17 @@ function getFingerprint(data) {
 }
 
 function useProject(options) {
+  const projectId = options?.id || null;
   const [projectData, setProjectData] = useState(null);
 
-  const { push: pushHistory, undo: historyUndo, redo: historyRedo, canUndo, canRedo } = useHistory({ key: options?.id, serialize: getFingerprint });
+  const { push: pushHistory, undo: historyUndo, redo: historyRedo, canUndo, canRedo } = useHistory({ key: projectId, serialize: getFingerprint });
 
   // Initial load
   useEffect(() => {
-    window.EA('GET_PROJECT', { project_id: options.id }).then((data) => {
+    window.EA('GET_PROJECT', { project_id: projectId }).then((data) => {
       setProjectData(data);
     });
-  }, [options?.id]);
+  }, [projectId]);
 
   // Push to history on every real projectData change
   useEffect(() => {
@@ -50,8 +51,8 @@ function useProject(options) {
   // Auto save
   useEffect(() => {
     if (!projectData) return;
-    window.EA('SAVE_PROJECT', { project_id: options?.id, data: cleanProjectData(projectData) });
-  }, [projectData, options?.id]);
+    window.EA('SAVE_PROJECT', { project_id: projectId, data: cleanProjectData(projectData) });
+  }, [projectData, projectId]);
 
   // Action change FPS
   const actionChangeFPS = useCallback(async (trackId, fps = 1) => {
@@ -220,79 +221,82 @@ function useProject(options) {
   }, []);
 
   // Action update frame
-  const actionUpdateFrame = useCallback(async (trackId, frameId, frameBuffer = null, backgroundBuffer = null, foregroundBuffer = null, transparentBuffer = null) => {
-    const sceneId = Number(trackId);
+  const actionUpdateFrame = useCallback(
+    async (trackId, frameId, frameBuffer = null, backgroundBuffer = null, foregroundBuffer = null, transparentBuffer = null) => {
+      const sceneId = Number(trackId);
 
-    const [frameObject, backgroundObject, foregroundObject, transparentObject] = await Promise.all([
-      frameBuffer
-        ? window.EA('SAVE_PICTURE', {
-            project_id: options?.id,
-            track_id: sceneId,
-            buffer: Buffer.from(await frameBuffer.arrayBuffer()),
-            extension: mimeTypeToExtension(frameBuffer.type),
-          })
-        : null,
-      backgroundBuffer
-        ? window.EA('SAVE_PICTURE', {
-            project_id: options?.id,
-            track_id: sceneId,
-            buffer: Buffer.from(await backgroundBuffer.arrayBuffer()),
-            extension: mimeTypeToExtension(backgroundBuffer.type),
-          })
-        : null,
-      foregroundBuffer
-        ? window.EA('SAVE_PICTURE', {
-            project_id: options?.id,
-            track_id: sceneId,
-            buffer: Buffer.from(await foregroundBuffer.arrayBuffer()),
-            extension: mimeTypeToExtension(foregroundBuffer.type),
-          })
-        : null,
-      transparentBuffer
-        ? window.EA('SAVE_PICTURE', {
-            project_id: options?.id,
-            track_id: sceneId,
-            buffer: Buffer.from(await transparentBuffer.arrayBuffer()),
-            extension: mimeTypeToExtension(transparentBuffer.type),
-          })
-        : null,
-    ]);
+      const [frameObject, backgroundObject, foregroundObject, transparentObject] = await Promise.all([
+        frameBuffer
+          ? window.EA('SAVE_PICTURE', {
+              project_id: projectId,
+              track_id: sceneId,
+              buffer: Buffer.from(await frameBuffer.arrayBuffer()),
+              extension: mimeTypeToExtension(frameBuffer.type),
+            })
+          : null,
+        backgroundBuffer
+          ? window.EA('SAVE_PICTURE', {
+              project_id: projectId,
+              track_id: sceneId,
+              buffer: Buffer.from(await backgroundBuffer.arrayBuffer()),
+              extension: mimeTypeToExtension(backgroundBuffer.type),
+            })
+          : null,
+        foregroundBuffer
+          ? window.EA('SAVE_PICTURE', {
+              project_id: projectId,
+              track_id: sceneId,
+              buffer: Buffer.from(await foregroundBuffer.arrayBuffer()),
+              extension: mimeTypeToExtension(foregroundBuffer.type),
+            })
+          : null,
+        transparentBuffer
+          ? window.EA('SAVE_PICTURE', {
+              project_id: projectId,
+              track_id: sceneId,
+              buffer: Buffer.from(await transparentBuffer.arrayBuffer()),
+              extension: mimeTypeToExtension(transparentBuffer.type),
+            })
+          : null,
+      ]);
 
-    const newIds = [v4(), v4(), v4(), v4()];
+      const newIds = [v4(), v4(), v4(), v4()];
 
-    setProjectData((oldData) => {
-      let d = structuredClone(oldData);
-      if (d.project.scenes[sceneId]) {
-        for (let i = 0; i < d.project.scenes[sceneId].pictures.length; i++) {
-          // Update main frame
-          if (`${d.project.scenes[sceneId].pictures[i].id}` === `${frameId}`) {
-            if (frameObject) {
-              d.project.scenes[sceneId].pictures[i] = {
-                ...d.project.scenes[sceneId].pictures[i],
-                ...frameObject,
-              };
-            }
+      setProjectData((oldData) => {
+        let d = structuredClone(oldData);
+        if (d.project.scenes[sceneId]) {
+          for (let i = 0; i < d.project.scenes[sceneId].pictures.length; i++) {
+            // Update main frame
+            if (`${d.project.scenes[sceneId].pictures[i].id}` === `${frameId}`) {
+              if (frameObject) {
+                d.project.scenes[sceneId].pictures[i] = {
+                  ...d.project.scenes[sceneId].pictures[i],
+                  ...frameObject,
+                };
+              }
 
-            // Update background frame
-            if (d?.project?.scenes?.[sceneId]?.pictures?.[i]?.masking && backgroundObject) {
-              d.project.scenes[sceneId].pictures[i].masking.background = { ...backgroundObject, id: newIds[1] };
-            }
+              // Update background frame
+              if (d?.project?.scenes?.[sceneId]?.pictures?.[i]?.masking && backgroundObject) {
+                d.project.scenes[sceneId].pictures[i].masking.background = { ...backgroundObject, id: newIds[1] };
+              }
 
-            // Update foreground frame
-            if (d?.project?.scenes?.[sceneId]?.pictures?.[i]?.masking && foregroundObject) {
-              d.project.scenes[sceneId].pictures[i].masking.foreground = { ...foregroundObject, id: newIds[2] };
-            }
+              // Update foreground frame
+              if (d?.project?.scenes?.[sceneId]?.pictures?.[i]?.masking && foregroundObject) {
+                d.project.scenes[sceneId].pictures[i].masking.foreground = { ...foregroundObject, id: newIds[2] };
+              }
 
-            // Update transparent frame
-            if (d?.project?.scenes?.[sceneId]?.pictures?.[i]?.masking && transparentObject) {
-              d.project.scenes[sceneId].pictures[i].masking.transparent = { ...transparentObject, id: newIds[3] };
+              // Update transparent frame
+              if (d?.project?.scenes?.[sceneId]?.pictures?.[i]?.masking && transparentObject) {
+                d.project.scenes[sceneId].pictures[i].masking.transparent = { ...transparentObject, id: newIds[3] };
+              }
             }
           }
         }
-      }
-      return d;
-    });
-  }, []);
+        return d;
+      });
+    },
+    [projectId]
+  );
 
   // Action add frame
   const actionAddFrame = useCallback(
@@ -301,7 +305,7 @@ function useProject(options) {
       const sceneId = Number(trackId);
       const addedPicture = frameBlob._directSaveUrls
         ? await window.EA('SAVE_PICTURE_FROM_URLS', {
-            project_id: options?.id,
+            project_id: projectId,
             track_id: sceneId,
             urls: frameBlob._directSaveUrls,
             authorization: frameBlob._directSaveAuthorization,
@@ -310,7 +314,7 @@ function useProject(options) {
             extension: frameExtension,
           })
         : await window.EA('SAVE_PICTURE', {
-            project_id: options?.id,
+            project_id: projectId,
             track_id: sceneId,
             buffer: Buffer.from(frameBlob.buffer),
             extension: frameExtension,
@@ -321,7 +325,7 @@ function useProject(options) {
         const backgroundBuffer = Buffer.from(backgroundBlob.buffer);
         const backgroundExtension = mimeTypeToExtension(backgroundBlob.type);
         backgroundPicture = await window.EA('SAVE_PICTURE', {
-          project_id: options?.id,
+          project_id: projectId,
           track_id: sceneId,
           buffer: backgroundBuffer,
           extension: backgroundExtension,
@@ -353,7 +357,7 @@ function useProject(options) {
         return d;
       });
     },
-    [options?.id]
+    [projectId]
   );
 
   // Action Undo

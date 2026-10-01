@@ -1,9 +1,9 @@
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import faTriangleExclamation from '@icons/faTriangleExclamation';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 
 import * as style from './style.module.css';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import faTriangleExclamation from '@icons/faTriangleExclamation';
 
 class MaskingEditor extends Component {
   constructor(props) {
@@ -128,7 +128,7 @@ class MaskingEditor extends Component {
 
     // Check sizes
     if (!this._isSameDimensions()) {
-      this.setState({ error: true })
+      this.setState({ error: true });
     }
 
     // Prepare visual output canvas
@@ -169,7 +169,7 @@ class MaskingEditor extends Component {
     this.lastX = x;
     this.lastY = y;
     this.setState({ isDrawing: true });
-  }
+  };
 
   _drawLine(ctx, x1, y1, x2, y2) {
     ctx.globalCompositeOperation = this.props.mode === 'RESTORE' ? 'destination-out' : 'source-over';
@@ -189,7 +189,7 @@ class MaskingEditor extends Component {
     const canvasHitBox = this.dom.output.current.getBoundingClientRect();
 
     if (!canvasHitBox || !this.images.background) {
-      return null
+      return null;
     }
 
     // Get position in the picture
@@ -213,7 +213,7 @@ class MaskingEditor extends Component {
     }
 
     return { x, y };
-  }
+  };
 
   _getBrushSize = () => {
     if (!this.images.background) {
@@ -221,16 +221,16 @@ class MaskingEditor extends Component {
     }
 
     const imageSize = Math.min(this.images.background.width, this.images.background.height) || 0;
-    const value = (imageSize * (this.props.brushSize * 200 / 100) / 1000)
+    const value = (imageSize * ((this.props.brushSize * 200) / 100)) / 1000;
 
     if (value < 1) {
       return 1;
     }
     if (value > imageSize) {
-      return imageSize
+      return imageSize;
     }
     return value;
-  }
+  };
 
   _draw = (e) => {
     this.mouseLastPosition = this._getMouseInCanvasPosition(e, false);
@@ -263,25 +263,24 @@ class MaskingEditor extends Component {
 
     this.lastX = x;
     this.lastY = y;
-  }
+  };
 
   _stopDrawing = () => {
     this.isDrawing = false;
     this.setState({ isDrawing: false });
     this.lastX = null;
     this.lastY = null;
-  }
+  };
 
   _isSameDimensions = () => {
     return (
       this.images.background.width === this.images.foreground.width && // Same width
       this.images.background.height === this.images.foreground.height && // Same height
-      (!this.images.transparent || (
+      (!this.images.transparent ||
         this.images.transparent.width === this.images.background.width || // Same width
-        this.images.transparent.height === this.images.background.height // Same height
-      ))
+        this.images.transparent.height === this.images.background.height) // Same height
     );
-  }
+  };
 
   _drawToCanvas(canvas = null, mode = null) {
     if (!canvas) {
@@ -366,7 +365,11 @@ class MaskingEditor extends Component {
     return (
       <div className={style.container}>
         <canvas ref={this.dom.output} className={`${style.layout} ${isEditable ? style.isEditable : ''}`} />
-        {this.state.error && <div className={style.error}><FontAwesomeIcon icon={faTriangleExclamation} /></div>}
+        {this.state.error && (
+          <div className={style.error}>
+            <FontAwesomeIcon icon={faTriangleExclamation} />
+          </div>
+        )}
       </div>
     );
   }
@@ -385,8 +388,8 @@ MaskingEditor.propTypes = {
 MaskingEditor.defaultProps = {
   brushSize: 40,
   mode: 'REMOVE',
-  onModeChange: () => { },
-  onChange: () => { },
+  onModeChange: () => {},
+  onChange: () => {},
 };
 
 export default MaskingEditor;

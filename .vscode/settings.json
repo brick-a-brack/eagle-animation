@@ -7,5 +7,8 @@
   },
   "[json]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
-  }
+  },
+  "eslint.enable": true,
+  "eslint.useFlatConfig": false,
+  "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"]
 }

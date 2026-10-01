@@ -1,7 +1,13 @@
 {
   "compilerOptions": {
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "target": "ESNext",
+    "jsx": "preserve",
     "baseUrl": ".",
+    "checkJs": false,
     "paths": {
+      "~/*": ["*"],
       "@components/*": ["src/renderer/components/*"],
       "@core/*": ["src/renderer/core/*"],
       "@views/*": ["src/renderer/views/*"],
@@ -11,5 +17,7 @@
       "@config-web": ["src/renderer/config.js"],
       "@i18n": ["src/renderer/i18n.js"]
     }
-  }
+  },
+  "include": ["src/**/*", "*.mjs", "*.js"],
+  "exclude": ["node_modules", "out", "dist", "binaries"]
 }

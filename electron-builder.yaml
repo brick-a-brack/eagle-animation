@@ -3,6 +3,12 @@ productName: Eagle Animation
 #compression: maximum
 nativeRebuilder: legacy
 
+# Re-signs toucan-camera-server and every bundled third-party Mach-O library
+# (Canon/Sony/Nikon SDKs, libgphoto2 plugins, ...) after packaging. Without this,
+# dyld rejects some of them ("code signature invalid") and the server crashes on
+# launch -> empty camera list on mac builds.
+afterPack: ./scripts/sign-toucan-macos.js
+
 directories:
   output: binaries
   buildResources: out
@@ -21,6 +27,7 @@ asarUnpack:
 extraMetadata:
   main: out/main/index.js
   name: eagle-animation
+  desktopName: eagle-animation.desktop
 
 win:
   artifactName: Eagle-Animation-${version}-win.${ext}
@@ -47,10 +54,14 @@ mac:
 linux:
   artifactName: Eagle-Animation-${version}-linux.${ext}
   executableName: eagle-animation
+  syncDesktopName: true
   category: Photography
   synopsis: EagleAnimation is an awesome, free and open-source animation software.
   description: EagleAnimation is an awesome, free and open-source animation software.
   icon: out/renderer/icon.png
+  desktop:
+    entry:
+      StartupWMClass: eagle-animation
   target:
     - deb
     - rpm

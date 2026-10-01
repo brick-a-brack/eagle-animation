@@ -1,28 +1,44 @@
-import HeaderBar from '@components/HeaderBar';
-import Logo from '@components/Logo';
+import DesktopNavigation from '@components/DesktopNavigation';
+import HomeStats from '@components/HomeStats';
+import HomeToolbar from '@components/HomeToolbar';
+import MobileNavigation from '@components/MobileNavigation';
+import NewProjectCard from '@components/NewProjectCard';
 import PageContent from '@components/PageContent';
 import PageLayout from '@components/PageLayout';
 import ProjectCard from '@components/ProjectCard';
-import ProjectsGrid from '@components/ProjectsGrid';
-import VersionUpdater from '@components/VersionUpdater';
+import Tour from '@components/Tour';
+import UpdateBanner from '@components/UpdateBanner';
+import VersionTagOverlay from '@components/VersionTagOverlay';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import useAppCapabilities from '@hooks/useAppCapabilities';
-import useAppVersion from '@hooks/useAppVersion';
 import useDiscordActivity from '@hooks/useDiscordActivity';
 import useFullscreen from '@hooks/useFullscreen';
 import useProjects from '@hooks/useProjects';
 import useSettings from '@hooks/useSettings';
-import { useEffect } from 'react';
+import faDownLeftAndUpRightToCenter from '@icons/faDownLeftAndUpRightToCenter';
+import faGear from '@icons/faGear';
+import faKeyboard from '@icons/faKeyboard';
+import faListCheck from '@icons/faListCheck';
+import faMagnifyingGlass from '@icons/faMagnifyingGlass';
+import faUpRightAndDownLeftFromCenter from '@icons/faUpRightAndDownLeftFromCenter';
+import { useEffect, useMemo, useState } from 'react';
 import { withTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
+import * as style from './Home.module.css';
+
 const HomeView = ({ t }) => {
-  const { version, latestVersion, actions: versionActions } = useAppVersion();
   const { projects, actions: projectsActions } = useProjects();
+
   const { settings } = useSettings();
   const { appCapabilities } = useAppCapabilities();
   const navigate = useNavigate();
   const { isFullscreen, enterFullscreen, exitFullscreen } = useFullscreen();
   useDiscordActivity({ description: t('Ready to animate') });
+
+  const [search, setSearch] = useState('');
+  const [favoritesOnly, setFavoritesOnly] = useState(false);
+  const [sort, setSort] = useState('UPDATED');
 
   useEffect(() => {
     // Trigger background sync
@@ -45,11 +61,12 @@ const HomeView = ({ t }) => {
     window.track('project_renamed', { projectId: id });
   };
 
-  const handleLink = () => {
-    versionActions.openUpdatePage();
+  const handleFavoriteProject = async (id, favorite) => {
+    projectsActions.setFavorite(id, favorite);
+    window.track('project_favorited', { projectId: id, favorite });
   };
 
-  const handleAction = (action) => {
+  const handleAction = (action) => () => {
     if (action === 'SETTINGS') {
       navigate('/settings?back=/');
     }
@@ -65,34 +82,110 @@ const HomeView = ({ t }) => {
     if (action === 'EXIT_FULLSCREEN') {
       exitFullscreen();
     }
+    if (action === 'OPEN_WEBSITE') {
+      window.EA('OPEN_LINK', { link: 'https://eagle-animation.com/?source=app' });
+    }
   };
 
+  // Only projects that actually contain frames are listed
+  const realProjects = useMemo(() => (projects || []).filter((e) => Boolean(e?.stats?.frames || 0)), [projects]);
+
+  const stats = useMemo(
+    () => ({
+      projectsCount: realProjects.length,
+      photosCount: realProjects.reduce((acc, e) => acc + (e?.stats?.frames || 0), 0),
+      durationSeconds: realProjects.reduce((acc, e) => acc + (e?.stats?.duration || 0), 0),
+      favoritesCount: realProjects.filter((e) => e.favorite).length,
+    }),
+    [realProjects]
+  );
+
+  const visibleProjects = useMemo(() => {
+    const needle = search.trim().toLowerCase();
+    const filtered = realProjects.filter((e) => {
+      if (favoritesOnly && !e.favorite) {
+        return false;
+      }
+      if (needle && !(e.project.title || '').toLowerCase().includes(needle)) {
+        return false;
+      }
+      return true;
+    });
+
+    const sorted = [...filtered];
+    if (sort === 'CREATED') {
+      sorted.sort((a, b) => (b.creation || 0) - (a.creation || 0));
+    } else if (sort === 'NAME') {
+      sorted.sort((a, b) => (a.project.title || t('Untitled')).localeCompare(b.project.title || t('Untitled')));
+    } else if (sort === 'FRAMES') {
+      sorted.sort((a, b) => (b?.stats?.frames || 0) - (a?.stats?.frames || 0));
+    } else {
+      sorted.sort((a, b) => (b.updated || 0) - (a.updated || 0));
+    }
+    return sorted;
+  }, [realProjects, search, favoritesOnly, sort, t]);
+
+  const isFiltering = !!((search || '').trim() !== '' || favoritesOnly);
+  const primaryActions = [];
+
+  const secondaryActions = [
+    ...(settings?.EVENT_MODE_ENABLED ? [{ label: t('Sync list'), icon: faListCheck, onClick: handleAction('SYNC_LIST') }] : []),
+    ...(appCapabilities.includes('FULLSCREEN')
+      ? [
+          isFullscreen
+            ? { label: t('Exit fullscreen'), icon: faDownLeftAndUpRightToCenter, onClick: handleAction('EXIT_FULLSCREEN') }
+            : { label: t('Fullscreen'), icon: faUpRightAndDownLeftFromCenter, onClick: handleAction('ENTER_FULLSCREEN') },
+        ]
+      : []),
+    ...(appCapabilities.includes('SHORTCUTS') ? [{ label: t('Shortcuts'), icon: faKeyboard, onClick: handleAction('SHORTCUTS') }] : []),
+    { label: t('Settings'), icon: faGear, onClick: handleAction('SETTINGS') },
+  ];
+
   return (
-    <PageLayout>
-      <HeaderBar
-        leftChildren={<VersionUpdater onClick={handleLink} version={version} latestVersion={latestVersion} onLink={handleLink} />}
-        rightActions={[
-          ...(settings?.EVENT_MODE_ENABLED ? ['SYNC_LIST'] : []),
-          ...(appCapabilities.includes('FULLSCREEN') ? [isFullscreen ? 'EXIT_FULLSCREEN' : 'ENTER_FULLSCREEN'] : []),
-          ...(appCapabilities.includes('SHORTCUTS') ? ['SHORTCUTS'] : []),
-          'SETTINGS',
-        ]}
-        onAction={handleAction}
-        withBorder
-      >
-        <Logo />
-      </HeaderBar>
+    <PageLayout hasMobileLeftBar={true}>
+      <DesktopNavigation showLogo={true} leftActions={primaryActions} rightActions={secondaryActions} onLogoClick={handleAction('OPEN_WEBSITE')} />
+      <MobileNavigation showLogo={true} topLeftActions={primaryActions} bottomLeftActions={secondaryActions} showLeftActions={true} onLogoClick={handleAction('OPEN_WEBSITE')} />
+      <VersionTagOverlay />
       <PageContent>
         {projects !== null && (
-          <ProjectsGrid>
-            <ProjectCard placeholder={t('New project')} onClick={handleCreateProject} icon="ADD" />
-            {[...projects]
-              .filter((e) => Boolean(e?.stats?.frames || 0))
-              .sort((a, b) => b.project.updated - a.project.updated)
-              .map((e) => (
-                <ProjectCard key={e.id} id={e.id} title={e.project.title} picture={e.preview} nbFrames={e?.stats?.frames || 0} onClick={handleOpenProject} onTitleChange={handleRenameProject} />
-              ))}
-          </ProjectsGrid>
+          <>
+            <div className={style.container}>
+              <UpdateBanner />
+              <div className={style.header}>
+                <HomeStats projectsCount={stats.projectsCount} photosCount={stats.photosCount} durationSeconds={stats.durationSeconds} favoritesCount={stats.favoritesCount} />
+                <HomeToolbar search={search} onSearchChange={setSearch} sort={sort} onSortChange={setSort} favoritesOnly={favoritesOnly} onToggleFavorites={setFavoritesOnly} />
+              </div>
+              {(visibleProjects.length > 0 || !isFiltering) && (
+                <div className={style.grid}>
+                  {!isFiltering && <NewProjectCard onClick={handleCreateProject} />}
+                  {visibleProjects.map((e) => (
+                    <ProjectCard
+                      key={e.id}
+                      id={e.id}
+                      title={e.project.title}
+                      picture={e.preview}
+                      nbFrames={e?.stats?.frames || 0}
+                      nbScenes={e?.stats?.scenes || 0}
+                      duration={e?.stats?.duration}
+                      creation={e.creation}
+                      updated={e.updated}
+                      favorite={e.favorite}
+                      onClick={handleOpenProject}
+                      onTitleChange={handleRenameProject}
+                      onFavoriteToggle={handleFavoriteProject}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
+            {isFiltering && visibleProjects.length === 0 && (
+              <div className={style.empty}>
+                <FontAwesomeIcon icon={faMagnifyingGlass} />
+                <span>{t('No projects match your search')}</span>
+              </div>
+            )}
+            <Tour tourKey="HOME" />
+          </>
         )}
       </PageContent>
     </PageLayout>

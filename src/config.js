@@ -20,6 +20,7 @@ export const DEFAULT_FPS = 12;
 
 // Github link
 export const CONTRIBUTE_REPOSITORY = 'brick-a-brack/eagle-animation';
+export const DOWNLOAD_LINK = 'https://eagle-animation.com/download';
 
 // PostHog key and host
 export const POSTHOG_TOKEN = 'phc_O3iGVN7CHMOlI7IyKsYG22I0NrGQ1ETrFzQY8sEpKYL';

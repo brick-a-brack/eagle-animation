@@ -1,9 +1,11 @@
+import { isIos } from '@braintree/browser-detection';
 import { getEncodingProfile, getFFmpegArgs, parseFFmpegLogs } from '@common/ffmpeg';
-import { DEVICE, LS_SETTINGS } from '@config-web';
+import { LS_SETTINGS } from '@config-web';
 import { extensionToMimeType } from '@core/frameTypes';
 import { fetchFile } from '@ffmpeg/util';
 import { saveAs } from 'file-saver';
 import JSZip from 'jszip';
+import { v4 as uuidv4 } from 'uuid';
 
 import { createBuffer, flushBuffers, getBuffer } from './buffer';
 import { getFFmpeg } from './ffmpeg';
@@ -20,6 +22,9 @@ const FRAME_TYPES = {
   MASKING_TRANSPARENT: '-transparent',
   FRAME: '',
 };
+
+// Scene number (1-based, deleted scenes are skipped) padded to 4 digits, used as export frame prefix
+const getScenePrefix = (scenes, trackId) => `${scenes.slice(0, trackId + 1).filter((scene) => !scene?.deleted).length}`.padStart(4, '0');
 
 export const addEventListener = (name, callback) => {
   events.push([name, callback]);
@@ -43,7 +48,7 @@ const computeProject = async (data) => {
     copiedData?.project?.scenes?.map(async (scene) => {
       return {
         ...scene,
-        id: scene.id || crypto.randomUUID(),
+        id: scene.id || uuidv4(),
         deleted: scene.deleted || false,
         pictures: await Promise.all(
           scene.pictures.map(async (picture) => ({
@@ -164,9 +169,12 @@ export const Actions = {
     return [];
   },
   APP_CAPABILITIES: async () => {
-    const capabilities = ['FULLSCREEN', 'SHORTCUTS', 'EXPORT_VIDEO', 'EXPORT_VIDEO_H264', 'EXPORT_VIDEO_VP8', 'EXPORT_VIDEO_PRORES', 'EXPORT_FRAMES', 'EXPORT_FRAMES_ZIP'];
+    const capabilities = ['SHORTCUTS', 'EXPORT_VIDEO', 'EXPORT_VIDEO_H264', 'EXPORT_VIDEO_VP8', 'EXPORT_VIDEO_PRORES', 'EXPORT_FRAMES', 'EXPORT_FRAMES_ZIP'];
     if (await isWebCodecsAvailable('hevc')) capabilities.push('EXPORT_VIDEO_HEVC');
     if (await isWebCodecsAvailable('vp9')) capabilities.push('EXPORT_VIDEO_VP9');
+    if (!isIos()) {
+      capabilities.push('FULLSCREEN');
+    }
     return capabilities;
   },
   EXPORT_SELECT_PATH: async (evt, { compress_as_zip = false }) => {
@@ -210,13 +218,14 @@ export const Actions = {
 
     // Frames export
     if (mode === 'frames') {
+      const scenePrefix = getScenePrefix(project.project.scenes, trackId);
       if (compress_as_zip) {
         // Fallback on regular ZIP
         const zip = new JSZip();
         for (let i = 0; i < frames.length; i++) {
           const frame = frames[i];
           const buffer = await getBuffer(frame.buffer_id);
-          zip.file(`frame-${frame.index.toString().padStart(6, '0')}${FRAME_TYPES[frame.type]}.${frame.extension}`, buffer);
+          zip.file(`${scenePrefix}_${frame.index.toString().padStart(6, '0')}${FRAME_TYPES[frame.type]}.${frame.extension}`, buffer);
         }
         zip.generateAsync({ type: 'blob' }).then((content) => {
           saveAs(content, 'frames.zip');
@@ -227,7 +236,7 @@ export const Actions = {
           for (let i = 0; i < frames.length; i++) {
             const frame = frames[i];
             const buffer = await getBuffer(frame.buffer_id);
-            const fileHandle = await currentDirectory.getFileHandle(`frame-${frame.index.toString().padStart(6, '0')}${FRAME_TYPES[frame.type]}.${frame.extension}`, { create: true });
+            const fileHandle = await currentDirectory.getFileHandle(`${scenePrefix}_${frame.index.toString().padStart(6, '0')}${FRAME_TYPES[frame.type]}.${frame.extension}`, { create: true });
             const writable = await fileHandle.createWritable();
             await writable.write(buffer);
             await writable.close();
@@ -239,7 +248,7 @@ export const Actions = {
         for (let i = 0; i < frames.length; i++) {
           const frame = frames[i];
           const buffer = await getBuffer(frame.buffer_id);
-          const filename = `frame-${frame.index.toString().padStart(6, '0')}${FRAME_TYPES[frame.type]}.${frame.extension}`;
+          const filename = `${scenePrefix}_${frame.index.toString().padStart(6, '0')}${FRAME_TYPES[frame.type]}.${frame.extension}`;
           blob = new Blob([buffer], { type: extensionToMimeType(frame?.extension) });
           saveAs(blob, filename);
           blob = null;

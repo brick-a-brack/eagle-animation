@@ -9,6 +9,7 @@ import { getEncodingProfile } from '../common/ffmpeg';
 import { CONTRIBUTE_REPOSITORY } from '../config';
 import { PROJECTS_PATH } from './config';
 import { uploadFile } from './core/api';
+import { clearCache, getCacheSize } from './core/cache';
 import { setDiscordActivity } from './core/discord';
 import { exportProjectScene, exportSaveTemporaryBuffer, getSyncList, saveSyncList } from './core/export';
 import { createProject, deleteProject, getProjectData, getProjectsList, projectSave, savePicture } from './core/projects';
@@ -27,6 +28,9 @@ const FRAME_TYPES = {
   MASKING_TRANSPARENT: '-transparent',
   FRAME: '',
 };
+
+// Scene number (1-based, deleted scenes are skipped) padded to 4 digits, used as export frame prefix
+const getScenePrefix = (scenes, trackId) => `${scenes.slice(0, trackId + 1).filter((scene) => !scene?.deleted).length}`.padStart(4, '0');
 
 const computeProject = (data) => {
   const copiedData = structuredClone(data);
@@ -175,8 +179,23 @@ const actions = {
       'EXPORT_VIDEO_VP9',
       'FULLSCREEN',
       'SHORTCUTS',
+      'LOCAL_DATA_FOLDER',
+      'CLEAR_CACHE',
     ];
     return capabilities;
+  },
+  GET_DATA_FOLDER: async () => {
+    return PROJECTS_PATH;
+  },
+  OPEN_DATA_FOLDER: async () => {
+    await shell.openPath(PROJECTS_PATH);
+    return null;
+  },
+  GET_CACHE_SIZE: async () => {
+    return getCacheSize();
+  },
+  CLEAR_CACHE: async () => {
+    return clearCache();
   },
   EXPORT_SELECT_PATH: async (
     evt,
@@ -225,9 +244,11 @@ const actions = {
   ) => {
     if (mode === 'frames') {
       if (output_path) {
+        const project = await getProjectData(join(PROJECTS_PATH, project_id));
+        const scenePrefix = getScenePrefix(project.project.scenes, Number(track_id));
         const bufferDirectoryPath = join(join(PROJECTS_PATH, project_id), `/.tmp/`);
         for (const frame of frames) {
-          await copyFile(join(bufferDirectoryPath, frame.buffer_id), join(output_path, `frame-${frame.index.toString().padStart(6, '0')}${FRAME_TYPES[frame.type]}.${frame.extension}`));
+          await copyFile(join(bufferDirectoryPath, frame.buffer_id), join(output_path, `${scenePrefix}_${frame.index.toString().padStart(6, '0')}${FRAME_TYPES[frame.type]}.${frame.extension}`));
         }
       }
       return true;

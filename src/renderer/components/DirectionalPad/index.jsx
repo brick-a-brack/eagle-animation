@@ -6,6 +6,8 @@ const REPEAT_MS = 120;
 
 const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
 
+const dirClassKey = (dir) => ({ 'roll-left': 'rollLeft', 'roll-right': 'rollRight' })[dir] || dir;
+
 const ArrowIcon = ({ dir }) => {
   if (dir === 'roll-left') {
     return (
@@ -34,6 +36,26 @@ const CenterIcon = () => (
   <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18">
     <path d="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm8.94 3c-.46-4.17-3.77-7.48-7.94-7.94V1h-2v2.06C6.83 3.52 3.52 6.83 3.06 11H1v2h2.06c.46 4.17 3.77 7.48 7.94 7.94V23h2v-2.06c4.17-.46 7.48-3.77 7.94-7.94H23v-2h-2.06zM12 19c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z" />
   </svg>
+);
+
+const PadBtn = ({ dir, disabled, active, onStart, onStop }) => (
+  <button
+    type="button"
+    aria-label={`Move ${dir}`}
+    disabled={disabled}
+    className={`${styles.dbtn} ${styles[dirClassKey(dir)]} ${active ? styles.active : ''}`}
+    onMouseDown={() => onStart(dir)}
+    onMouseUp={onStop}
+    onMouseLeave={onStop}
+    onTouchStart={(e) => {
+      e.preventDefault();
+      onStart(dir);
+    }}
+    onTouchEnd={onStop}
+    onTouchCancel={onStop}
+  >
+    <ArrowIcon dir={dir} />
+  </button>
 );
 
 /**
@@ -87,40 +109,19 @@ const DirectionalPad = ({ pan, tilt, roll, onCapabilityChange, onCenter }) => {
     return null;
   };
 
-  const PadBtn = ({ dir }) => {
-    const disabled = !capForDir(dir);
-    return (
-      <button
-        type="button"
-        aria-label={`Move ${dir}`}
-        disabled={disabled}
-        className={`${styles.dbtn} ${styles[dir]} ${pressed === dir ? styles.active : ''}`}
-        onMouseDown={() => start(dir)}
-        onMouseUp={stop}
-        onMouseLeave={stop}
-        onTouchStart={(e) => {
-          e.preventDefault();
-          start(dir);
-        }}
-        onTouchEnd={stop}
-        onTouchCancel={stop}
-      >
-        <ArrowIcon dir={dir} />
-      </button>
-    );
-  };
+  const padProps = (dir) => ({ dir, disabled: !capForDir(dir), active: pressed === dir, onStart: start, onStop: stop });
 
   return (
     <div className={styles.dpad} role="group" aria-label="Camera position">
-      <PadBtn dir="roll-left" />
-      <PadBtn dir="up" />
-      <PadBtn dir="roll-right" />
-      <PadBtn dir="left" />
+      <PadBtn {...padProps('roll-left')} />
+      <PadBtn {...padProps('up')} />
+      <PadBtn {...padProps('roll-right')} />
+      <PadBtn {...padProps('left')} />
       <button type="button" className={`${styles.dbtn} ${styles.center}`} onClick={() => onCenter?.()} aria-label="Center" title="Center">
         <CenterIcon />
       </button>
-      <PadBtn dir="right" />
-      <PadBtn dir="down" />
+      <PadBtn {...padProps('right')} />
+      <PadBtn {...padProps('down')} />
     </div>
   );
 };

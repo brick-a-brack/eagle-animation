@@ -5,7 +5,9 @@
   width: 45px;
 }
 
-.swtch input { display: none; }
+.swtch input {
+  display: none;
+}
 
 .slider {
   background-color: var(--color-theme-light);
@@ -20,7 +22,7 @@
   background-color: var(--color-white);
   border-radius: 50%;
   bottom: 4px;
-  content: "";
+  content: '';
   height: 18px;
   left: 4px;
   position: absolute;
@@ -42,5 +44,5 @@ input:checked + .slider::before {
 
 .disabled {
   cursor: not-allowed;
-    opacity: 0.2;
+  opacity: 0.2;
 }

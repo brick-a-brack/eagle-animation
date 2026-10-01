@@ -4,6 +4,9 @@ import { getCamera, getCameras, takePicture } from './modules';
 
 const applyCameraLabel = (e, i) => ({ ...e, label: `[${i + 1}] ${e.label || ''}` });
 
+// Delay between devices list refreshes in ms
+const DEVICES_POLL_INTERVAL = 3000;
+
 function useCamera(options = {}) {
   const compatibilityMode = !!options?.compatibilityMode;
   const [devices, setDevices] = useState(null);
@@ -11,6 +14,7 @@ function useCamera(options = {}) {
   const [isReady, setIsReady] = useState(false);
   const [cameraCapabilities, setCameraCapabilities] = useState([]);
   const setStreamRef = useRef(null);
+  const activeCameraIdRef = useRef(null);
   const eventsRefs = useRef([
     ...(typeof options?.eventsHandlers?.connect === 'function' ? [['connect', options?.eventsHandlers?.connect]] : []),
     ...(typeof options?.eventsHandlers?.disconnect === 'function' ? [['disconnect', options?.eventsHandlers?.disconnect]] : []),
@@ -29,12 +33,28 @@ function useCamera(options = {}) {
     let cancelled = false;
     setDevices(null);
     setCurrentCameraId(null);
+    activeCameraIdRef.current = null;
     getCameras(compatibilityMode).then((cameras) => {
       if (cancelled) return;
       setDevices(cameras.map(applyCameraLabel));
     });
     return () => {
       cancelled = true;
+    };
+  }, [compatibilityMode]);
+
+  // Auto refresh the device list every few seconds
+  useEffect(() => {
+    let cancelled = false;
+    const interval = setInterval(() => {
+      getCameras(compatibilityMode).then((cameras) => {
+        if (cancelled) return;
+        setDevices(cameras.map(applyCameraLabel));
+      });
+    }, DEVICES_POLL_INTERVAL);
+    return () => {
+      cancelled = true;
+      clearInterval(interval);
     };
   }, [compatibilityMode]);
 
@@ -59,29 +79,57 @@ function useCamera(options = {}) {
     getCameras(compatibilityMode).then((cameras) => setDevices(cameras.map(applyCameraLabel)));
   }, [compatibilityMode]);
 
+  // Tear the connection down when the active camera disappears from the devices list
+  useEffect(() => {
+    const activeId = activeCameraIdRef.current;
+    if (!activeId || devices === null) {
+      return;
+    }
+    if (devices.some((e) => `${e.id}` === `${activeId}`)) {
+      return;
+    }
+    try {
+      getCamera(activeId)?.disconnect();
+    } catch (e) {
+      console.error(e);
+    }
+    activeCameraIdRef.current = null;
+    triggerEvent('disconnect');
+  }, [devices, triggerEvent]);
+
+  // Connect a camera instance and wire up its stream.
+  const connectCamera = useCallback(
+    async (camera, cameraId) => {
+      if (!camera || !setStreamRef.current || activeCameraIdRef.current === cameraId) {
+        return;
+      }
+      activeCameraIdRef.current = cameraId;
+      await camera.connect({ setStream: setStreamRef.current });
+      // Refresh device list after getUserMedia so real deviceIds become available
+      // (browsers return empty deviceIds before permission is granted).
+      const updatedCameras = await getCameras(compatibilityMode);
+      setDevices(updatedCameras.map(applyCameraLabel));
+      triggerEvent('connect');
+      camera.getCapabilities().then((caps) => {
+        setCameraCapabilities(caps);
+        const cameraInfo = updatedCameras.find((e) => e.id === cameraId);
+        window.track('camera_connected', {
+          camera_label: cameraInfo?.label || null,
+          camera_module: cameraInfo?.module || null,
+          camera_capabilities: caps.map((c) => c.id),
+        });
+      });
+    },
+    [triggerEvent, compatibilityMode]
+  );
+
   // Action to set stream callback
   const actionSetStream = useCallback(
     async (setStream) => {
       setStreamRef.current = setStream;
-      if (currentCamera) {
-        await currentCamera.connect({ setStream: setStreamRef.current }, options);
-        // Refresh device list after getUserMedia so real deviceIds become available
-        // (browsers return empty deviceIds before permission is granted).
-        const updatedCameras = await getCameras(compatibilityMode);
-        setDevices(updatedCameras.map(applyCameraLabel));
-        triggerEvent('connect');
-        currentCamera.getCapabilities().then((caps) => {
-          setCameraCapabilities(caps);
-          const cameraInfo = updatedCameras.find((e) => e.id === currentCameraId);
-          window.track('camera_connected', {
-            camera_label: cameraInfo?.label || null,
-            camera_module: cameraInfo?.module || null,
-            camera_capabilities: caps.map((c) => c.id),
-          });
-        });
-      }
+      await connectCamera(currentCamera, currentCameraId);
     },
-    [currentCamera, options, triggerEvent, compatibilityMode, currentCameraId]
+    [currentCamera, currentCameraId, connectCamera]
   );
 
   // Action set camera
@@ -96,24 +144,14 @@ function useCamera(options = {}) {
           } catch (e) {
             console.error(e);
           }
+          activeCameraIdRef.current = null;
           triggerEvent('disconnect');
         }
         if (deviceId) {
           setCurrentCameraId(deviceId);
           const camera = getCamera(deviceId);
           if (setStreamRef?.current) {
-            await camera?.connect({ setStream: setStreamRef.current }, options);
-            await getCameras(compatibilityMode).then((cams) => setDevices(cams.map(applyCameraLabel)));
-            triggerEvent('connect');
-            camera?.getCapabilities().then((caps) => {
-              setCameraCapabilities(caps);
-              const cameraInfo = cameras.find((e) => e.id === deviceId);
-              window.track('camera_connected', {
-                camera_label: cameraInfo?.label || null,
-                camera_module: cameraInfo?.module || null,
-                camera_capabilities: caps.map((c) => c.id),
-              });
-            });
+            await connectCamera(camera, deviceId);
           } else {
             camera?.getCapabilities().then(setCameraCapabilities);
           }
@@ -126,7 +164,7 @@ function useCamera(options = {}) {
       // Force refresh devices list, to handle permission issues on specific browsers
       getCameras(compatibilityMode).then((cameras) => setDevices(cameras.map(applyCameraLabel)));
     },
-    [currentCameraId, currentCamera, options, triggerEvent, compatibilityMode]
+    [currentCameraId, currentCamera, triggerEvent, compatibilityMode, connectCamera]
   );
 
   // Action take picture
@@ -163,17 +201,23 @@ function useCamera(options = {}) {
   );
 
   useEffect(() => {
+    if (!currentCamera) {
+      return undefined;
+    }
+    const cameraId = currentCameraId;
     return () => {
-      if (currentCamera) {
-        try {
-          currentCamera?.disconnect();
-        } catch (e) {
-          console.error(e);
-        }
-        triggerEvent('disconnect');
+      if (activeCameraIdRef.current !== cameraId) {
+        return;
       }
+      try {
+        currentCamera?.disconnect();
+      } catch (e) {
+        console.error(e);
+      }
+      activeCameraIdRef.current = null;
+      triggerEvent('disconnect');
     };
-  }, [currentCamera, triggerEvent]);
+  }, [currentCamera, currentCameraId, triggerEvent]);
 
   const isCurrentCameraConnected = currentCameraId && devices && devices.some((e) => `${e.id}` === `${currentCameraId}`);
 
