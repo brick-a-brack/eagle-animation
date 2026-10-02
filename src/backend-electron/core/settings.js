@@ -38,3 +38,32 @@ export const saveSettings = async (path, data) => {
     return defaultSettings;
   }
 };
+
+const getCameraSettingsFile = (path) => format({ dir: path, base: 'camera-settings.json' });
+
+const getAllCameraSettings = async (path) => {
+  try {
+    const data = await readFile(getCameraSettingsFile(path), 'utf8');
+    return JSON.parse(data) || {};
+  } catch (e) {
+    return {};
+  }
+};
+
+export const getCameraSettings = async (path, cameraId) => {
+  const allSettings = await getAllCameraSettings(path);
+  return allSettings?.[cameraId] || {};
+};
+
+let cameraSettingsQueue = Promise.resolve();
+
+export const saveCameraSettings = (path, cameraId, settings) => {
+  cameraSettingsQueue = cameraSettingsQueue
+    .catch(() => {})
+    .then(async () => {
+      const allSettings = await getAllCameraSettings(path);
+      await writeFile(getCameraSettingsFile(path), JSON.stringify({ ...allSettings, [cameraId]: settings || {} }));
+      return settings || {};
+    });
+  return cameraSettingsQueue;
+};

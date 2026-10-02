@@ -1,5 +1,5 @@
 import { getEncodingProfile, getFFmpegArgs, parseFFmpegLogs } from '@common/ffmpeg';
-import { LS_SETTINGS } from '@config-web';
+import { LS_CAMERA_SETTINGS, LS_SETTINGS } from '@config-web';
 import { extensionToMimeType } from '@core/frameTypes';
 import { fetchFile } from '@ffmpeg/util';
 import { saveAs } from 'file-saver';
@@ -157,6 +157,25 @@ export const Actions = {
   },
   SAVE_SETTINGS: async (evt, { settings }) => {
     localStorage.setItem(LS_SETTINGS, JSON.stringify(settings));
+    return {
+      ...settings,
+    };
+  },
+  GET_CAMERA_SETTINGS: async (evt, { cameraId }) => {
+    try {
+      return JSON.parse(localStorage.getItem(LS_CAMERA_SETTINGS))?.[cameraId] || {};
+    } catch (err) {
+      return {};
+    }
+  },
+  SAVE_CAMERA_SETTINGS: async (evt, { cameraId, settings }) => {
+    let allSettings = {};
+    try {
+      allSettings = JSON.parse(localStorage.getItem(LS_CAMERA_SETTINGS)) || {};
+    } catch (err) {
+      allSettings = {};
+    }
+    localStorage.setItem(LS_CAMERA_SETTINGS, JSON.stringify({ ...allSettings, [cameraId]: settings || {} }));
     return {
       ...settings,
     };
