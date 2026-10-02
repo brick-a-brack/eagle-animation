@@ -467,5 +467,7 @@
   "Clear cache": "Tyhjennä välimuisti",
   "Clear cache ({{size}})": "Tyhjennä välimuisti ({{size}})",
   "Camera disabled": "Kamera poistettu käytöstä",
-  "Connect an external USB camera": "Yhdistä ulkoinen USB-kamera"
+  "Connect an external USB camera": "Yhdistä ulkoinen USB-kamera",
+  "Default framerate": "Oletuskuvataajuus",
+  "Framerate used for new projects": "Uusien projektien kuvataajuus"
 }

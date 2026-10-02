@@ -471,5 +471,7 @@
   "Clear cache": "Notīrīt kešatmiņu",
   "Clear cache ({{size}})": "Notīrīt kešatmiņu ({{size}})",
   "Camera disabled": "Kamera atspējota",
-  "Connect an external USB camera": "Pievienot ārēju USB kameru"
+  "Connect an external USB camera": "Pievienot ārēju USB kameru",
+  "Default framerate": "Noklusējuma kadru ātrums",
+  "Framerate used for new projects": "Jauniem projektiem izmantotais kadru ātrums"
 }

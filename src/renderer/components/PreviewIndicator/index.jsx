@@ -1,10 +1,11 @@
 import Tooltip from '@components/Tooltip';
+import { DEFAULT_FPS } from '@config-web';
 import { useState } from 'react';
 import { withTranslation } from 'react-i18next';
 
 import * as style from './style.module.css';
 
-const PreviewIndicator = ({ className = '', framePosition = false, frameQuantity = 0, animationFrameQuantity = 0, fps = 12, t }) => {
+const PreviewIndicator = ({ className = '', framePosition = false, frameQuantity = 0, animationFrameQuantity = 0, fps = DEFAULT_FPS, t }) => {
   const [mode, setMode] = useState(0);
 
   const handleModeChange = () => {

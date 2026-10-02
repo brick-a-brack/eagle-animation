@@ -1,6 +1,8 @@
 import { readFile, writeFile } from 'node:fs/promises';
 import { format } from 'node:path';
 
+import { DEFAULT_FPS } from '../../config';
+
 const defaultSettings = {
   CAMERA_ID: 0,
   CAPTURE_FRAMES: 1,
@@ -8,6 +10,7 @@ const defaultSettings = {
   AVERAGING_VALUE: 3,
   //LANGUAGE: 'en', // default Handled by front side
   SHORT_PLAY: 20,
+  DEFAULT_FPS,
   RATIO_OPACITY: 0.5,
   GRID_OPACITY: 1,
   GRID_MODES: ['GRID'], // GRID | CENTER | MARGINS

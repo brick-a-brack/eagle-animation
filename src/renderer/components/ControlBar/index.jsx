@@ -4,6 +4,7 @@ import CustomSlider from '@components/CustomSlider';
 import NumberInput from '@components/NumberInput';
 import PreviewIndicator from '@components/PreviewIndicator';
 import Tooltip from '@components/Tooltip';
+import { DEFAULT_FPS } from '@config-web';
 import faArrowsRepeat from '@icons/faArrowsRepeat';
 import faCamera from '@icons/faCamera';
 import faDiamondHalfStroke from '@icons/faDiamondHalfStroke';
@@ -46,7 +47,7 @@ const ControlBar = ({
   shortPlayStatus = false,
   loopStatus = false,
   maskingMode = 'DISABLED',
-  fps = 12,
+  fps = DEFAULT_FPS,
   framePosition = false,
   frameQuantity = 0,
   canDeduplicate = false,

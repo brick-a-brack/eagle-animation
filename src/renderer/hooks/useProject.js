@@ -1,3 +1,4 @@
+import { DEFAULT_FPS } from '@config-web';
 import { mimeTypeToExtension } from '@core/frameTypes';
 import { useCallback, useEffect, useState } from 'react';
 import { v4 } from 'uuid';
@@ -152,13 +153,13 @@ function useProject(options) {
   }, []);
 
   // Action add scene (appended at the end, new index = previous scenes.length)
-  const actionAddScene = useCallback(async (title, framerate = 12, ratio = null) => {
+  const actionAddScene = useCallback(async (title, framerate = DEFAULT_FPS, ratio = null) => {
     setProjectData((oldData) => {
       let d = structuredClone(oldData);
       d.project.scenes.push({
         id: v4(),
         title: title || '',
-        framerate: Number(framerate) || 12,
+        framerate: Number(framerate) || DEFAULT_FPS,
         ratio: ratio || null,
         pictures: [],
         deleted: false,

@@ -467,5 +467,7 @@
   "Clear cache": "Εκκαθάριση προσωρινής μνήμης",
   "Clear cache ({{size}})": "Εκκαθάριση προσωρινής μνήμης ({{size}})",
   "Camera disabled": "Η κάμερα είναι απενεργοποιημένη",
-  "Connect an external USB camera": "Σύνδεση εξωτερικής κάμερας USB"
+  "Connect an external USB camera": "Σύνδεση εξωτερικής κάμερας USB",
+  "Default framerate": "Προεπιλεγμένος ρυθμός καρέ",
+  "Framerate used for new projects": "Ρυθμός καρέ για τα νέα έργα"
 }

@@ -467,5 +467,7 @@
   "Clear cache": "Cache wissen",
   "Clear cache ({{size}})": "Cache wissen ({{size}})",
   "Camera disabled": "Camera uitgeschakeld",
-  "Connect an external USB camera": "Een externe USB-camera verbinden"
+  "Connect an external USB camera": "Een externe USB-camera verbinden",
+  "Default framerate": "Standaard framerate",
+  "Framerate used for new projects": "Framerate voor nieuwe projecten"
 }

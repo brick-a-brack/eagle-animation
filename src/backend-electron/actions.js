@@ -102,7 +102,8 @@ const actions = {
     return projects.map(computeProject);
   },
   NEW_PROJECT: async (evt, { title }) => {
-    const data = await createProject(PROJECTS_PATH, title);
+    const settings = await getSettings(PROJECTS_PATH);
+    const data = await createProject(PROJECTS_PATH, title, settings.DEFAULT_FPS);
     return computeProject(data);
   },
   GET_PROJECT: async (evt, { project_id }) => {
