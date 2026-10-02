@@ -1,10 +1,12 @@
 name: Eagle Animation - Build & package
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - 'master'
       - 'dev'
+      - 'feature/android'
 
 jobs:
   release:
@@ -102,3 +104,103 @@ jobs:
           rclone --config /tmp/rclone.conf copy out/web/ backblaze:/eagle-app/
           rclone --config /tmp/rclone.conf copy index.html backblaze:/eagle-app/
           rclone --config /tmp/rclone.conf copy sw.js backblaze:/eagle-app/ || true
+
+  android:
+    name: Build & package (Android)
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Clone source code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v4
+        with:
+          packages: 'platform-tools platforms;android-34 build-tools;34.0.0'
+          log-accepted-android-sdk-licenses: false
+
+      - name: Setup Bundletool
+        run: wget https://github.com/google/bundletool/releases/download/1.18.1/bundletool-all-1.18.1.jar -O bundletool.jar
+
+      # Replace by npm ci when it will be fixed
+      - name: Install dependencies
+        run: |
+          rm package-lock.json
+          npm i --force
+
+      - name: Build web bundle and copy it to the Android project
+        run: |
+          echo "VITE_COMMIT_HASH=${{ github.sha }}" >> .env
+          npm run build:android
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Generate app version
+        run: |
+          node ./scripts/android-bump-version.js >> $GITHUB_ENV
+          echo "artifact_name=Eagle-Animation-`node -p "require('./package.json').version"`-android" >> $GITHUB_ENV
+
+      - name: Build AAB
+        run: |
+          cd android
+          chmod +x ./gradlew
+          ./gradlew app:bundleRelease
+
+      # Artifact names mirror the electron-builder ones (Eagle-Animation-${version}-<platform>.<ext>):
+      #  - .aab  the signed bundle uploaded to the Play Store
+      #  - .apk  the signed universal APK, for a manual install
+      #  - .zip  the bundletool archive holding every per-device APK split
+      - name: Sign release files
+        run: |
+          echo "${{ secrets.KS_KEY_B64 }}" | base64 -d > keystore.jks
+          mkdir -p binaries
+          cp android/app/build/outputs/bundle/release/*.aab binaries/${{ env.artifact_name }}.aab
+          jarsigner -sigalg SHA256withRSA -digestalg SHA-256 -storepass "${{ secrets.KS_STORE_PASS }}" -keystore keystore.jks binaries/${{ env.artifact_name }}.aab "${{ secrets.KS_ALIAS }}" -keypass "${{ secrets.KS_ALIAS_PASS }}"
+          java -jar bundletool.jar build-apks --bundle=binaries/${{ env.artifact_name }}.aab --output=binaries/splits.apks --ks=keystore.jks --ks-pass=pass:"${{ secrets.KS_STORE_PASS }}" --ks-key-alias="${{ secrets.KS_ALIAS }}" --key-pass=pass:"${{ secrets.KS_ALIAS_PASS }}"
+          java -jar bundletool.jar build-apks --bundle=binaries/${{ env.artifact_name }}.aab --output=binaries/universal.apks --mode=universal --ks=keystore.jks --ks-pass=pass:"${{ secrets.KS_STORE_PASS }}" --ks-key-alias="${{ secrets.KS_ALIAS }}" --key-pass=pass:"${{ secrets.KS_ALIAS_PASS }}"
+          unzip -p binaries/universal.apks universal.apk > binaries/${{ env.artifact_name }}.apk
+          mv binaries/splits.apks binaries/${{ env.artifact_name }}.zip
+          rm binaries/universal.apks keystore.jks
+
+      - name: Upload files
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.auto_version_name }}
+          path: binaries/Eagle-Animation-*
+          retention-days: 7
+
+      - name: Attach files to the release
+        #if: ${{ github.ref == 'refs/heads/master' || github.ref == 'refs/heads/dev' }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          tag="v${{ env.auto_version }}"
+          if ! gh release view "$tag" > /dev/null 2>&1; then
+            gh release create "$tag" --draft --title "$tag" --notes ""
+          fi
+          gh release upload "$tag" binaries/Eagle-Animation-* --clobber
+
+      - name: Publish to Play Store
+        if: ${{ github.ref == 'refs/heads/master' }}
+        uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJsonPlainText: ${{ secrets.ANDROID_PUBLISH_SERVICE_ACCOUNT }}
+          packageName: com.brickabrack.eagleanimation
+          releaseFiles: binaries/${{ env.artifact_name }}.aab
+          track: production

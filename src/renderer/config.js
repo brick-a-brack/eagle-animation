@@ -1,7 +1,8 @@
 export * from '../config';
 
-// App device: ELECTRON | WEB
-export const DEVICE = !document ? null : window.IPC ? 'ELECTRON' : 'WEB';
+// App device: ELECTRON | WEB | ANDROID
+// window.DEVICE can be injected by native shells (e.g. Android) to override detection
+export const DEVICE = !document ? null : window.DEVICE || (window.IPC ? 'ELECTRON' : 'WEB');
 
 // Is the app running in development mode
 export const IS_DEV = window.location.hostname.includes('localhost') || window.location.hostname.includes('127.0.0.1') || window.location.host.includes(':');
