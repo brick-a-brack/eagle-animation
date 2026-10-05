@@ -10,6 +10,10 @@ import android.webkit.WebView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.webkit.WebViewAssetLoader
 import androidx.webkit.WebViewCompat
 import androidx.webkit.WebViewFeature
@@ -30,6 +34,9 @@ class MainActivity : AppCompatActivity() {
     private lateinit var bridge: EAJSBridge
     private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
     private val cameraServerToken = UUID.randomUUID().toString()
+
+    /** Latest safe-area JS snippet, replayed on every page load. */
+    private var safeAreaScript: String? = null
 
     private val cameraPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
@@ -113,6 +120,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        enableImmersiveMode()
+
         val projectsDir = (getExternalFilesDir(null) ?: filesDir)
             .resolve("EagleAnimation")
             .also { it.mkdirs() }
@@ -145,7 +154,9 @@ class MainActivity : AppCompatActivity() {
 
         bridge = EAJSBridge(webView, scope, dispatcher)
         webView.addJavascriptInterface(bridge, "AndroidIPC")
-        webView.webViewClient = EAWebViewClient(projectsDir, assetLoader, ipcScript)
+        webView.webViewClient = EAWebViewClient(projectsDir, assetLoader, ipcScript) { pushSafeArea() }
+
+        observeSafeArea()
 
         if (WebViewFeature.isFeatureSupported(WebViewFeature.DOCUMENT_START_SCRIPT)) {
             WebViewCompat.addDocumentStartJavaScript(webView, ipcScript, setOf("*"))
@@ -161,6 +172,60 @@ class MainActivity : AppCompatActivity() {
         }
 
         webView.loadUrl("https://appassets.androidplatform.net/index.html")
+    }
+
+    /**
+     * Full screen: the app draws edge-to-edge and both system bars (status bar and
+     * navigation bar / gesture pill) stay hidden. A swipe from an edge reveals them
+     * transiently, then they auto-hide again.
+     */
+    private fun enableImmersiveMode() {
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+        WindowInsetsControllerCompat(window, window.decorView).apply {
+            systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+            hide(WindowInsetsCompat.Type.systemBars())
+        }
+    }
+
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        super.onWindowFocusChanged(hasFocus)
+        // Re-hide the bars after a permission dialog, keyboard or app switch brought them back
+        if (hasFocus) enableImmersiveMode()
+    }
+
+    /**
+     * Exposes the window insets (display cutout / camera hole, plus the system bars
+     * whenever they are visible) to the renderer as CSS custom properties on <html>:
+     * --safe-area-top / -right / -bottom / -left.
+     *
+     * WebView does not reliably resolve env(safe-area-inset-*) for display cutouts,
+     * so the native values are pushed instead; vars.css keeps env() as the default.
+     */
+    private fun observeSafeArea() {
+        ViewCompat.setOnApplyWindowInsetsListener(webView) { _, insets ->
+            val safe = insets.getInsets(
+                WindowInsetsCompat.Type.displayCutout() or WindowInsetsCompat.Type.systemBars()
+            )
+            val density = resources.displayMetrics.density
+            fun css(px: Int) = "${px / density}px"
+
+            safeAreaScript = """
+                (function () {
+                    var s = document.documentElement.style;
+                    s.setProperty('--safe-area-top', '${css(safe.top)}');
+                    s.setProperty('--safe-area-right', '${css(safe.right)}');
+                    s.setProperty('--safe-area-bottom', '${css(safe.bottom)}');
+                    s.setProperty('--safe-area-left', '${css(safe.left)}');
+                })();
+            """.trimIndent()
+
+            pushSafeArea()
+            insets
+        }
+    }
+
+    private fun pushSafeArea() {
+        safeAreaScript?.let { webView.evaluateJavascript(it, null) }
     }
 
     private fun startCameraServer() {

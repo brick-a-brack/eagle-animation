@@ -14,6 +14,7 @@ class EAWebViewClient(
     private val projectsDir: File,
     private val assetLoader: WebViewAssetLoader,
     private val ipcScript: String,
+    private val onPageLoad: (WebView) -> Unit = {},
 ) : WebViewClient() {
 
     // Fallback injection of the IPC bridge for WebViews that don't support
@@ -24,7 +25,15 @@ class EAWebViewClient(
     // the document-start injection already ran.
     override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
         super.onPageStarted(view, url, favicon)
-        view?.evaluateJavascript(ipcScript, null)
+        view?.let {
+            it.evaluateJavascript(ipcScript, null)
+            onPageLoad(it)
+        }
+    }
+
+    override fun onPageFinished(view: WebView?, url: String?) {
+        super.onPageFinished(view, url)
+        view?.let { onPageLoad(it) }
     }
 
     override fun shouldInterceptRequest(view: WebView?, request: WebResourceRequest?): WebResourceResponse? {
