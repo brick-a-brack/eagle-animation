@@ -484,5 +484,7 @@
   "Clear cache": "Limpar a cache",
   "Clear cache ({{size}})": "Limpar a cache ({{size}})",
   "Camera disabled": "Câmara desativada",
-  "Connect an external USB camera": "Ligar uma câmara USB externa"
+  "Connect an external USB camera": "Ligar uma câmara USB externa",
+  "Default framerate": "IPS predefinido",
+  "Framerate used for new projects": "IPS usado para os novos projetos"
 }

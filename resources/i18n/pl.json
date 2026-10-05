@@ -488,5 +488,7 @@
   "Clear cache": "Wyczyść pamięć podręczną",
   "Clear cache ({{size}})": "Wyczyść pamięć podręczną ({{size}})",
   "Camera disabled": "Kamera wyłączona",
-  "Connect an external USB camera": "Podłącz zewnętrzną kamerę USB"
+  "Connect an external USB camera": "Podłącz zewnętrzną kamerę USB",
+  "Default framerate": "Domyślna częstotliwość klatek",
+  "Framerate used for new projects": "Częstotliwość klatek dla nowych projektów"
 }

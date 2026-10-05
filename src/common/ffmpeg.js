@@ -1,3 +1,5 @@
+import { DEFAULT_FPS } from '../config';
+
 const profiles = {
   h264: {
     codec: 'libx264',
@@ -63,7 +65,7 @@ export const getFFmpegArgs = (encodingProfile = false, outputFile = false, fps =
   const args = ['-y', '-stats_period', '0.1'];
 
   // Input framerate
-  args.push('-r', `${Number(fps) > 0 && Number(fps) <= 240 ? Number(fps) : 12}`);
+  args.push('-r', `${Number(fps) > 0 && Number(fps) <= 240 ? Number(fps) : DEFAULT_FPS}`);
 
   // Add all images in the path
   args.push('-i', 'frame-%06d.jpg');

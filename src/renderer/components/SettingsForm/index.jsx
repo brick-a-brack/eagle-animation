@@ -99,6 +99,9 @@ const SettingsForm = ({ settings = {}, onUpdate = () => {}, t }) => {
 
         <Heading h={1}>{t('Playback and navigation')}</Heading>
 
+        <FormGroup label={t('Default framerate')} description={t('Framerate used for new projects')}>
+          <NumberInput register={register('DEFAULT_FPS')} min={1} max={60} tag={t('FPS')} />
+        </FormGroup>
         <FormGroup label={t('Short play')} description={t('Number of frames to play when short play is enabled')}>
           <NumberInput register={register('SHORT_PLAY')} min={1} />
         </FormGroup>

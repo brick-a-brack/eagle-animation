@@ -474,5 +474,7 @@
   "Clear cache": "Vymazať vyrovnávaciu pamäť",
   "Clear cache ({{size}})": "Vymazať vyrovnávaciu pamäť ({{size}})",
   "Camera disabled": "Kamera vypnutá",
-  "Connect an external USB camera": "Pripojiť externú USB kameru"
+  "Connect an external USB camera": "Pripojiť externú USB kameru",
+  "Default framerate": "Predvolený počet snímok za sekundu",
+  "Framerate used for new projects": "Počet snímok za sekundu pre nové projekty"
 }

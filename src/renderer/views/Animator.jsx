@@ -17,7 +17,7 @@ import Timeline from '@components/Timeline';
 import ToolsWindow from '@components/ToolsWindow';
 import Tour from '@components/Tour';
 import Window from '@components/Window';
-import { MAX_FRAME_DUPLICATION } from '@config-web';
+import { DEFAULT_FPS, MAX_FRAME_DUPLICATION } from '@config-web';
 import { parseRatio } from '@core/ratio';
 import useAppCapabilities from '@hooks/useAppCapabilities';
 import useCamera from '@hooks/useCamera';
@@ -491,7 +491,7 @@ const Animator = ({ t }) => {
     ADD_SCENE: async () => {
       const newIndex = project.scenes.length;
       const newVisualIndex = project.scenes.filter((s) => !s.deleted).length + 1; // To be displayed
-      const currentFps = project?.scenes?.[track]?.framerate || 12;
+      const currentFps = project?.scenes?.[track]?.framerate || Number(settings?.DEFAULT_FPS) || DEFAULT_FPS;
       const currentRatio = project?.scenes?.[track]?.ratio || null;
       await projectActions.addScene(t('Untitled scene #{{index}}', { index: newVisualIndex }), currentFps, currentRatio);
       window.track('scene_added', { projectId: `${id}`, trackId: `${newIndex}` });

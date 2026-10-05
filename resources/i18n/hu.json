@@ -467,5 +467,7 @@
   "Clear cache": "Gyorsítótár ürítése",
   "Clear cache ({{size}})": "Gyorsítótár ürítése ({{size}})",
   "Camera disabled": "Kamera letiltva",
-  "Connect an external USB camera": "Külső USB-kamera csatlakoztatása"
+  "Connect an external USB camera": "Külső USB-kamera csatlakoztatása",
+  "Default framerate": "Alapértelmezett képkockasebesség",
+  "Framerate used for new projects": "Az új projektekhez használt képkockasebesség"
 }

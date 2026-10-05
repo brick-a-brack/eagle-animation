@@ -474,5 +474,7 @@
   "Clear cache": "Vymazat mezipaměť",
   "Clear cache ({{size}})": "Vymazat mezipaměť ({{size}})",
   "Camera disabled": "Kamera vypnuta",
-  "Connect an external USB camera": "Připojit externí USB kameru"
+  "Connect an external USB camera": "Připojit externí USB kameru",
+  "Default framerate": "Výchozí snímkování",
+  "Framerate used for new projects": "Snímkování použité pro nové projekty"
 }

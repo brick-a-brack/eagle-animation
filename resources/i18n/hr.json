@@ -471,5 +471,7 @@
   "Clear cache": "Obriši predmemoriju",
   "Clear cache ({{size}})": "Obriši predmemoriju ({{size}})",
   "Camera disabled": "Kamera onemogućena",
-  "Connect an external USB camera": "Poveži vanjsku USB kameru"
+  "Connect an external USB camera": "Poveži vanjsku USB kameru",
+  "Default framerate": "Zadani broj sličica u sekundi",
+  "Framerate used for new projects": "Broj sličica u sekundi za nove projekte"
 }

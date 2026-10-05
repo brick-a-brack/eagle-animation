@@ -1,4 +1,4 @@
-import { PARTNER_API } from '@config-web';
+import { DEFAULT_FPS, PARTNER_API } from '@config-web';
 import { currentLanguage, setLanguage } from '@i18n';
 import { useCallback, useEffect, useState } from 'react';
 
@@ -12,6 +12,7 @@ const DEFAULT_SETTINGS = {
   AVERAGING_VALUE: 3,
   LANGUAGE: currentLanguage(),
   SHORT_PLAY: 20,
+  DEFAULT_FPS,
   RATIO_OPACITY: 0.5,
   GRID_OPACITY: 1,
   GRID_MODES: ['GRID'], // GRID | CENTER | MARGINS
