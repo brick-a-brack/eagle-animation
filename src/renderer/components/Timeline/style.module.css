@@ -145,14 +145,8 @@
 
 @media (pointer: coarse) {
   .container {
-    scrollbar-width: none;
-
     --padding-bottom: 4px;
     --padding-top: 4px;
-  }
-
-  .container::-webkit-scrollbar {
-    display: none;
   }
 }
 
