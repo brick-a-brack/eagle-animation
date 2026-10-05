@@ -467,5 +467,7 @@
   "Clear cache": "Изчистване на кеша",
   "Clear cache ({{size}})": "Изчистване на кеша ({{size}})",
   "Camera disabled": "Камерата е изключена",
-  "Connect an external USB camera": "Свързване на външна USB камера"
+  "Connect an external USB camera": "Свързване на външна USB камера",
+  "Default framerate": "Кадрова честота по подразбиране",
+  "Framerate used for new projects": "Кадрова честота за новите проекти"
 }

@@ -484,5 +484,7 @@
   "Clear cache": "Vaciar la caché",
   "Clear cache ({{size}})": "Vaciar la caché ({{size}})",
   "Camera disabled": "Cámara desactivada",
-  "Connect an external USB camera": "Conectar una cámara USB externa"
+  "Connect an external USB camera": "Conectar una cámara USB externa",
+  "Default framerate": "Velocidad de fotogramas predeterminada",
+  "Framerate used for new projects": "Velocidad de fotogramas para los nuevos proyectos"
 }

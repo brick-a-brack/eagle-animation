@@ -8,6 +8,7 @@ export const VERSION = json.version;
 export const LS_PREFIX = 'ea_';
 export const LS_LANGUAGE = `${LS_PREFIX}language`;
 export const LS_SETTINGS = `${LS_PREFIX}settings`;
+export const LS_CAMERA_SETTINGS = `${LS_PREFIX}camera_settings`;
 
 // Eagle Animation files
 export const DIRECTORY_NAME = 'EagleAnimation';
@@ -17,6 +18,9 @@ export const PROJECT_FILE = `${PROJECT_FILE_NAME}.${PROJECT_FILE_EXTENSION}`;
 
 // Default values
 export const DEFAULT_FPS = 12;
+
+// Maximum number of times a single frame can be duplicated
+export const MAX_FRAME_DUPLICATION = 3000;
 
 // Github link
 export const CONTRIBUTE_REPOSITORY = 'brick-a-brack/eagle-animation';

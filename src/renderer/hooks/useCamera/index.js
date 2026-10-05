@@ -7,6 +7,21 @@ const applyCameraLabel = (e, i) => ({ ...e, label: `[${i + 1}] ${e.label || ''}`
 // Delay between devices list refreshes in ms
 const DEVICES_POLL_INTERVAL = 3000;
 
+const applyCameraSettings = async (camera, settings = {}) => {
+  const capabilities = await camera.getCapabilities();
+  for (const [id, value] of Object.entries(settings)) {
+    const capability = capabilities.find((c) => c.id === id);
+    if (!capability || capability.value === value) {
+      continue;
+    }
+    try {
+      await camera.applyCapability(id, value);
+    } catch (e) {
+      console.error(e);
+    }
+  }
+};
+
 function useCamera(options = {}) {
   const compatibilityMode = !!options?.compatibilityMode;
   const [devices, setDevices] = useState(null);
@@ -15,6 +30,7 @@ function useCamera(options = {}) {
   const [cameraCapabilities, setCameraCapabilities] = useState([]);
   const setStreamRef = useRef(null);
   const activeCameraIdRef = useRef(null);
+  const cameraSettingsRef = useRef({ cameraId: null, settings: {} });
   const eventsRefs = useRef([
     ...(typeof options?.eventsHandlers?.connect === 'function' ? [['connect', options?.eventsHandlers?.connect]] : []),
     ...(typeof options?.eventsHandlers?.disconnect === 'function' ? [['disconnect', options?.eventsHandlers?.disconnect]] : []),
@@ -97,6 +113,36 @@ function useCamera(options = {}) {
     triggerEvent('disconnect');
   }, [devices, triggerEvent]);
 
+  // Load the stored settings of a camera (cached for the current camera)
+  const loadCameraSettings = useCallback(async (cameraId) => {
+    if (cameraSettingsRef.current.cameraId !== cameraId) {
+      const settings = (await window.EA('GET_CAMERA_SETTINGS', { cameraId })) || {};
+      cameraSettingsRef.current = { cameraId, settings };
+    }
+    return cameraSettingsRef.current.settings;
+  }, []);
+
+  // Re-apply the stored settings of a camera once it's connected
+  const restoreCameraSettings = useCallback(
+    async (camera, cameraId) => {
+      const settings = await loadCameraSettings(cameraId);
+      await applyCameraSettings(camera, settings);
+    },
+    [loadCameraSettings]
+  );
+
+  // Store a capability value set by the user on a camera
+  const saveCameraSetting = useCallback(
+    async (cameraId, id, value) => {
+      const settings = { ...(await loadCameraSettings(cameraId)) };
+      delete settings[id];
+      settings[id] = value;
+      cameraSettingsRef.current = { cameraId, settings };
+      window.EA('SAVE_CAMERA_SETTINGS', { cameraId, settings }).catch(console.error);
+    },
+    [loadCameraSettings]
+  );
+
   // Connect a camera instance and wire up its stream.
   const connectCamera = useCallback(
     async (camera, cameraId) => {
@@ -109,6 +155,7 @@ function useCamera(options = {}) {
       // (browsers return empty deviceIds before permission is granted).
       const updatedCameras = await getCameras(compatibilityMode);
       setDevices(updatedCameras.map(applyCameraLabel));
+      await restoreCameraSettings(camera, cameraId).catch(console.error);
       triggerEvent('connect');
       camera.getCapabilities().then((caps) => {
         setCameraCapabilities(caps);
@@ -120,7 +167,7 @@ function useCamera(options = {}) {
         });
       });
     },
-    [triggerEvent, compatibilityMode]
+    [triggerEvent, compatibilityMode, restoreCameraSettings]
   );
 
   // Action to set stream callback
@@ -192,12 +239,13 @@ function useCamera(options = {}) {
   const actionSetCapability = useCallback(
     async (id, value) => {
       if (currentCamera) {
+        saveCameraSetting(currentCameraId, id, value).catch(console.error);
         await currentCamera?.applyCapability(id, value);
         const newState = await currentCamera?.getCapabilities();
         setCameraCapabilities(newState);
       }
     },
-    [currentCamera]
+    [currentCamera, currentCameraId, saveCameraSetting]
   );
 
   useEffect(() => {

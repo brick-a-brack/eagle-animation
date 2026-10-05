@@ -1,3 +1,4 @@
+import { DEFAULT_FPS, MAX_FRAME_DUPLICATION } from '@config-web';
 import { mimeTypeToExtension } from '@core/frameTypes';
 import { useCallback, useEffect, useState } from 'react';
 import { v4 } from 'uuid';
@@ -103,7 +104,7 @@ function useProject(options) {
             return p;
           } else {
             const length = (p.length || 1) + offset || 1;
-            return { ...p, length: length > 1 ? length : 1 };
+            return { ...p, length: Math.min(MAX_FRAME_DUPLICATION, Math.max(1, length)) };
           }
         });
       }
@@ -152,13 +153,13 @@ function useProject(options) {
   }, []);
 
   // Action add scene (appended at the end, new index = previous scenes.length)
-  const actionAddScene = useCallback(async (title, framerate = 12, ratio = null) => {
+  const actionAddScene = useCallback(async (title, framerate = DEFAULT_FPS, ratio = null) => {
     setProjectData((oldData) => {
       let d = structuredClone(oldData);
       d.project.scenes.push({
         id: v4(),
         title: title || '',
-        framerate: Number(framerate) || 12,
+        framerate: Number(framerate) || DEFAULT_FPS,
         ratio: ratio || null,
         pictures: [],
         deleted: false,

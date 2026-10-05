@@ -476,5 +476,7 @@
   "Clear cache": "Izprazni predpomnilnik",
   "Clear cache ({{size}})": "Izprazni predpomnilnik ({{size}})",
   "Camera disabled": "Kamera onemogočena",
-  "Connect an external USB camera": "Poveži zunanjo kamero USB"
+  "Connect an external USB camera": "Poveži zunanjo kamero USB",
+  "Default framerate": "Privzeta frekvenca sličic",
+  "Framerate used for new projects": "Frekvenca sličic za nove projekte"
 }

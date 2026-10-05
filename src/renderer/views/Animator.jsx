@@ -17,6 +17,7 @@ import Timeline from '@components/Timeline';
 import ToolsWindow from '@components/ToolsWindow';
 import Tour from '@components/Tour';
 import Window from '@components/Window';
+import { DEFAULT_FPS, MAX_FRAME_DUPLICATION } from '@config-web';
 import { parseRatio } from '@core/ratio';
 import useAppCapabilities from '@hooks/useAppCapabilities';
 import useCamera from '@hooks/useCamera';
@@ -490,7 +491,7 @@ const Animator = ({ t }) => {
     ADD_SCENE: async () => {
       const newIndex = project.scenes.length;
       const newVisualIndex = project.scenes.filter((s) => !s.deleted).length + 1; // To be displayed
-      const currentFps = project?.scenes?.[track]?.framerate || 12;
+      const currentFps = project?.scenes?.[track]?.framerate || Number(settings?.DEFAULT_FPS) || DEFAULT_FPS;
       const currentRatio = project?.scenes?.[track]?.ratio || null;
       await projectActions.addScene(t('Untitled scene #{{index}}', { index: newVisualIndex }), currentFps, currentRatio);
       window.track('scene_added', { projectId: `${id}`, trackId: `${newIndex}` });
@@ -544,7 +545,7 @@ const Animator = ({ t }) => {
       window.track('frame_duplicated', { projectId: `${id}`, trackId: `${track}`, frameId: `${currentFrameId}`, offset: -1 });
     },
     SET_DUPLICATE_COUNT: (value) => {
-      const target = Math.max(1, Math.round(Number(value) || 1));
+      const target = Math.min(MAX_FRAME_DUPLICATION, Math.max(1, Math.round(Number(value) || 1)));
       const offset = target - (currentFrame?.length || 1);
       if (!offset) return;
       projectActions.applyDuplicateFrameOffset(track, currentFrameId, offset);
@@ -740,6 +741,7 @@ const Animator = ({ t }) => {
             loopStatus={loopStatus}
             fps={fps}
             canDeduplicate={currentFrame.length > 1}
+            canDuplicate={(currentFrame.length || 1) < MAX_FRAME_DUPLICATION}
             framePosition={framePosition}
             frameQuantity={pictures.length}
             isCurrentFrameHidden={!!currentFrame.hidden}
@@ -798,6 +800,7 @@ const Animator = ({ t }) => {
               }}
               isHidden={!!currentFrame.hidden}
               duplicateCount={currentFrame.length || 1}
+              maxDuplicateCount={MAX_FRAME_DUPLICATION}
               canUseMaskingEditor={!!currentFrame.masking}
             />
           </Window>

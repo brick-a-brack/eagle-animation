@@ -467,5 +467,7 @@
   "Clear cache": "Ryd cachen",
   "Clear cache ({{size}})": "Ryd cachen ({{size}})",
   "Camera disabled": "Kamera deaktiveret",
-  "Connect an external USB camera": "Tilslut et eksternt USB-kamera"
+  "Connect an external USB camera": "Tilslut et eksternt USB-kamera",
+  "Default framerate": "Standard billedhastighed",
+  "Framerate used for new projects": "Billedhastighed for nye projekter"
 }

@@ -13,7 +13,7 @@ import { clearCache, getCacheSize } from './core/cache';
 import { setDiscordActivity } from './core/discord';
 import { exportProjectScene, exportSaveTemporaryBuffer, getSyncList, saveSyncList } from './core/export';
 import { createProject, deleteProject, getProjectData, getProjectsList, projectSave, savePicture } from './core/projects';
-import { getSettings, saveSettings } from './core/settings';
+import { getCameraSettings, getSettings, saveCameraSettings, saveSettings } from './core/settings';
 import { getToucanCameraServerConfig } from './core/toucan';
 import { selectFile, selectFolder } from './core/utils';
 
@@ -102,7 +102,8 @@ const actions = {
     return projects.map(computeProject);
   },
   NEW_PROJECT: async (evt, { title }) => {
-    const data = await createProject(PROJECTS_PATH, title);
+    const settings = await getSettings(PROJECTS_PATH);
+    const data = await createProject(PROJECTS_PATH, title, settings.DEFAULT_FPS);
     return computeProject(data);
   },
   GET_PROJECT: async (evt, { project_id }) => {
@@ -136,6 +137,12 @@ const actions = {
   },
   SAVE_SETTINGS: async (evt, { settings }) => {
     return saveSettings(PROJECTS_PATH, settings);
+  },
+  GET_CAMERA_SETTINGS: async (evt, { cameraId }) => {
+    return getCameraSettings(PROJECTS_PATH, cameraId);
+  },
+  SAVE_CAMERA_SETTINGS: async (evt, { cameraId, settings }) => {
+    return saveCameraSettings(PROJECTS_PATH, cameraId, settings);
   },
   SYNC: async () => {
     let syncList = await getSyncList(PROJECTS_PATH);

@@ -474,5 +474,7 @@
   "Clear cache": "Очистить кэш",
   "Clear cache ({{size}})": "Очистить кэш ({{size}})",
   "Camera disabled": "Камера отключена",
-  "Connect an external USB camera": "Подключить внешнюю USB-камеру"
+  "Connect an external USB camera": "Подключить внешнюю USB-камеру",
+  "Default framerate": "Частота кадров по умолчанию",
+  "Framerate used for new projects": "Частота кадров для новых проектов"
 }
