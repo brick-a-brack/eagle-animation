@@ -28,7 +28,22 @@ const HomeToolbar = ({ search = '', onSearchChange = () => {}, sort = 'UPDATED',
     <div className={style.toolbar}>
       <div className={style.search}>
         <FontAwesomeIcon icon={faMagnifyingGlass} className={style.searchIcon} />
-        <input type="text" value={search} placeholder={t('Search projects...')} onChange={(evt) => onSearchChange(evt.target.value)} onKeyDown={(evt) => evt.stopPropagation()} />
+        <input
+          type="search"
+          inputMode="search"
+          enterKeyHint="search"
+          autoComplete="off"
+          value={search}
+          placeholder={t('Search projects...')}
+          onChange={(evt) => onSearchChange(evt.target.value)}
+          onKeyDown={(evt) => {
+            evt.stopPropagation();
+            if (evt.key === 'Enter') {
+              evt.preventDefault();
+              evt.currentTarget.blur();
+            }
+          }}
+        />
         {search ? (
           <button type="button" className={style.clear} onClick={() => onSearchChange('')} title={t('Clear')}>
             <FontAwesomeIcon icon={faXmark} />

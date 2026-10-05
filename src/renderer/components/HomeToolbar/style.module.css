@@ -55,6 +55,11 @@
   user-select: text;
 }
 
+.search input::-webkit-search-cancel-button {
+  appearance: none;
+  display: none;
+}
+
 .search input::placeholder {
   color: var(--color-white);
   opacity: 0.45;
