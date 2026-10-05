@@ -94,8 +94,11 @@ Some variables can be configured using a `.env` file, values with a "\*" are req
 
 ### Telemetry
 
-To improve the quality of **Eagle Animation**, runtime errors and application events are automatically reported to developers using [PostHog](https://posthog.com/). You can disable telemetry by
-setting `POSTHOG_TOKEN` to `""` in `src/config.js` and rebuilding the app.
+To improve the quality of **Eagle Animation**, runtime errors and application events are automatically reported to developers using [PostHog](https://posthog.com/).
+
+You can turn telemetry off at any time from the application itself, in **Settings → General → Allow telemetry**. No rebuild is required.
+
+If you build your own version and want telemetry gone entirely, set `POSTHOG_TOKEN` to `""` in `src/config.js` and rebuild the app.
 
 ## Compatibility
 
