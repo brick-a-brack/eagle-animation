@@ -75,8 +75,8 @@
   cursor: pointer;
   padding: var(--space-big);
   position: fixed;
-  right: 0;
-  top: 0;
+  right: var(--safe-area-right);
+  top: var(--safe-area-top);
 }
 
 .quit svg {
