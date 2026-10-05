@@ -4,6 +4,7 @@ import faMagnifyingGlass from '@icons/faMagnifyingGlass';
 import faStar from '@icons/faStar';
 import faXmark from '@icons/faXmark';
 import { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { withTranslation } from 'react-i18next';
 
 import * as style from './style.module.css';
@@ -63,7 +64,10 @@ const HomeToolbar = ({ search = '', onSearchChange = () => {}, sort = 'UPDATED',
           </button>
           {sortOpen ? (
             <>
-              <div className={style.backdrop} onClick={() => setSortOpen(false)} />
+              {/* Portaled out of the toolbar: `container-type` makes the toolbar a
+                  containing block for fixed descendants, which would shrink the
+                  backdrop to the toolbar instead of covering the viewport. */}
+              {createPortal(<div className={style.backdrop} onClick={() => setSortOpen(false)} />, document.body)}
               <div className={style.menu}>
                 {sortOptions.map((option) => (
                   <button type="button" key={option.key} className={`${style.menuItem} ${option.key === sort ? style.menuItemActive : ''}`} onClick={() => handleSortSelect(option.key)}>

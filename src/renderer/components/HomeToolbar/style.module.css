@@ -1,5 +1,6 @@
 .toolbar {
   align-items: center;
+  container: home-toolbar / inline-size;
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-medium);
@@ -203,9 +204,11 @@
   opacity: 1;
 }
 
-/* ---------- Mobile ---------- */
+/* ---------- Narrow toolbar ---------- */
 
-@media screen and (width <= 650px) {
+/* Driven by the toolbar's own width, not the viewport: the search field and the
+   filters stack as soon as the toolbar itself gets narrow, wherever it is placed. */
+@container home-toolbar (width <= 650px) {
   .search {
     flex: 1 1 100%;
     min-width: 0;

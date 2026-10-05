@@ -8,6 +8,7 @@
   overflow: hidden;
   text-align: center;
   width: 100%;
+  box-sizing: border-box;
 }
 
 .subcontainer {
@@ -112,13 +113,13 @@
   .subcontainer.left {
     justify-content: flex-start;
     min-width: 84px;
-    padding-left: 5px;
+    padding-left: calc(var(--safe-area-left) + 5px);
   }
 
   .subcontainer.right {
     justify-content: flex-end;
     min-width: 84px;
-    padding-right: 5px;
+    padding-right: calc(var(--safe-area-right) + 5px);
   }
 
   .imageMoreButton {
