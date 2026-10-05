@@ -17,6 +17,7 @@ import Timeline from '@components/Timeline';
 import ToolsWindow from '@components/ToolsWindow';
 import Tour from '@components/Tour';
 import Window from '@components/Window';
+import { MAX_FRAME_DUPLICATION } from '@config-web';
 import { parseRatio } from '@core/ratio';
 import useAppCapabilities from '@hooks/useAppCapabilities';
 import useCamera from '@hooks/useCamera';
@@ -544,7 +545,7 @@ const Animator = ({ t }) => {
       window.track('frame_duplicated', { projectId: `${id}`, trackId: `${track}`, frameId: `${currentFrameId}`, offset: -1 });
     },
     SET_DUPLICATE_COUNT: (value) => {
-      const target = Math.max(1, Math.round(Number(value) || 1));
+      const target = Math.min(MAX_FRAME_DUPLICATION, Math.max(1, Math.round(Number(value) || 1)));
       const offset = target - (currentFrame?.length || 1);
       if (!offset) return;
       projectActions.applyDuplicateFrameOffset(track, currentFrameId, offset);
@@ -740,6 +741,7 @@ const Animator = ({ t }) => {
             loopStatus={loopStatus}
             fps={fps}
             canDeduplicate={currentFrame.length > 1}
+            canDuplicate={(currentFrame.length || 1) < MAX_FRAME_DUPLICATION}
             framePosition={framePosition}
             frameQuantity={pictures.length}
             isCurrentFrameHidden={!!currentFrame.hidden}
@@ -798,6 +800,7 @@ const Animator = ({ t }) => {
               }}
               isHidden={!!currentFrame.hidden}
               duplicateCount={currentFrame.length || 1}
+              maxDuplicateCount={MAX_FRAME_DUPLICATION}
               canUseMaskingEditor={!!currentFrame.masking}
             />
           </Window>

@@ -18,6 +18,9 @@ export const PROJECT_FILE = `${PROJECT_FILE_NAME}.${PROJECT_FILE_EXTENSION}`;
 // Default values
 export const DEFAULT_FPS = 12;
 
+// Maximum number of times a single frame can be duplicated
+export const MAX_FRAME_DUPLICATION = 3000;
+
 // Github link
 export const CONTRIBUTE_REPOSITORY = 'brick-a-brack/eagle-animation';
 export const DOWNLOAD_LINK = 'https://eagle-animation.com/download';

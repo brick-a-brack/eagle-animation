@@ -50,6 +50,7 @@ const ControlBar = ({
   framePosition = false,
   frameQuantity = 0,
   canDeduplicate = false,
+  canDuplicate = true,
   canUseMaskingEditor = false,
   isCurrentFrameHidden = false,
   showCameraSettings = false,
@@ -122,6 +123,7 @@ const ControlBar = ({
                 title: t('Duplicate frame'),
                 onClick: handleAction('DUPLICATE'),
                 icon: faImageCirclePlus,
+                disabled: !canDuplicate,
               },
               {
                 title: t('Remove frame'),

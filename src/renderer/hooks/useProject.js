@@ -1,3 +1,4 @@
+import { MAX_FRAME_DUPLICATION } from '@config-web';
 import { mimeTypeToExtension } from '@core/frameTypes';
 import { useCallback, useEffect, useState } from 'react';
 import { v4 } from 'uuid';
@@ -103,7 +104,7 @@ function useProject(options) {
             return p;
           } else {
             const length = (p.length || 1) + offset || 1;
-            return { ...p, length: length > 1 ? length : 1 };
+            return { ...p, length: Math.min(MAX_FRAME_DUPLICATION, Math.max(1, length)) };
           }
         });
       }
