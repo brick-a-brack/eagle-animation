@@ -7,6 +7,8 @@
   width: 100%;
     --ea-should-apply-left-bar-padding: 1;
     --ea-should-apply-right-bar-padding: 1;
+    --ea-should-apply-top-bar-padding: 0;
+    --ea-should-apply-bottom-bar-padding: 0;
 }
 
 @media (orientation: landscape) and (width <=700px),
@@ -19,5 +21,10 @@
   .hasMobileRightBar {
     padding-right: calc(var(--safe-area-right) + 62px);
     --ea-should-apply-right-bar-padding: 0;
+  }
+
+  .hasMobileLeftBar, .hasMobileRightBar {
+    --ea-should-apply-top-bar-padding: 1;
+    --ea-should-apply-bottom-bar-padding: 1;
   }
 }
