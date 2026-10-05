@@ -19,7 +19,7 @@
   bottom: 0;
   box-shadow: 0 0 10px 0 rgb(114 114 114 / 10%);
   box-sizing: border-box;
-  max-height: 100vh;
+  max-height: calc(100vh - var(--safe-area-top));
   min-height: 35vh;
   opacity: 0;
   overflow: auto;
@@ -29,11 +29,15 @@
     opacity 0.3s ease-in-out,
     transform 0.3s ease-in-out;
   width: 100%;
+  padding-left: var(--safe-area-left);
+  padding-right: var(--safe-area-right);
+  padding-bottom: var(--safe-area-bottom);
   will-change: transform, opacity;
 }
 
 .window.fullscreen {
   min-height: 100vh;
+  /*padding-top: var(--safe-area-top);*/
 }
 
 .content {
@@ -45,7 +49,7 @@
   pointer-events: all;
 }
 
-.opened > .window {
+.opened>.window {
   opacity: 1;
   transform: translate(0%, 0%);
 }
@@ -57,7 +61,7 @@
   height: 1.25rem;
   opacity: 1;
   position: absolute;
-  right: var(--space-medium);
+  right: calc(var(--space-medium) + var(--safe-area-right));
   top: var(--space-medium);
   transition: opacity 0.3s ease-in-out;
   user-select: none;

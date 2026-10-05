@@ -3,10 +3,11 @@
   background: var(--color-theme-extra-dark);
   box-sizing: border-box;
   display: flex;
-  height: 62px;
+  height: calc(62px + var(--safe-area-top));
   justify-content: space-between;
-  min-height: 62px;
+  min-height: calc(62px + var(--safe-area-top));
   padding: 0 5px;
+  padding-top: calc(5px + var(--safe-area-top));
   text-align: center;
   width: 100%;
   z-index: 2;
@@ -30,7 +31,7 @@
   height: 32px !important;
   left: 50%;
   position: absolute;
-  top: 15px;
+  top: calc(15px + var(--safe-area-top));
   transform: translateX(-50%);
   user-select: none;
   width: auto !important;
@@ -64,6 +65,14 @@
   left: 50%;
   position: absolute;
   transform: translateX(-50%);
+}
+
+.right {
+  margin-right: var(--safe-area-right);
+}
+
+.left {
+  margin-left: var(--safe-area-left);
 }
 
 /* Hide it on mobile view */

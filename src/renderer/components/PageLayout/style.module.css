@@ -3,14 +3,21 @@
   flex-direction: column;
   height: 100vh;
   justify-content: space-between;
+  box-sizing: border-box;
+  width: 100%;
+    --ea-should-apply-left-bar-padding: 1;
+    --ea-should-apply-right-bar-padding: 1;
 }
 
-@media (orientation: landscape) and (width <= 700px), (orientation: landscape) and (height <= 500px) {
+@media (orientation: landscape) and (width <=700px),
+(orientation: landscape) and (height <=500px) {
   .hasMobileLeftBar {
-    padding-left: 62px;
+    padding-left: calc(var(--safe-area-left) + 62px);
+    --ea-should-apply-left-bar-padding: 0;
   }
 
   .hasMobileRightBar {
-    padding-right: 62px;
+    padding-right: calc(var(--safe-area-right) + 62px);
+    --ea-should-apply-right-bar-padding: 0;
   }
 }

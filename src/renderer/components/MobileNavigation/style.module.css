@@ -12,10 +12,12 @@
 }
 
 .headerBarLeft {
+  width: calc(62px + var(--safe-area-left));
   left: 0;
 }
 
 .headerBarRight {
+  width: calc(62px + var(--safe-area-right));
   right: 0;
 }
 
@@ -27,7 +29,7 @@
   flex-direction: column;
   place-content: center center;
   position: absolute;
-  width: 100%;
+  width: 62px;
 }
 
 .top {
@@ -42,15 +44,21 @@
 
 .bottom {
   bottom: 0;
-  padding-bottom: 5px;
 }
 
 .headerBar .top {
-  padding-top: 5px;
+  padding-top: calc(5px + var(--safe-area-top));
 }
 
 .headerBar .bottom {
-  padding-bottom: 5px;
+  padding-bottom: calc(5px + var(--safe-area-bottom));
+}
+
+.headerBarLeft .top, .headerBarLeft .center, .headerBarLeft .bottom {
+  left: var(--safe-area-left);
+}
+.headerBarRight .top, .headerBarRight .center, .headerBarRight .bottom {
+  right: var(--safe-area-right);
 }
 
 .logo {
