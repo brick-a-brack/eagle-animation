@@ -469,5 +469,10 @@
   "Camera disabled": "Kamera letiltva",
   "Connect an external USB camera": "Külső USB-kamera csatlakoztatása",
   "Default framerate": "Alapértelmezett képkockasebesség",
-  "Framerate used for new projects": "Az új projektekhez használt képkockasebesség"
+  "Framerate used for new projects": "Az új projektekhez használt képkockasebesség",
+  "Share cameras": "Kamerák megosztása",
+  "Expose the cameras so they can be used from other devices": "Elérhetővé teszi a kamerákat, hogy más eszközökről is használhatók legyenek",
+  "Keep sharing in background": "Megosztás folytatása a háttérben",
+  "Keep sharing the cameras while the application runs in the background": "A kamerák megosztásának folytatása, amíg az alkalmazás a háttérben fut",
+  "Expose the cameras so they can be used from other devices ({{hostname}}:{{port}}, using {{token}})": "Elérhetővé teszi a kamerákat, hogy más eszközökről is használhatók legyenek ({{hostname}}:{{port}}, ezzel: {{token}})"
 }

@@ -1,4 +1,9 @@
-import { getApiUrl, getAuthHeader, getToken } from '@core/toucanCameraServer';
+import { getToucanCameraServerConfig, getToucanCameraServerHeaders, getToucanCameraServerUrl } from '@core/toucanCameraServer';
+
+const CONNECT_MAX_ATTEMPTS = 50;
+const CONNECT_RETRY_DELAY = 100;
+
+const wait = (delay) => new Promise((resolve) => setTimeout(resolve, delay));
 
 class ToucanCameraServer {
   constructor(deviceId = null) {
@@ -12,10 +17,10 @@ class ToucanCameraServer {
   async applyCapability(key, value) {
     console.log(`📷 Set ${key}=${value}`);
 
-    await fetch(`${getApiUrl()}cameras/${this.deviceId}/parameters`, {
+    await fetch(`${getToucanCameraServerUrl()}cameras/${this.deviceId}/parameters`, {
       method: 'PUT',
       headers: {
-        ...getAuthHeader(),
+        ...getToucanCameraServerHeaders(),
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ type: key, value: `${value}` }),
@@ -25,10 +30,10 @@ class ToucanCameraServer {
   }
 
   async getCapabilities() {
-    const capabilities = await fetch(`${getApiUrl()}cameras/${this.deviceId}/parameters`, {
+    const capabilities = await fetch(`${getToucanCameraServerUrl()}cameras/${this.deviceId}/parameters`, {
       method: 'GET',
       headers: {
-        ...getAuthHeader(),
+        ...getToucanCameraServerHeaders(),
       },
     })
       .then((res) => res.json())
@@ -67,14 +72,34 @@ class ToucanCameraServer {
   async connect({ setStream } = {} /*, settings = {} */) {
     this.setStream = setStream;
 
-    await fetch(`${getApiUrl()}cameras/${this.deviceId}/connect`, {
-      method: 'PUT',
-      headers: {
-        ...getAuthHeader(),
-      },
-    });
+    let lastError = null;
+    for (let attempt = 0; attempt < CONNECT_MAX_ATTEMPTS; attempt += 1) {
+      if (attempt > 0) {
+        await wait(CONNECT_RETRY_DELAY);
+      }
 
-    const url = `${getApiUrl()}cameras/${this.deviceId}/liveview?token=${getToken()}&t=${new Date().getTime()}`;
+      const res = await fetch(`${getToucanCameraServerUrl()}cameras/${this.deviceId}/connect`, {
+        method: 'PUT',
+        headers: {
+          ...getToucanCameraServerHeaders(),
+        },
+      }).catch((err) => {
+        lastError = err;
+        return null;
+      });
+
+      if (res?.ok) {
+        lastError = null;
+        break;
+      }
+      lastError = res ? new Error(`HTTP ${res.status}`) : lastError;
+    }
+
+    if (lastError) {
+      console.error(`📷 Camera ${this.deviceId} did not accept connect, opening live view anyway:`, lastError);
+    }
+
+    const url = `${getToucanCameraServerUrl()}cameras/${this.deviceId}/liveview?token=${getToucanCameraServerConfig()?.token || 'unknown'}&t=${new Date().getTime()}`;
     if (setStream) {
       setStream('image', url);
     }
@@ -83,10 +108,10 @@ class ToucanCameraServer {
   }
 
   async takePicture() {
-    const request = await fetch(`${getApiUrl()}cameras/${this.deviceId}/capture`, {
+    const request = await fetch(`${getToucanCameraServerUrl()}cameras/${this.deviceId}/capture`, {
       method: 'POST',
       headers: {
-        ...getAuthHeader(),
+        ...getToucanCameraServerHeaders(),
       },
     });
 
@@ -101,10 +126,10 @@ class ToucanCameraServer {
 
   async disconnect() {
     this.setStream = null;
-    await fetch(`${getApiUrl()}cameras/${this.deviceId}/disconnect`, {
+    await fetch(`${getToucanCameraServerUrl()}cameras/${this.deviceId}/disconnect`, {
       method: 'PUT',
       headers: {
-        ...getAuthHeader(),
+        ...getToucanCameraServerHeaders(),
       },
     });
   }
@@ -113,10 +138,10 @@ class ToucanCameraServer {
 class ToucanCameraServerBrowser {
   static async getCameras() {
     try {
-      const devices = await fetch(`${getApiUrl()}cameras`, {
+      const devices = await fetch(`${getToucanCameraServerUrl()}cameras`, {
         method: 'GET',
         headers: {
-          ...getAuthHeader(),
+          ...getToucanCameraServerHeaders(),
         },
       }).then((res) => res.json());
 

@@ -1,12 +1,12 @@
-import { getApiUrl, getAuthHeader } from '@core/toucanCameraServer';
+import { getToucanCameraServerHeaders, getToucanCameraServerUrl } from '@core/toucanCameraServer';
 import { useCallback, useEffect, useState } from 'react';
 
 // Fetch the registered peers from the Toucan Camera Server
 const fetchPeers = async () => {
-  const peers = await fetch(`${getApiUrl()}peers`, {
+  const peers = await fetch(`${getToucanCameraServerUrl()}peers`, {
     method: 'GET',
     headers: {
-      ...getAuthHeader(),
+      ...getToucanCameraServerHeaders(),
     },
   }).then((res) => res.json());
 
@@ -62,11 +62,11 @@ function usePeers(options = {}) {
   // The server checks reachability/token and rejects invalid peers, so we surface failures.
   const actionAdd = useCallback(
     async (url, token = null) => {
-      const res = await fetch(`${getApiUrl()}peers`, {
+      const res = await fetch(`${getToucanCameraServerUrl()}peers`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          ...getAuthHeader(),
+          ...getToucanCameraServerHeaders(),
         },
         body: JSON.stringify({ url, ...(token ? { token } : {}) }),
       });
@@ -86,10 +86,10 @@ function usePeers(options = {}) {
   // Action remove a peer by its id
   const actionRemove = useCallback(
     async (peerId) => {
-      const res = await fetch(`${getApiUrl()}peers/${peerId}`, {
+      const res = await fetch(`${getToucanCameraServerUrl()}peers/${peerId}`, {
         method: 'DELETE',
         headers: {
-          ...getAuthHeader(),
+          ...getToucanCameraServerHeaders(),
         },
       });
 

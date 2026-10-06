@@ -12,13 +12,13 @@
 }
 
 .headerBarLeft {
-  width: calc(62px + var(--safe-area-left));
   left: 0;
+  width: calc(62px + var(--safe-area-left));
 }
 
 .headerBarRight {
-  width: calc(62px + var(--safe-area-right));
   right: 0;
+  width: calc(62px + var(--safe-area-right));
 }
 
 .top,
@@ -54,10 +54,15 @@
   padding-bottom: calc(5px + var(--safe-area-bottom));
 }
 
-.headerBarLeft .top, .headerBarLeft .center, .headerBarLeft .bottom {
+.headerBarLeft .top,
+.headerBarLeft .center,
+.headerBarLeft .bottom {
   left: var(--safe-area-left);
 }
-.headerBarRight .top, .headerBarRight .center, .headerBarRight .bottom {
+
+.headerBarRight .top,
+.headerBarRight .center,
+.headerBarRight .bottom {
   right: var(--safe-area-right);
 }
 

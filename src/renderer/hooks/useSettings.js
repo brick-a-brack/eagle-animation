@@ -26,29 +26,48 @@ const DEFAULT_SETTINGS = {
   EVENT_MODE_ENABLED: false,
   EVENT_KEY: '',
   EVENT_API: PARTNER_API,
-  COMPATIBILITY_MODE_CAMERAS: false,
+  TOUCAN_CAMERA_SERVER_DISABLED: false,
+  TOUCAN_CAMERA_SERVER_EXPOSE: false,
+  TOUCAN_CAMERA_SERVER_BACKGROUND: false,
   TELEMETRY_ENABLED: true,
   TOURS_COMPLETED: [], // Keys of the guided tours the user has already seen
 };
 
+// Settings are shared process-wide: several components call useSettings() at the
+// same time (a view, a form, useToucanCameraServer…) and they must all see a write
+// made through any one of them. Without this, an instance kept the value it loaded
+// at mount and silently went stale.
+let CURRENT_SETTINGS = null;
+let SETTINGS_LISTENERS = [];
+
+const broadcastSettings = (settings) => {
+  CURRENT_SETTINGS = settings;
+  window.setTelemetryEnabled?.(settings.TELEMETRY_ENABLED !== false);
+  SETTINGS_LISTENERS.forEach((listener) => listener(settings));
+};
+
 function useSettings() {
-  const [settings, setSettings] = useState(null);
+  const [settings, setSettings] = useState(CURRENT_SETTINGS);
+
+  // Subscribe to writes made by any other instance
+  useEffect(() => {
+    SETTINGS_LISTENERS.push(setSettings);
+    return () => {
+      SETTINGS_LISTENERS = SETTINGS_LISTENERS.filter((listener) => listener !== setSettings);
+    };
+  }, []);
 
   // Initial load
   useEffect(() => {
     window.EA('GET_SETTINGS').then((definedSettings) => {
-      const merged = { ...DEFAULT_SETTINGS, ...definedSettings };
-      window.setTelemetryEnabled?.(merged.TELEMETRY_ENABLED !== false);
-      setSettings(merged);
+      broadcastSettings({ ...DEFAULT_SETTINGS, ...definedSettings });
     });
   }, []);
 
   // Refresh action
   const actionRefreshSettings = useCallback(async () => {
     const definedSettings = await window.EA('GET_SETTINGS');
-    const merged = { ...DEFAULT_SETTINGS, ...definedSettings };
-    window.setTelemetryEnabled?.(merged.TELEMETRY_ENABLED !== false);
-    setSettings(merged);
+    broadcastSettings({ ...DEFAULT_SETTINGS, ...definedSettings });
   }, []);
 
   // Set action
@@ -69,8 +88,7 @@ function useSettings() {
       setLanguage(computedNewSettings.LANGUAGE);
     }
 
-    window.setTelemetryEnabled?.(computedNewSettings.TELEMETRY_ENABLED !== false);
-    setSettings(computedNewSettings);
+    broadcastSettings(computedNewSettings);
     await window.EA('SAVE_SETTINGS', { settings: computedNewSettings });
   }, []);
 

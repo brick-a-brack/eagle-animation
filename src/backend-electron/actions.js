@@ -14,7 +14,7 @@ import { setDiscordActivity } from './core/discord';
 import { exportProjectScene, exportSaveTemporaryBuffer, getSyncList, saveSyncList } from './core/export';
 import { createProject, deleteProject, getProjectData, getProjectsList, projectSave, savePicture } from './core/projects';
 import { getCameraSettings, getSettings, saveCameraSettings, saveSettings } from './core/settings';
-import { getToucanCameraServerConfig } from './core/toucan';
+import { getToucanCameraServerConfig, setToucanCameraServerConfig, stopToucanCameraServer } from './core/toucan';
 import { selectFile, selectFolder } from './core/utils';
 
 console.log(`💾 Eagle Animation files will be saved in the following folder: ${PROJECTS_PATH}`);
@@ -311,8 +311,14 @@ const actions = {
       largeImageText: applicationTitle || null,
     });
   },
-  GET_TOUCAN_CAMERA_SERVER_CONFIG: async () => {
+  TOUCAN_CAMERA_SERVER_GET_CONFIG: async () => {
     return getToucanCameraServerConfig();
+  },
+  TOUCAN_CAMERA_SERVER_SET_CONFIG: async (evt, { expose = false, background = false, token = null } = {}) => {
+    return setToucanCameraServerConfig({ expose, background, token });
+  },
+  TOUCAN_CAMERA_SERVER_STOP: async () => {
+    return stopToucanCameraServer();
   },
 };
 

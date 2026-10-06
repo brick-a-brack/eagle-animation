@@ -1,5 +1,9 @@
 import { Component, createRef } from 'react';
 
+const IMG_RETRY_BASE_DELAY = 500;
+const IMG_RETRY_MAX_DELAY = 5000;
+const IMG_RETRY_MAX_ATTEMPTS = 10;
+
 class PreviewStream extends Component {
   constructor(props) {
     super(props);
@@ -13,6 +17,9 @@ class PreviewStream extends Component {
     this._currentRatio = null;
     this._rafId = null;
     this._playPromise = null;
+    this._imgSrc = null;
+    this._imgRetries = 0;
+    this._imgRetryTimer = null;
   }
 
   // type:
@@ -24,11 +31,10 @@ class PreviewStream extends Component {
 
     if (type === 'image') {
       this._flushCanvas();
-      this._destroyImgEl();
-      this._imgEl = new Image();
-      this._imgEl.onerror = () => this._flushCanvas();
-      this._imgEl.src = data;
+      this._imgSrc = data;
+      this._imgRetries = 0;
       this._streamType = 'image';
+      this._openImgStream(data);
     } else if (type === 'frame') {
       this._pushFrame(data);
     } else if (type === 'video') {
@@ -78,6 +84,42 @@ class PreviewStream extends Component {
     // Ignore a failed frame and keep showing the last good one.
     img.onerror = () => {};
     img.src = data;
+  }
+
+  _openImgStream(src) {
+    this._destroyImgEl();
+    const el = new Image();
+    this._imgEl = el;
+    el.onload = () => {
+      this._imgRetries = 0;
+    };
+    el.onerror = () => this._scheduleImgRetry();
+    el.src = src;
+  }
+
+  _scheduleImgRetry() {
+    this._destroyImgEl();
+
+    if (this._streamType !== 'image' || !this._imgSrc) {
+      return;
+    }
+
+    if (this._imgRetries >= IMG_RETRY_MAX_ATTEMPTS) {
+      console.error('📷 Live view stream lost, giving up after too many retries');
+      this._flushCanvas();
+      return;
+    }
+
+    const delay = Math.min(IMG_RETRY_BASE_DELAY * 2 ** this._imgRetries, IMG_RETRY_MAX_DELAY);
+    this._imgRetries += 1;
+
+    this._imgRetryTimer = setTimeout(() => {
+      this._imgRetryTimer = null;
+      if (this._streamType !== 'image' || !this._imgSrc) {
+        return;
+      }
+      this._openImgStream(`${this._imgSrc}${this._imgSrc.includes('?') ? '&' : '?'}_r=${Date.now()}`);
+    }, delay);
   }
 
   getStreamRatio() {
@@ -130,10 +172,17 @@ class PreviewStream extends Component {
   }
 
   _destroyImgEl() {
+    if (this._imgRetryTimer) {
+      clearTimeout(this._imgRetryTimer);
+      this._imgRetryTimer = null;
+    }
     if (!this._imgEl) return;
-    this._imgEl.onerror = null;
-    this._imgEl.src = '';
+    const el = this._imgEl;
     this._imgEl = null;
+    el.onload = null;
+    el.onerror = null;
+    el.src = '';
+    el.removeAttribute('src');
   }
 
   _destroyVideoEl() {
@@ -160,12 +209,15 @@ class PreviewStream extends Component {
   }
 
   _flushCanvas() {
+    this._destroyImgEl();
+    this._destroyFrameEl();
+    this._imgSrc = null;
+    this._imgRetries = 0;
+    this._streamType = null;
+    this._currentRatio = null;
     const canvas = this.canvasRef.current;
     if (!canvas) return;
     canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
-    this._destroyFrameEl();
-    this._streamType = null;
-    this._currentRatio = null;
   }
 
   componentDidMount() {

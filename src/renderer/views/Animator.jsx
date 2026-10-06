@@ -180,7 +180,7 @@ const Animator = ({ t }) => {
           }),
   });
 
-  const { isCameraReady, devices, currentCameraCapabilities, currentCamera, currentCameraId, actions: cameraActions } = useCamera({ compatibilityMode: !!settings?.COMPATIBILITY_MODE_CAMERAS });
+  const { isCameraReady, devices, currentCameraCapabilities, currentCamera, currentCameraId, actions: cameraActions } = useCamera({ compatibilityMode: !!settings?.TOUCAN_CAMERA_SERVER_DISABLED });
 
   // Redirect to first available scene if current scene no longer exists (e.g. after undo or scene deletion)
   useEffect(() => {

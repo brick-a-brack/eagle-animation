@@ -17,3 +17,6 @@ export const ALLOWED_LETTERS = 'ABCDEFGHJKLMNPQRTVWXYZ0123456789'; // ISOU remov
 
 // Forced Toucan Camera Server URL (for development purposes)
 export const TOUCAN_CAMERA_SERVER_URL = import.meta.env.VITE_TOUCAN_CAMERA_SERVER_URL || null;
+
+// Indicates if a Toucan Camera Server is supported by the backend
+export const TOUCAN_CAMERA_SERVER_AVAILABLE = !!import.meta.env.VITE_TOUCAN_CAMERA_SERVER_URL || DEVICE === 'ELECTRON' || DEVICE === 'ANDROID';

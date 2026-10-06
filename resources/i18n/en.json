@@ -490,5 +490,10 @@
   "Camera disabled": "Camera disabled",
   "Connect an external USB camera": "Connect an external USB camera",
   "Default framerate": "Default framerate",
-  "Framerate used for new projects": "Framerate used for new projects"
+  "Framerate used for new projects": "Framerate used for new projects",
+  "Share cameras": "Share cameras",
+  "Expose the cameras so they can be used from other devices": "Expose the cameras so they can be used from other devices",
+  "Keep sharing in background": "Keep sharing in background",
+  "Keep sharing the cameras while the application runs in the background": "Keep sharing the cameras while the application runs in the background",
+  "Expose the cameras so they can be used from other devices ({{hostname}}:{{port}}, using {{token}})": "Expose the cameras so they can be used from other devices ({{hostname}}:{{port}}, using {{token}})"
 }

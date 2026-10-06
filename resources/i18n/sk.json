@@ -476,5 +476,10 @@
   "Camera disabled": "Kamera vypnutá",
   "Connect an external USB camera": "Pripojiť externú USB kameru",
   "Default framerate": "Predvolený počet snímok za sekundu",
-  "Framerate used for new projects": "Počet snímok za sekundu pre nové projekty"
+  "Framerate used for new projects": "Počet snímok za sekundu pre nové projekty",
+  "Share cameras": "Zdieľať kamery",
+  "Expose the cameras so they can be used from other devices": "Sprístupní kamery, aby sa dali používať z iných zariadení",
+  "Keep sharing in background": "Pokračovať v zdieľaní na pozadí",
+  "Keep sharing the cameras while the application runs in the background": "Pokračovať v zdieľaní kamier, kým aplikácia beží na pozadí",
+  "Expose the cameras so they can be used from other devices ({{hostname}}:{{port}}, using {{token}})": "Sprístupní kamery, aby sa dali používať z iných zariadení ({{hostname}}:{{port}}, pomocou {{token}})"
 }

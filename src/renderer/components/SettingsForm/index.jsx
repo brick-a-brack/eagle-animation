@@ -16,6 +16,7 @@ import useAppCapabilities from '@hooks/useAppCapabilities';
 import useAppVersion from '@hooks/useAppVersion';
 import useCache from '@hooks/useCache';
 import useDataFolder from '@hooks/useDataFolder';
+import useToucanCameraServer from '@hooks/useToucanCameraServer';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { withTranslation } from 'react-i18next';
@@ -29,6 +30,7 @@ const SettingsForm = ({ settings = {}, onUpdate = () => {}, t }) => {
   const { path: dataFolderPath, actions: dataFolderActions } = useDataFolder();
   const { currentVersion, latestVersion, canBeUpdated, actions: appVersionActions } = useAppVersion();
   const { size: cacheSize, isClearing: isClearingCache, actions: cacheActions } = useCache(appCapabilities.includes('CLEAR_CACHE'));
+  const { config: toucanCameraServerConfig } = useToucanCameraServer();
   const form = useForm({
     mode: 'all',
     defaultValues: settings,
@@ -130,12 +132,37 @@ const SettingsForm = ({ settings = {}, onUpdate = () => {}, t }) => {
             <Switch register={register('SOUNDS')} />
           </div>
         </FormGroup>
-        {DEVICE === 'ELECTRON' && (
-          <FormGroup label={t('Use camera compatibility mode')} description={t('Disables DSLR and remote cameras, may limit available camera settings')}>
-            <div>
-              <Switch register={register('COMPATIBILITY_MODE_CAMERAS')} />
-            </div>
-          </FormGroup>
+        {['ELECTRON', 'ANDROID'].includes(DEVICE) && (
+          <>
+            <FormGroup label={t('Use camera compatibility mode')} description={t('Disables DSLR and remote cameras, may limit available camera settings')}>
+              <div>
+                <Switch register={register('TOUCAN_CAMERA_SERVER_DISABLED')} />
+              </div>
+            </FormGroup>
+            <FormGroup
+              label={t('Share cameras')}
+              description={
+                toucanCameraServerConfig?.expose && toucanCameraServerConfig?.port
+                  ? t('Expose the cameras so they can be used from other devices ({{hostname}}:{{port}}, using {{token}})', {
+                      hostname: toucanCameraServerConfig.hostname,
+                      port: toucanCameraServerConfig.port,
+                      token: toucanCameraServerConfig.token,
+                    })
+                  : t('Expose the cameras so they can be used from other devices')
+              }
+            >
+              <div>
+                <Switch register={register('TOUCAN_CAMERA_SERVER_EXPOSE')} disabled={watch('TOUCAN_CAMERA_SERVER_DISABLED')} />
+              </div>
+            </FormGroup>
+            {appCapabilities.includes('TOUCAN_CAMERA_SERVER_BACKGROUND') && (
+              <FormGroup label={t('Keep sharing in background')} description={t('Keep sharing the cameras while the application runs in the background')}>
+                <div>
+                  <Switch register={register('TOUCAN_CAMERA_SERVER_BACKGROUND')} disabled={!watch('TOUCAN_CAMERA_SERVER_EXPOSE') || watch('TOUCAN_CAMERA_SERVER_DISABLED')} />
+                </div>
+              </FormGroup>
+            )}
+          </>
         )}
 
         <Divider />

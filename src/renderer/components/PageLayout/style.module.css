@@ -1,29 +1,32 @@
 .pageLayout {
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
   height: 100vh;
   justify-content: space-between;
-  box-sizing: border-box;
   width: 100%;
-    --ea-should-apply-left-bar-padding: 1;
-    --ea-should-apply-right-bar-padding: 1;
-    --ea-should-apply-top-bar-padding: 0;
-    --ea-should-apply-bottom-bar-padding: 0;
+
+  --ea-should-apply-left-bar-padding: 1;
+  --ea-should-apply-right-bar-padding: 1;
+  --ea-should-apply-top-bar-padding: 0;
+  --ea-should-apply-bottom-bar-padding: 0;
 }
 
-@media (orientation: landscape) and (width <=700px),
-(orientation: landscape) and (height <=500px) {
+@media (orientation: landscape) and (width <=700px), (orientation: landscape) and (height <=500px) {
   .hasMobileLeftBar {
     padding-left: calc(var(--safe-area-left) + 62px);
+
     --ea-should-apply-left-bar-padding: 0;
   }
 
   .hasMobileRightBar {
     padding-right: calc(var(--safe-area-right) + 62px);
+
     --ea-should-apply-right-bar-padding: 0;
   }
 
-  .hasMobileLeftBar, .hasMobileRightBar {
+  .hasMobileLeftBar,
+  .hasMobileRightBar {
     --ea-should-apply-top-bar-padding: 1;
     --ea-should-apply-bottom-bar-padding: 1;
   }

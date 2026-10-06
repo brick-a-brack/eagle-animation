@@ -323,5 +323,7 @@ export const Actions = {
     return true;
   },
   DISCORD_ACTIVITY: () => {},
-  GET_TOUCAN_CAMERA_SERVER_CONFIG: () => null,
+  TOUCAN_CAMERA_SERVER_GET_CONFIG: () => null,
+  TOUCAN_CAMERA_SERVER_SET_CONFIG: () => null,
+  TOUCAN_CAMERA_SERVER_STOP: () => null,
 };
