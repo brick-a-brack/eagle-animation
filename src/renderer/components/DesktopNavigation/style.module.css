@@ -7,6 +7,7 @@
   justify-content: space-between;
   min-height: calc(62px + var(--safe-area-top));
   padding: var(--safe-area-top) 5px 0;
+  position: relative;
   text-align: center;
   width: 100%;
   z-index: 2;
