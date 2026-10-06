@@ -5,7 +5,7 @@
   --safe-area-left: env(safe-area-inset-left, 0px);
 }
 
-/*:root:after {
+/* :root:after {
   content: '';
   display: block;
   border-left: var(--safe-area-left) solid rgba(255, 0, 0, 0.8);
@@ -20,7 +20,7 @@
   left: 0;
   z-index: 999999999;
   pointer-events: none
-}*/
+} */
 
 body {
   --border-radius-small: 6px;

@@ -1,10 +1,8 @@
 .pageContent {
   height: 100%;
   overflow-y: scroll;
-  padding-top:var(--safe-area-top);
-  padding-bottom:var(--safe-area-bottom);
-  padding-left: calc(var(--ea-should-apply-left-bar-padding) * var(--safe-area-left));
-  padding-right: calc(var(--ea-should-apply-right-bar-padding) * var(--safe-area-right));
+  padding: calc(var(--ea-should-apply-top-bar-padding) * var(--safe-area-top)) calc(var(--ea-should-apply-right-bar-padding) * var(--safe-area-right))
+    calc(var(--ea-should-apply-bottom-bar-padding) * var(--safe-area-bottom)) calc(var(--ea-should-apply-left-bar-padding) * var(--safe-area-left));
 }
 
 .pageContent::-webkit-scrollbar {

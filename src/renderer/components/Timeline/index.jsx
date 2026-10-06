@@ -126,10 +126,13 @@ const Timeline = ({ onSelect, onMove, select = false, pictures = [], playing = f
       newIndex: over ? getIdx(over.id) : pictures.length,
     };
     if (active && over && active.id === over.id) {
-      onSelect(pictures[evt.oldIndex]);
-    } else {
-      onMove(evt);
+      const picture = pictures[evt.oldIndex];
+      if (picture) {
+        onSelect(picture.id);
+      }
+      return;
     }
+    onMove(evt);
   }, []);
 
   const sensors = useSensors(useSensor(MouseSensor, MOUSE_OPTIONS), useSensor(TouchSensor, TOUCH_OPTIONS));

@@ -1,6 +1,7 @@
 .container {
   align-items: center;
   background: var(--color-theme-dark);
+  box-sizing: border-box;
   display: flex;
   gap: var(--space-big);
   height: 62px;
@@ -8,7 +9,6 @@
   overflow: hidden;
   text-align: center;
   width: 100%;
-  box-sizing: border-box;
 }
 
 .subcontainer {

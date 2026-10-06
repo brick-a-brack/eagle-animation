@@ -226,7 +226,7 @@ const BasicCameraSettingsTab = withTranslation()(({ t, onDevicesListRefresh = ()
           ]}
           register={register('CAMERA_ID')}
         />
-        {appCapabilities.includes('REMOTE_CAMERAS') && !settings?.COMPATIBILITY_MODE_CAMERAS && (
+        {appCapabilities.includes('REMOTE_CAMERAS') && !settings?.TOUCAN_CAMERA_SERVER_DISABLED && (
           <Action title={t('Remote cameras')} className={style.refreshIcon} onClick={() => setIsPeerDevicesListOpen(true)}>
             <FontAwesomeIcon icon={faMobileSignalOut} />
           </Action>
@@ -255,7 +255,7 @@ const BasicCameraSettingsTab = withTranslation()(({ t, onDevicesListRefresh = ()
         )}
       </FormGroup>
 
-      {appCapabilities.includes('REMOTE_CAMERAS') && !settings?.COMPATIBILITY_MODE_CAMERAS && (
+      {appCapabilities.includes('REMOTE_CAMERAS') && !settings?.TOUCAN_CAMERA_SERVER_DISABLED && (
         <Window title={t('Remote cameras')} isOpened={isPeerDevicesListOpen} onClose={() => setIsPeerDevicesListOpen(false)} zIndex={1}>
           <RemoteCameraSettingsWindow onDevicesListRefresh={onDevicesListRefresh} />
         </Window>

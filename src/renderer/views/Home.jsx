@@ -15,6 +15,7 @@ import useDiscordActivity from '@hooks/useDiscordActivity';
 import useFullscreen from '@hooks/useFullscreen';
 import useProjects from '@hooks/useProjects';
 import useSettings from '@hooks/useSettings';
+import useToucanCameraServer from '@hooks/useToucanCameraServer';
 import faDownLeftAndUpRightToCenter from '@icons/faDownLeftAndUpRightToCenter';
 import faGear from '@icons/faGear';
 import faKeyboard from '@icons/faKeyboard';
@@ -35,6 +36,7 @@ const HomeView = ({ t }) => {
   const navigate = useNavigate();
   const { isFullscreen, enterFullscreen, exitFullscreen } = useFullscreen();
   useDiscordActivity({ description: t('Ready to animate') });
+  useToucanCameraServer();
 
   const [search, setSearch] = useState('');
   const [favoritesOnly, setFavoritesOnly] = useState(false);
