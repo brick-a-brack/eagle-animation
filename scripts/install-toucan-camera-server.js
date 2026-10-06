@@ -10,7 +10,10 @@ const RELEASES = {
   windows: `https://github.com/brick-a-brack/toucan-camera-server/releases/download/v${TOUCAN_CAMERA_SERVER_VERSION}/toucan-camera-server-windows.zip`,
   macos: `https://github.com/brick-a-brack/toucan-camera-server/releases/download/v${TOUCAN_CAMERA_SERVER_VERSION}/toucan-camera-server-macos.zip`,
   linux: `https://github.com/brick-a-brack/toucan-camera-server/releases/download/v${TOUCAN_CAMERA_SERVER_VERSION}/toucan-camera-server-linux.zip`,
+  android: `https://github.com/brick-a-brack/toucan-camera-server/releases/download/v${TOUCAN_CAMERA_SERVER_VERSION}/toucan-camera-lib-android.zip`,
 };
+
+const ANDROID_LIB_ABI = 'arm64-v8a';
 
 function getPlatformKey() {
   switch (process.platform) {
@@ -56,7 +59,30 @@ function download(url, dest) {
   });
 }
 
+async function installAndroidLibrary() {
+  // Skip on branches that do not carry the Android project
+  const androidProject = path.join(__dirname, '../', 'android/app/build.gradle.kts');
+  if (!fs.existsSync(androidProject)) {
+    return;
+  }
+
+  const libDir = path.join(__dirname, '../', 'android/app/src/main/jniLibs', ANDROID_LIB_ABI);
+  const archivePath = path.join(__dirname, '../', 'android', 'toucan-camera-lib-android.zip');
+
+  fs.mkdirSync(libDir, { recursive: true });
+
+  console.log(`🐦 toucan-camera-server: downloading Android native library...`);
+  await download(RELEASES.android, archivePath);
+
+  console.log(`🐦 toucan-camera-server: extracting to android/app/src/main/jniLibs/${ANDROID_LIB_ABI}/...`);
+  await extract(archivePath, { dir: libDir });
+
+  fs.unlinkSync(archivePath);
+}
+
 async function main() {
+  await installAndroidLibrary();
+
   const platform = getPlatformKey();
   if (!platform) {
     console.warn(`toucan-camera-server: unsupported platform "${process.platform}", skipping binary download.`);
