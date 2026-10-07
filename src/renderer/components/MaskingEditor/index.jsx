@@ -108,6 +108,15 @@ class MaskingEditor extends Component {
   }
 
   async _loadImages() {
+    try {
+      await this._loadImagesOrThrow();
+    } catch (err) {
+      console.error('Failed to load the masking layers', err);
+      this.setState({ error: true });
+    }
+  }
+
+  async _loadImagesOrThrow() {
     // Load background and foreground images
     const [background, foreground] = await Promise.all([this._loadImage(this.props.backgroundLayer), this._loadImage(this.props.foregroundLayer)]);
     this.images.background = background;
