@@ -25,6 +25,7 @@ import com.brickabrack.eagleanimation.camera.ToucanCameraServer
 import com.brickabrack.eagleanimation.storage.ProjectStorage
 import com.brickabrack.eagleanimation.storage.SettingsStorage
 import com.brickabrack.eagleanimation.webview.EAWebChromeClient
+import com.brickabrack.eagleanimation.image.ResizeCache
 import com.brickabrack.eagleanimation.webview.EAWebViewClient
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -151,10 +152,16 @@ class MainActivity : AppCompatActivity() {
             .resolve("EagleAnimation")
             .also { it.mkdirs() }
 
+        // Resized frames live in the app cache directory, not next to the projects:
+        // Android may reclaim it under storage pressure, and losing an entry only
+        // costs one resize.
+        val resizeCache = ResizeCache(cacheDir.resolve("resizer"))
+
         val dispatcher = ActionDispatcher(
             context = this,
             projectStorage = ProjectStorage(projectsDir),
             settingsStorage = SettingsStorage(projectsDir),
+            resizeCache = resizeCache,
         )
 
         WebView.setWebContentsDebuggingEnabled(true)
@@ -178,7 +185,7 @@ class MainActivity : AppCompatActivity() {
 
         bridge = EAJSBridge(webView, scope, dispatcher)
         webView.addJavascriptInterface(bridge, "AndroidIPC")
-        webView.webViewClient = EAWebViewClient(projectsDir, assetLoader, ipcScript) { pushSafeArea() }
+        webView.webViewClient = EAWebViewClient(projectsDir, assetLoader, ipcScript, resizeCache) { pushSafeArea() }
         webView.webChromeClient = EAWebChromeClient { handleMediaRequest(it) }
 
         observeSafeArea()

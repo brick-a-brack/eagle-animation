@@ -12,6 +12,7 @@ import com.brickabrack.eagleanimation.export.ExportBufferStore
 import com.brickabrack.eagleanimation.export.FrameEntry
 import com.brickabrack.eagleanimation.export.VideoExporter
 import com.brickabrack.eagleanimation.image.ImageProcessor
+import com.brickabrack.eagleanimation.image.ResizeCache
 import com.brickabrack.eagleanimation.storage.ProjectStorage
 import com.brickabrack.eagleanimation.storage.SettingsStorage
 import kotlinx.coroutines.Dispatchers
@@ -28,6 +29,7 @@ class ActionDispatcher(
     private val context: Context,
     private val projectStorage: ProjectStorage,
     private val settingsStorage: SettingsStorage,
+    private val resizeCache: ResizeCache,
 ) {
 
     private val exportBuffers = ExportBufferStore(File(context.cacheDir, "export-buffers"))
@@ -175,7 +177,7 @@ class ActionDispatcher(
                 .resolve(segments[1])
                 .resolve(segments[2])
             if (!imageFile.exists()) return@dispatch null
-            val rendered = withContext(Dispatchers.IO) { ImageProcessor.render(imageFile, Uri.parse(url)) }
+            val rendered = withContext(Dispatchers.IO) { ImageProcessor.render(imageFile, Uri.parse(url), resizeCache) }
                 ?: return@dispatch null
             withContext(Dispatchers.IO) { exportBuffers.put(bufferId, rendered.bytes) }
             true

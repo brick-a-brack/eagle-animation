@@ -8,12 +8,14 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.webkit.WebViewAssetLoader
 import com.brickabrack.eagleanimation.image.ImageProcessor
+import com.brickabrack.eagleanimation.image.ResizeCache
 import java.io.File
 
 class EAWebViewClient(
     private val projectsDir: File,
     private val assetLoader: WebViewAssetLoader,
     private val ipcScript: String,
+    private val resizeCache: ResizeCache,
     private val onPageLoad: (WebView) -> Unit = {},
 ) : WebViewClient() {
 
@@ -48,7 +50,7 @@ class EAWebViewClient(
                 .resolve(uri.pathSegments[3])
                 .resolve(uri.pathSegments[4])
             return if (imageFile.exists()) {
-                ImageProcessor.process(imageFile, uri)
+                ImageProcessor.process(imageFile, uri, resizeCache)
             } else {
                 WebResourceResponse("application/json", "utf-8", 404, "Not Found", emptyMap(), "null".byteInputStream())
             }
