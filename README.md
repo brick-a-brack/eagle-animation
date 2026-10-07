@@ -104,15 +104,15 @@ If you build your own version and want telemetry gone entirely, set `POSTHOG_TOK
 
 Some features are device-dependent or platform-limited. Here's a summary table.
 
-| Feature               | Downloadable app | Web (Chrome¹) | Web (Firefox / Safari) |
-| --------------------- | ---------------- | ------------- | ---------------------- |
-| Take photos           | 🟢               | 🟢            | 🟢                     |
-| Export frames         | 🟢               | 🟢            | 🟢                     |
-| Export video          | 🟢               | 🟢            | 🟢                     |
-| Camera settings       | 🟢               | 🟡²           | 🔴                     |
-| DSLR support          | 🟢³              | 🟡⁴           | 🔴                     |
-| Remote camera support | 🟢               | 🔴            | 🔴                     |
-| Workshop features     | 🟢               | 🔴            | 🔴                     |
+| Feature               | Desktop app | Android app | Web (Chrome¹) | Web (Firefox / Safari) |
+| --------------------- | ----------- | ----------- | ------------- | ---------------------- |
+| Take photos           | 🟢          | 🟢          | 🟢            | 🟢                     |
+| Export frames         | 🟢          | 🔴          | 🟢            | 🟢                     |
+| Export video          | 🟢          | 🟢          | 🟢            | 🟢                     |
+| Camera settings       | 🟢          | 🟢          | 🟡²           | 🔴                     |
+| DSLR support          | 🟢³         | 🔴          | 🟡⁴           | 🔴                     |
+| Remote camera support | 🟢          | 🟢          | 🔴            | 🔴                     |
+| Workshop features     | 🟢          | 🔴          | 🔴            | 🔴                     |
 
 1. Including Chromium-based browsers (Edge, Brave, Opera, Arc, etc.).
 2. Webcam settings are only supported on Windows and Linux.

@@ -2,8 +2,8 @@ package com.brickabrack.eagleanimation
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.content.Intent
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.webkit.PermissionRequest
 import android.webkit.WebSettings
@@ -15,39 +15,47 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import androidx.webkit.ScriptHandler
 import androidx.webkit.WebViewAssetLoader
 import androidx.webkit.WebViewCompat
 import androidx.webkit.WebViewFeature
 import com.brickabrack.eagleanimation.actions.ActionDispatcher
 import com.brickabrack.eagleanimation.bridge.EAJSBridge
+import com.brickabrack.eagleanimation.camera.ToucanCameraServer
 import com.brickabrack.eagleanimation.storage.ProjectStorage
 import com.brickabrack.eagleanimation.storage.SettingsStorage
 import com.brickabrack.eagleanimation.webview.EAWebChromeClient
 import com.brickabrack.eagleanimation.webview.EAWebViewClient
-import com.brickfilms.toucancameraserver.CameraServerService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
-import java.util.UUID
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var webView: WebView
     private lateinit var bridge: EAJSBridge
     private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
-    private val cameraServerToken = UUID.randomUUID().toString()
 
     /** Latest safe-area JS snippet, replayed on every page load. */
     private var safeAreaScript: String? = null
 
+    /** Document-start registration of [safeAreaScript], replaced whenever the insets change. */
+    private var safeAreaScriptHandler: ScriptHandler? = null
+
+    /** Cleared once the page has been asked for, so it is only ever loaded once. */
+    private var isPageLoadPending = true
+
     /** Capture request from the live view, parked while the user answers the Android dialog. */
     private var pendingMediaRequest: PermissionRequest? = null
 
+    // Asked for up front so the live view and the camera server never have to stop
+    // and ask mid-capture. Nothing is started here: the renderer owns the camera
+    // server and brings it up through TOUCAN_CAMERA_SERVER_SET_CONFIG.
     private val startupPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
-    ) { results ->
-        if (results[Manifest.permission.CAMERA] == true) startCameraServer()
-    }
+    ) { }
 
     private val mediaCapturePermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
@@ -58,15 +66,20 @@ class MainActivity : AppCompatActivity() {
 
     /**
      * Mirrors the Electron preload: exposes window.IPC.call / window.IPC.stream
-     * before any page script runs so config.js sees window.IPC → DEVICE = 'ELECTRON'.
+     * before any page script runs, plus window.DEVICE, the override config.js reads
+     * before falling back to detection.
      *
-     * DEVICE='ELECTRON' activates ToucanCameraServer module instead of getUserMedia.
+     * DEVICE has to be 'ANDROID' and not 'ELECTRON': the renderer keys its capture
+     * fast path on it, where Kotlin fetches the JPEG straight from the local camera
+     * server instead of carrying ~30 MB of base64 across the Binder bridge.
      *
      * ArrayBuffer / TypedArray values are serialised as { __b64: "<base64>" } so they
      * survive the JSON round-trip to Kotlin (ActionDispatcher decodes them).
      */
     private val ipcScript = """
         (function () {
+            window.DEVICE = 'ANDROID';
+
             if (window.IPC) return;
 
             var _pending = {};
@@ -142,7 +155,6 @@ class MainActivity : AppCompatActivity() {
             context = this,
             projectStorage = ProjectStorage(projectsDir),
             settingsStorage = SettingsStorage(projectsDir),
-            cameraServerToken = cameraServerToken,
         )
 
         WebView.setWebContentsDebuggingEnabled(true)
@@ -175,14 +187,16 @@ class MainActivity : AppCompatActivity() {
             WebViewCompat.addDocumentStartJavaScript(webView, ipcScript, setOf("*"))
         }
 
-        // Start camera server (asks for camera and microphone first if needed)
-        if (CAPTURE_PERMISSIONS.all { isGranted(it) }) {
-            startCameraServer()
-        } else {
-            startupPermissionLauncher.launch(CAPTURE_PERMISSIONS)
+        val missingPermissions = startupPermissions.filterNot { isGranted(it) }
+        if (missingPermissions.isNotEmpty()) {
+            startupPermissionLauncher.launch(missingPermissions.toTypedArray())
         }
 
-        webView.loadUrl("https://appassets.androidplatform.net/index.html")
+        // The page is loaded from the first window-insets dispatch (see observeSafeArea),
+        // not here, so --safe-area-* is known before anything paints. This is only the
+        // backstop for a window that never dispatches any: the WebView is blank until
+        // then, so the wait costs nothing visible.
+        webView.postDelayed({ loadPageOnce() }, SAFE_AREA_WAIT_MS)
     }
 
     /**
@@ -198,6 +212,14 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    override fun onStart() {
+        super.onStart()
+        // Nothing stops the server from outside the app any more, but it can still
+        // have died on its own (a crash, the camera claimed by another app): coming
+        // back to the app is where that gets put right.
+        scope.launch { ToucanCameraServer.restoreIfStopped(this@MainActivity) }
+    }
+
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
         // Re-hide the bars after a permission dialog, keyboard or app switch brought them back
@@ -211,6 +233,13 @@ class MainActivity : AppCompatActivity() {
      *
      * WebView does not reliably resolve env(safe-area-inset-*) for display cutouts,
      * so the native values are pushed instead; vars.css keeps env() as the default.
+     *
+     * The values have to be in place before the first paint, or the layout is drawn
+     * flush against the cutout and jumps as soon as they land. Two things ensure that:
+     * the snippet is registered as a document-start script, which runs before the page
+     * scripts and sets the properties inline on <html> — where they outrank the :root
+     * rule in vars.css whatever the order — and the page is only loaded once the first
+     * insets have been dispatched here.
      */
     private fun observeSafeArea() {
         ViewCompat.setOnApplyWindowInsetsListener(webView) { _, insets ->
@@ -230,13 +259,38 @@ class MainActivity : AppCompatActivity() {
                 })();
             """.trimIndent()
 
+            registerSafeAreaDocumentScript()
+            // Updates a page that is already up: rotation, or the bars swiped into view.
             pushSafeArea()
+            // First dispatch: the values are known, the page can be drawn with them.
+            loadPageOnce()
             insets
         }
     }
 
     private fun pushSafeArea() {
         safeAreaScript?.let { webView.evaluateJavascript(it, null) }
+    }
+
+    /**
+     * (Re)registers the safe-area snippet so every document starts with the current
+     * values. The registration carries a fixed script, so a change means replacing it.
+     */
+    private fun registerSafeAreaDocumentScript() {
+        if (!WebViewFeature.isFeatureSupported(WebViewFeature.DOCUMENT_START_SCRIPT)) {
+            return
+        }
+        val script = safeAreaScript ?: return
+        safeAreaScriptHandler?.remove()
+        safeAreaScriptHandler = WebViewCompat.addDocumentStartJavaScript(webView, script, setOf("*"))
+    }
+
+    private fun loadPageOnce() {
+        if (!isPageLoadPending) {
+            return
+        }
+        isPageLoadPending = false
+        webView.loadUrl(START_URL)
     }
 
     /**
@@ -274,20 +328,40 @@ class MainActivity : AppCompatActivity() {
     private fun isGranted(permission: String) =
         ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED
 
-    private fun startCameraServer() {
-        CameraServerService.setToken(cameraServerToken)
-        startForegroundService(Intent(this, CameraServerService::class.java))
-    }
-
     @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
         if (webView.canGoBack()) webView.goBack() else super.onBackPressed()
     }
 
-    private companion object {
-        val CAPTURE_PERMISSIONS = arrayOf(
-            Manifest.permission.CAMERA,
-            Manifest.permission.RECORD_AUDIO,
-        )
+    override fun onDestroy() {
+        // With background sharing on, the camera server lives in its foreground
+        // service and is meant to outlive the activity; otherwise it goes down with
+        // the app rather than holding the camera for a window that no longer exists.
+        if (isFinishing) {
+            ToucanCameraServer.releaseOnExit(this)
+            scope.cancel()
+        }
+        super.onDestroy()
     }
+
+    /**
+     * POST_NOTIFICATIONS only exists from Android 13, and only matters there: without
+     * it the camera server's ongoing notification is dropped silently, leaving
+     * background sharing with no way to show its port and pairing code.
+     */
+    private companion object {
+        const val START_URL = "https://appassets.androidplatform.net/index.html"
+
+        /** How long the page waits for a first insets dispatch before loading anyway. */
+        const val SAFE_AREA_WAIT_MS = 300L
+    }
+
+    private val startupPermissions: Array<String>
+        get() = buildList {
+            add(Manifest.permission.CAMERA)
+            add(Manifest.permission.RECORD_AUDIO)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                add(Manifest.permission.POST_NOTIFICATIONS)
+            }
+        }.toTypedArray()
 }

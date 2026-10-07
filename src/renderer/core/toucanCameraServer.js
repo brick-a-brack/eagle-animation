@@ -35,7 +35,7 @@ export const setToucanCameraServerConfig = async ({ expose = false, background =
   return getToucanCameraServerConfig();
 };
 
-const EMPTY_TOUCAN_CAMERA_SERVER_CONFIG = { hostname: null, expose: false, background: false, port: null, token: null, secure: false, url: null };
+const EMPTY_TOUCAN_CAMERA_SERVER_CONFIG = { hostname: null, shareHostname: null, expose: false, background: false, port: null, token: null, secure: false, url: null };
 
 export const getToucanCameraServerConfig = () => {
   if (!TOUCAN_CAMERA_SERVER_AVAILABLE) {
@@ -43,6 +43,7 @@ export const getToucanCameraServerConfig = () => {
   }
   const config = {
     hostname: parseToucanCameraServerUrlArg(TOUCAN_CAMERA_SERVER_URL, 'hostname') || TOUCAN_CAMERA_SERVER_CONFIG?.hostname || null,
+    shareHostname: TOUCAN_CAMERA_SERVER_CONFIG?.shareHostname || null,
     expose: TOUCAN_CAMERA_SERVER_CONFIG?.expose || false,
     background: TOUCAN_CAMERA_SERVER_CONFIG?.background || false,
     port: parseToucanCameraServerUrlArg(TOUCAN_CAMERA_SERVER_URL, 'port') || TOUCAN_CAMERA_SERVER_CONFIG?.port || null,

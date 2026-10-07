@@ -144,7 +144,7 @@ const SettingsForm = ({ settings = {}, onUpdate = () => {}, t }) => {
               description={
                 toucanCameraServerConfig?.expose && toucanCameraServerConfig?.port
                   ? t('Expose the cameras so they can be used from other devices ({{hostname}}:{{port}}, using {{token}})', {
-                      hostname: toucanCameraServerConfig.hostname,
+                      hostname: toucanCameraServerConfig.shareHostname || toucanCameraServerConfig.hostname,
                       port: toucanCameraServerConfig.port,
                       token: toucanCameraServerConfig.token,
                     })

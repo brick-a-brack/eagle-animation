@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import android.net.Uri
 import android.util.Log
+import com.brickabrack.eagleanimation.camera.ToucanCameraServer
 import com.brickabrack.eagleanimation.export.FrameEntry
 import com.brickabrack.eagleanimation.export.VideoExporter
 import com.brickabrack.eagleanimation.storage.ProjectStorage
@@ -15,6 +16,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.json.JSONArray
 import org.json.JSONObject
+import java.io.IOException
 import java.net.HttpURLConnection
 import java.net.URL
 import java.util.UUID
@@ -23,7 +25,6 @@ class ActionDispatcher(
     private val context: Context,
     private val projectStorage: ProjectStorage,
     private val settingsStorage: SettingsStorage,
-    private val cameraServerToken: String = "",
 ) {
 
     @Suppress("ReturnCount")
@@ -119,7 +120,10 @@ class ActionDispatcher(
                 val bitmaps = urls.map { url ->
                     val bytes = fetchBytes(url, authorization)
                     Log.d("ActionDispatcher", "SAVE_PICTURE_FROM_URLS: fetched ${bytes.size} bytes")
+                    // decodeByteArray returns null on anything it cannot read, and averaging
+                    // then dereferences it — fail with the reason instead of a NullPointerException.
                     BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+                        ?: throw IOException("Captured frame could not be decoded (${bytes.size} bytes)")
                 }
                 var result = if (bitmaps.size == 1) bitmaps[0] else averageBitmaps(bitmaps)
                 if (reverseX || reverseY) {
@@ -142,6 +146,10 @@ class ActionDispatcher(
         "APP_CAPABILITIES" -> JSONArray().apply {
             put("EXPORT_VIDEO")
             put("EXPORT_VIDEO_H264")
+            put("REMOTE_CAMERAS")
+            // Android is the only platform that can keep the camera server alive
+            // once the app is no longer on screen, through a foreground service.
+            put("TOUCAN_CAMERA_SERVER_BACKGROUND")
         }
 
         "EXPORT_SELECT_PATH" -> "android"  // non-null sentinel; actual path determined in EXPORT
@@ -188,9 +196,18 @@ class ActionDispatcher(
             JSONObject().put("uri", uri)
         }
 
-        "GET_TOUCAN_CAMERA_SERVER_CONFIG" -> JSONObject()
-            .put("port", "8040")
-            .put("token", cameraServerToken)
+        // Camera server — the renderer owns the options, the native library owns the
+        // runtime values (see ToucanCameraServer). Same contract as Electron.
+        "TOUCAN_CAMERA_SERVER_GET_CONFIG" -> ToucanCameraServer.getConfig()
+
+        "TOUCAN_CAMERA_SERVER_SET_CONFIG" -> ToucanCameraServer.setConfig(
+            context = context,
+            expose = data.optBoolean("expose", false),
+            background = data.optBoolean("background", false),
+            token = data.optString("token", ""),
+        )
+
+        "TOUCAN_CAMERA_SERVER_STOP" -> ToucanCameraServer.stop(context)
 
         "SYNC", "GET_SYNC_LIST", "DISCORD_ACTIVITY" -> null
 
@@ -198,13 +215,31 @@ class ActionDispatcher(
         }
     }
 
+    /**
+     * Fetches one captured frame from the camera server.
+     *
+     * Throws rather than returning what came back on anything but a 2xx with a body:
+     * an error page or an empty response saved as-is is what reaches the timeline as
+     * a blank frame, with nothing to say why.
+     */
     private fun fetchBytes(url: String, authorization: String): ByteArray {
         val conn = URL(url).openConnection() as HttpURLConnection
         conn.requestMethod = "POST"
         if (authorization.isNotEmpty()) conn.setRequestProperty("Authorization", authorization)
         conn.connectTimeout = 30_000
         conn.readTimeout = 30_000
-        return conn.inputStream.use { it.readBytes() }
+
+        val status = conn.responseCode
+        if (status !in 200..299) {
+            val detail = conn.errorStream?.use { it.readBytes().decodeToString() }?.take(200).orEmpty()
+            throw IOException("Capture failed (HTTP $status) $detail".trim())
+        }
+
+        val bytes = conn.inputStream.use { it.readBytes() }
+        if (bytes.isEmpty()) {
+            throw IOException("Capture returned an empty body (HTTP $status)")
+        }
+        return bytes
     }
 
     private fun averageBitmaps(bitmaps: List<Bitmap>): Bitmap {
