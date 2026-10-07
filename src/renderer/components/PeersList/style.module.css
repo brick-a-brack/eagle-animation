@@ -130,6 +130,12 @@
   width: 100%;
 }
 
+/* Pairing tokens are uppercase by construction: show what was typed the way it
+   will be sent, whatever the keyboard did. */
+.fieldCode {
+  text-transform: uppercase;
+}
+
 .errorMessage {
   color: var(--color-alert);
   font-size: var(--font-size-7);
