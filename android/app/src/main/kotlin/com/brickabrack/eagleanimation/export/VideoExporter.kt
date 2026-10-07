@@ -4,10 +4,15 @@ import android.content.ContentValues
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.media.Image
 import android.media.MediaCodec
 import android.media.MediaCodecInfo
+import android.media.MediaCodecInfo.CodecCapabilities
+import android.media.MediaCodecInfo.VideoCapabilities
+import android.media.MediaCodecList
 import android.media.MediaFormat
 import android.media.MediaMuxer
+import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
@@ -26,10 +31,19 @@ class VideoExporter(
         private const val TAG = "VideoExporter"
         private const val TIMEOUT_US = 10_000L
         private const val EOS_TIMEOUT_US = 100_000L
-        private const val BITRATE = 8_000_000
         private const val I_FRAME_INTERVAL = 2
         private const val MIME = MediaFormat.MIMETYPE_VIDEO_AVC
         private const val MAX_SIDE = 1920
+
+        // Stop motion has no temporal redundancy — every frame is a full scene
+        // change — so the bitrate has to follow the pixel count. The former fixed
+        // 8 Mbps was fine in 1080p and starved anything above it into blocking.
+        private const val BITS_PER_PIXEL = 0.25
+        private const val MIN_BITRATE = 4_000_000
+
+        // Give up on a frame rather than spinning forever if the encoder never
+        // frees an input buffer.
+        private const val MAX_INPUT_RETRIES = 500
     }
 
     fun export(frames: List<FrameEntry>, fps: Int, targetWidth: Int?, targetHeight: Int?): String {
@@ -38,19 +52,40 @@ class VideoExporter(
         val firstFile = resolveFile(frames[0].link)
         val bounds = BitmapFactory.Options().apply { inJustDecodeBounds = true }
         BitmapFactory.decodeFile(firstFile.absolutePath, bounds)
-        val (width, height) = computeSize(bounds.outWidth, bounds.outHeight, targetWidth, targetHeight)
-        Log.d(TAG, "export: ${frames.size} frames → ${width}x${height} @ ${fps}fps")
+        val (requestedWidth, requestedHeight) = computeSize(bounds.outWidth, bounds.outHeight, targetWidth, targetHeight)
+
+        val encoder = selectEncoder() ?: error("No H.264 encoder available on this device")
+        val capabilities = encoder.getCapabilitiesForType(MIME)
+        val videoCapabilities = capabilities.videoCapabilities
+        val (width, height) = fitToEncoder(videoCapabilities, requestedWidth, requestedHeight)
+        val bitrate = computeBitrate(videoCapabilities, width, height, fps)
+        val colorFormat = selectColorFormat(capabilities)
+        Log.d(
+            TAG,
+            "export: ${frames.size} frames -> ${width}x${height} @ ${fps}fps, ${bitrate / 1_000_000}Mbps" +
+                " (requested ${requestedWidth}x${requestedHeight}, encoder=${encoder.name}, color=$colorFormat)"
+        )
 
         val mediaFormat = MediaFormat.createVideoFormat(MIME, width, height).apply {
-            setInteger(MediaFormat.KEY_COLOR_FORMAT, MediaCodecInfo.CodecCapabilities.COLOR_FormatYUV420SemiPlanar)
-            setInteger(MediaFormat.KEY_BIT_RATE, BITRATE)
+            setInteger(MediaFormat.KEY_COLOR_FORMAT, colorFormat)
+            setInteger(MediaFormat.KEY_BIT_RATE, bitrate)
             setInteger(MediaFormat.KEY_FRAME_RATE, fps)
             setInteger(MediaFormat.KEY_I_FRAME_INTERVAL, I_FRAME_INTERVAL)
         }
 
-        val codec = MediaCodec.createEncoderByType(MIME)
+        val codec = MediaCodec.createByCodecName(encoder.name)
         codec.configure(mediaFormat, null, null, MediaCodec.CONFIGURE_FLAG_ENCODE)
         codec.start()
+
+        // The encoder reads its input plane in aligned blocks: a row is `stride`
+        // bytes wide and the chroma plane starts at `stride * sliceHeight`, not at
+        // `width * height`. Writing a tightly packed buffer only lined up when the
+        // size happened to be aligned, which is why full-resolution exports came
+        // out skewed and glitched.
+        val inputFormat = codec.inputFormat
+        val stride = inputFormat.optInteger(MediaFormat.KEY_STRIDE, width)
+        val sliceHeight = inputFormat.optInteger(MediaFormat.KEY_SLICE_HEIGHT, height)
+        val frameSize = stride * sliceHeight * 3 / 2
 
         val ts = System.currentTimeMillis()
         val cv = ContentValues().apply {
@@ -74,7 +109,6 @@ class VideoExporter(
                 val idx = codec.dequeueOutputBuffer(info, if (endOfStream) EOS_TIMEOUT_US else TIMEOUT_US)
                 when {
                     idx == MediaCodec.INFO_OUTPUT_FORMAT_CHANGED -> {
-                        Log.d(TAG, "drain: FORMAT_CHANGED → addTrack + start")
                         trackIndex = muxer.addTrack(codec.outputFormat)
                         muxer.start()
                         muxerStarted = true
@@ -82,7 +116,6 @@ class VideoExporter(
                     idx >= 0 -> {
                         val buf = codec.getOutputBuffer(idx)!!
                         val isConfig = info.flags and MediaCodec.BUFFER_FLAG_CODEC_CONFIG != 0
-                        Log.d(TAG, "drain: buf idx=$idx size=${info.size} isConfig=$isConfig muxerStarted=$muxerStarted flags=${info.flags}")
                         if (!isConfig && muxerStarted && info.size > 0) {
                             muxer.writeSampleData(trackIndex, buf, info)
                         }
@@ -97,16 +130,37 @@ class VideoExporter(
             }
         }
 
+        // Reused across frames: at full resolution this array is tens of megabytes
+        val pixels = IntArray(width * height)
+
         try {
             for ((i, frame) in frames.withIndex()) {
                 val bitmap = loadAndScale(resolveFile(frame.link), width, height)
                 val pts = i * frameDurationUs
-                val inputIdx = codec.dequeueInputBuffer(TIMEOUT_US)
-                if (inputIdx >= 0) {
-                    val buf = codec.getInputBuffer(inputIdx)!!
-                    fillNv12(buf, bitmap, width, height)
-                    codec.queueInputBuffer(inputIdx, 0, width * height * 3 / 2, pts, 0)
+
+                // Wait for a free input buffer instead of skipping the frame: at
+                // high resolution the encoder is slower than the decode loop, and
+                // silently dropped frames shortened and stuttered the video.
+                var attempts = 0
+                while (true) {
+                    val inputIdx = codec.dequeueInputBuffer(TIMEOUT_US)
+                    if (inputIdx >= 0) {
+                        val image = codec.getInputImage(inputIdx)
+                        if (image != null) {
+                            fillImage(image, bitmap, width, height, pixels)
+                        } else {
+                            fillBuffer(codec.getInputBuffer(inputIdx)!!, bitmap, width, height, stride, sliceHeight, colorFormat, pixels)
+                        }
+                        codec.queueInputBuffer(inputIdx, 0, frameSize, pts, 0)
+                        break
+                    }
+                    if (attempts++ > MAX_INPUT_RETRIES) {
+                        Log.w(TAG, "No input buffer for frame $i, dropping it")
+                        break
+                    }
+                    drain()
                 }
+
                 bitmap.recycle()
                 drain()
                 sendEvent("FFMPEG_PROGRESS", JSONObject().put("progress", (i + 1).toDouble() / frames.size))
@@ -129,34 +183,164 @@ class VideoExporter(
             context.contentResolver.update(videoUri, cv, null, null)
         }
 
-        Log.d(TAG, "export done → $videoUri")
+        Log.d(TAG, "export done -> $videoUri")
         return videoUri.toString()
     }
 
-    private fun fillNv12(buf: ByteBuffer, bitmap: Bitmap, w: Int, h: Int) {
-        val pixels = IntArray(w * h)
+    // Each plane announces its own row and pixel stride, which covers both NV12
+    // (interleaved chroma, pixelStride 2) and I420 through a single path.
+    private fun fillImage(image: Image, bitmap: Bitmap, w: Int, h: Int, pixels: IntArray) {
         bitmap.getPixels(pixels, 0, w, 0, 0, w, h)
-        buf.clear()
-        // Y plane
-        for (i in pixels.indices) {
-            val p = pixels[i]
-            val r = (p shr 16) and 0xFF
-            val g = (p shr 8) and 0xFF
-            val b = p and 0xFF
-            buf.put((((66 * r + 129 * g + 25 * b + 128) shr 8) + 16).toByte())
+
+        val yPlane = image.planes[0]
+        val yBuffer = yPlane.buffer
+        for (row in 0 until h) {
+            var pos = row * yPlane.rowStride
+            val offset = row * w
+            for (col in 0 until w) {
+                yBuffer.put(pos, yOf(pixels[offset + col]))
+                pos += yPlane.pixelStride
+            }
         }
-        // UV plane — NV12: interleaved U then V per 2×2 block
+
+        val uPlane = image.planes[1]
+        val vPlane = image.planes[2]
+        val uBuffer = uPlane.buffer
+        val vBuffer = vPlane.buffer
         for (row in 0 until h / 2) {
+            var uPos = row * uPlane.rowStride
+            var vPos = row * vPlane.rowStride
+            val offset = (row * 2) * w
             for (col in 0 until w / 2) {
-                val p = pixels[(row * 2) * w + (col * 2)]
-                val r = (p shr 16) and 0xFF
-                val g = (p shr 8) and 0xFF
-                val b = p and 0xFF
-                buf.put((((-38 * r - 74 * g + 112 * b + 128) shr 8) + 128).toByte()) // U
-                buf.put((((112 * r - 94 * g - 18 * b + 128) shr 8) + 128).toByte())  // V
+                val p = pixels[offset + col * 2]
+                uBuffer.put(uPos, uOf(p))
+                vBuffer.put(vPos, vOf(p))
+                uPos += uPlane.pixelStride
+                vPos += vPlane.pixelStride
             }
         }
     }
+
+    // Fallback for encoders that expose no Image view: write the planes by hand,
+    // still honouring the stride and slice height.
+    private fun fillBuffer(buf: ByteBuffer, bitmap: Bitmap, w: Int, h: Int, stride: Int, sliceHeight: Int, colorFormat: Int, pixels: IntArray) {
+        bitmap.getPixels(pixels, 0, w, 0, 0, w, h)
+        buf.clear()
+
+        for (row in 0 until h) {
+            var pos = row * stride
+            val offset = row * w
+            for (col in 0 until w) {
+                buf.put(pos, yOf(pixels[offset + col]))
+                pos++
+            }
+        }
+
+        val chromaBase = stride * sliceHeight
+        if (colorFormat == CodecCapabilities.COLOR_FormatYUV420Planar) {
+            val chromaStride = stride / 2
+            val vBase = chromaBase + chromaStride * (sliceHeight / 2)
+            for (row in 0 until h / 2) {
+                var uPos = chromaBase + row * chromaStride
+                var vPos = vBase + row * chromaStride
+                val offset = (row * 2) * w
+                for (col in 0 until w / 2) {
+                    val p = pixels[offset + col * 2]
+                    buf.put(uPos++, uOf(p))
+                    buf.put(vPos++, vOf(p))
+                }
+            }
+        } else {
+            for (row in 0 until h / 2) {
+                var pos = chromaBase + row * stride
+                val offset = (row * 2) * w
+                for (col in 0 until w / 2) {
+                    val p = pixels[offset + col * 2]
+                    buf.put(pos++, uOf(p))
+                    buf.put(pos++, vOf(p))
+                }
+            }
+        }
+    }
+
+    private fun yOf(p: Int): Byte {
+        val r = (p shr 16) and 0xFF
+        val g = (p shr 8) and 0xFF
+        val b = p and 0xFF
+        return ((((66 * r + 129 * g + 25 * b + 128) shr 8) + 16)).toByte()
+    }
+
+    private fun uOf(p: Int): Byte {
+        val r = (p shr 16) and 0xFF
+        val g = (p shr 8) and 0xFF
+        val b = p and 0xFF
+        return ((((-38 * r - 74 * g + 112 * b + 128) shr 8) + 128)).toByte()
+    }
+
+    private fun vOf(p: Int): Byte {
+        val r = (p shr 16) and 0xFF
+        val g = (p shr 8) and 0xFF
+        val b = p and 0xFF
+        return ((((112 * r - 94 * g - 18 * b + 128) shr 8) + 128)).toByte()
+    }
+
+    private fun selectEncoder(): MediaCodecInfo? {
+        val encoders = MediaCodecList(MediaCodecList.REGULAR_CODECS).codecInfos
+            .filter { info -> info.isEncoder && info.supportedTypes.any { it.equals(MIME, ignoreCase = true) } }
+        // Prefer a hardware encoder, but keep a software one as a fallback
+        return encoders.firstOrNull { it.isHardwareAcceleratedCompat() } ?: encoders.firstOrNull()
+    }
+
+    private fun MediaCodecInfo.isHardwareAcceleratedCompat(): Boolean =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) isHardwareAccelerated
+        else !name.startsWith("OMX.google.", ignoreCase = true) && !name.startsWith("c2.android.", ignoreCase = true)
+
+    private fun selectColorFormat(capabilities: CodecCapabilities): Int {
+        val supported = capabilities.colorFormats.toSet()
+        // Flexible first: it is the one format whose plane layout we can read back
+        // from the codec instead of guessing it
+        return listOf(
+            CodecCapabilities.COLOR_FormatYUV420Flexible,
+            CodecCapabilities.COLOR_FormatYUV420SemiPlanar,
+            CodecCapabilities.COLOR_FormatYUV420Planar,
+        ).firstOrNull { it in supported } ?: CodecCapabilities.COLOR_FormatYUV420SemiPlanar
+    }
+
+    // The requested size is only a wish: an encoder has a maximum frame size and
+    // its own width/height alignment, and feeding it anything else yields a
+    // corrupted stream rather than an error.
+    private fun fitToEncoder(caps: VideoCapabilities, width: Int, height: Int): Pair<Int, Int> {
+        val widthAlignment = maxOf(2, caps.widthAlignment)
+        val heightAlignment = maxOf(2, caps.heightAlignment)
+        var scale = minOf(1.0, caps.supportedWidths.upper.toDouble() / width, caps.supportedHeights.upper.toDouble() / height)
+
+        repeat(8) {
+            val w = alignDown((width * scale).toInt(), widthAlignment).coerceIn(caps.supportedWidths.lower, caps.supportedWidths.upper)
+            val h = alignDown((height * scale).toInt(), heightAlignment).coerceIn(caps.supportedHeights.lower, caps.supportedHeights.upper)
+            if (runCatching { caps.isSizeSupported(w, h) }.getOrDefault(true)) {
+                if (w != width || h != height) {
+                    Log.w(TAG, "Encoder cannot handle ${width}x${height}, falling back to ${w}x${h}")
+                }
+                return Pair(w, h)
+            }
+            scale *= 0.75
+        }
+
+        return Pair(alignDown(MAX_SIDE, widthAlignment), alignDown(MAX_SIDE * height / width, heightAlignment))
+    }
+
+    private fun computeBitrate(caps: VideoCapabilities, width: Int, height: Int, fps: Int): Int {
+        val target = (width.toLong() * height * fps * BITS_PER_PIXEL)
+            .toLong()
+            .coerceIn(MIN_BITRATE.toLong(), Int.MAX_VALUE.toLong())
+            .toInt()
+        return runCatching { caps.bitrateRange.clamp(target) }.getOrDefault(target)
+    }
+
+    private fun alignDown(value: Int, alignment: Int): Int = value - (value % alignment)
+
+    private fun MediaFormat.optInteger(key: String, fallback: Int): Int =
+        if (containsKey(key)) runCatching { getInteger(key) }.getOrNull()?.takeIf { it > 0 } ?: fallback else fallback
 
     private fun loadAndScale(file: File, w: Int, h: Int): Bitmap {
         val b = BitmapFactory.Options().apply { inJustDecodeBounds = true }
