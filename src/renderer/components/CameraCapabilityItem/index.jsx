@@ -7,7 +7,9 @@ import Switch from '@components/Switch';
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { withTranslation } from 'react-i18next';
 
-const getCapabilitySelectLabel = (label, t) => {
+import * as style from './style.module.css';
+
+export const getCapabilitySelectLabel = (label, t) => {
   const properId = label?.toLowerCase().replace(':', '').replace(/ /g, '_').trim();
   const map = {
     disabled: t('Disabled'),
@@ -89,10 +91,11 @@ const getCapabilitySelectLabel = (label, t) => {
   return map?.[properId] || label || t('Unknown');
 };
 
-const getCapabilityLabel = (id, t) => {
+export const getCapabilityLabel = (id, t) => {
   const properId = id?.toLowerCase().replace(/ /g, '_').trim();
   const map = {
     image_quality: t('Image quality'),
+    photo_resolution: t('Photo resolution'),
     video_stream_format: t('Video stream format'),
     power_line_frequency: t('Power line frequency'),
     brightness_auto: t('Automatic brightness'),
@@ -169,19 +172,21 @@ const CameraCapabilityRangeItem = ({ id, disabled = false, min = undefined, max 
         value: Math.round(value),
       })}
     >
-      <Slider
-        disabled={disabled}
-        min={min}
-        max={max}
-        value={value}
-        step={step}
-        onChange={(value) => {
-          if (disabled) {
-            return;
-          }
-          onCapabilityChange(id, value);
-        }}
-      />
+      <div className={style.range}>
+        <Slider
+          disabled={disabled}
+          min={min}
+          max={max}
+          value={value}
+          step={step}
+          onChange={(value) => {
+            if (disabled) {
+              return;
+            }
+            onCapabilityChange(id, value);
+          }}
+        />
+      </div>
     </FormGroup>
   );
 };
@@ -232,17 +237,19 @@ const CameraCapabilitySelectRangeItem = ({ id, disabled = false, values = [], va
         value: selectedValue?.label || '',
       })}
     >
-      <SliderSelect
-        disabled={disabled}
-        options={(values || []).map((e) => ({ ...e, label: getCapabilitySelectLabel(e.label, t) }))}
-        value={value}
-        onChange={(evt) => {
-          if (disabled) {
-            return;
-          }
-          onCapabilityChange(id, evt.value);
-        }}
-      />
+      <div className={style.range}>
+        <SliderSelect
+          disabled={disabled}
+          options={(values || []).map((e) => ({ ...e, label: getCapabilitySelectLabel(e.label, t) }))}
+          value={value}
+          onChange={(evt) => {
+            if (disabled) {
+              return;
+            }
+            onCapabilityChange(id, evt.value);
+          }}
+        />
+      </div>
     </FormGroup>
   );
 };

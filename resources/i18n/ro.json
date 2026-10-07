@@ -478,5 +478,6 @@
   "Expose the cameras so they can be used from other devices": "Expune camerele pentru a putea fi folosite de pe alte dispozitive",
   "Keep sharing in background": "Continuă partajarea în fundal",
   "Keep sharing the cameras while the application runs in the background": "Continuă partajarea camerelor cât timp aplicația rulează în fundal",
-  "Expose the cameras so they can be used from other devices ({{hostname}}:{{port}}, using {{token}})": "Expune camerele pentru a putea fi folosite de pe alte dispozitive ({{hostname}}:{{port}}, folosind {{token}})"
+  "Expose the cameras so they can be used from other devices ({{hostname}}:{{port}}, using {{token}})": "Expune camerele pentru a putea fi folosite de pe alte dispozitive ({{hostname}}:{{port}}, folosind {{token}})",
+  "Auto": "Auto"
 }

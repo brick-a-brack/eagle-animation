@@ -203,3 +203,4 @@ Both handlers receive `(event, data)` — `event` is the Electron IPC event on d
 - **Image URLs are platform-specific.** Electron returns `ea://…` URLs; web returns `/api/pictures/…` URLs. Never hardcode either format — always use the URL returned by the backend.
 - **FFmpeg args are shared.** Codec selection and bitrate logic lives in `src/common/ffmpeg.js`. Platform-specific execution (native vs WASM) is in `main/core/export.js` and `renderer/actions/ffmpeg.js`.
 - **Translations.** Keys are extracted by `i18next-scanner`. Run `npm run extract-strings` after adding new `t('key')` calls.
+- **Comments stay short.** One or two lines, `//` only — never `/* */` or JSDoc blocks. Explain why, not what; if it needs a paragraph, the code needs the rework instead.

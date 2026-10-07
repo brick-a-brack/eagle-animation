@@ -474,5 +474,6 @@
   "Expose the cameras so they can be used from other devices": "Elérhetővé teszi a kamerákat, hogy más eszközökről is használhatók legyenek",
   "Keep sharing in background": "Megosztás folytatása a háttérben",
   "Keep sharing the cameras while the application runs in the background": "A kamerák megosztásának folytatása, amíg az alkalmazás a háttérben fut",
-  "Expose the cameras so they can be used from other devices ({{hostname}}:{{port}}, using {{token}})": "Elérhetővé teszi a kamerákat, hogy más eszközökről is használhatók legyenek ({{hostname}}:{{port}}, ezzel: {{token}})"
+  "Expose the cameras so they can be used from other devices ({{hostname}}:{{port}}, using {{token}})": "Elérhetővé teszi a kamerákat, hogy más eszközökről is használhatók legyenek ({{hostname}}:{{port}}, ezzel: {{token}})",
+  "Auto": "Auto"
 }
