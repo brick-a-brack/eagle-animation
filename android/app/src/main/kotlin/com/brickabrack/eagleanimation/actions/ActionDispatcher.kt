@@ -8,14 +8,17 @@ import android.graphics.Matrix
 import android.net.Uri
 import android.util.Log
 import com.brickabrack.eagleanimation.camera.ToucanCameraServer
+import com.brickabrack.eagleanimation.export.ExportBufferStore
 import com.brickabrack.eagleanimation.export.FrameEntry
 import com.brickabrack.eagleanimation.export.VideoExporter
+import com.brickabrack.eagleanimation.image.ImageProcessor
 import com.brickabrack.eagleanimation.storage.ProjectStorage
 import com.brickabrack.eagleanimation.storage.SettingsStorage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.json.JSONArray
 import org.json.JSONObject
+import java.io.File
 import java.io.IOException
 import java.net.HttpURLConnection
 import java.net.URL
@@ -26,6 +29,8 @@ class ActionDispatcher(
     private val projectStorage: ProjectStorage,
     private val settingsStorage: SettingsStorage,
 ) {
+
+    private val exportBuffers = ExportBufferStore(File(context.cacheDir, "export-buffers"))
 
     @Suppress("ReturnCount")
     suspend fun dispatch(
@@ -146,12 +151,32 @@ class ActionDispatcher(
         "APP_CAPABILITIES" -> JSONArray().apply {
             put("EXPORT_VIDEO")
             put("EXPORT_VIDEO_H264")
+            put("EXPORT_BUFFER_FROM_URL")
             put("REMOTE_CAMERAS")
         }
 
         "EXPORT_SELECT_PATH" -> "android"  // non-null sentinel; actual path determined in EXPORT
 
-        "EXPORT_BUFFER" -> null  // no-op: frames are read directly from disk in EXPORT
+        "EXPORT_BUFFER" -> null  // no-op: the renderer uses EXPORT_BUFFER_FROM_URL instead
+
+        // Render one export frame here instead of letting the renderer fetch it and
+        // hand the bytes back: a full-resolution frame crosses the Binder bridge
+        // base64-encoded, which costs seconds per frame for nothing.
+        "EXPORT_BUFFER_FROM_URL" -> {
+            val bufferId = data.optString("buffer_id").ifBlank { null } ?: return@dispatch null
+            val url = data.optString("url").ifBlank { null } ?: return@dispatch null
+            val segments = pictureSegments(url)
+            if (segments.size < 3) return@dispatch null
+            val imageFile = projectStorage.projectsDir
+                .resolve(segments[0])
+                .resolve(segments[1])
+                .resolve(segments[2])
+            if (!imageFile.exists()) return@dispatch null
+            val rendered = withContext(Dispatchers.IO) { ImageProcessor.render(imageFile, Uri.parse(url)) }
+                ?: return@dispatch null
+            withContext(Dispatchers.IO) { exportBuffers.put(bufferId, rendered.bytes) }
+            true
+        }
 
         "EXPORT" -> {
             val framesJson = data.optJSONArray("frames") ?: return@dispatch null
@@ -163,6 +188,7 @@ class ActionDispatcher(
                     index = f.optInt("index", i),
                     extension = f.optString("extension", "jpg"),
                     length = f.optInt("length", 1),
+                    bufferId = f.optString("buffer_id").ifBlank { null },
                 )
             }
             if (frames.isEmpty()) return@dispatch null
@@ -176,9 +202,13 @@ class ActionDispatcher(
             val targetW = resolution?.takeIf { it.has("width") }?.optInt("width")?.takeIf { it > 0 }
             val targetH = resolution?.takeIf { it.has("height") }?.optInt("height")?.takeIf { it > 0 }
 
-            val exporter = VideoExporter(context, projectStorage.projectsDir, onEvent)
-            val uri = withContext(Dispatchers.IO) {
-                exporter.export(frames, fps.coerceAtLeast(1), targetW, targetH)
+            val exporter = VideoExporter(context, projectStorage.projectsDir, exportBuffers, onEvent)
+            val uri = try {
+                withContext(Dispatchers.IO) {
+                    exporter.export(frames, fps.coerceAtLeast(1), targetW, targetH)
+                }
+            } finally {
+                withContext(Dispatchers.IO) { exportBuffers.clear() }
             }
             withContext(Dispatchers.Main) {
                 runCatching {

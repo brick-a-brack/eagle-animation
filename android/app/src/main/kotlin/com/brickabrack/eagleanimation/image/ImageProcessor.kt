@@ -16,19 +16,15 @@ object ImageProcessor {
 
     private val CORS_HEADERS = mapOf("Access-Control-Allow-Origin" to "*")
 
+    data class Rendered(val bytes: ByteArray, val mimeType: String)
+
     fun process(imageFile: File, uri: Uri): WebResourceResponse {
         val w = uri.getQueryParameter("w")?.toIntOrNull()
         val h = uri.getQueryParameter("h")?.toIntOrNull()
         val f = (uri.getQueryParameter("f") ?: uri.getQueryParameter("format"))?.lowercase()
-        val m = (uri.getQueryParameter("m") ?: uri.getQueryParameter("mode") ?: "cover").lowercase()
-        val q = uri.getQueryParameter("q")?.toIntOrNull()?.coerceIn(0, 100) ?: 85
         val infos = uri.getQueryParameter("i") ?: uri.getQueryParameter("infos")
 
-        val opts = BitmapFactory.Options().apply { inJustDecodeBounds = true }
-        BitmapFactory.decodeFile(imageFile.absolutePath, opts)
-        val srcW = opts.outWidth
-        val srcH = opts.outHeight
-
+        val (srcW, srcH) = readSize(imageFile)
         if (srcW <= 0 || srcH <= 0) return notFoundResponse()
 
         if (infos == "json") {
@@ -42,6 +38,25 @@ object ImageProcessor {
         if (w == null && h == null && f == null) {
             return WebResourceResponse(mimeTypeOf(imageFile.extension), null, 200, "OK", CORS_HEADERS, imageFile.inputStream())
         }
+
+        val rendered = render(imageFile, uri) ?: return notFoundResponse()
+        return WebResourceResponse(rendered.mimeType, null, 200, "OK", CORS_HEADERS, rendered.bytes.inputStream())
+    }
+
+    /**
+     * Decode, resize honouring the `m` mode, and re-encode. Shared by the WebView
+     * image route and the video export so both crop a frame identically — the
+     * renderer owns the framing decision on every platform.
+     */
+    fun render(imageFile: File, uri: Uri): Rendered? {
+        val w = uri.getQueryParameter("w")?.toIntOrNull()
+        val h = uri.getQueryParameter("h")?.toIntOrNull()
+        val f = (uri.getQueryParameter("f") ?: uri.getQueryParameter("format"))?.lowercase()
+        val m = (uri.getQueryParameter("m") ?: uri.getQueryParameter("mode") ?: "cover").lowercase()
+        val q = uri.getQueryParameter("q")?.toIntOrNull()?.coerceIn(0, 100) ?: 85
+
+        val (srcW, srcH) = readSize(imageFile)
+        if (srcW <= 0 || srcH <= 0) return null
 
         val srcRatio = srcW.toFloat() / srcH
         val dstW = when {
@@ -61,10 +76,12 @@ object ImageProcessor {
         val src = BitmapFactory.decodeFile(
             imageFile.absolutePath,
             BitmapFactory.Options().apply { inSampleSize = sampleSize },
-        ) ?: return notFoundResponse()
+        ) ?: return null
 
         val isOpaque = f == "jpg" || f == "jpeg"
-        val dst = Bitmap.createBitmap(dstW, dstH, if (isOpaque) Bitmap.Config.RGB_565 else Bitmap.Config.ARGB_8888)
+        // Always 8 bits per channel: RGB_565 crushed opaque frames to 5/6/5 and
+        // banded every gradient, and the video export now encodes these bytes.
+        val dst = Bitmap.createBitmap(dstW, dstH, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(dst)
 
         if (isOpaque) canvas.drawColor(Color.BLACK)
@@ -91,7 +108,13 @@ object ImageProcessor {
         dst.compress(compressFormat, q, out)
         dst.recycle()
 
-        return WebResourceResponse(mimeType, null, 200, "OK", CORS_HEADERS, out.toByteArray().inputStream())
+        return Rendered(out.toByteArray(), mimeType)
+    }
+
+    private fun readSize(imageFile: File): Pair<Int, Int> {
+        val opts = BitmapFactory.Options().apply { inJustDecodeBounds = true }
+        BitmapFactory.decodeFile(imageFile.absolutePath, opts)
+        return Pair(opts.outWidth, opts.outHeight)
     }
 
     private fun calculateInSampleSize(srcW: Int, srcH: Int, dstW: Int, dstH: Int): Int {

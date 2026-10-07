@@ -4,6 +4,10 @@ import android.content.ContentValues
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Paint
+import android.graphics.RectF
 import android.media.Image
 import android.media.MediaCodec
 import android.media.MediaCodecInfo
@@ -20,11 +24,18 @@ import org.json.JSONObject
 import java.io.File
 import java.nio.ByteBuffer
 
-data class FrameEntry(val link: String, val index: Int, val extension: String, val length: Int)
+data class FrameEntry(
+    val link: String,
+    val index: Int,
+    val extension: String,
+    val length: Int,
+    val bufferId: String? = null,
+)
 
 class VideoExporter(
     private val context: Context,
     private val projectsDir: File,
+    private val exportBuffers: ExportBufferStore,
     private val sendEvent: (String, JSONObject) -> Unit,
 ) {
     companion object {
@@ -49,7 +60,7 @@ class VideoExporter(
     fun export(frames: List<FrameEntry>, fps: Int, targetWidth: Int?, targetHeight: Int?): String {
         require(frames.isNotEmpty()) { "No frames to export" }
 
-        val firstFile = resolveFile(frames[0].link)
+        val firstFile = frameFile(frames[0])
         val bounds = BitmapFactory.Options().apply { inJustDecodeBounds = true }
         BitmapFactory.decodeFile(firstFile.absolutePath, bounds)
         val (requestedWidth, requestedHeight) = computeSize(bounds.outWidth, bounds.outHeight, targetWidth, targetHeight)
@@ -135,7 +146,7 @@ class VideoExporter(
 
         try {
             for ((i, frame) in frames.withIndex()) {
-                val bitmap = loadAndScale(resolveFile(frame.link), width, height)
+                val bitmap = loadFrame(frameFile(frame), width, height)
                 val pts = i * frameDurationUs
 
                 // Wait for a free input buffer instead of skipping the frame: at
@@ -342,14 +353,33 @@ class VideoExporter(
     private fun MediaFormat.optInteger(key: String, fallback: Int): Int =
         if (containsKey(key)) runCatching { getInteger(key) }.getOrNull()?.takeIf { it > 0 } ?: fallback else fallback
 
-    private fun loadAndScale(file: File, w: Int, h: Int): Bitmap {
+    // The renderer asks the backend to render each export frame (EXPORT_BUFFER_FROM_URL)
+    // so the framing is decided in one place for every platform. Falling back to the
+    // original picture keeps older renderers working.
+    private fun frameFile(frame: FrameEntry): File = exportBuffers.get(frame.bufferId) ?: resolveFile(frame.link)
+
+    private fun loadFrame(file: File, w: Int, h: Int): Bitmap {
         val b = BitmapFactory.Options().apply { inJustDecodeBounds = true }
         BitmapFactory.decodeFile(file.absolutePath, b)
         var s = 1
         while (b.outWidth / (s * 2) >= w && b.outHeight / (s * 2) >= h) s *= 2
         val raw = BitmapFactory.decodeFile(file.absolutePath, BitmapFactory.Options().apply { inSampleSize = s })!!
-        return if (raw.width == w && raw.height == h) raw
-        else Bitmap.createScaledBitmap(raw, w, h, true).also { if (it !== raw) raw.recycle() }
+        if (raw.width == w && raw.height == h) return raw
+
+        // Cover, never stretch: scale until both sides are filled and centre the
+        // overflow. createScaledBitmap deformed any frame whose ratio did not match
+        // the requested one, where Electron and the web crop it.
+        val dst = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(dst)
+        canvas.drawColor(Color.BLACK)
+        val scale = maxOf(w.toFloat() / raw.width, h.toFloat() / raw.height)
+        val drawW = raw.width * scale
+        val drawH = raw.height * scale
+        val left = (w - drawW) / 2f
+        val top = (h - drawH) / 2f
+        canvas.drawBitmap(raw, null, RectF(left, top, left + drawW, top + drawH), Paint(Paint.FILTER_BITMAP_FLAG or Paint.DITHER_FLAG))
+        raw.recycle()
+        return dst
     }
 
     private fun computeSize(srcW: Int, srcH: Int, tw: Int?, th: Int?): Pair<Int, Int> {
