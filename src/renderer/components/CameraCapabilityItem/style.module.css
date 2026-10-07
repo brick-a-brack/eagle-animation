@@ -1,0 +1,12 @@
+.range {
+  align-items: center;
+  background-color: var(--color-theme-medium);
+  border-radius: 44px;
+  display: flex;
+  gap: var(--space-small);
+  max-width: 500px;
+  padding: 0 var(--space-medium);
+  position: relative;
+  width: 100%;
+  height:42px;
+}

@@ -1,13 +1,10 @@
 .bgd {
-  background: rgb(0 0 0 / 0%);
   height: 100vh;
   left: 0;
-  opacity: 1;
   overflow: hidden;
   pointer-events: none;
   position: fixed;
   top: 0;
-  transition: background-color 0.3s ease-in-out;
   user-select: none;
   width: 100%;
   z-index: 999999;
@@ -20,7 +17,7 @@
   box-shadow: 0 0 10px 0 rgb(114 114 114 / 10%);
   box-sizing: border-box;
   max-height: calc(100vh - var(--safe-area-top));
-  min-height: 35vh;
+  min-height: 20vh;
   opacity: 0;
   overflow: auto;
   padding-bottom: var(--safe-area-bottom);
@@ -37,8 +34,6 @@
 
 .window.fullscreen {
   min-height: 100vh;
-
-  /* padding-top: var(--safe-area-top); */
 }
 
 .content {
@@ -46,7 +41,6 @@
 }
 
 .opened {
-  background: rgb(0 13 22 / 40%);
   pointer-events: all;
 }
 

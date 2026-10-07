@@ -495,5 +495,6 @@
   "Expose the cameras so they can be used from other devices": "Udostępnia kamery, aby można było ich używać z innych urządzeń",
   "Keep sharing in background": "Kontynuuj udostępnianie w tle",
   "Keep sharing the cameras while the application runs in the background": "Kontynuuj udostępnianie kamer, gdy aplikacja działa w tle",
-  "Expose the cameras so they can be used from other devices ({{hostname}}:{{port}}, using {{token}})": "Udostępnia kamery, aby można było ich używać z innych urządzeń ({{hostname}}:{{port}}, przy użyciu {{token}})"
+  "Expose the cameras so they can be used from other devices ({{hostname}}:{{port}}, using {{token}})": "Udostępnia kamery, aby można było ich używać z innych urządzeń ({{hostname}}:{{port}}, przy użyciu {{token}})",
+  "Auto": "Auto"
 }
