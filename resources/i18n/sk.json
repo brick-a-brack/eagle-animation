@@ -479,5 +479,6 @@
   "Framerate used for new projects": "Počet snímok za sekundu pre nové projekty",
   "Share cameras": "Zdieľať kamery",
   "Expose the cameras so they can be used from other devices": "Sprístupní kamery, aby sa dali používať z iných zariadení",
-  "Expose the cameras so they can be used from other devices ({{hostname}}:{{port}}, using {{token}})": "Sprístupní kamery, aby sa dali používať z iných zariadení ({{hostname}}:{{port}}, pomocou {{token}})"
+  "Expose the cameras so they can be used from other devices ({{hostname}}:{{port}}, using {{token}})": "Sprístupní kamery, aby sa dali používať z iných zariadení ({{hostname}}:{{port}}, pomocou {{token}})",
+  "Auto": "Auto"
 }

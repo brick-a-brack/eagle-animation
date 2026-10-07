@@ -472,5 +472,6 @@
   "Framerate used for new projects": "Az új projektekhez használt képkockasebesség",
   "Share cameras": "Kamerák megosztása",
   "Expose the cameras so they can be used from other devices": "Elérhetővé teszi a kamerákat, hogy más eszközökről is használhatók legyenek",
-  "Expose the cameras so they can be used from other devices ({{hostname}}:{{port}}, using {{token}})": "Elérhetővé teszi a kamerákat, hogy más eszközökről is használhatók legyenek ({{hostname}}:{{port}}, ezzel: {{token}})"
+  "Expose the cameras so they can be used from other devices ({{hostname}}:{{port}}, using {{token}})": "Elérhetővé teszi a kamerákat, hogy más eszközökről is használhatók legyenek ({{hostname}}:{{port}}, ezzel: {{token}})",
+  "Auto": "Auto"
 }

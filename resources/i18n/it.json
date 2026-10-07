@@ -489,5 +489,6 @@
   "Framerate used for new projects": "Framerate usato per i nuovi progetti",
   "Share cameras": "Condividi fotocamere",
   "Expose the cameras so they can be used from other devices": "Espone le fotocamere affinché possano essere usate da altri dispositivi",
-  "Expose the cameras so they can be used from other devices ({{hostname}}:{{port}}, using {{token}})": "Espone le fotocamere affinché possano essere usate da altri dispositivi ({{hostname}}:{{port}}, con {{token}})"
+  "Expose the cameras so they can be used from other devices ({{hostname}}:{{port}}, using {{token}})": "Espone le fotocamere affinché possano essere usate da altri dispositivi ({{hostname}}:{{port}}, con {{token}})",
+  "Auto": "Auto"
 }

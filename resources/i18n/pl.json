@@ -493,5 +493,6 @@
   "Framerate used for new projects": "Częstotliwość klatek dla nowych projektów",
   "Share cameras": "Udostępnij kamery",
   "Expose the cameras so they can be used from other devices": "Udostępnia kamery, aby można było ich używać z innych urządzeń",
-  "Expose the cameras so they can be used from other devices ({{hostname}}:{{port}}, using {{token}})": "Udostępnia kamery, aby można było ich używać z innych urządzeń ({{hostname}}:{{port}}, przy użyciu {{token}})"
+  "Expose the cameras so they can be used from other devices ({{hostname}}:{{port}}, using {{token}})": "Udostępnia kamery, aby można było ich używać z innych urządzeń ({{hostname}}:{{port}}, przy użyciu {{token}})",
+  "Auto": "Auto"
 }

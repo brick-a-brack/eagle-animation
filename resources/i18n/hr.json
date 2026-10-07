@@ -476,5 +476,6 @@
   "Framerate used for new projects": "Broj sličica u sekundi za nove projekte",
   "Share cameras": "Dijeli kamere",
   "Expose the cameras so they can be used from other devices": "Izlaže kamere kako bi se mogle koristiti s drugih uređaja",
-  "Expose the cameras so they can be used from other devices ({{hostname}}:{{port}}, using {{token}})": "Izlaže kamere kako bi se mogle koristiti s drugih uređaja ({{hostname}}:{{port}}, pomoću {{token}})"
+  "Expose the cameras so they can be used from other devices ({{hostname}}:{{port}}, using {{token}})": "Izlaže kamere kako bi se mogle koristiti s drugih uređaja ({{hostname}}:{{port}}, pomoću {{token}})",
+  "Auto": "Auto"
 }

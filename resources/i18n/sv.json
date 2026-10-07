@@ -472,5 +472,6 @@
   "Framerate used for new projects": "Bildfrekvens för nya projekt",
   "Share cameras": "Dela kameror",
   "Expose the cameras so they can be used from other devices": "Gör kamerorna tillgängliga så att de kan användas från andra enheter",
-  "Expose the cameras so they can be used from other devices ({{hostname}}:{{port}}, using {{token}})": "Gör kamerorna tillgängliga så att de kan användas från andra enheter ({{hostname}}:{{port}}, med {{token}})"
+  "Expose the cameras so they can be used from other devices ({{hostname}}:{{port}}, using {{token}})": "Gör kamerorna tillgängliga så att de kan användas från andra enheter ({{hostname}}:{{port}}, med {{token}})",
+  "Auto": "Auto"
 }

@@ -497,5 +497,6 @@
   "Framerate used for new projects": "Naujiems projektams naudojamas kadrų dažnis",
   "Share cameras": "Bendrinti kameras",
   "Expose the cameras so they can be used from other devices": "Padaro kameras pasiekiamas, kad jas būtų galima naudoti iš kitų įrenginių",
-  "Expose the cameras so they can be used from other devices ({{hostname}}:{{port}}, using {{token}})": "Padaro kameras pasiekiamas, kad jas būtų galima naudoti iš kitų įrenginių ({{hostname}}:{{port}}, naudojant {{token}})"
+  "Expose the cameras so they can be used from other devices ({{hostname}}:{{port}}, using {{token}})": "Padaro kameras pasiekiamas, kad jas būtų galima naudoti iš kitų įrenginių ({{hostname}}:{{port}}, naudojant {{token}})",
+  "Auto": "Auto"
 }

@@ -486,5 +486,6 @@
   "Framerate used for new projects": "Bildoj je sekundo por novaj projektoj",
   "Share cameras": "Kunhavigi kameraojn",
   "Expose the cameras so they can be used from other devices": "Disponebligas la kameraojn por ke ili estu uzeblaj de aliaj aparatoj",
-  "Expose the cameras so they can be used from other devices ({{hostname}}:{{port}}, using {{token}})": "Disponebligas la kameraojn por ke ili estu uzeblaj de aliaj aparatoj ({{hostname}}:{{port}}, uzante {{token}})"
+  "Expose the cameras so they can be used from other devices ({{hostname}}:{{port}}, using {{token}})": "Disponebligas la kameraojn por ke ili estu uzeblaj de aliaj aparatoj ({{hostname}}:{{port}}, uzante {{token}})",
+  "Auto": "Aŭto"
 }

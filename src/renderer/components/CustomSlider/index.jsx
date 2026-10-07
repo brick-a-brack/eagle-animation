@@ -34,7 +34,7 @@ const CustomSlider = ({ step, min, max, value, disabled = false, maxWidth = null
     max={max}
     value={value}
     handleRender={makeHandleRenderer(min, max)}
-    style={{ maxWidth: maxWidth || '300px', padding: '0', height: '10px', ...(disabled ? { cursor: 'not-allowed', opacity: '0.2' } : {}) }}
+    style={{ maxWidth: maxWidth || '500px', padding: '0', height: '10px', ...(disabled ? { cursor: 'not-allowed', opacity: '0.2' } : {}) }}
     styles={{
       track: {
         backgroundColor: 'var(--color-theme-light)',

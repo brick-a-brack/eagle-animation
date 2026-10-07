@@ -472,5 +472,6 @@
   "Framerate used for new projects": "Кадрова честота за новите проекти",
   "Share cameras": "Споделяне на камерите",
   "Expose the cameras so they can be used from other devices": "Предоставя камерите, за да могат да се използват от други устройства",
-  "Expose the cameras so they can be used from other devices ({{hostname}}:{{port}}, using {{token}})": "Предоставя камерите, за да могат да се използват от други устройства ({{hostname}}:{{port}}, чрез {{token}})"
+  "Expose the cameras so they can be used from other devices ({{hostname}}:{{port}}, using {{token}})": "Предоставя камерите, за да могат да се използват от други устройства ({{hostname}}:{{port}}, чрез {{token}})",
+  "Auto": "Авто"
 }

@@ -486,5 +486,6 @@
   "Framerate used for new projects": "Bildfrequenz für neue Projekte",
   "Share cameras": "Kameras teilen",
   "Expose the cameras so they can be used from other devices": "Gibt die Kameras frei, damit sie von anderen Geräten verwendet werden können",
-  "Expose the cameras so they can be used from other devices ({{hostname}}:{{port}}, using {{token}})": "Gibt die Kameras frei, damit sie von anderen Geräten verwendet werden können ({{hostname}}:{{port}}, mit {{token}})"
+  "Expose the cameras so they can be used from other devices ({{hostname}}:{{port}}, using {{token}})": "Gibt die Kameras frei, damit sie von anderen Geräten verwendet werden können ({{hostname}}:{{port}}, mit {{token}})",
+  "Auto": "Auto"
 }
