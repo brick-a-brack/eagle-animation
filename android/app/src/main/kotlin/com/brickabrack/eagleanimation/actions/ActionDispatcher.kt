@@ -147,9 +147,6 @@ class ActionDispatcher(
             put("EXPORT_VIDEO")
             put("EXPORT_VIDEO_H264")
             put("REMOTE_CAMERAS")
-            // Android is the only platform that can keep the camera server alive
-            // once the app is no longer on screen, through a foreground service.
-            put("TOUCAN_CAMERA_SERVER_BACKGROUND")
         }
 
         "EXPORT_SELECT_PATH" -> "android"  // non-null sentinel; actual path determined in EXPORT
@@ -203,7 +200,6 @@ class ActionDispatcher(
         "TOUCAN_CAMERA_SERVER_SET_CONFIG" -> ToucanCameraServer.setConfig(
             context = context,
             expose = data.optBoolean("expose", false),
-            background = data.optBoolean("background", false),
             token = data.optString("token", ""),
         )
 

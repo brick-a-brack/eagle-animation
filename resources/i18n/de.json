@@ -486,7 +486,5 @@
   "Framerate used for new projects": "Bildfrequenz für neue Projekte",
   "Share cameras": "Kameras teilen",
   "Expose the cameras so they can be used from other devices": "Gibt die Kameras frei, damit sie von anderen Geräten verwendet werden können",
-  "Keep sharing in background": "Teilen im Hintergrund fortsetzen",
-  "Keep sharing the cameras while the application runs in the background": "Die Kameras weiterhin teilen, während die Anwendung im Hintergrund läuft",
   "Expose the cameras so they can be used from other devices ({{hostname}}:{{port}}, using {{token}})": "Gibt die Kameras frei, damit sie von anderen Geräten verwendet werden können ({{hostname}}:{{port}}, mit {{token}})"
 }

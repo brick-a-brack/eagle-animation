@@ -334,9 +334,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
-        // With background sharing on, the camera server lives in its foreground
-        // service and is meant to outlive the activity; otherwise it goes down with
-        // the app rather than holding the camera for a window that no longer exists.
+        // The camera server never outlives the app: it goes down with the window
+        // rather than holding the camera for one that no longer exists.
         if (isFinishing) {
             ToucanCameraServer.releaseOnExit(this)
             scope.cancel()
@@ -346,8 +345,8 @@ class MainActivity : AppCompatActivity() {
 
     /**
      * POST_NOTIFICATIONS only exists from Android 13, and only matters there: without
-     * it the camera server's ongoing notification is dropped silently, leaving
-     * background sharing with no way to show its port and pairing code.
+     * it the camera server's ongoing notification is dropped silently, leaving camera
+     * sharing with no way to show its address and pairing code.
      */
     private companion object {
         const val START_URL = "https://appassets.androidplatform.net/index.html"

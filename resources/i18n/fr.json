@@ -495,7 +495,5 @@
   "Framerate used for new projects": "IPS utilisé pour les nouveaux projets",
   "Share cameras": "Partager les caméras",
   "Expose the cameras so they can be used from other devices": "Expose les caméras pour qu'elles soient utilisables depuis d'autres appareils",
-  "Keep sharing in background": "Continuer le partage en arrière-plan",
-  "Keep sharing the cameras while the application runs in the background": "Continuer à partager les caméras lorsque l'application s'exécute en arrière-plan",
   "Expose the cameras so they can be used from other devices ({{hostname}}:{{port}}, using {{token}})": "Expose les caméras pour qu'elles soient utilisables depuis d'autres appareils ({{hostname}}:{{port}}, avec {{token}})"
 }

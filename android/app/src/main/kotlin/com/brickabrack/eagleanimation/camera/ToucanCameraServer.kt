@@ -31,8 +31,8 @@ import kotlin.coroutines.resume
  *    therefore no notification, since a foreground service must show one. Nothing
  *    needs pairing: only this device can reach the server.
  *
- * `background` is a separate question, and only decides what happens when the app
- * goes away: kept running, or stopped by [releaseOnExit].
+ * Either way the server goes down with the app, in [releaseOnExit]: it exists to
+ * serve this window, not to outlive it.
  *
  * Both modes drive the same native singleton, so switching between them hands the
  * server over rather than running two.
@@ -45,9 +45,8 @@ object ToucanCameraServer {
     /** Enough for the bind plus the service start; the native side has no timeout of its own. */
     private const val READY_TIMEOUT_MS = 20_000L
 
-    /** Options owned by the renderer through SET_CONFIG. */
+    /** Option owned by the renderer through SET_CONFIG. */
     private var expose = false
-    private var background = false
 
     /**
      * Whether the renderer asked for a server at all. Survives a stop from the
@@ -65,25 +64,16 @@ object ToucanCameraServer {
      * Applies the sharing options and makes sure a server is running with them.
      * Resolves with the config of the server actually listening.
      */
-    suspend fun setConfig(context: Context, expose: Boolean, background: Boolean, token: String): JSONObject {
+    suspend fun setConfig(context: Context, expose: Boolean, token: String): JSONObject {
         this.expose = expose
         // An empty token keeps the current one — that is also what the native side does.
         this.token = token.ifBlank { this.token }
-        // Background sharing only means anything on an exposed server: unexposed,
-        // nothing outside this device can reach it, so there is nothing to keep alive.
-        // Requiring `expose` here also stops a stale stored setting from acting — the
-        // switch keeps its value while the UI disables it, so the renderer goes on
-        // sending background=true after sharing was turned off.
-        //
-        // A foreground service of type `camera` cannot start without the permission
-        // either, so without it background mode degrades to a server that lives with
-        // the app rather than taking the whole app down.
-        this.background = background && expose && hasCameraPermission(context)
         isWanted = true
 
         // The service is what puts the notification up, so it runs exactly while the
         // server is exposed: that is when the address and the pairing code are worth
-        // reading, and when there is something to stop from outside the app.
+        // reading. A foreground service of type `camera` cannot start without the
+        // permission, so without it the server simply lives in the app process.
         val useService = expose && hasCameraPermission(context)
 
         if (useService) {
@@ -114,7 +104,7 @@ object ToucanCameraServer {
             return
         }
         Log.d(TAG, "Camera server was stopped while the app was away, bringing it back")
-        setConfig(context, expose, background, token)
+        setConfig(context, expose, token)
     }
 
     /**
@@ -138,7 +128,6 @@ object ToucanCameraServer {
             put("hostname", LOOPBACK)
             put("shareHostname", shareHostname(isExposed))
             put("expose", isExposed)
-            put("background", background)
             put("port", if (isListening) state.port else JSONObject.NULL)
             put("token", if (isListening && state.token.isNotEmpty()) state.token else JSONObject.NULL)
             put("secure", false) // the native server serves plain HTTP
@@ -160,17 +149,12 @@ object ToucanCameraServer {
     }
 
     /**
-     * Called when the activity is finishing.
-     *
-     * With background sharing on the server is meant to outlive the app, so it is
-     * left alone. Otherwise it goes down with the window it was serving — whether it
-     * runs in the service (which stops the native server from its own onDestroy) or
-     * in the app process, where it would otherwise outlive the activity.
+     * Called when the activity is finishing: the server goes down with the window it
+     * was serving, whether it runs in the service (which stops the native server from
+     * its own onDestroy) or in the app process, where it would otherwise outlive the
+     * activity.
      */
     fun releaseOnExit(context: Context) {
-        if (background) {
-            return
-        }
         if (CameraServerService.isServiceRunning) {
             Log.d(TAG, "Activity finishing, stopping the camera server service")
             CameraServerService.stop(context)
@@ -187,7 +171,7 @@ object ToucanCameraServer {
         if (result < 0) {
             Log.e(TAG, "Camera server failed to start: ${CameraServerService.errorMessage(result)}")
         } else {
-            Log.d(TAG, "Camera server listening on port $result (expose=$expose, background=false)")
+            Log.d(TAG, "Camera server listening on port $result (expose=$expose)")
         }
     }
 

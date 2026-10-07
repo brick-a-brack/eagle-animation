@@ -34,10 +34,10 @@ import java.util.concurrent.atomic.AtomicReference
  * live state. Nothing here assumes the server is up, nor which port it got.
  *
  * The service is only needed to keep the server alive while the app is not on
- * screen. The native entry points are plain statics, so a host that does not want
- * a background server — and therefore no notification, since a foreground service
- * must show one — can call [startServer] / [stopServer] directly and never start
- * this service. ToucanCameraServer does exactly that.
+ * screen, and to carry its notification. The native entry points are plain statics,
+ * so a host that wants neither — a foreground service must show a notification — can
+ * call [startServer] / [stopServer] directly and never start this service.
+ * ToucanCameraServer does exactly that when the server is not exposed.
  */
 class CameraServerService : Service() {
 

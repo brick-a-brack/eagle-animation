@@ -155,13 +155,6 @@ const SettingsForm = ({ settings = {}, onUpdate = () => {}, t }) => {
                 <Switch register={register('TOUCAN_CAMERA_SERVER_EXPOSE')} disabled={watch('TOUCAN_CAMERA_SERVER_DISABLED')} />
               </div>
             </FormGroup>
-            {appCapabilities.includes('TOUCAN_CAMERA_SERVER_BACKGROUND') && (
-              <FormGroup label={t('Keep sharing in background')} description={t('Keep sharing the cameras while the application runs in the background')}>
-                <div>
-                  <Switch register={register('TOUCAN_CAMERA_SERVER_BACKGROUND')} disabled={!watch('TOUCAN_CAMERA_SERVER_EXPOSE') || watch('TOUCAN_CAMERA_SERVER_DISABLED')} />
-                </div>
-              </FormGroup>
-            )}
           </>
         )}
 

@@ -28,7 +28,6 @@ const DEFAULT_SETTINGS = {
   EVENT_API: PARTNER_API,
   TOUCAN_CAMERA_SERVER_DISABLED: false,
   TOUCAN_CAMERA_SERVER_EXPOSE: false,
-  TOUCAN_CAMERA_SERVER_BACKGROUND: false,
   TELEMETRY_ENABLED: true,
   TOURS_COMPLETED: [], // Keys of the guided tours the user has already seen
 };

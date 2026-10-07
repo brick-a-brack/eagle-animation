@@ -316,8 +316,8 @@ const actions = {
   TOUCAN_CAMERA_SERVER_GET_CONFIG: async () => {
     return getToucanCameraServerConfig();
   },
-  TOUCAN_CAMERA_SERVER_SET_CONFIG: async (evt, { expose = false, background = false, token = null } = {}) => {
-    return setToucanCameraServerConfig({ expose, background, token });
+  TOUCAN_CAMERA_SERVER_SET_CONFIG: async (evt, { expose = false, token = null } = {}) => {
+    return setToucanCameraServerConfig({ expose, token });
   },
   TOUCAN_CAMERA_SERVER_STOP: async () => {
     return stopToucanCameraServer();

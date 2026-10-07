@@ -481,7 +481,5 @@
   "Framerate used for new projects": "Frekvenca sličic za nove projekte",
   "Share cameras": "Deli kamere",
   "Expose the cameras so they can be used from other devices": "Izpostavi kamere, da jih je mogoče uporabljati z drugih naprav",
-  "Keep sharing in background": "Nadaljuj deljenje v ozadju",
-  "Keep sharing the cameras while the application runs in the background": "Nadaljuj deljenje kamer, medtem ko aplikacija teče v ozadju",
   "Expose the cameras so they can be used from other devices ({{hostname}}:{{port}}, using {{token}})": "Izpostavi kamere, da jih je mogoče uporabljati z drugih naprav ({{hostname}}:{{port}}, z {{token}})"
 }

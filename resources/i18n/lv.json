@@ -476,7 +476,5 @@
   "Framerate used for new projects": "Jauniem projektiem izmantotais kadru ātrums",
   "Share cameras": "Koplietot kameras",
   "Expose the cameras so they can be used from other devices": "Padara kameras pieejamas, lai tās varētu izmantot no citām ierīcēm",
-  "Keep sharing in background": "Turpināt koplietošanu fonā",
-  "Keep sharing the cameras while the application runs in the background": "Turpināt koplietot kameras, kamēr lietotne darbojas fonā",
   "Expose the cameras so they can be used from other devices ({{hostname}}:{{port}}, using {{token}})": "Padara kameras pieejamas, lai tās varētu izmantot no citām ierīcēm ({{hostname}}:{{port}}, izmantojot {{token}})"
 }

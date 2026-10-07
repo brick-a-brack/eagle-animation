@@ -479,7 +479,5 @@
   "Framerate used for new projects": "Snímkování použité pro nové projekty",
   "Share cameras": "Sdílet kamery",
   "Expose the cameras so they can be used from other devices": "Zpřístupní kamery, aby je bylo možné používat z jiných zařízení",
-  "Keep sharing in background": "Pokračovat ve sdílení na pozadí",
-  "Keep sharing the cameras while the application runs in the background": "Pokračovat ve sdílení kamer, když aplikace běží na pozadí",
   "Expose the cameras so they can be used from other devices ({{hostname}}:{{port}}, using {{token}})": "Zpřístupní kamery, aby je bylo možné používat z jiných zařízení ({{hostname}}:{{port}}, pomocí {{token}})"
 }

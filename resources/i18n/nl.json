@@ -472,7 +472,5 @@
   "Framerate used for new projects": "Framerate voor nieuwe projecten",
   "Share cameras": "Camera's delen",
   "Expose the cameras so they can be used from other devices": "Stelt de camera's beschikbaar zodat ze vanaf andere apparaten gebruikt kunnen worden",
-  "Keep sharing in background": "Delen op de achtergrond voortzetten",
-  "Keep sharing the cameras while the application runs in the background": "De camera's blijven delen terwijl de applicatie op de achtergrond draait",
   "Expose the cameras so they can be used from other devices ({{hostname}}:{{port}}, using {{token}})": "Stelt de camera's beschikbaar zodat ze vanaf andere apparaten gebruikt kunnen worden ({{hostname}}:{{port}}, met {{token}})"
 }
