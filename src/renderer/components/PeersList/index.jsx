@@ -1,6 +1,7 @@
 import Button from '@components/Button';
 import Input from '@components/Input';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { TOKEN_LENGTH } from '@hooks/useToucanCameraServer';
 import faKey from '@icons/faKey';
 import faSignal from '@icons/faSignal';
 import faTrash from '@icons/faTrash';
@@ -54,7 +55,15 @@ const PeersList = ({ t, peers = [], onConnect = () => {}, onDelete = () => {} })
           </div>
           <div className={style.fieldGroup}>
             <span className={style.fieldLabel}>{t('Pairing code')}</span>
-            <Input className={style.field} placeholder="RH8EA6" register={register('token')} />
+            <Input
+              className={`${style.field} ${style.fieldCode}`}
+              placeholder="RH8EA6"
+              maxLength={TOKEN_LENGTH}
+              autoCapitalize="characters"
+              autoCorrect="off"
+              spellCheck={false}
+              register={register('token', { setValueAs: (value) => (value || '').trim().toUpperCase() })}
+            />
           </div>
           {submitError && <p className={style.errorMessage}>{t('Failed to connect to the device')}</p>}
           <button type="submit" className={`${style.submitButton} ${!isValid ? style.submitButtonDisabled : ''}`} disabled={!isValid}>

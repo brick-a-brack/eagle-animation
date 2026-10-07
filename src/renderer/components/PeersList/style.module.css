@@ -130,6 +130,10 @@
   width: 100%;
 }
 
+.fieldCode {
+  text-transform: uppercase;
+}
+
 .errorMessage {
   color: var(--color-alert);
   font-size: var(--font-size-7);

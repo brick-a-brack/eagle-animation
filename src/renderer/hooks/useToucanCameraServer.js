@@ -6,8 +6,8 @@ import useSettings from './useSettings';
 
 // Short pairing token, meant to be read out loud or typed on another device:
 // digits and uppercase letters only, no lowercase to avoid case confusion.
-const TOKEN_ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-const TOKEN_LENGTH = 6;
+export const TOKEN_ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+export const TOKEN_LENGTH = 6;
 
 const generateToken = () => {
   const values = new Uint32Array(TOKEN_LENGTH);
