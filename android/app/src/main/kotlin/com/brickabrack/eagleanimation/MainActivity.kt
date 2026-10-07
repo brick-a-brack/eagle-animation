@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.webkit.PermissionRequest
 import android.webkit.WebSettings
 import android.webkit.WebView
 import androidx.activity.result.contract.ActivityResultContracts
@@ -21,6 +22,7 @@ import com.brickabrack.eagleanimation.actions.ActionDispatcher
 import com.brickabrack.eagleanimation.bridge.EAJSBridge
 import com.brickabrack.eagleanimation.storage.ProjectStorage
 import com.brickabrack.eagleanimation.storage.SettingsStorage
+import com.brickabrack.eagleanimation.webview.EAWebChromeClient
 import com.brickabrack.eagleanimation.webview.EAWebViewClient
 import com.brickfilms.toucancameraserver.CameraServerService
 import kotlinx.coroutines.CoroutineScope
@@ -38,10 +40,20 @@ class MainActivity : AppCompatActivity() {
     /** Latest safe-area JS snippet, replayed on every page load. */
     private var safeAreaScript: String? = null
 
-    private val cameraPermissionLauncher = registerForActivityResult(
-        ActivityResultContracts.RequestPermission()
-    ) { granted ->
-        if (granted) startCameraServer()
+    /** Capture request from the live view, parked while the user answers the Android dialog. */
+    private var pendingMediaRequest: PermissionRequest? = null
+
+    private val startupPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { results ->
+        if (results[Manifest.permission.CAMERA] == true) startCameraServer()
+    }
+
+    private val mediaCapturePermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { _ ->
+        pendingMediaRequest?.let { answerMediaRequest(it) }
+        pendingMediaRequest = null
     }
 
     /**
@@ -155,6 +167,7 @@ class MainActivity : AppCompatActivity() {
         bridge = EAJSBridge(webView, scope, dispatcher)
         webView.addJavascriptInterface(bridge, "AndroidIPC")
         webView.webViewClient = EAWebViewClient(projectsDir, assetLoader, ipcScript) { pushSafeArea() }
+        webView.webChromeClient = EAWebChromeClient { handleMediaRequest(it) }
 
         observeSafeArea()
 
@@ -162,13 +175,11 @@ class MainActivity : AppCompatActivity() {
             WebViewCompat.addDocumentStartJavaScript(webView, ipcScript, setOf("*"))
         }
 
-        // Start camera server (requests permission first if needed)
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
-            == PackageManager.PERMISSION_GRANTED
-        ) {
+        // Start camera server (asks for camera and microphone first if needed)
+        if (CAPTURE_PERMISSIONS.all { isGranted(it) }) {
             startCameraServer()
         } else {
-            cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
+            startupPermissionLauncher.launch(CAPTURE_PERMISSIONS)
         }
 
         webView.loadUrl("https://appassets.androidplatform.net/index.html")
@@ -228,6 +239,41 @@ class MainActivity : AppCompatActivity() {
         safeAreaScript?.let { webView.evaluateJavascript(it, null) }
     }
 
+    /**
+     * Answers a live view capture request: resources whose Android permission is
+     * still missing are asked for first, then the request is answered once.
+     */
+    private fun handleMediaRequest(request: PermissionRequest) {
+        val missing = request.resources
+            .mapNotNull { androidPermissionFor(it) }
+            .distinct()
+            .filterNot { isGranted(it) }
+
+        if (missing.isEmpty()) {
+            answerMediaRequest(request)
+        } else {
+            pendingMediaRequest = request
+            mediaCapturePermissionLauncher.launch(missing.toTypedArray())
+        }
+    }
+
+    /** Grants every requested resource backed by a granted permission, denies the rest. */
+    private fun answerMediaRequest(request: PermissionRequest) {
+        val granted = request.resources.filter { resource ->
+            androidPermissionFor(resource)?.let { isGranted(it) } == true
+        }
+        if (granted.isEmpty()) request.deny() else request.grant(granted.toTypedArray())
+    }
+
+    private fun androidPermissionFor(resource: String): String? = when (resource) {
+        PermissionRequest.RESOURCE_VIDEO_CAPTURE -> Manifest.permission.CAMERA
+        PermissionRequest.RESOURCE_AUDIO_CAPTURE -> Manifest.permission.RECORD_AUDIO
+        else -> null
+    }
+
+    private fun isGranted(permission: String) =
+        ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED
+
     private fun startCameraServer() {
         CameraServerService.setToken(cameraServerToken)
         startForegroundService(Intent(this, CameraServerService::class.java))
@@ -236,5 +282,12 @@ class MainActivity : AppCompatActivity() {
     @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
         if (webView.canGoBack()) webView.goBack() else super.onBackPressed()
+    }
+
+    private companion object {
+        val CAPTURE_PERMISSIONS = arrayOf(
+            Manifest.permission.CAMERA,
+            Manifest.permission.RECORD_AUDIO,
+        )
     }
 }
