@@ -150,7 +150,10 @@ class ActionDispatcher(
         // Export actions
         "APP_CAPABILITIES" -> JSONArray().apply {
             put("EXPORT_VIDEO")
-            put("EXPORT_VIDEO_H264")
+            // Advertised per codec the device can encode: HEVC decoding is common,
+            // HEVC encoding is not, and offering it without an encoder would only
+            // fail at export time.
+            VideoExporter.supportedFormats().forEach { put("EXPORT_VIDEO_${it.key.uppercase()}") }
             put("EXPORT_BUFFER_FROM_URL")
             put("REMOTE_CAMERAS")
         }
@@ -198,6 +201,7 @@ class ActionDispatcher(
             else
                 data.optInt("framerate", 12)
 
+            val format = VideoExporter.formatOf(data.optString("format"))
             val resolution = data.optJSONObject("export_resolution")
             val targetW = resolution?.takeIf { it.has("width") }?.optInt("width")?.takeIf { it > 0 }
             val targetH = resolution?.takeIf { it.has("height") }?.optInt("height")?.takeIf { it > 0 }
@@ -205,7 +209,7 @@ class ActionDispatcher(
             val exporter = VideoExporter(context, projectStorage.projectsDir, exportBuffers, onEvent)
             val uri = try {
                 withContext(Dispatchers.IO) {
-                    exporter.export(frames, fps.coerceAtLeast(1), targetW, targetH)
+                    exporter.export(frames, fps.coerceAtLeast(1), targetW, targetH, format)
                 }
             } finally {
                 withContext(Dispatchers.IO) { exportBuffers.clear() }

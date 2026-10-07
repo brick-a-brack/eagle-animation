@@ -32,6 +32,20 @@ data class FrameEntry(
     val bufferId: String? = null,
 )
 
+/**
+ * Video codecs the exporter can produce, keyed by the identifier the renderer sends.
+ *
+ * Both get the same budget on purpose. HEVC needs ~40% fewer bits than AVC on
+ * ordinary footage, but that gain comes from inter-frame prediction: here every
+ * frame is a full scene change, so the coding is essentially intra, where the two
+ * are close — and mid-range hardware HEVC encoders are often the weaker of the
+ * two at equal bitrate. Discounting HEVC made it visibly worse, not smaller.
+ */
+enum class VideoFormat(val key: String, val mime: String, val bitsPerPixel: Double, val minBitrate: Int) {
+    H264("h264", MediaFormat.MIMETYPE_VIDEO_AVC, 0.4, 6_000_000),
+    HEVC("hevc", MediaFormat.MIMETYPE_VIDEO_HEVC, 0.4, 6_000_000),
+}
+
 class VideoExporter(
     private val context: Context,
     private val projectsDir: File,
@@ -42,22 +56,43 @@ class VideoExporter(
         private const val TAG = "VideoExporter"
         private const val TIMEOUT_US = 10_000L
         private const val EOS_TIMEOUT_US = 100_000L
-        private const val I_FRAME_INTERVAL = 2
-        private const val MIME = MediaFormat.MIMETYPE_VIDEO_AVC
+        // All-intra: every frame is a key frame. With a GOP, each predicted frame had
+        // to encode a complete scene change out of a fraction of the budget, so most
+        // frames came out mushy between periodic clean ones. Independent frames spend
+        // the bitrate evenly instead — the reason the per-pixel budget above is
+        // generous.
+        private const val I_FRAME_INTERVAL = 0
         private const val MAX_SIDE = 1920
-
-        // Stop motion has no temporal redundancy — every frame is a full scene
-        // change — so the bitrate has to follow the pixel count. The former fixed
-        // 8 Mbps was fine in 1080p and starved anything above it into blocking.
-        private const val BITS_PER_PIXEL = 0.25
-        private const val MIN_BITRATE = 4_000_000
 
         // Give up on a frame rather than spinning forever if the encoder never
         // frees an input buffer.
         private const val MAX_INPUT_RETRIES = 500
+
+        fun formatOf(key: String?): VideoFormat =
+            VideoFormat.entries.firstOrNull { it.key.equals(key, ignoreCase = true) } ?: VideoFormat.H264
+
+        /** Formats this device can actually encode — a codec may decode HEVC without encoding it. */
+        fun supportedFormats(): List<VideoFormat> = VideoFormat.entries.filter { findEncoder(it.mime) != null }
+
+        fun findEncoder(mime: String): MediaCodecInfo? {
+            val encoders = MediaCodecList(MediaCodecList.REGULAR_CODECS).codecInfos
+                .filter { info -> info.isEncoder && info.supportedTypes.any { it.equals(mime, ignoreCase = true) } }
+            // Prefer a hardware encoder, but keep a software one as a fallback
+            return encoders.firstOrNull { it.isHardwareAcceleratedCompat() } ?: encoders.firstOrNull()
+        }
+
+        private fun MediaCodecInfo.isHardwareAcceleratedCompat(): Boolean =
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) isHardwareAccelerated
+            else !name.startsWith("OMX.google.", ignoreCase = true) && !name.startsWith("c2.android.", ignoreCase = true)
     }
 
-    fun export(frames: List<FrameEntry>, fps: Int, targetWidth: Int?, targetHeight: Int?): String {
+    fun export(
+        frames: List<FrameEntry>,
+        fps: Int,
+        targetWidth: Int?,
+        targetHeight: Int?,
+        format: VideoFormat = VideoFormat.H264,
+    ): String {
         require(frames.isNotEmpty()) { "No frames to export" }
 
         val firstFile = frameFile(frames[0])
@@ -65,23 +100,30 @@ class VideoExporter(
         BitmapFactory.decodeFile(firstFile.absolutePath, bounds)
         val (requestedWidth, requestedHeight) = computeSize(bounds.outWidth, bounds.outHeight, targetWidth, targetHeight)
 
-        val encoder = selectEncoder() ?: error("No H.264 encoder available on this device")
-        val capabilities = encoder.getCapabilitiesForType(MIME)
+        val encoder = findEncoder(format.mime) ?: error("No ${format.key} encoder available on this device")
+        val capabilities = encoder.getCapabilitiesForType(format.mime)
         val videoCapabilities = capabilities.videoCapabilities
         val (width, height) = fitToEncoder(videoCapabilities, requestedWidth, requestedHeight)
-        val bitrate = computeBitrate(videoCapabilities, width, height, fps)
+        val bitrate = computeBitrate(videoCapabilities, width, height, fps, format)
         val colorFormat = selectColorFormat(capabilities)
         Log.d(
             TAG,
-            "export: ${frames.size} frames -> ${width}x${height} @ ${fps}fps, ${bitrate / 1_000_000}Mbps" +
+            "export: ${frames.size} frames -> ${width}x${height} @ ${fps}fps, ${bitrate / 1_000_000}Mbps ${format.key}" +
                 " (requested ${requestedWidth}x${requestedHeight}, encoder=${encoder.name}, color=$colorFormat)"
         )
 
-        val mediaFormat = MediaFormat.createVideoFormat(MIME, width, height).apply {
+        val mediaFormat = MediaFormat.createVideoFormat(format.mime, width, height).apply {
             setInteger(MediaFormat.KEY_COLOR_FORMAT, colorFormat)
             setInteger(MediaFormat.KEY_BIT_RATE, bitrate)
             setInteger(MediaFormat.KEY_FRAME_RATE, fps)
             setInteger(MediaFormat.KEY_I_FRAME_INTERVAL, I_FRAME_INTERVAL)
+            // Rate control was left implicit until now. Ask for VBR so a busy frame
+            // may borrow bits instead of being held to a constant rate — but only
+            // where the encoder advertises it, as configure() rejects a mode it
+            // does not support.
+            if (supportsVbr(capabilities)) {
+                setInteger(MediaFormat.KEY_BITRATE_MODE, MediaCodecInfo.EncoderCapabilities.BITRATE_MODE_VBR)
+            }
         }
 
         val codec = MediaCodec.createByCodecName(encoder.name)
@@ -295,16 +337,9 @@ class VideoExporter(
         return ((((112 * r - 94 * g - 18 * b + 128) shr 8) + 128)).toByte()
     }
 
-    private fun selectEncoder(): MediaCodecInfo? {
-        val encoders = MediaCodecList(MediaCodecList.REGULAR_CODECS).codecInfos
-            .filter { info -> info.isEncoder && info.supportedTypes.any { it.equals(MIME, ignoreCase = true) } }
-        // Prefer a hardware encoder, but keep a software one as a fallback
-        return encoders.firstOrNull { it.isHardwareAcceleratedCompat() } ?: encoders.firstOrNull()
-    }
-
-    private fun MediaCodecInfo.isHardwareAcceleratedCompat(): Boolean =
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) isHardwareAccelerated
-        else !name.startsWith("OMX.google.", ignoreCase = true) && !name.startsWith("c2.android.", ignoreCase = true)
+    private fun supportsVbr(capabilities: CodecCapabilities): Boolean = runCatching {
+        capabilities.encoderCapabilities.isBitrateModeSupported(MediaCodecInfo.EncoderCapabilities.BITRATE_MODE_VBR)
+    }.getOrDefault(false)
 
     private fun selectColorFormat(capabilities: CodecCapabilities): Int {
         val supported = capabilities.colorFormats.toSet()
@@ -340,10 +375,10 @@ class VideoExporter(
         return Pair(alignDown(MAX_SIDE, widthAlignment), alignDown(MAX_SIDE * height / width, heightAlignment))
     }
 
-    private fun computeBitrate(caps: VideoCapabilities, width: Int, height: Int, fps: Int): Int {
-        val target = (width.toLong() * height * fps * BITS_PER_PIXEL)
+    private fun computeBitrate(caps: VideoCapabilities, width: Int, height: Int, fps: Int, format: VideoFormat): Int {
+        val target = (width.toLong() * height * fps * format.bitsPerPixel)
             .toLong()
-            .coerceIn(MIN_BITRATE.toLong(), Int.MAX_VALUE.toLong())
+            .coerceIn(format.minBitrate.toLong(), Int.MAX_VALUE.toLong())
             .toInt()
         return runCatching { caps.bitrateRange.clamp(target) }.getOrDefault(target)
     }
