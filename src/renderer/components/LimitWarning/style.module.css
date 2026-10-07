@@ -13,4 +13,12 @@
   transform: translateX(-50%);
   user-select: none;
   z-index: 9999;
+  pointer-events: none;
+}
+
+@media (orientation: landscape) and (width <=700px),
+(orientation: landscape) and (height <=500px) {
+  .notch {
+    top: 0px;
+  }
 }
