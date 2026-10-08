@@ -472,8 +472,8 @@
   "Framerate used for new projects": "Кадрова честота за новите проекти",
   "Share cameras": "Споделяне на камерите",
   "Expose the cameras so they can be used from other devices": "Предоставя камерите, за да могат да се използват от други устройства",
-  "Keep sharing in background": "Продължаване на споделянето на заден план",
-  "Keep sharing the cameras while the application runs in the background": "Продължава споделянето на камерите, докато приложението работи на заден план",
   "Expose the cameras so they can be used from other devices ({{hostname}}:{{port}}, using {{token}})": "Предоставя камерите, за да могат да се използват от други устройства ({{hostname}}:{{port}}, чрез {{token}})",
-  "Auto": "Авто"
+  "Auto": "Авто",
+  "Automatic rotation": "Автоматично завъртане",
+  "Rotation": "Завъртане"
 }

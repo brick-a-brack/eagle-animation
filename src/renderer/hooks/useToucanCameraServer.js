@@ -52,7 +52,6 @@ function useToucanCameraServer() {
 
   const isSettingsReady = !!settings;
   const expose = !!settings?.TOUCAN_CAMERA_SERVER_EXPOSE;
-  const background = !!settings?.TOUCAN_CAMERA_SERVER_BACKGROUND;
   const isEnabled = TOUCAN_CAMERA_SERVER_AVAILABLE && !settings?.TOUCAN_CAMERA_SERVER_DISABLED;
 
   // Read through a ref so the actions stay stable across renders
@@ -71,7 +70,6 @@ function useToucanCameraServer() {
     try {
       const newConfig = await setToucanCameraServerConfig({
         expose: options.expose ?? current?.expose ?? false,
-        background: options.background ?? current?.background ?? false,
         token: options.token ?? getCurrentToken(),
       });
       setConfig(newConfig);
@@ -131,8 +129,8 @@ function useToucanCameraServer() {
       actionStop();
       return;
     }
-    actionSet({ expose, background });
-  }, [isSettingsReady, isEnabled, expose, background, actionSet, actionStop]);
+    actionSet({ expose });
+  }, [isSettingsReady, isEnabled, expose, actionSet, actionStop]);
 
   return {
     config,

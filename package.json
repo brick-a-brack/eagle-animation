@@ -1,7 +1,7 @@
 {
   "name": "@brick-a-brack/eagle-animation",
   "description": "EagleAnimation is an awesome, modern, free and open-source animation software",
-  "version": "2.18.4",
+  "version": "2.19.0",
   "private": false,
   "author": {
     "name": "Brick à Brack",
@@ -25,6 +25,7 @@
     "start:web": "vite --host",
     "start:web:prod": "vite preview",
     "build:web": "vite build",
+    "build:android": "vite build && node scripts/copy-web-to-android.js",
     "build:unpack": "electron-vite build && electron-builder --dir",
     "build:win": "electron-vite build && electron-builder --win",
     "build:mac": "electron-vite build && electron-builder --mac --universal",

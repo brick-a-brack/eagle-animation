@@ -472,8 +472,8 @@
   "Framerate used for new projects": "Billedhastighed for nye projekter",
   "Share cameras": "Del kameraer",
   "Expose the cameras so they can be used from other devices": "Gør kameraerne tilgængelige, så de kan bruges fra andre enheder",
-  "Keep sharing in background": "Fortsæt deling i baggrunden",
-  "Keep sharing the cameras while the application runs in the background": "Fortsæt med at dele kameraerne, mens applikationen kører i baggrunden",
   "Expose the cameras so they can be used from other devices ({{hostname}}:{{port}}, using {{token}})": "Gør kameraerne tilgængelige, så de kan bruges fra andre enheder ({{hostname}}:{{port}}, med {{token}})",
-  "Auto": "Auto"
+  "Auto": "Auto",
+  "Automatic rotation": "Automatisk rotation",
+  "Rotation": "Rotation"
 }

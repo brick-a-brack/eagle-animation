@@ -6,7 +6,7 @@ import readline from 'node:readline';
 import { spawn } from 'child_process';
 
 // Options the binary is launched with — owned by the renderer through SET_CONFIG.
-let TOUCAN_CAMERA_SERVER_OPTIONS = { expose: false, background: false, token: null };
+let TOUCAN_CAMERA_SERVER_OPTIONS = { expose: false, token: null };
 
 // Runtime values announced by the running server on stdout.
 let TOUCAN_CAMERA_SERVER_RUNTIME = { port: null, token: null };
@@ -42,7 +42,6 @@ const getLanHostname = () => {
 export const getToucanCameraServerConfig = () => ({
   hostname: TOUCAN_CAMERA_SERVER_OPTIONS.expose ? getLanHostname() : '127.0.0.1',
   expose: TOUCAN_CAMERA_SERVER_OPTIONS.expose,
-  background: TOUCAN_CAMERA_SERVER_OPTIONS.background,
   port: TOUCAN_CAMERA_SERVER_RUNTIME.port,
   token: TOUCAN_CAMERA_SERVER_RUNTIME.token,
   secure: false, // the binary serves plain HTTP
@@ -170,8 +169,6 @@ const createServerRunner = () => {
 
     // `--expose` is a presence flag, not a valued one: passing `--expose false`
     // still enables it, so the flag has to be omitted to bind on 127.0.0.1 only.
-    // `background` is not forwarded: it is an Android concern (keeping the camera
-    // service alive) and the desktop binary has no such option.
     const args = [];
     if (TOUCAN_CAMERA_SERVER_OPTIONS.expose) {
       args.push('--expose');
@@ -235,16 +232,14 @@ const createServerRunner = () => {
 /**
  * Applies the sharing options and makes sure a server is running with them:
  *  - expose: bind on 0.0.0.0 (reachable from other devices) instead of 127.0.0.1
- *  - background: Android-only, stored and reported back but unused here
  *  - token: bearer token clients must present; null lets the server generate one
  *
  * The binary reads its options at startup only, so it is restarted when they change.
  * This is also the only entry point that ever launches it. Resolves with the config
  * of the server actually listening.
  */
-export const setToucanCameraServerConfig = async ({ expose = false, background = false, token = null } = {}) => {
-  const options = { expose: !!expose, background: !!background, token: token || null };
-  // `background` never reaches the process, so it alone does not warrant a restart.
+export const setToucanCameraServerConfig = async ({ expose = false, token = null } = {}) => {
+  const options = { expose: !!expose, token: token || null };
   const needsRestart = options.expose !== TOUCAN_CAMERA_SERVER_OPTIONS.expose || options.token !== TOUCAN_CAMERA_SERVER_OPTIONS.token;
   TOUCAN_CAMERA_SERVER_OPTIONS = options;
 

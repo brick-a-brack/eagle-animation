@@ -1,5 +1,5 @@
 import { isBlink } from '@common/isBlink';
-import { DEVICE } from '@config-web';
+import { DEVICE, TOUCAN_CAMERA_SERVER_AVAILABLE } from '@config-web';
 
 import { Camera as DisabledCamera, CameraBrowser as DisabledCameraBrowser } from './Disabled';
 import { Camera as ToucanCameraServerCamera, CameraBrowser as ToucanCameraServerBrowser } from './ToucanCameraServer';
@@ -8,8 +8,8 @@ import { Camera as WebGPhoto2Camera, CameraBrowser as WebGPhoto2CameraBrowser } 
 
 const getCameraModules = (compatibilityMode = false) => [
   { browser: DisabledCameraBrowser, item: DisabledCamera },
-  ...(DEVICE === 'ELECTRON' && !compatibilityMode ? [{ browser: ToucanCameraServerBrowser, item: ToucanCameraServerCamera }] : []),
-  ...(DEVICE !== 'ELECTRON' || compatibilityMode ? [{ browser: WebcamCameraBrowser, item: WebcamCamera }] : []),
+  ...(TOUCAN_CAMERA_SERVER_AVAILABLE && !compatibilityMode ? [{ browser: ToucanCameraServerBrowser, item: ToucanCameraServerCamera }] : []),
+  ...(!TOUCAN_CAMERA_SERVER_AVAILABLE || compatibilityMode ? [{ browser: WebcamCameraBrowser, item: WebcamCamera }] : []),
   ...(DEVICE === 'WEB' && isBlink() ? [{ browser: WebGPhoto2CameraBrowser, item: WebGPhoto2Camera }] : []),
 ];
 
@@ -191,6 +191,17 @@ export const takePicture = async (camera, nbFramesToTake = 1, reverseX = true, r
     if (data) {
       bufferList.push(data);
     }
+  }
+
+  // Android direct-save path: Kotlin handles averaging + flip natively (no image data through Binder)
+  if (bufferList.length > 0 && bufferList[0]._directSaveUrl) {
+    const sentinel = Buffer.from(new ArrayBuffer(0));
+    sentinel.type = 'image/jpeg';
+    sentinel._directSaveUrls = bufferList.map((f) => f._directSaveUrl);
+    sentinel._directSaveAuthorization = bufferList[0]._directSaveAuthorization;
+    sentinel._reverseX = reverseX;
+    sentinel._reverseY = reverseY;
+    return sentinel;
   }
 
   // Output frame

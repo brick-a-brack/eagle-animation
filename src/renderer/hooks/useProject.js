@@ -299,29 +299,44 @@ function useProject(options) {
     [projectId]
   );
 
+  // Action save picture
+  const actionSavePicture = useCallback(
+    async (trackId, blob) => {
+      const sceneId = Number(trackId);
+      const extension = mimeTypeToExtension(blob.type);
+
+      // Save from direct-save URLs (Android)
+      if (blob._directSaveUrls) {
+        return window.EA('SAVE_PICTURE_FROM_URLS', {
+          project_id: projectId,
+          track_id: sceneId,
+          urls: blob._directSaveUrls,
+          authorization: blob._directSaveAuthorization,
+          reverseX: blob._reverseX || false,
+          reverseY: blob._reverseY || false,
+          extension,
+        });
+      }
+
+      // Save from blob (Electron / Web)
+      return window.EA('SAVE_PICTURE', {
+        project_id: projectId,
+        track_id: sceneId,
+        buffer: Buffer.from(blob.buffer),
+        extension,
+      });
+    },
+    [projectId]
+  );
+
   // Action add frame
   const actionAddFrame = useCallback(
     async (trackId, frameBlob, beforeFrameId = false, backgroundBlob = null) => {
-      const frameBuffer = Buffer.from(frameBlob.buffer);
-      const frameExtension = mimeTypeToExtension(frameBlob.type);
       const sceneId = Number(trackId);
-      const addedPicture = await window.EA('SAVE_PICTURE', {
-        project_id: projectId,
-        track_id: sceneId,
-        buffer: frameBuffer,
-        extension: frameExtension,
-      });
-
+      const addedPicture = await actionSavePicture(trackId, frameBlob);
       let backgroundPicture = null;
       if (backgroundBlob) {
-        const backgroundBuffer = Buffer.from(backgroundBlob.buffer);
-        const backgroundExtension = mimeTypeToExtension(backgroundBlob.type);
-        backgroundPicture = await window.EA('SAVE_PICTURE', {
-          project_id: projectId,
-          track_id: sceneId,
-          buffer: backgroundBuffer,
-          extension: backgroundExtension,
-        });
+        backgroundPicture = backgroundBlob;
       }
 
       setProjectData((oldData) => {
@@ -349,7 +364,7 @@ function useProject(options) {
         return d;
       });
     },
-    [projectId]
+    [projectId, actionSavePicture]
   );
 
   // Action Undo
@@ -378,6 +393,7 @@ function useProject(options) {
       rename: actionRename,
       moveFrame: actionMoveFrame,
       addFrame: actionAddFrame,
+      savePicture: actionSavePicture,
       updateFrame: actionUpdateFrame,
       addScene: actionAddScene,
       renameScene: actionRenameScene,

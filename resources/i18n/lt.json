@@ -497,8 +497,8 @@
   "Framerate used for new projects": "Naujiems projektams naudojamas kadrų dažnis",
   "Share cameras": "Bendrinti kameras",
   "Expose the cameras so they can be used from other devices": "Padaro kameras pasiekiamas, kad jas būtų galima naudoti iš kitų įrenginių",
-  "Keep sharing in background": "Tęsti bendrinimą fone",
-  "Keep sharing the cameras while the application runs in the background": "Toliau bendrinti kameras, kol programa veikia fone",
   "Expose the cameras so they can be used from other devices ({{hostname}}:{{port}}, using {{token}})": "Padaro kameras pasiekiamas, kad jas būtų galima naudoti iš kitų įrenginių ({{hostname}}:{{port}}, naudojant {{token}})",
-  "Auto": "Auto"
+  "Auto": "Auto",
+  "Automatic rotation": "Automatinis pasukimas",
+  "Rotation": "Pasukimas"
 }

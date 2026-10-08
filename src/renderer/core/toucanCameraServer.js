@@ -1,7 +1,7 @@
 import { TOUCAN_CAMERA_SERVER_AVAILABLE, TOUCAN_CAMERA_SERVER_URL } from '@config-web';
 import { EA } from '@core/bindings';
 
-// Last known { hostname, expose, background, port, token, secure } of the local camera server.
+// Last known { hostname, shareHostname, expose, port, token, secure } of the local camera server.
 let TOUCAN_CAMERA_SERVER_CONFIG = null;
 
 const parseToucanCameraServerUrlArg = (url, arg = null) => {
@@ -30,12 +30,12 @@ const parseToucanCameraServerUrlArg = (url, arg = null) => {
   return null;
 };
 
-export const setToucanCameraServerConfig = async ({ expose = false, background = false, token = null } = {}) => {
-  TOUCAN_CAMERA_SERVER_CONFIG = await EA('TOUCAN_CAMERA_SERVER_SET_CONFIG', { expose, background, token });
+export const setToucanCameraServerConfig = async ({ expose = false, token = null } = {}) => {
+  TOUCAN_CAMERA_SERVER_CONFIG = await EA('TOUCAN_CAMERA_SERVER_SET_CONFIG', { expose, token });
   return getToucanCameraServerConfig();
 };
 
-const EMPTY_TOUCAN_CAMERA_SERVER_CONFIG = { hostname: null, expose: false, background: false, port: null, token: null, secure: false, url: null };
+const EMPTY_TOUCAN_CAMERA_SERVER_CONFIG = { hostname: null, shareHostname: null, expose: false, port: null, token: null, secure: false, url: null };
 
 export const getToucanCameraServerConfig = () => {
   if (!TOUCAN_CAMERA_SERVER_AVAILABLE) {
@@ -43,8 +43,8 @@ export const getToucanCameraServerConfig = () => {
   }
   const config = {
     hostname: parseToucanCameraServerUrlArg(TOUCAN_CAMERA_SERVER_URL, 'hostname') || TOUCAN_CAMERA_SERVER_CONFIG?.hostname || null,
+    shareHostname: TOUCAN_CAMERA_SERVER_CONFIG?.shareHostname || null,
     expose: TOUCAN_CAMERA_SERVER_CONFIG?.expose || false,
-    background: TOUCAN_CAMERA_SERVER_CONFIG?.background || false,
     port: parseToucanCameraServerUrlArg(TOUCAN_CAMERA_SERVER_URL, 'port') || TOUCAN_CAMERA_SERVER_CONFIG?.port || null,
     token: parseToucanCameraServerUrlArg(TOUCAN_CAMERA_SERVER_URL, 'token') || TOUCAN_CAMERA_SERVER_CONFIG?.token || null,
     secure: parseToucanCameraServerUrlArg(TOUCAN_CAMERA_SERVER_URL, 'secure') || false,

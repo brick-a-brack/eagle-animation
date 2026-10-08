@@ -472,8 +472,8 @@
   "Framerate used for new projects": "Ρυθμός καρέ για τα νέα έργα",
   "Share cameras": "Κοινή χρήση καμερών",
   "Expose the cameras so they can be used from other devices": "Καθιστά τις κάμερες διαθέσιμες ώστε να μπορούν να χρησιμοποιηθούν από άλλες συσκευές",
-  "Keep sharing in background": "Συνέχιση κοινής χρήσης στο παρασκήνιο",
-  "Keep sharing the cameras while the application runs in the background": "Συνέχιση της κοινής χρήσης των καμερών όσο η εφαρμογή εκτελείται στο παρασκήνιο",
   "Expose the cameras so they can be used from other devices ({{hostname}}:{{port}}, using {{token}})": "Καθιστά τις κάμερες διαθέσιμες ώστε να μπορούν να χρησιμοποιηθούν από άλλες συσκευές ({{hostname}}:{{port}}, με {{token}})",
-  "Auto": "Αυτόμ."
+  "Auto": "Αυτόμ.",
+  "Automatic rotation": "Αυτόματη περιστροφή",
+  "Rotation": "Περιστροφή"
 }

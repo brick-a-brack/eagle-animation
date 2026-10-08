@@ -25,6 +25,7 @@ import faLightbulbOn from '@icons/faLightbulbOn';
 import faMagnifyingGlass from '@icons/faMagnifyingGlass';
 import faMobileSignalOut from '@icons/faMobileSignalOut';
 import faQuestion from '@icons/faQuestion';
+import faRotate from '@icons/faRotate';
 import faShutterSpeed from '@icons/faShutterSpeed';
 import faSun from '@icons/faSun';
 import faTemperatureHalf from '@icons/faTemperatureHalf';
@@ -76,6 +77,11 @@ const getCapabilitiesTabs = (capabilities, t = (v) => v) => {
       title: t('Quality'),
       properties: ['video_stream_format', 'photo_resolution', 'image_quality', 'power_line_frequency'],
       icon: faFilm,
+    },
+    {
+      title: t('Rotation'),
+      properties: ['rotate_auto', 'rotation'],
+      icon: faRotate,
     },
     {
       title: t('Brightness'),
@@ -163,6 +169,7 @@ const getCapabilitiesTabs = (capabilities, t = (v) => v) => {
 
 // Capabilities that should be merged into a single row, as `[booleanId, controlId]`
 const CAPABILITY_GROUPS = [
+  ['rotation_auto', 'rotation'],
   ['brightness_auto', 'brightness'],
   ['contrast_auto', 'contrast'],
   ['saturation_auto', 'saturation'],

@@ -479,8 +479,8 @@
   "Framerate used for new projects": "Частота кадров для новых проектов",
   "Share cameras": "Делиться камерами",
   "Expose the cameras so they can be used from other devices": "Открывает доступ к камерам, чтобы их можно было использовать с других устройств",
-  "Keep sharing in background": "Продолжать доступ в фоновом режиме",
-  "Keep sharing the cameras while the application runs in the background": "Продолжать делиться камерами, пока приложение работает в фоновом режиме",
   "Expose the cameras so they can be used from other devices ({{hostname}}:{{port}}, using {{token}})": "Открывает доступ к камерам, чтобы их можно было использовать с других устройств ({{hostname}}:{{port}}, с {{token}})",
-  "Auto": "Авто"
+  "Auto": "Авто",
+  "Automatic rotation": "Автоматический поворот",
+  "Rotation": "Поворот"
 }

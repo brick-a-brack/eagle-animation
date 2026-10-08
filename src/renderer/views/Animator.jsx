@@ -331,7 +331,7 @@ const Animator = ({ t }) => {
           if (pendingBackgroundFrame || maskingMode === 'DISABLED') {
             await projectActions.addFrame(track, frame, isPlaying ? false : currentFrameId, pendingBackgroundFrame || null);
           } else if (maskingMode === 'UNIQUE' || !pendingBackgroundFrame) {
-            setPendingBackgroundFrame(frame);
+            setPendingBackgroundFrame(await projectActions.savePicture(track, frame));
           }
 
           // Clean background

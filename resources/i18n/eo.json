@@ -486,8 +486,8 @@
   "Framerate used for new projects": "Bildoj je sekundo por novaj projektoj",
   "Share cameras": "Kunhavigi kameraojn",
   "Expose the cameras so they can be used from other devices": "Disponebligas la kameraojn por ke ili estu uzeblaj de aliaj aparatoj",
-  "Keep sharing in background": "Daŭrigi kunhavigon fone",
-  "Keep sharing the cameras while the application runs in the background": "Daŭrigi la kunhavigon de la kameraoj dum la aplikaĵo funkcias fone",
   "Expose the cameras so they can be used from other devices ({{hostname}}:{{port}}, using {{token}})": "Disponebligas la kameraojn por ke ili estu uzeblaj de aliaj aparatoj ({{hostname}}:{{port}}, uzante {{token}})",
-  "Auto": "Aŭto"
+  "Auto": "Aŭto",
+  "Automatic rotation": "Aŭtomata turno",
+  "Rotation": "Turno"
 }

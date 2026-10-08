@@ -28,7 +28,6 @@ const DEFAULT_SETTINGS = {
   EVENT_API: PARTNER_API,
   TOUCAN_CAMERA_SERVER_DISABLED: false,
   TOUCAN_CAMERA_SERVER_EXPOSE: false,
-  TOUCAN_CAMERA_SERVER_BACKGROUND: false,
   TELEMETRY_ENABLED: true,
   TOURS_COMPLETED: [], // Keys of the guided tours the user has already seen
 };
@@ -39,6 +38,10 @@ const DEFAULT_SETTINGS = {
 // at mount and silently went stale.
 let CURRENT_SETTINGS = null;
 let SETTINGS_LISTENERS = [];
+
+// setSettings is a read-modify-write: two overlapping calls would start from the
+// same state, the later one silently dropping the change made by the other.
+let SETTINGS_WRITE_QUEUE = Promise.resolve();
 
 const broadcastSettings = (settings) => {
   CURRENT_SETTINGS = settings;
@@ -71,25 +74,29 @@ function useSettings() {
   }, []);
 
   // Set action
-  const actionSetSettings = useCallback(async (newSettings) => {
-    // Compute settings object
-    const definedSettings = await window.EA('GET_SETTINGS');
-    let computedNewSettings = {
-      ...DEFAULT_SETTINGS,
-      ...definedSettings,
-      ...newSettings,
-    };
-    if (computedNewSettings.GRID_MODES.length === 0) {
-      computedNewSettings.GRID_MODES = ['GRID'];
-    }
+  const actionSetSettings = useCallback((newSettings) => {
+    SETTINGS_WRITE_QUEUE = SETTINGS_WRITE_QUEUE.catch(() => {}).then(async () => {
+      // Build on the in-memory value, kept up to date by every write: re-reading the
+      // store would turn a momentary read failure into a save of the defaults.
+      const definedSettings = CURRENT_SETTINGS || (await window.EA('GET_SETTINGS'));
+      let computedNewSettings = {
+        ...DEFAULT_SETTINGS,
+        ...definedSettings,
+        ...newSettings,
+      };
+      if (computedNewSettings.GRID_MODES.length === 0) {
+        computedNewSettings.GRID_MODES = ['GRID'];
+      }
 
-    // Update language
-    if (computedNewSettings.LANGUAGE) {
-      setLanguage(computedNewSettings.LANGUAGE);
-    }
+      // Update language
+      if (computedNewSettings.LANGUAGE) {
+        setLanguage(computedNewSettings.LANGUAGE);
+      }
 
-    broadcastSettings(computedNewSettings);
-    await window.EA('SAVE_SETTINGS', { settings: computedNewSettings });
+      broadcastSettings(computedNewSettings);
+      await window.EA('SAVE_SETTINGS', { settings: computedNewSettings });
+    });
+    return SETTINGS_WRITE_QUEUE;
   }, []);
 
   return {

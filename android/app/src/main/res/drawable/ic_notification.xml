@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Notification small icon: the same eagle head as ic_launcher_foreground, from
+    logo/icon.svg with the original path data untouched.
+
+    A separate drawable rather than a reuse of the launcher foreground: the status
+    bar masks a small icon down to its alpha channel on a 24dp canvas, so the glyph
+    has to fill that canvas. The launcher foreground only covers 58 of its 108dp
+    (adaptive icons need that safe margin), which would show up as a visibly tiny
+    bird.
+
+    The nested groups map the SVG viewBox (170.93 x 159.72, path translate folded
+    into the 415.03377 / 373.278 offset) into a 22 x 20.55 box centered in 24x24.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <group
+        android:translateX="1"
+        android:translateY="1.725">
+        <group
+            android:scaleX="0.128707"
+            android:scaleY="0.128707">
+            <group
+                android:translateX="-415.03377"
+                android:translateY="-373.278">
+                <path
+                    android:fillColor="#FFFFFF"
+                    android:pathData="M499.659,373.279a84.971,84.971,0,0,0-82.537,62.768,32.876,32.876,0,0,0-.71,14.368c1.121,6.228,4.937,10.18,12.634,6.213a18.766,18.766,0,0,0,5.027-3.892c16.29-17.336,48.59-20.412,63.548-2.734,11.842,3.862,37.075,12.877,24.478,30.633-3.407-8.09-6.659-8.064-13.5-7.792a33.792,33.792,0,0,0-22.132,9.219c-14.308,13.769-8.289,32.047,9.786,42.941,22,13.259,50.375,8.155,67.17-11.277a84.938,84.938,0,0,0-63.766-140.447Z" />
+            </group>
+        </group>
+    </group>
+</vector>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <!--
+      The Toucan Camera Server serves plain HTTP, both the local one (127.0.0.1) and
+      the remote ones this app pairs with, which sit on arbitrary addresses of the
+      local network. There is no way to express "the local network" here, so cleartext
+      stays permitted and HTTPS is still used wherever the app talks to the internet.
+    -->
+    <base-config cleartextTrafficPermitted="true" />
+</network-security-config>

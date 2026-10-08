@@ -10,7 +10,7 @@ import Input from '@components/Input';
 import NumberInput from '@components/NumberInput';
 import Select from '@components/Select';
 import Switch from '@components/Switch';
-import { DEVICE, LANGUAGES } from '@config-web';
+import { TOUCAN_CAMERA_SERVER_AVAILABLE, LANGUAGES } from '@config-web';
 import { formatFileSize } from '@core/format';
 import useAppCapabilities from '@hooks/useAppCapabilities';
 import useAppVersion from '@hooks/useAppVersion';
@@ -132,7 +132,7 @@ const SettingsForm = ({ settings = {}, onUpdate = () => {}, t }) => {
             <Switch register={register('SOUNDS')} />
           </div>
         </FormGroup>
-        {['ELECTRON', 'ANDROID'].includes(DEVICE) && (
+        {TOUCAN_CAMERA_SERVER_AVAILABLE && (
           <>
             <FormGroup label={t('Use camera compatibility mode')} description={t('Disables DSLR and remote cameras, may limit available camera settings')}>
               <div>
@@ -144,7 +144,7 @@ const SettingsForm = ({ settings = {}, onUpdate = () => {}, t }) => {
               description={
                 toucanCameraServerConfig?.expose && toucanCameraServerConfig?.port
                   ? t('Expose the cameras so they can be used from other devices ({{hostname}}:{{port}}, using {{token}})', {
-                      hostname: toucanCameraServerConfig.hostname,
+                      hostname: toucanCameraServerConfig.shareHostname || toucanCameraServerConfig.hostname,
                       port: toucanCameraServerConfig.port,
                       token: toucanCameraServerConfig.token,
                     })
@@ -155,13 +155,6 @@ const SettingsForm = ({ settings = {}, onUpdate = () => {}, t }) => {
                 <Switch register={register('TOUCAN_CAMERA_SERVER_EXPOSE')} disabled={watch('TOUCAN_CAMERA_SERVER_DISABLED')} />
               </div>
             </FormGroup>
-            {appCapabilities.includes('TOUCAN_CAMERA_SERVER_BACKGROUND') && (
-              <FormGroup label={t('Keep sharing in background')} description={t('Keep sharing the cameras while the application runs in the background')}>
-                <div>
-                  <Switch register={register('TOUCAN_CAMERA_SERVER_BACKGROUND')} disabled={!watch('TOUCAN_CAMERA_SERVER_EXPOSE') || watch('TOUCAN_CAMERA_SERVER_DISABLED')} />
-                </div>
-              </FormGroup>
-            )}
           </>
         )}
 

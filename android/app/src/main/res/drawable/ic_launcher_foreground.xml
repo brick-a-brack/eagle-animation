@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Eagle head from logo/icon.svg, kept as the original path data.
+    The nested groups map the SVG viewBox (170.93 x 159.72 at offset 192.52,0,
+    with the path's own translate) into a 58x58 box inside the 108x108
+    adaptive icon canvas, centered.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <group
+        android:translateX="25"
+        android:translateY="26.90253">
+        <group
+            android:scaleX="0.33931648"
+            android:scaleY="0.33931648">
+            <group
+                android:translateX="-415.03377"
+                android:translateY="-373.278">
+                <path
+                    android:fillColor="#FFFFFF"
+                    android:pathData="M499.659,373.279a84.971,84.971,0,0,0-82.537,62.768,32.876,32.876,0,0,0-.71,14.368c1.121,6.228,4.937,10.18,12.634,6.213a18.766,18.766,0,0,0,5.027-3.892c16.29-17.336,48.59-20.412,63.548-2.734,11.842,3.862,37.075,12.877,24.478,30.633-3.407-8.09-6.659-8.064-13.5-7.792a33.792,33.792,0,0,0-22.132,9.219c-14.308,13.769-8.289,32.047,9.786,42.941,22,13.259,50.375,8.155,67.17-11.277a84.938,84.938,0,0,0-63.766-140.447Z" />
+            </group>
+        </group>
+    </group>
+</vector>

@@ -1,4 +1,4 @@
-import { readFile, writeFile } from 'node:fs/promises';
+import { readFile, rename, writeFile } from 'node:fs/promises';
 import { format } from 'node:path';
 
 import { DEFAULT_FPS } from '../../config';
@@ -31,15 +31,24 @@ export const getSettings = async (path) => {
   }
 };
 
+let settingsQueue = Promise.resolve();
+
 // Settings save
-export const saveSettings = async (path, data) => {
-  try {
-    const file = format({ dir: path, base: 'settings.json' });
-    await writeFile(file, JSON.stringify({ ...data }));
-    return { ...defaultSettings, ...(data || {}) };
-  } catch (e) {
-    return defaultSettings;
-  }
+export const saveSettings = (path, data) => {
+  settingsQueue = settingsQueue
+    .catch(() => {})
+    .then(async () => {
+      try {
+        const file = format({ dir: path, base: 'settings.json' });
+        const temporaryFile = format({ dir: path, base: 'settings.json.tmp' });
+        await writeFile(temporaryFile, JSON.stringify({ ...data }));
+        await rename(temporaryFile, file);
+        return { ...defaultSettings, ...(data || {}) };
+      } catch (e) {
+        return defaultSettings;
+      }
+    });
+  return settingsQueue;
 };
 
 const getCameraSettingsFile = (path) => format({ dir: path, base: 'camera-settings.json' });
@@ -65,7 +74,9 @@ export const saveCameraSettings = (path, cameraId, settings) => {
     .catch(() => {})
     .then(async () => {
       const allSettings = await getAllCameraSettings(path);
-      await writeFile(getCameraSettingsFile(path), JSON.stringify({ ...allSettings, [cameraId]: settings || {} }));
+      const temporaryFile = `${getCameraSettingsFile(path)}.tmp`;
+      await writeFile(temporaryFile, JSON.stringify({ ...allSettings, [cameraId]: settings || {} }));
+      await rename(temporaryFile, getCameraSettingsFile(path));
       return settings || {};
     });
   return cameraSettingsQueue;

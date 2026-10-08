@@ -139,6 +139,7 @@ export const getCapabilityLabel = (id, t) => {
     shutter_speed_auto: t('Automatic shutter speed'),
     aperture_auto: t('Automatic aperture'),
     aperture: t('Aperture'),
+    rotate_auto: t('Automatic rotation'),
   };
   return map?.[properId] || id || t('Unknown');
 };

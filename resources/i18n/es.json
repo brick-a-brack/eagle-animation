@@ -489,8 +489,8 @@
   "Framerate used for new projects": "Velocidad de fotogramas para los nuevos proyectos",
   "Share cameras": "Compartir cámaras",
   "Expose the cameras so they can be used from other devices": "Expone las cámaras para que puedan usarse desde otros dispositivos",
-  "Keep sharing in background": "Seguir compartiendo en segundo plano",
-  "Keep sharing the cameras while the application runs in the background": "Seguir compartiendo las cámaras mientras la aplicación se ejecuta en segundo plano",
   "Expose the cameras so they can be used from other devices ({{hostname}}:{{port}}, using {{token}})": "Expone las cámaras para que puedan usarse desde otros dispositivos ({{hostname}}:{{port}}, usando {{token}})",
-  "Auto": "Auto"
+  "Auto": "Auto",
+  "Automatic rotation": "Rotación automática",
+  "Rotation": "Rotación"
 }
