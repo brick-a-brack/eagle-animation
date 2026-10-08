@@ -19,7 +19,11 @@
 .isEditable {
   cursor: none;
   pointer-events: all;
-  touch-action: auto;
+
+  /* The canvas owns every gesture here: left to the browser, a drag pans the
+     page instead of painting, and a long press pops a selection menu */
+  touch-action: none;
+  user-select: none;
 }
 
 .error {
