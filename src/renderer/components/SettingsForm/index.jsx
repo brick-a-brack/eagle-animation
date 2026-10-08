@@ -10,7 +10,7 @@ import Input from '@components/Input';
 import NumberInput from '@components/NumberInput';
 import Select from '@components/Select';
 import Switch from '@components/Switch';
-import { DEVICE, LANGUAGES } from '@config-web';
+import { TOUCAN_CAMERA_SERVER_AVAILABLE, LANGUAGES } from '@config-web';
 import { formatFileSize } from '@core/format';
 import useAppCapabilities from '@hooks/useAppCapabilities';
 import useAppVersion from '@hooks/useAppVersion';
@@ -132,7 +132,7 @@ const SettingsForm = ({ settings = {}, onUpdate = () => {}, t }) => {
             <Switch register={register('SOUNDS')} />
           </div>
         </FormGroup>
-        {['ELECTRON', 'ANDROID'].includes(DEVICE) && (
+        {TOUCAN_CAMERA_SERVER_AVAILABLE && (
           <>
             <FormGroup label={t('Use camera compatibility mode')} description={t('Disables DSLR and remote cameras, may limit available camera settings')}>
               <div>
