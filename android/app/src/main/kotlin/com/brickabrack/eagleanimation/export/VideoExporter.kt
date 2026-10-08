@@ -89,11 +89,13 @@ class VideoExporter(
     fun export(
         frames: List<FrameEntry>,
         fps: Int,
+        outputFps: Int,
         targetWidth: Int?,
         targetHeight: Int?,
         format: VideoFormat = VideoFormat.H264,
     ): String {
         require(frames.isNotEmpty()) { "No frames to export" }
+        require(fps > 0 && outputFps >= fps) { "Invalid framerates: $fps -> $outputFps" }
 
         val firstFile = frameFile(frames[0])
         val bounds = BitmapFactory.Options().apply { inJustDecodeBounds = true }
@@ -104,18 +106,18 @@ class VideoExporter(
         val capabilities = encoder.getCapabilitiesForType(format.mime)
         val videoCapabilities = capabilities.videoCapabilities
         val (width, height) = fitToEncoder(videoCapabilities, requestedWidth, requestedHeight)
-        val bitrate = computeBitrate(videoCapabilities, width, height, fps, format)
+        val bitrate = computeBitrate(videoCapabilities, width, height, outputFps, format)
         val colorFormat = selectColorFormat(capabilities)
         Log.d(
             TAG,
-            "export: ${frames.size} frames -> ${width}x${height} @ ${fps}fps, ${bitrate / 1_000_000}Mbps ${format.key}" +
+            "export: ${frames.size} frames @ ${fps}fps -> ${width}x${height} @ ${outputFps}fps, ${bitrate / 1_000_000}Mbps ${format.key}" +
                 " (requested ${requestedWidth}x${requestedHeight}, encoder=${encoder.name}, color=$colorFormat)"
         )
 
         val mediaFormat = MediaFormat.createVideoFormat(format.mime, width, height).apply {
             setInteger(MediaFormat.KEY_COLOR_FORMAT, colorFormat)
             setInteger(MediaFormat.KEY_BIT_RATE, bitrate)
-            setInteger(MediaFormat.KEY_FRAME_RATE, fps)
+            setInteger(MediaFormat.KEY_FRAME_RATE, outputFps)
             setInteger(MediaFormat.KEY_I_FRAME_INTERVAL, I_FRAME_INTERVAL)
             // Rate control was left implicit until now. Ask for VBR so a busy frame
             // may borrow bits instead of being held to a constant rate — but only
@@ -154,7 +156,13 @@ class VideoExporter(
         var trackIndex = -1
         var muxerStarted = false
         val info = MediaCodec.BufferInfo()
-        val frameDurationUs = 1_000_000L / fps
+        val frameDurationUs = 1_000_000L / outputFps
+
+        // MediaCodec encodes the timestamps it is given, it never resamples. A source
+        // frame lasts 1/fps, so at a higher output rate it spans several samples and
+        // has to be repeated — otherwise the animation would simply play faster.
+        fun sampleAt(frameIndex: Int): Int = Math.round(frameIndex.toDouble() * outputFps / fps).toInt()
+        val totalSamples = sampleAt(frames.size)
 
         fun drain(endOfStream: Boolean = false) {
             var retries = 0
@@ -186,43 +194,51 @@ class VideoExporter(
         // Reused across frames: at full resolution this array is tens of megabytes
         val pixels = IntArray(width * height)
 
+        // Queues one sample out of the pixels already unpacked above, waiting for a
+        // free input buffer instead of skipping it: at high resolution the encoder is
+        // slower than the decode loop, and silently dropped frames shortened and
+        // stuttered the video.
+        fun queueSample(sampleIndex: Int, label: String) {
+            var attempts = 0
+            while (true) {
+                val inputIdx = codec.dequeueInputBuffer(TIMEOUT_US)
+                if (inputIdx >= 0) {
+                    val image = codec.getInputImage(inputIdx)
+                    if (image != null) {
+                        fillImage(image, width, height, pixels)
+                    } else {
+                        fillBuffer(codec.getInputBuffer(inputIdx)!!, width, height, stride, sliceHeight, colorFormat, pixels)
+                    }
+                    codec.queueInputBuffer(inputIdx, 0, frameSize, sampleIndex * frameDurationUs, 0)
+                    return
+                }
+                if (attempts++ > MAX_INPUT_RETRIES) {
+                    Log.w(TAG, "No input buffer for $label, dropping it")
+                    return
+                }
+                drain()
+            }
+        }
+
         try {
             for ((i, frame) in frames.withIndex()) {
                 val bitmap = loadFrame(frameFile(frame), width, height)
-                val pts = i * frameDurationUs
+                // Unpacked once per source frame, then reused for each of its samples
+                bitmap.getPixels(pixels, 0, width, 0, 0, width, height)
+                bitmap.recycle()
 
-                // Wait for a free input buffer instead of skipping the frame: at
-                // high resolution the encoder is slower than the decode loop, and
-                // silently dropped frames shortened and stuttered the video.
-                var attempts = 0
-                while (true) {
-                    val inputIdx = codec.dequeueInputBuffer(TIMEOUT_US)
-                    if (inputIdx >= 0) {
-                        val image = codec.getInputImage(inputIdx)
-                        if (image != null) {
-                            fillImage(image, bitmap, width, height, pixels)
-                        } else {
-                            fillBuffer(codec.getInputBuffer(inputIdx)!!, bitmap, width, height, stride, sliceHeight, colorFormat, pixels)
-                        }
-                        codec.queueInputBuffer(inputIdx, 0, frameSize, pts, 0)
-                        break
-                    }
-                    if (attempts++ > MAX_INPUT_RETRIES) {
-                        Log.w(TAG, "No input buffer for frame $i, dropping it")
-                        break
-                    }
+                for (sample in sampleAt(i) until sampleAt(i + 1)) {
+                    queueSample(sample, "frame $i (sample $sample)")
                     drain()
                 }
 
-                bitmap.recycle()
-                drain()
                 sendEvent("FFMPEG_PROGRESS", JSONObject().put("progress", (i + 1).toDouble() / frames.size))
             }
 
             // Signal end of stream
             val eosIdx = codec.dequeueInputBuffer(TIMEOUT_US)
             if (eosIdx >= 0) {
-                codec.queueInputBuffer(eosIdx, 0, 0, frames.size * frameDurationUs, MediaCodec.BUFFER_FLAG_END_OF_STREAM)
+                codec.queueInputBuffer(eosIdx, 0, 0, totalSamples * frameDurationUs, MediaCodec.BUFFER_FLAG_END_OF_STREAM)
             }
             drain(endOfStream = true)
         } finally {
@@ -242,9 +258,7 @@ class VideoExporter(
 
     // Each plane announces its own row and pixel stride, which covers both NV12
     // (interleaved chroma, pixelStride 2) and I420 through a single path.
-    private fun fillImage(image: Image, bitmap: Bitmap, w: Int, h: Int, pixels: IntArray) {
-        bitmap.getPixels(pixels, 0, w, 0, 0, w, h)
-
+    private fun fillImage(image: Image, w: Int, h: Int, pixels: IntArray) {
         val yPlane = image.planes[0]
         val yBuffer = yPlane.buffer
         for (row in 0 until h) {
@@ -276,8 +290,7 @@ class VideoExporter(
 
     // Fallback for encoders that expose no Image view: write the planes by hand,
     // still honouring the stride and slice height.
-    private fun fillBuffer(buf: ByteBuffer, bitmap: Bitmap, w: Int, h: Int, stride: Int, sliceHeight: Int, colorFormat: Int, pixels: IntArray) {
-        bitmap.getPixels(pixels, 0, w, 0, 0, w, h)
+    private fun fillBuffer(buf: ByteBuffer, w: Int, h: Int, stride: Int, sliceHeight: Int, colorFormat: Int, pixels: IntArray) {
         buf.clear()
 
         for (row in 0 until h) {

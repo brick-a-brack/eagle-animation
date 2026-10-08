@@ -198,10 +198,13 @@ class ActionDispatcher(
             }
             if (frames.isEmpty()) return@dispatch null
 
-            val fps = if (data.optBoolean("custom_output_framerate", false))
-                data.optInt("custom_output_framerate_number", 10)
+            // Two distinct rates: the animation plays at `framerate`, while the custom
+            // output framerate only changes the rate of the video file itself.
+            val animationFps = data.optInt("framerate", 12).coerceAtLeast(1)
+            val outputFps = if (data.optBoolean("custom_output_framerate", false))
+                data.optInt("custom_output_framerate_number", animationFps).coerceAtLeast(animationFps)
             else
-                data.optInt("framerate", 12)
+                animationFps
 
             val format = VideoExporter.formatOf(data.optString("format"))
             val resolution = data.optJSONObject("export_resolution")
@@ -211,7 +214,7 @@ class ActionDispatcher(
             val exporter = VideoExporter(context, projectStorage.projectsDir, exportBuffers, onEvent)
             val uri = try {
                 withContext(Dispatchers.IO) {
-                    exporter.export(frames, fps.coerceAtLeast(1), targetW, targetH, format)
+                    exporter.export(frames, animationFps, outputFps, targetW, targetH, format)
                 }
             } finally {
                 withContext(Dispatchers.IO) { exportBuffers.clear() }
