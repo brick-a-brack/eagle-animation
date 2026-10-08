@@ -5,6 +5,9 @@ import React, { Component } from 'react';
 
 import * as style from './style.module.css';
 
+// High enough that a re-encode of an already compressed capture stays invisible
+const FRAME_JPEG_QUALITY = 0.92;
+
 class MaskingEditor extends Component {
   constructor(props) {
     super(props);
@@ -402,7 +405,7 @@ class MaskingEditor extends Component {
       layers: {
         transparent: await new Promise((resolve) => this.images.transparent.toBlob(resolve, 'image/png')),
       },
-      frame: await new Promise((resolve) => this.images.render.toBlob(resolve, 'image/png')),
+      frame: await new Promise((resolve) => this.images.render.toBlob(resolve, 'image/jpeg', FRAME_JPEG_QUALITY)),
     };
   }
 
