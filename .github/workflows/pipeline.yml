@@ -38,11 +38,8 @@ jobs:
           packages: flatpak flatpak-builder rpm
           version: 1.0
 
-      # Replace by npm ci when it will be fixed
       - name: Install dependencies
-        run: |
-          rm package-lock.json
-          npm i --force
+        run: npm i --force
 
       - name: Install dependencies (Sharp for Linux)
         if: ${{ (matrix.versions.os == 'ubuntu-latest') && (matrix.versions.type == 'app') }}
