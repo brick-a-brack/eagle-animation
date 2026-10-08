@@ -77,6 +77,9 @@ object ToucanCameraServer {
         val useService = expose && hasCameraPermission(context)
 
         if (useService) {
+            // The service watches the orientation itself, so the app's own watcher
+            // has to go first or the two would fight over the native value.
+            DeviceOrientationWatcher.stop()
             startAsService(context)
         } else {
             // Running in the service: stopping it releases the native server too, so
@@ -85,6 +88,7 @@ object ToucanCameraServer {
                 stopService(context)
             }
             startInProcess()
+            DeviceOrientationWatcher.start(context)
         }
 
         return getConfig()
@@ -145,6 +149,7 @@ object ToucanCameraServer {
         } else {
             stopInProcess()
         }
+        DeviceOrientationWatcher.stop()
         return getConfig()
     }
 
@@ -162,6 +167,7 @@ object ToucanCameraServer {
             Log.d(TAG, "Activity finishing, stopping the in-process camera server")
             CameraServerService.stopServer()
         }
+        DeviceOrientationWatcher.stop()
     }
 
     private suspend fun startInProcess() = withContext(Dispatchers.IO) {

@@ -473,5 +473,7 @@
   "Share cameras": "Del kameraer",
   "Expose the cameras so they can be used from other devices": "Gør kameraerne tilgængelige, så de kan bruges fra andre enheder",
   "Expose the cameras so they can be used from other devices ({{hostname}}:{{port}}, using {{token}})": "Gør kameraerne tilgængelige, så de kan bruges fra andre enheder ({{hostname}}:{{port}}, med {{token}})",
-  "Auto": "Auto"
+  "Auto": "Auto",
+  "Automatic rotation": "Automatisk rotation",
+  "Rotation": "Rotation"
 }

@@ -477,5 +477,7 @@
   "Share cameras": "Partajează camerele",
   "Expose the cameras so they can be used from other devices": "Expune camerele pentru a putea fi folosite de pe alte dispozitive",
   "Expose the cameras so they can be used from other devices ({{hostname}}:{{port}}, using {{token}})": "Expune camerele pentru a putea fi folosite de pe alte dispozitive ({{hostname}}:{{port}}, folosind {{token}})",
-  "Auto": "Auto"
+  "Auto": "Auto",
+  "Automatic rotation": "Rotire automată",
+  "Rotation": "Rotire"
 }

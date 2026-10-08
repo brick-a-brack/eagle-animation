@@ -473,5 +473,7 @@
   "Share cameras": "Kamerák megosztása",
   "Expose the cameras so they can be used from other devices": "Elérhetővé teszi a kamerákat, hogy más eszközökről is használhatók legyenek",
   "Expose the cameras so they can be used from other devices ({{hostname}}:{{port}}, using {{token}})": "Elérhetővé teszi a kamerákat, hogy más eszközökről is használhatók legyenek ({{hostname}}:{{port}}, ezzel: {{token}})",
-  "Auto": "Auto"
+  "Auto": "Auto",
+  "Automatic rotation": "Automatikus elfordulás",
+  "Rotation": "Elfordulás"
 }

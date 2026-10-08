@@ -496,5 +496,7 @@
   "Share cameras": "Partager les caméras",
   "Expose the cameras so they can be used from other devices": "Expose les caméras pour qu'elles soient utilisables depuis d'autres appareils",
   "Expose the cameras so they can be used from other devices ({{hostname}}:{{port}}, using {{token}})": "Expose les caméras pour qu'elles soient utilisables depuis d'autres appareils ({{hostname}}:{{port}}, avec {{token}})",
-  "Auto": "Auto"
+  "Auto": "Auto",
+  "Automatic rotation": "Rotation automatique",
+  "Rotation": "Rotation"
 }
