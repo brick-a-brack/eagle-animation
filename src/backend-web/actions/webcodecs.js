@@ -15,7 +15,7 @@ export const isWebCodecsAvailable = async (format) => {
   return canEncodeVideo(WEBCODECS_PROFILES[format].codec);
 };
 
-export const exportWithWebCodecs = async (frames, format, fps, onProgress) => {
+export const exportWithWebCodecs = async (frames, format, fps, outputFps, onProgress) => {
   const profile = WEBCODECS_PROFILES[format];
 
   const target = new BufferTarget();
@@ -32,20 +32,29 @@ export const exportWithWebCodecs = async (frames, format, fps, onProgress) => {
   output.addVideoTrack(source);
   await output.start();
 
-  const frameDuration = 1 / fps;
+  const frameDuration = 1 / outputFps;
+
+  // The encoder keeps the timestamps it is given, it never resamples. A source frame
+  // lasts 1/fps, so at a higher output rate it spans several samples and has to be
+  // repeated — otherwise the animation would simply play faster.
+  const sampleAt = (frameIndex) => Math.round((frameIndex * outputFps) / fps);
 
   for (let i = 0; i < frames.length; i++) {
     const blob = new Blob([frames[i].buffer], { type: 'image/jpeg' });
     const bitmap = await createImageBitmap(blob);
 
-    const sample = new VideoSample(bitmap, {
-      timestamp: i * frameDuration,
-      duration: frameDuration,
-    });
-    bitmap.close();
+    for (let index = sampleAt(i); index < sampleAt(i + 1); index++) {
+      const sample = new VideoSample(bitmap, {
+        timestamp: index * frameDuration,
+        duration: frameDuration,
+      });
 
-    await source.add(sample);
-    sample.close();
+      await source.add(sample);
+      sample.close();
+    }
+
+    // Closed only once every sample drawn from it has been encoded
+    bitmap.close();
 
     onProgress((i + 1) / frames.length);
   }

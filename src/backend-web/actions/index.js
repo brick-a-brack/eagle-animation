@@ -278,7 +278,10 @@ export const Actions = {
     }
 
     if (mode === 'video') {
-      const fps = custom_output_framerate ? custom_output_framerate_number : project.project.scenes[trackId].framerate;
+      // Two distinct rates: the animation plays at the scene framerate, while the
+      // custom output framerate only changes the rate of the video file itself.
+      const animationFps = project.project.scenes[trackId].framerate;
+      const outputFps = custom_output_framerate && custom_output_framerate_number ? Math.max(animationFps, Number(custom_output_framerate_number)) : animationFps;
       const useWebCodecs = await isWebCodecsAvailable(format);
 
       if (useWebCodecs) {
@@ -288,7 +291,7 @@ export const Actions = {
           frameBuffers.push({ buffer });
         }
 
-        const result = await exportWithWebCodecs(frameBuffers, format, fps, (progress) => {
+        const result = await exportWithWebCodecs(frameBuffers, format, animationFps, outputFps, (progress) => {
           sendEvent('FFMPEG_PROGRESS', { progress });
         });
 
