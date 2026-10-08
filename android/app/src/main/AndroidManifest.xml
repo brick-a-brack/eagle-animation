@@ -29,9 +29,13 @@
             </intent-filter>
         </activity>
 
+        <!-- stopWithTask: swiping the app away from the recents is an explicit close,
+             so the service must go down with the task. Without it a started foreground
+             service keeps the process - and the camera - alive with no window left. -->
         <service
             android:name="com.brickfilms.toucancameraserver.CameraServerService"
             android:foregroundServiceType="camera"
+            android:stopWithTask="true"
             android:exported="false" />
 
     </application>
