@@ -1,6 +1,9 @@
 import { DEVICE } from '@config-web';
 import { getToucanCameraServerConfig, getToucanCameraServerHeaders, getToucanCameraServerUrl } from '@core/toucanCameraServer';
 
+// Maximum frames the server accepts for averaging a single capture
+const MAX_AVERAGING_FRAMES = 20;
+
 const CONNECT_MAX_ATTEMPTS = 50;
 const CONNECT_RETRY_DELAY = 100;
 
@@ -13,6 +16,11 @@ class ToucanCameraServer {
 
   get id() {
     return this?.deviceId || null;
+  }
+
+  // The server bursts and averages the frames itself, no need to merge them in JS
+  get supportsFrameAveraging() {
+    return true;
   }
 
   async applyCapability(key, value) {
@@ -108,7 +116,9 @@ class ToucanCameraServer {
     return true;
   }
 
-  async takePicture() {
+  async takePicture(nbFramesToTake = 1) {
+    const frames = Math.min(Math.max(Number(nbFramesToTake) || 1, 1), MAX_AVERAGING_FRAMES);
+
     // On Android, skip fetching the JPEG into JS.
     // Kotlin will fetch directly from the local Toucan server via SAVE_PICTURE_FROM_URL,
     // avoiding the ~30 MB base64 Binder transfer that makes saves take 20+ seconds.
@@ -116,12 +126,12 @@ class ToucanCameraServer {
       return {
         type: 'image/jpeg',
         buffer: new ArrayBuffer(0),
-        _directSaveUrl: `${getToucanCameraServerUrl()}cameras/${this.deviceId}/capture`,
+        _directSaveUrl: `${getToucanCameraServerUrl()}cameras/${this.deviceId}/capture?frames=${frames}`,
         _directSaveAuthorization: getToucanCameraServerHeaders().authorization,
       };
     }
 
-    const request = await fetch(`${getToucanCameraServerUrl()}cameras/${this.deviceId}/capture`, {
+    const request = await fetch(`${getToucanCameraServerUrl()}cameras/${this.deviceId}/capture?frames=${frames}`, {
       method: 'POST',
       headers: {
         ...getToucanCameraServerHeaders(),

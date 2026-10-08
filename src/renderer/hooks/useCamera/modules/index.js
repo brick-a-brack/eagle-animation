@@ -180,10 +180,14 @@ const canvasToArrayBuffer = (canvas, mimeType = `image/png`) =>
 export const takePicture = async (camera, nbFramesToTake = 1, reverseX = true, reverseY = false) => {
   // eslint-disable-line no-async-promise-executor
   const bufferList = [];
+  const nbFrames = Number(nbFramesToTake) || 1;
+
+  // Let the camera average the frames itself when it can, it's way faster than doing it in JS
+  const nativeAveraging = nbFrames > 1 && !!camera?.supportsFrameAveraging;
 
   // Take pictures
-  for (let i = 0; i < nbFramesToTake || i < 1; i++) {
-    const data = await camera.takePicture();
+  for (let i = 0; i < (nativeAveraging ? 1 : nbFrames) || i < 1; i++) {
+    const data = await camera.takePicture(nativeAveraging ? nbFrames : 1);
     if (data) {
       bufferList.push(data);
     }
