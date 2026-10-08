@@ -131,7 +131,7 @@ const HomeView = ({ t }) => {
   const primaryActions = [];
 
   const secondaryActions = [
-    ...(settings?.EVENT_MODE_ENABLED ? [{ label: t('Sync list'), icon: faListCheck, onClick: handleAction('SYNC_LIST') }] : []),
+    ...(settings?.EVENT_MODE_ENABLED && appCapabilities.includes('BACKGROUND_SYNC') ? [{ label: t('Sync list'), icon: faListCheck, onClick: handleAction('SYNC_LIST') }] : []),
     ...(appCapabilities.includes('FULLSCREEN')
       ? [
           isFullscreen
