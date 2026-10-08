@@ -116,19 +116,28 @@ class Player extends Component {
       }, 1000 / this.props.fps);
     };
 
+    this.getDisplayedFrame = () => (this.state.frameIndex === false ? this.getLastVisibleFrame() : this.frames[this.state.frameIndex]) || false;
+
     this.initCanvas = () => {
       if (this.dom.picture.current) {
+        let resized = false;
         if (this.dom.picture.current.width !== this.getSize().width) {
           this.dom.picture.current.width = this.getSize().width;
+          resized = true;
         }
         if (this.dom.picture.current.height !== this.getSize().height) {
           this.dom.picture.current.height = this.getSize().height;
+          resized = true;
         }
         if (this.dom.picture.current.style.width !== this.getSize().width) {
           this.dom.picture.current.style.width = this.getSize().width;
         }
         if (this.dom.picture.current.style.height != this.getSize().height) {
           this.dom.picture.current.style.height = this.getSize().height;
+        }
+
+        if (resized) {
+          this.drawFrame(this.getDisplayedFrame().link || false);
         }
       }
     };
