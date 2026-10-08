@@ -30,6 +30,8 @@ data class FrameEntry(
     val extension: String,
     val length: Int,
     val bufferId: String? = null,
+    // FRAME, or one of the MASKING_* layers a frames export can include
+    val type: String = "FRAME",
 )
 
 /**

@@ -6,10 +6,13 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import android.net.Uri
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import com.brickabrack.eagleanimation.camera.ToucanCameraServer
 import com.brickabrack.eagleanimation.export.ExportBufferStore
 import com.brickabrack.eagleanimation.export.FrameEntry
+import com.brickabrack.eagleanimation.export.FramesExporter
 import com.brickabrack.eagleanimation.export.VideoExporter
 import com.brickabrack.eagleanimation.image.ImageProcessor
 import com.brickabrack.eagleanimation.image.ResizeCache
@@ -156,6 +159,13 @@ class ActionDispatcher(
             // HEVC encoding is not, and offering it without an encoder would only
             // fail at export time.
             VideoExporter.supportedFormats().forEach { put("EXPORT_VIDEO_${it.key.uppercase()}") }
+            // Writing to shared storage without the legacy permission needs MediaStore's
+            // RELATIVE_PATH and IS_PENDING, both Android 10. Below that the mode is hidden
+            // rather than failing once every frame has been rendered.
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                put("EXPORT_FRAMES")
+                put("EXPORT_FRAMES_ZIP")
+            }
             put("EXPORT_BUFFER_FROM_URL")
             put("REMOTE_CAMERAS")
         }
@@ -194,9 +204,15 @@ class ActionDispatcher(
                     extension = f.optString("extension", "jpg"),
                     length = f.optInt("length", 1),
                     bufferId = f.optString("buffer_id").ifBlank { null },
+                    type = f.optString("type", "FRAME").ifBlank { "FRAME" },
                 )
             }
             if (frames.isEmpty()) return@dispatch null
+
+            if (data.optString("mode", "video") == "frames") {
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) return@dispatch null
+                return@dispatch exportFrames(frames, data)
+            }
 
             // Two distinct rates: the animation plays at `framerate`, while the custom
             // output framerate only changes the rate of the video file itself.
@@ -219,16 +235,7 @@ class ActionDispatcher(
             } finally {
                 withContext(Dispatchers.IO) { exportBuffers.clear() }
             }
-            withContext(Dispatchers.Main) {
-                runCatching {
-                    context.startActivity(
-                        Intent(Intent.ACTION_VIEW).apply {
-                            setDataAndType(android.net.Uri.parse(uri), "video/mp4")
-                            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                        }
-                    )
-                }
-            }
+            openExported(uri, "video/mp4")
             JSONObject().put("uri", uri)
         }
 
@@ -299,6 +306,44 @@ class ActionDispatcher(
         val result = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
         result.setPixels(pixels, 0, width, 0, 0, width, height)
         return result
+    }
+
+    @RequiresApi(Build.VERSION_CODES.Q)
+    private suspend fun exportFrames(frames: List<FrameEntry>, data: JSONObject): JSONObject {
+        val scenePrefix = scenePrefix(data.optString("project_id"), data.optInt("track_id", 0))
+        val exporter = FramesExporter(context, exportBuffers)
+        val result = try {
+            withContext(Dispatchers.IO) { exporter.export(frames, scenePrefix, data.optBoolean("compress_as_zip", false)) }
+        } finally {
+            withContext(Dispatchers.IO) { exportBuffers.clear() }
+        }
+        openExported(result.uri, result.mimeType)
+        return JSONObject().put("uri", result.uri).put("count", result.count)
+    }
+
+    // Shows the user what was just exported. Nothing here is essential, and a device
+    // with no app for the type simply has no handler.
+    private suspend fun openExported(uri: String, mimeType: String) {
+        withContext(Dispatchers.Main) {
+            runCatching {
+                context.startActivity(
+                    Intent(Intent.ACTION_VIEW).apply {
+                        setDataAndType(Uri.parse(uri), mimeType)
+                        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                    }
+                )
+            }
+        }
+    }
+
+    // Scene number (1-based, deleted scenes skipped) padded to 4 digits, the prefix
+    // every backend gives exported frames.
+    private fun scenePrefix(projectId: String, trackId: Int): String {
+        val scenes = projectStorage.getProject(projectId)?.second?.optJSONArray("scenes") ?: JSONArray()
+        val count = (0..trackId)
+            .mapNotNull { scenes.optJSONObject(it) }
+            .count { !it.optBoolean("deleted", false) }
+        return count.toString().padStart(4, '0')
     }
 
     private fun computeProject(projectId: String, projectData: JSONObject): JSONObject {
