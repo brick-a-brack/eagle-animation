@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.os.Process
 import android.webkit.PermissionRequest
 import android.webkit.WebSettings
 import android.webkit.WebView
@@ -343,11 +344,18 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         // The camera server never outlives the app: it goes down with the window
         // rather than holding the camera for one that no longer exists.
+        var hadServer = false
         if (isFinishing) {
-            ToucanCameraServer.releaseOnExit(this)
+            hadServer = ToucanCameraServer.releaseOnExit(this)
             scope.cancel()
         }
         super.onDestroy()
+        // Stopping the server is not enough to free the camera: the native library
+        // keeps the device open, and the process stays cached with no window left, so
+        // the system still shows the camera as in use. Only its death releases it.
+        if (hadServer) {
+            Process.killProcess(Process.myPid())
+        }
     }
 
     /**

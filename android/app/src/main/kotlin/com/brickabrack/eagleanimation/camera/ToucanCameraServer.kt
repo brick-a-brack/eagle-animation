@@ -159,16 +159,29 @@ object ToucanCameraServer {
      * was serving, whether it runs in the service (which stops the native server from
      * its own onDestroy) or in the app process, where it would otherwise outlive the
      * activity.
+     *
+     * Returns whether a server was actually brought down, which the caller has to
+     * follow with the death of the process: stopping the server closes its socket and
+     * its capture loop, but the native library leaves the camera device open, and
+     * Android keeps a windowless process cached — so the system goes on reporting the
+     * camera as in use until the process is gone.
      */
-    fun releaseOnExit(context: Context) {
-        if (CameraServerService.isServiceRunning) {
-            Log.d(TAG, "Activity finishing, stopping the camera server service")
-            CameraServerService.stop(context)
-        } else if (CameraServerService.isServerRunning()) {
-            Log.d(TAG, "Activity finishing, stopping the in-process camera server")
-            CameraServerService.stopServer()
+    fun releaseOnExit(context: Context): Boolean {
+        val wasRunning = when {
+            CameraServerService.isServiceRunning -> {
+                Log.d(TAG, "Activity finishing, stopping the camera server service")
+                CameraServerService.stop(context)
+                true
+            }
+            CameraServerService.isServerRunning() -> {
+                Log.d(TAG, "Activity finishing, stopping the in-process camera server")
+                CameraServerService.stopServer()
+                true
+            }
+            else -> false
         }
         DeviceOrientationWatcher.stop()
+        return wasRunning
     }
 
     private suspend fun startInProcess() = withContext(Dispatchers.IO) {
