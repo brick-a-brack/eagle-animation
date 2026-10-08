@@ -43,8 +43,8 @@ class MaskingEditor extends Component {
     // Refresh animation id
     this.animId = null;
 
-    // Last position of the mouse, to draw position on hover
-    this.mouseLastPosition = null;
+    // Last pointer position, to draw the brush preview on hover
+    this.pointerLastPosition = null;
   }
 
   componentDidMount() {
@@ -155,25 +155,40 @@ class MaskingEditor extends Component {
   _setupEventListeners() {
     const canvas = this.dom.output.current;
 
-    // Mouse events
-    canvas.addEventListener('mousedown', this._startDrawing);
-    window.addEventListener('mousemove', this._draw);
-    window.addEventListener('mouseup', this._stopDrawing);
+    // Pointer events cover mouse, touch and pen through a single path
+    canvas.addEventListener('pointerdown', this._startDrawing);
+    window.addEventListener('pointermove', this._draw);
+    window.addEventListener('pointerup', this._stopDrawing);
+    // A stroke the system takes over (gesture, call, ...) never gets a pointerup
+    window.addEventListener('pointercancel', this._stopDrawing);
   }
 
   _removeEventListeners() {
     const canvas = this.dom.output.current;
 
-    // Mouse events
-    canvas.removeEventListener('mousedown', this._startDrawing);
-    window.removeEventListener('mousemove', this._draw);
-    window.removeEventListener('mouseup', this._stopDrawing);
+    canvas.removeEventListener('pointerdown', this._startDrawing);
+    window.removeEventListener('pointermove', this._draw);
+    window.removeEventListener('pointerup', this._stopDrawing);
+    window.removeEventListener('pointercancel', this._stopDrawing);
   }
 
   _startDrawing = (e) => {
+    // Only the first finger paints: the second one of a pinch would otherwise
+    // drag a stray line across the frame
+    if (!e.isPrimary) {
+      return;
+    }
+
+    // No position to paint at yet: the canvas accepts pointers as soon as the mode
+    // is editable, which can be before the layers have finished loading
+    const position = this._getPointerInCanvasPosition(e, true);
+    if (!position) {
+      return;
+    }
+
     this.isDrawing = true;
     const ctx = this.images.transparent.getContext('2d');
-    const { x, y } = this._getMouseInCanvasPosition(e, true);
+    const { x, y } = position;
     this._drawLine(ctx, x, y, x, y);
     this.lastX = x;
     this.lastY = y;
@@ -181,20 +196,32 @@ class MaskingEditor extends Component {
   };
 
   _drawLine(ctx, x1, y1, x2, y2) {
+    const brushSize = this._getBrushSize();
     ctx.globalCompositeOperation = this.props.mode === 'RESTORE' ? 'destination-out' : 'source-over';
-    ctx.lineWidth = this._getBrushSize();
+    ctx.lineWidth = brushSize;
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
     ctx.strokeStyle = 'rgba(255, 255, 255)';
     ctx.shadowColor = 'rgba(255, 255, 255)';
     ctx.filter = `blur(${Math.round((this.props.brushBlurSize / 10000) * this.images.background.width)}px)`;
+
+    // A zero-length stroke paints nothing whatever the line cap, so a click or a tap
+    // that never moves has to be filled as a disc to leave its dot
+    if (x1 === x2 && y1 === y2) {
+      ctx.fillStyle = 'rgba(255, 255, 255)';
+      ctx.beginPath();
+      ctx.arc(x1, y1, brushSize / 2, 0, 2 * Math.PI);
+      ctx.fill();
+      return;
+    }
+
     ctx.beginPath();
     ctx.moveTo(x1, y1);
     ctx.lineTo(x2, y2);
     ctx.stroke();
   }
 
-  _getMouseInCanvasPosition = (e, applyLimits = false) => {
+  _getPointerInCanvasPosition = (e, applyLimits = false) => {
     const canvasHitBox = this.dom.output.current.getBoundingClientRect();
 
     if (!canvasHitBox || !this.images.background) {
@@ -242,7 +269,11 @@ class MaskingEditor extends Component {
   };
 
   _draw = (e) => {
-    this.mouseLastPosition = this._getMouseInCanvasPosition(e, false);
+    if (!e.isPrimary) {
+      return;
+    }
+
+    this.pointerLastPosition = this._getPointerInCanvasPosition(e, false);
 
     if (!this.isDrawing) {
       return;
@@ -254,9 +285,9 @@ class MaskingEditor extends Component {
 
     const ctx = this.images.transparent.getContext('2d');
 
-    // Get mouse position
-    const mousePosition = this._getMouseInCanvasPosition(e, true);
-    const { x, y } = mousePosition || { x: null, y: null };
+    // Get pointer position
+    const pointerPosition = this._getPointerInCanvasPosition(e, true);
+    const { x, y } = pointerPosition || { x: null, y: null };
 
     // First step
     if (this.lastX === null) {
@@ -274,7 +305,13 @@ class MaskingEditor extends Component {
     this.lastY = y;
   };
 
-  _stopDrawing = () => {
+  _stopDrawing = (e) => {
+    // A finger has no hover: leaving the brush preview where it was lifted would
+    // keep a ghost circle on the frame
+    if (e?.pointerType && e.pointerType !== 'mouse') {
+      this.pointerLastPosition = null;
+    }
+
     this.isDrawing = false;
     this.setState({ isDrawing: false });
     this.lastX = null;
@@ -334,9 +371,9 @@ class MaskingEditor extends Component {
       outputCtx.drawImage(this.images.temporary, 0, 0);
     }
 
-    if (this.mouseLastPosition && isEditable) {
+    if (this.pointerLastPosition && isEditable) {
       outputCtx.beginPath();
-      outputCtx.arc(this.mouseLastPosition.x, this.mouseLastPosition.y, this._getBrushSize() / 2, 0, 2 * Math.PI);
+      outputCtx.arc(this.pointerLastPosition.x, this.pointerLastPosition.y, this._getBrushSize() / 2, 0, 2 * Math.PI);
       outputCtx.fillStyle = 'rgba(255,255,255,0.2)';
       outputCtx.fill();
     }
