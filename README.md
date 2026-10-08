@@ -106,7 +106,7 @@ Some features are device-dependent or platform-limited. Here's a summary table.
 | Feature               | Desktop app | Android app | Web (Chrome¹) | Web (Firefox / Safari) |
 | --------------------- | ----------- | ----------- | ------------- | ---------------------- |
 | Take photos           | 🟢          | 🟢          | 🟢            | 🟢                     |
-| Export frames         | 🟢          | 🔴          | 🟢            | 🟢                     |
+| Export frames         | 🟢          | 🟢          | 🟢            | 🟢                     |
 | Export video          | 🟢          | 🟢          | 🟢            | 🟢                     |
 | Camera settings       | 🟢          | 🟢          | 🟡²           | 🔴                     |
 | DSLR support          | 🟢³         | 🔴          | 🟡⁴           | 🔴                     |
