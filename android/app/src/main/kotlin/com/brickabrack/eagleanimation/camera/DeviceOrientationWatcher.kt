@@ -3,6 +3,7 @@ package com.brickabrack.eagleanimation.camera
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.OrientationEventListener
 import com.brickfilms.toucancameraserver.CameraServerService
 
@@ -21,6 +22,8 @@ import com.brickfilms.toucancameraserver.CameraServerService
  */
 object DeviceOrientationWatcher {
 
+    private const val TAG = "ToucanCameraServer"
+
     private var listener: OrientationEventListener? = null
 
     /** Last quarter turn reported, so unchanged readings cost nothing. */
@@ -37,6 +40,7 @@ object DeviceOrientationWatcher {
                     return
                 }
                 reported = next
+                Log.d(TAG, "Reporting device orientation $next to the camera server")
                 CameraServerService.setDeviceRotation(next)
             }
         }
@@ -48,11 +52,28 @@ object DeviceOrientationWatcher {
         }
     }
 
+    /** The server is going down: the native side must forget the orientation too. */
     fun stop() = onMainThread {
+        release()
+        Log.d(TAG, "Clearing the device orientation reported to the camera server")
+        CameraServerService.setDeviceRotation(OrientationEventListener.ORIENTATION_UNKNOWN)
+    }
+
+    /**
+     * Hands the orientation over to [CameraServerService], which watches it itself.
+     *
+     * Unlike [stop] this leaves the value the native side already holds alone: the
+     * service only reports changes, so blanking it here would leave the server with
+     * no orientation at all until the device next physically moves.
+     */
+    fun handOver() = onMainThread {
+        release()
+    }
+
+    private fun release() {
         listener?.disable()
         listener = null
         reported = OrientationEventListener.ORIENTATION_UNKNOWN
-        CameraServerService.setDeviceRotation(OrientationEventListener.ORIENTATION_UNKNOWN)
     }
 
     // The listener registers a sensor callback, so it is kept on one thread.

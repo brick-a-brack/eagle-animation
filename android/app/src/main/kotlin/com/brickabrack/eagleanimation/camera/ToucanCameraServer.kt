@@ -78,8 +78,9 @@ object ToucanCameraServer {
 
         if (useService) {
             // The service watches the orientation itself, so the app's own watcher
-            // has to go first or the two would fight over the native value.
-            DeviceOrientationWatcher.stop()
+            // has to go first or the two would fight over the native value. A
+            // hand-over, not a stop: the orientation already reported stays in force.
+            DeviceOrientationWatcher.handOver()
             startAsService(context)
         } else {
             // Running in the service: stopping it releases the native server too, so
