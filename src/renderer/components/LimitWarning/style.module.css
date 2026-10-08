@@ -9,10 +9,9 @@
   line-height: 8px;
   padding: var(--space-small) var(--space-medium);
   position: fixed;
-  top: 62px;
+  top: calc(var(--safe-area-top) + 62px);
   transform: translateX(-50%);
   user-select: none;
-  z-index: 9999;
   pointer-events: none;
 }
 
