@@ -19,9 +19,13 @@
         android:hardwareAccelerated="true"
         android:networkSecurityConfig="@xml/network_security_config">
 
+        <!-- fullUser: phones leave the 180 degrees portrait out of auto-rotation, so
+             the app has to ask for all four orientations. "user" keeps the rotation
+             lock honoured, unlike "fullSensor" which would turn even when locked. -->
         <activity
             android:name=".MainActivity"
             android:exported="true"
+            android:screenOrientation="fullUser"
             android:configChanges="orientation|screenSize|keyboardHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
