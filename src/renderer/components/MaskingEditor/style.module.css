@@ -2,7 +2,7 @@
   align-items: center;
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 100px - 2 * var(--space-huge));
+  height: calc(100vh - 100px - 2 * var(--space-huge) - var(--safe-area-top) - var(--safe-area-bottom));
   justify-content: center;
   position: relative;
   width: 100%;
@@ -19,7 +19,11 @@
 .isEditable {
   cursor: none;
   pointer-events: all;
-  touch-action: auto;
+
+  /* The canvas owns every gesture here: left to the browser, a drag pans the
+     page instead of painting, and a long press pops a selection menu */
+  touch-action: none;
+  user-select: none;
 }
 
 .error {

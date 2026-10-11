@@ -22,8 +22,25 @@ function useCache(enabled = true) {
 
   // Initial load
   useEffect(() => {
-    actionRefreshCacheSize();
-  }, [actionRefreshCacheSize]);
+    if (!enabled) {
+      return;
+    }
+
+    let cancelled = false;
+
+    window
+      .EA('GET_CACHE_SIZE')
+      .catch(() => null)
+      .then((cacheSize) => {
+        if (!cancelled) {
+          setSize(typeof cacheSize === 'number' ? cacheSize : null);
+        }
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [enabled]);
 
   // Action clear the cache
   const actionClearCache = useCallback(async () => {
@@ -39,7 +56,7 @@ function useCache(enabled = true) {
   }, [enabled, actionRefreshCacheSize]);
 
   return {
-    size,
+    size: enabled ? size : null,
     isClearing,
     actions: {
       refreshCacheSize: actionRefreshCacheSize,

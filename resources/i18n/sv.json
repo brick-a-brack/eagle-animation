@@ -465,5 +465,15 @@
   "The cache is there to improve the application's performance and can be safely deleted": "Cachen finns för att förbättra programmets prestanda och kan tas bort utan risk",
   "Clearing cache…": "Rensar cachen…",
   "Clear cache": "Rensa cachen",
-  "Clear cache ({{size}})": "Rensa cachen ({{size}})"
+  "Clear cache ({{size}})": "Rensa cachen ({{size}})",
+  "Camera disabled": "Kameran är inaktiverad",
+  "Connect an external USB camera": "Anslut en extern USB-kamera",
+  "Default framerate": "Standardbildfrekvens",
+  "Framerate used for new projects": "Bildfrekvens för nya projekt",
+  "Share cameras": "Dela kameror",
+  "Expose the cameras so they can be used from other devices": "Gör kamerorna tillgängliga så att de kan användas från andra enheter",
+  "Expose the cameras so they can be used from other devices ({{hostname}}:{{port}}, using {{token}})": "Gör kamerorna tillgängliga så att de kan användas från andra enheter ({{hostname}}:{{port}}, med {{token}})",
+  "Auto": "Auto",
+  "Automatic rotation": "Automatisk rotation",
+  "Rotation": "Rotation"
 }

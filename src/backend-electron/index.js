@@ -8,7 +8,7 @@ import { app, BrowserWindow, ipcMain, protocol, shell } from 'electron';
 import icon from '../../resources/icon.png?asset';
 import actions from './actions';
 import { ImageRoute } from './core/routes';
-import { runToucanCameraServer, stopToucanCameraServer } from './core/toucan';
+import { shutdownToucanCameraServer } from './core/toucan';
 
 let sendToRenderer = () => null;
 
@@ -34,13 +34,6 @@ function createWindow() {
 
   mainWindow.on('ready-to-show', () => {
     mainWindow.show();
-  });
-
-  // Run Toucan Camera Server once window is ready
-  mainWindow.webContents.once('did-finish-load', () => {
-    runToucanCameraServer((data) => {
-      sendToRenderer('TOUCAN_CAMERA_SERVER_CONFIG', data);
-    });
   });
 
   mainWindow.webContents.setWindowOpenHandler((details) => {
@@ -102,11 +95,11 @@ app.on('window-all-closed', () => {
 // otherwise it keeps holding the webcam handle (visible as an active
 // camera indicator in the parent terminal / VS Code).
 app.on('before-quit', () => {
-  stopToucanCameraServer();
+  shutdownToucanCameraServer();
 });
 
 const handleTerminationSignal = (signal) => {
-  stopToucanCameraServer();
+  shutdownToucanCameraServer();
   app.quit();
   // Give Electron a moment to tear down, then force-exit if needed.
   setTimeout(() => process.exit(signal === 'SIGINT' ? 130 : 143), 1500).unref?.();

@@ -52,6 +52,7 @@ const drawGrid = (ctx, { width, height, gridModes, gridOpacity, gridColumns, gri
 // Used by the live camera Player and the settings GridRatioPreview so both stay visually identical.
 const GridOverlay = ({ width, height, className = '', modes = [], opacity = 0, columns = 1, lines = 1, ratio = undefined }) => {
   const canvasRef = useRef(null);
+  const modesKey = modes?.join(',') ?? '';
 
   useLayoutEffect(() => {
     const canvas = canvasRef.current;
@@ -63,13 +64,13 @@ const GridOverlay = ({ width, height, className = '', modes = [], opacity = 0, c
     drawGrid(ctx, {
       width,
       height,
-      gridModes: modes,
+      gridModes: modesKey ? modesKey.split(',') : [],
       gridOpacity: opacity,
       gridColumns: columns,
       gridLines: lines,
       videoRatio: ratio,
     });
-  }, [modes?.join(','), opacity, columns, lines, ratio]);
+  }, [width, height, modesKey, opacity, columns, lines, ratio]);
 
   return <canvas className={className} ref={canvasRef} width={width} height={height} />;
 };

@@ -38,6 +38,26 @@ const CenterIcon = () => (
   </svg>
 );
 
+const PadBtn = ({ dir, disabled, active, onStart, onStop }) => (
+  <button
+    type="button"
+    aria-label={`Move ${dir}`}
+    disabled={disabled}
+    className={`${styles.dbtn} ${styles[dirClassKey(dir)]} ${active ? styles.active : ''}`}
+    onMouseDown={() => onStart(dir)}
+    onMouseUp={onStop}
+    onMouseLeave={onStop}
+    onTouchStart={(e) => {
+      e.preventDefault();
+      onStart(dir);
+    }}
+    onTouchEnd={onStop}
+    onTouchCancel={onStop}
+  >
+    <ArrowIcon dir={dir} />
+  </button>
+);
+
 /**
  * @param {{ pan, tilt, roll }} capabilities - each is { id, min, max, step, value } or undefined
  * @param {function} onCapabilityChange - (id, newValue) => void
@@ -89,40 +109,19 @@ const DirectionalPad = ({ pan, tilt, roll, onCapabilityChange, onCenter }) => {
     return null;
   };
 
-  const PadBtn = ({ dir }) => {
-    const disabled = !capForDir(dir);
-    return (
-      <button
-        type="button"
-        aria-label={`Move ${dir}`}
-        disabled={disabled}
-        className={`${styles.dbtn} ${styles[dirClassKey(dir)]} ${pressed === dir ? styles.active : ''}`}
-        onMouseDown={() => start(dir)}
-        onMouseUp={stop}
-        onMouseLeave={stop}
-        onTouchStart={(e) => {
-          e.preventDefault();
-          start(dir);
-        }}
-        onTouchEnd={stop}
-        onTouchCancel={stop}
-      >
-        <ArrowIcon dir={dir} />
-      </button>
-    );
-  };
+  const padProps = (dir) => ({ dir, disabled: !capForDir(dir), active: pressed === dir, onStart: start, onStop: stop });
 
   return (
     <div className={styles.dpad} role="group" aria-label="Camera position">
-      <PadBtn dir="roll-left" />
-      <PadBtn dir="up" />
-      <PadBtn dir="roll-right" />
-      <PadBtn dir="left" />
+      <PadBtn {...padProps('roll-left')} />
+      <PadBtn {...padProps('up')} />
+      <PadBtn {...padProps('roll-right')} />
+      <PadBtn {...padProps('left')} />
       <button type="button" className={`${styles.dbtn} ${styles.center}`} onClick={() => onCenter?.()} aria-label="Center" title="Center">
         <CenterIcon />
       </button>
-      <PadBtn dir="right" />
-      <PadBtn dir="down" />
+      <PadBtn {...padProps('right')} />
+      <PadBtn {...padProps('down')} />
     </div>
   );
 };

@@ -1,13 +1,15 @@
 import { isBlink } from '@common/isBlink';
-import { DEVICE } from '@config-web';
+import { DEVICE, TOUCAN_CAMERA_SERVER_AVAILABLE } from '@config-web';
 
+import { Camera as DisabledCamera, CameraBrowser as DisabledCameraBrowser } from './Disabled';
 import { Camera as ToucanCameraServerCamera, CameraBrowser as ToucanCameraServerBrowser } from './ToucanCameraServer';
 import { Camera as WebcamCamera, CameraBrowser as WebcamCameraBrowser } from './Webcam';
 import { Camera as WebGPhoto2Camera, CameraBrowser as WebGPhoto2CameraBrowser } from './WebGPhoto2';
 
 const getCameraModules = (compatibilityMode = false) => [
-  ...(DEVICE === 'ELECTRON' && !compatibilityMode ? [{ browser: ToucanCameraServerBrowser, item: ToucanCameraServerCamera }] : []),
-  ...(DEVICE !== 'ELECTRON' || compatibilityMode ? [{ browser: WebcamCameraBrowser, item: WebcamCamera }] : []),
+  { browser: DisabledCameraBrowser, item: DisabledCamera },
+  ...(TOUCAN_CAMERA_SERVER_AVAILABLE && !compatibilityMode ? [{ browser: ToucanCameraServerBrowser, item: ToucanCameraServerCamera }] : []),
+  ...(!TOUCAN_CAMERA_SERVER_AVAILABLE || compatibilityMode ? [{ browser: WebcamCameraBrowser, item: WebcamCamera }] : []),
   ...(DEVICE === 'WEB' && isBlink() ? [{ browser: WebGPhoto2CameraBrowser, item: WebGPhoto2Camera }] : []),
 ];
 
@@ -32,9 +34,10 @@ export const getCameras = async (compatibilityMode = false) => {
     }
   }
 
+  const moduleWeights = { GPHOTO2: 1, DISABLED: 2 };
   availableCameras.sort((a, b) => {
-    if (a.module === 'GPHOTO2' && b.module !== 'GPHOTO2') return 1;
-    if (a.module !== 'GPHOTO2' && b.module === 'GPHOTO2') return -1;
+    const weightDiff = (moduleWeights[a.module] || 0) - (moduleWeights[b.module] || 0);
+    if (weightDiff !== 0) return weightDiff;
     return a.id.localeCompare(b.id);
   });
 
@@ -177,13 +180,28 @@ const canvasToArrayBuffer = (canvas, mimeType = `image/png`) =>
 export const takePicture = async (camera, nbFramesToTake = 1, reverseX = true, reverseY = false) => {
   // eslint-disable-line no-async-promise-executor
   const bufferList = [];
+  const nbFrames = Number(nbFramesToTake) || 1;
+
+  // Let the camera average the frames itself when it can, it's way faster than doing it in JS
+  const nativeAveraging = nbFrames > 1 && !!camera?.supportsFrameAveraging;
 
   // Take pictures
-  for (let i = 0; i < nbFramesToTake || i < 1; i++) {
-    const data = await camera.takePicture();
+  for (let i = 0; i < (nativeAveraging ? 1 : nbFrames) || i < 1; i++) {
+    const data = await camera.takePicture(nativeAveraging ? nbFrames : 1);
     if (data) {
       bufferList.push(data);
     }
+  }
+
+  // Android direct-save path: Kotlin handles averaging + flip natively (no image data through Binder)
+  if (bufferList.length > 0 && bufferList[0]._directSaveUrl) {
+    const sentinel = Buffer.from(new ArrayBuffer(0));
+    sentinel.type = 'image/jpeg';
+    sentinel._directSaveUrls = bufferList.map((f) => f._directSaveUrl);
+    sentinel._directSaveAuthorization = bufferList[0]._directSaveAuthorization;
+    sentinel._reverseX = reverseX;
+    sentinel._reverseY = reverseY;
+    return sentinel;
   }
 
   // Output frame

@@ -3,15 +3,14 @@
 [![Official Website](docs/tags/website.svg)](https://eagle-animation.com/) [![Web App](docs/tags/webapp.svg)](https://app.eagle-animation.com/)
 [![Discord](docs/tags/discord.svg)](https://discord.gg/S9R6bXeU7m) [![Brickfilms.com](docs/tags/brickfilms.svg)](https://brickfilms.com/)
 
-**EagleAnimation** is an awesome, free and open-source stop motion animation software. It is available for Windows, macOS, Linux and also works with any web browser. It's a great alternative to _Stop
-Motion Studio_, _Dragon Frame_, Zu3D, AnimaShooter and _Boats Animator_.
+**EagleAnimation** is an awesome, free and open-source stop motion animation software. It is available for Windows, macOS, Linux, Android and also works with any web browser. It's a great alternative to _Stop
+Motion Studio_, _Dragon Frame_, _Zu3D_, _AnimaShooter_ and _Boats Animator_.
 
 💬 **Join our [Discord community](https://discord.gg/S9R6bXeU7m)!** Get help with the app, share your animations, suggest features and chat with other animators and the team.
 
 ![Eagle Animation in use by Gwen Movies and Nanomega](docs/imgs/img_5.jpg)
 
-👉 _This project is supported by Brick à Brack, the non-profit organization that owns [Brickfilms.com](https://brickfilms.com/) - The biggest brickfilming community, you can join us, it's free and
-without ads!_ 🎥
+👉 _This project is supported by Brick à Brack, the non-profit organization that owns [Brickfilms.com](https://brickfilms.com/) - The biggest brickfilming community, you can join us, it's free and without ads!_ 🎥
 
 ## Features
 
@@ -54,7 +53,7 @@ Eagle Animation is compatible webcams and some DSLR cameras. The list of support
 
 ### Is there a mobile version of Eagle Animation?
 
-There is currently no mobile version of Eagle Animation but you can use [the Web hosted version](https://app.eagle-animation.com/) on tablets.
+An Android version is available, it's not available on iOS yet but you can use [the Web hosted version](https://app.eagle-animation.com/) on tablets.
 
 ## Contribute
 
@@ -94,22 +93,25 @@ Some variables can be configured using a `.env` file, values with a "\*" are req
 
 ### Telemetry
 
-To improve the quality of **Eagle Animation**, runtime errors and application events are automatically reported to developers using [PostHog](https://posthog.com/). You can disable telemetry by
-setting `POSTHOG_TOKEN` to `""` in `src/config.js` and rebuilding the app.
+To improve the quality of **Eagle Animation**, runtime errors and application events are automatically reported to developers using [PostHog](https://posthog.com/).
+
+You can turn telemetry off at any time from the application itself, in **Settings → General → Allow telemetry**. No rebuild is required.
+
+If you build your own version and want telemetry gone entirely, set `POSTHOG_TOKEN` to `""` in `src/config.js` and rebuild the app.
 
 ## Compatibility
 
 Some features are device-dependent or platform-limited. Here's a summary table.
 
-| Feature               | Downloadable app | Web (Chrome¹) | Web (Firefox / Safari) |
-| --------------------- | ---------------- | ------------- | ---------------------- |
-| Take photos           | 🟢               | 🟢            | 🟢                     |
-| Export frames         | 🟢               | 🟢            | 🟢                     |
-| Export video          | 🟢               | 🟢            | 🟢                     |
-| Camera settings       | 🟢               | 🟡²           | 🔴                     |
-| DSLR support          | 🟢³              | 🟡⁴           | 🔴                     |
-| Remote camera support | 🟢               | 🔴            | 🔴                     |
-| Workshop features     | 🟢               | 🔴            | 🔴                     |
+| Feature               | Desktop app | Android app | Web (Chrome¹) | Web (Firefox / Safari) |
+| --------------------- | ----------- | ----------- | ------------- | ---------------------- |
+| Take photos           | 🟢          | 🟢          | 🟢            | 🟢                     |
+| Export frames         | 🟢          | 🟢          | 🟢            | 🟢                     |
+| Export video          | 🟢          | 🟢          | 🟢            | 🟢                     |
+| Camera settings       | 🟢          | 🟢          | 🟡²           | 🔴                     |
+| DSLR support          | 🟢³         | 🔴          | 🟡⁴           | 🔴                     |
+| Remote camera support | 🟢          | 🟢          | 🔴            | 🔴                     |
+| Workshop features     | 🟢          | 🔴          | 🔴            | 🔴                     |
 
 1. Including Chromium-based browsers (Edge, Brave, Opera, Arc, etc.).
 2. Webcam settings are only supported on Windows and Linux.

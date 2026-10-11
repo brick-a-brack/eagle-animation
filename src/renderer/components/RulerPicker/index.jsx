@@ -39,8 +39,11 @@ export default function RulerPicker({ value, onChange, stops = [], labelCount = 
   const sliderRef = useRef(null);
   const rulerRef = useRef(null);
   const onWheelRef = useRef(null);
+  const animateOffsetRef = useRef(null);
   const onChangeRef = useRef(onChange);
-  onChangeRef.current = onChange;
+  useEffect(() => {
+    onChangeRef.current = onChange;
+  });
 
   const majorStops = useMemo(() => normalizeStops(stops), [stops]);
   const totalWidth = (majorStops.length - 1) * PX_PER_STOP;
@@ -48,7 +51,7 @@ export default function RulerPicker({ value, onChange, stops = [], labelCount = 
   const currentIndex = useMemo(() => findIndex(value, majorStops), [value, majorStops]);
 
   const stateRef = useRef(null);
-  if (!stateRef.current) {
+  if (stateRef.current == null) {
     stateRef.current = {
       offset: 0,
       viewportCenter: 0,
@@ -66,8 +69,7 @@ export default function RulerPicker({ value, onChange, stops = [], labelCount = 
     };
   }
 
-  const [, force] = useState(0);
-  const rerender = () => force((n) => n + 1);
+  const [dragging, setDragging] = useState(false);
 
   const labelIndices = useMemo(() => new Set(evenLabelIndices(majorStops.length, labelCount)), [majorStops.length, labelCount]);
 
@@ -172,6 +174,10 @@ export default function RulerPicker({ value, onChange, stops = [], labelCount = 
     s.rafId = requestAnimationFrame(tick);
   };
 
+  useEffect(() => {
+    animateOffsetRef.current = animateOffset;
+  });
+
   useLayoutEffect(() => {
     const recompute = () => {
       const el = sliderRef.current;
@@ -191,11 +197,11 @@ export default function RulerPicker({ value, onChange, stops = [], labelCount = 
     if (s.dragging || currentIndex === s.currentIndex) return;
     s.currentIndex = currentIndex;
     cancelMomentum();
-    animateOffset(s.offset, indexToOffset(currentIndex, s.viewportCenter));
+    animateOffsetRef.current(s.offset, indexToOffset(currentIndex, s.viewportCenter));
   }, [currentIndex]);
 
-  // Commit la valeur en attente à intervalle fixe — évite de déclencher onChange
-  // pour chaque stop intermédiaire lors d'un slide rapide
+  // Commit the pending value on a fixed interval, so a fast slide does not fire onChange
+  // for every stop it travels through
   useEffect(() => {
     const id = setInterval(() => {
       const s = stateRef.current;
@@ -218,7 +224,7 @@ export default function RulerPicker({ value, onChange, stops = [], labelCount = 
     s.lastT = performance.now();
     s.velocity = 0;
     sliderRef.current?.setPointerCapture(e.pointerId);
-    rerender();
+    setDragging(true);
   };
 
   const onPointerMove = (e) => {
@@ -242,10 +248,10 @@ export default function RulerPicker({ value, onChange, stops = [], labelCount = 
     if (performance.now() - s.lastT > 80) s.velocity = 0;
     if (Math.abs(s.velocity) < 0.05) snapToNearest();
     else runMomentum();
-    rerender();
+    setDragging(false);
   };
 
-  onWheelRef.current = (e) => {
+  const handleWheel = (e) => {
     e.preventDefault();
     cancelMomentum();
     cancelSnap();
@@ -255,6 +261,11 @@ export default function RulerPicker({ value, onChange, stops = [], labelCount = 
     s.wheelTimer = setTimeout(snapToNearest, 140);
   };
 
+  // Held in a ref so the non-passive listener below never has to be re-attached
+  useEffect(() => {
+    onWheelRef.current = handleWheel;
+  });
+
   useEffect(() => {
     const el = sliderRef.current;
     if (!el) return;
@@ -262,8 +273,6 @@ export default function RulerPicker({ value, onChange, stops = [], labelCount = 
     el.addEventListener('wheel', handler, { passive: false });
     return () => el.removeEventListener('wheel', handler);
   }, []);
-
-  const dragging = stateRef.current.dragging;
 
   return (
     <div

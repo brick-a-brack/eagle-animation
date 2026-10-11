@@ -123,3 +123,13 @@ body::-webkit-scrollbar-thumb {
 body::-webkit-scrollbar-track {
   background-color: rgb(0 0 0 / 0%);
 }
+
+@media (pointer: coarse) {
+  * {
+    scrollbar-width: none !important;
+  }
+
+  *::-webkit-scrollbar {
+    display: none !important;
+  }
+}

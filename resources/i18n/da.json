@@ -465,5 +465,15 @@
   "The cache is there to improve the application's performance and can be safely deleted": "Cachen findes for at forbedre programmets ydeevne og kan trygt slettes",
   "Clearing cache…": "Rydder cachen…",
   "Clear cache": "Ryd cachen",
-  "Clear cache ({{size}})": "Ryd cachen ({{size}})"
+  "Clear cache ({{size}})": "Ryd cachen ({{size}})",
+  "Camera disabled": "Kamera deaktiveret",
+  "Connect an external USB camera": "Tilslut et eksternt USB-kamera",
+  "Default framerate": "Standard billedhastighed",
+  "Framerate used for new projects": "Billedhastighed for nye projekter",
+  "Share cameras": "Del kameraer",
+  "Expose the cameras so they can be used from other devices": "Gør kameraerne tilgængelige, så de kan bruges fra andre enheder",
+  "Expose the cameras so they can be used from other devices ({{hostname}}:{{port}}, using {{token}})": "Gør kameraerne tilgængelige, så de kan bruges fra andre enheder ({{hostname}}:{{port}}, med {{token}})",
+  "Auto": "Auto",
+  "Automatic rotation": "Automatisk rotation",
+  "Rotation": "Rotation"
 }

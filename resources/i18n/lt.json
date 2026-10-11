@@ -490,5 +490,15 @@
   "The cache is there to improve the application's performance and can be safely deleted": "Podėlis skirtas programos našumui pagerinti ir jį galima saugiai ištrinti",
   "Clearing cache…": "Valomas podėlis…",
   "Clear cache": "Išvalyti podėlį",
-  "Clear cache ({{size}})": "Išvalyti podėlį ({{size}})"
+  "Clear cache ({{size}})": "Išvalyti podėlį ({{size}})",
+  "Camera disabled": "Kamera išjungta",
+  "Connect an external USB camera": "Prijungti išorinę USB kamerą",
+  "Default framerate": "Numatytasis kadrų dažnis",
+  "Framerate used for new projects": "Naujiems projektams naudojamas kadrų dažnis",
+  "Share cameras": "Bendrinti kameras",
+  "Expose the cameras so they can be used from other devices": "Padaro kameras pasiekiamas, kad jas būtų galima naudoti iš kitų įrenginių",
+  "Expose the cameras so they can be used from other devices ({{hostname}}:{{port}}, using {{token}})": "Padaro kameras pasiekiamas, kad jas būtų galima naudoti iš kitų įrenginių ({{hostname}}:{{port}}, naudojant {{token}})",
+  "Auto": "Auto",
+  "Automatic rotation": "Automatinis pasukimas",
+  "Rotation": "Pasukimas"
 }

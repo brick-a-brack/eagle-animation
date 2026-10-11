@@ -1,5 +1,6 @@
 import Action from '@components/Action';
 import { CameraCapabilityItem } from '@components/CameraCapabilityItem';
+import { CameraCapabilityItemGroup } from '@components/CameraCapabilityItemGroup';
 import FormGroup from '@components/FormGroup';
 import IconTabs from '@components/IconTabs';
 import NumberInput from '@components/NumberInput';
@@ -24,6 +25,7 @@ import faLightbulbOn from '@icons/faLightbulbOn';
 import faMagnifyingGlass from '@icons/faMagnifyingGlass';
 import faMobileSignalOut from '@icons/faMobileSignalOut';
 import faQuestion from '@icons/faQuestion';
+import faRotate from '@icons/faRotate';
 import faShutterSpeed from '@icons/faShutterSpeed';
 import faSun from '@icons/faSun';
 import faTemperatureHalf from '@icons/faTemperatureHalf';
@@ -41,6 +43,7 @@ const groupDevices = (devices, t) => {
     'TOUCAN-CAMERA-SERVER': t('Cameras'),
     WEBCAM: t('Webcams'),
     GPHOTO2: t('WebUSB'),
+    DISABLED: t('Other'),
   };
 
   // Categories
@@ -74,6 +77,11 @@ const getCapabilitiesTabs = (capabilities, t = (v) => v) => {
       title: t('Quality'),
       properties: ['video_stream_format', 'photo_resolution', 'image_quality', 'power_line_frequency'],
       icon: faFilm,
+    },
+    {
+      title: t('Rotation'),
+      properties: ['rotate_auto', 'rotation'],
+      icon: faRotate,
     },
     {
       title: t('Brightness'),
@@ -122,7 +130,7 @@ const getCapabilitiesTabs = (capabilities, t = (v) => v) => {
     },
     {
       title: t('Exposure'),
-      properties: ['exposure_auto', 'backlight_compensation', 'exposure_compensation', 'exposure', 'gain_auto', 'gain'],
+      properties: ['exposure_auto', 'exposure', 'exposure_compensation', 'gain_auto', 'gain', 'backlight_compensation'],
       icon: faExposure,
     },
     {
@@ -156,7 +164,56 @@ const getCapabilitiesTabs = (capabilities, t = (v) => v) => {
     icon: faQuestion,
   });
 
-  return tabs.map((tab) => ({ ...tab, properties: tab.properties.filter((prop) => capabilities.some((cap) => cap.id === prop)) })).filter((tab) => tab.properties.length > 0);
+  return tabs.map((tab) => ({ ...tab, properties: tab.properties.filter((prop) => capabilities.some((cap) => cap.id === prop)) })).filter((tab) => tab.properties.length > 0 || tab.isAlwaysVisible);
+};
+
+// Capabilities that should be merged into a single row, as `[booleanId, controlId]`
+const CAPABILITY_GROUPS = [
+  ['rotation_auto', 'rotation'],
+  ['brightness_auto', 'brightness'],
+  ['contrast_auto', 'contrast'],
+  ['saturation_auto', 'saturation'],
+  ['sharpness_auto', 'sharpness'],
+  ['gamma_auto', 'gamma'],
+  ['hue_auto', 'hue'],
+  ['white_balance_auto', 'white_balance'],
+  ['focus_auto', 'focus'],
+  ['aperture_auto', 'aperture'],
+  ['exposure_auto', 'exposure'],
+  ['gain_auto', 'gain'],
+  ['shutter_speed_auto', 'shutter_speed'],
+  ['iso_auto', 'iso'],
+  ['zoom_auto', 'zoom'],
+  ['tilt_auto', 'tilt'],
+  ['pan_auto', 'pan'],
+  ['roll_auto', 'roll'],
+];
+
+// Turns a tab's property list into the rows to render.
+const buildCapabilityRows = (properties, capabilities) => {
+  const getCapability = (id) => capabilities.find((c) => c.id === id) || null;
+  const grouped = new Set();
+  const rows = [];
+
+  properties.forEach((id) => {
+    if (grouped.has(id)) {
+      return;
+    }
+
+    const group = CAPABILITY_GROUPS.find((ids) => ids.includes(id) && ids.every((e) => properties.includes(e)));
+    const [booleanId, controlId] = group || [];
+    const booleanCapability = booleanId ? getCapability(booleanId) : null;
+
+    if (group && booleanCapability?.type === 'BOOLEAN') {
+      group.forEach((e) => grouped.add(e));
+      rows.push({ key: group.join('-'), booleanCapability, capability: getCapability(controlId) });
+      return;
+    }
+
+    rows.push({ key: id, capability: getCapability(id) });
+  });
+
+  return rows;
 };
 
 const RemoteCameraSettingsWindow = withTranslation()(({ onDevicesListRefresh }) => {
@@ -174,7 +231,7 @@ const RemoteCameraSettingsWindow = withTranslation()(({ onDevicesListRefresh }) 
   return <PeersList peers={peers} onConnect={handleConnect} onDelete={handleDelete} />;
 });
 
-const BasicCameraSettingsTab = withTranslation()(({ t, onDevicesListRefresh = () => {}, onSettingsChange = () => {}, devices = [], settings = {}, currentCameraId = null }) => {
+const BasicCameraSettingsTab = withTranslation()(({ t, onDevicesListRefresh = () => { }, onSettingsChange = () => { }, devices = [], settings = {}, currentCameraId = null }) => {
   // Only seed the fields this form actually edits. Spreading the whole settings
   // object would make the form re-emit unrelated keys (e.g. TOURS_COMPLETED) on
   // every change, overwriting values owned by other code paths with a stale
@@ -225,7 +282,7 @@ const BasicCameraSettingsTab = withTranslation()(({ t, onDevicesListRefresh = ()
           ]}
           register={register('CAMERA_ID')}
         />
-        {appCapabilities.includes('REMOTE_CAMERAS') && !settings?.COMPATIBILITY_MODE_CAMERAS && (
+        {appCapabilities.includes('REMOTE_CAMERAS') && !settings?.TOUCAN_CAMERA_SERVER_DISABLED && (
           <Action title={t('Remote cameras')} className={style.refreshIcon} onClick={() => setIsPeerDevicesListOpen(true)}>
             <FontAwesomeIcon icon={faMobileSignalOut} />
           </Action>
@@ -254,7 +311,7 @@ const BasicCameraSettingsTab = withTranslation()(({ t, onDevicesListRefresh = ()
         )}
       </FormGroup>
 
-      {appCapabilities.includes('REMOTE_CAMERAS') && !settings?.COMPATIBILITY_MODE_CAMERAS && (
+      {appCapabilities.includes('REMOTE_CAMERAS') && !settings?.TOUCAN_CAMERA_SERVER_DISABLED && (
         <Window title={t('Remote cameras')} isOpened={isPeerDevicesListOpen} onClose={() => setIsPeerDevicesListOpen(false)} zIndex={1}>
           <RemoteCameraSettingsWindow onDevicesListRefresh={onDevicesListRefresh} />
         </Window>
@@ -263,7 +320,7 @@ const BasicCameraSettingsTab = withTranslation()(({ t, onDevicesListRefresh = ()
   );
 });
 
-const CameraSettingsWindow = ({ t, cameraCapabilities, onCapabilityChange, onDevicesListRefresh = () => {}, onSettingsChange = () => {}, devices = [], settings = {}, currentCameraId = null }) => {
+const CameraSettingsWindow = ({ t, cameraCapabilities, onCapabilityChange, onDevicesListRefresh = () => { }, onSettingsChange = () => { }, devices = [], settings = {}, currentCameraId = null }) => {
   const [selectedTab, setSelectedTab] = useState('CAMERAS');
 
   const tabs = getCapabilitiesTabs(cameraCapabilities, t);
@@ -284,9 +341,13 @@ const CameraSettingsWindow = ({ t, cameraCapabilities, onCapabilityChange, onDev
           <BasicCameraSettingsTab onDevicesListRefresh={onDevicesListRefresh} onSettingsChange={onSettingsChange} devices={devices} settings={settings} currentCameraId={currentCameraId} />
         )}
 
-        {selectedCategory.properties.map((cap) => (
-          <CameraCapabilityItem key={cap} {...cameraCapabilities.find((c) => c.id === cap)} onCapabilityChange={onCapabilityChange} />
-        ))}
+        {buildCapabilityRows(selectedCategory.properties, cameraCapabilities).map((row) =>
+          row.booleanCapability ? (
+            <CameraCapabilityItemGroup key={row.key} booleanCapability={row.booleanCapability} capability={row.capability} booleanLabels={{ on: t('Auto') }} onCapabilityChange={onCapabilityChange} />
+          ) : (
+            <CameraCapabilityItem key={row.key} {...row.capability} onCapabilityChange={onCapabilityChange} />
+          )
+        )}
       </div>
     </>
   );

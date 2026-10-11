@@ -469,5 +469,15 @@
   "The cache is there to improve the application's performance and can be safely deleted": "Kešatmiņa kalpo lietotnes veiktspējas uzlabošanai, un to var droši dzēst",
   "Clearing cache…": "Notiek kešatmiņas notīrīšana…",
   "Clear cache": "Notīrīt kešatmiņu",
-  "Clear cache ({{size}})": "Notīrīt kešatmiņu ({{size}})"
+  "Clear cache ({{size}})": "Notīrīt kešatmiņu ({{size}})",
+  "Camera disabled": "Kamera atspējota",
+  "Connect an external USB camera": "Pievienot ārēju USB kameru",
+  "Default framerate": "Noklusējuma kadru ātrums",
+  "Framerate used for new projects": "Jauniem projektiem izmantotais kadru ātrums",
+  "Share cameras": "Koplietot kameras",
+  "Expose the cameras so they can be used from other devices": "Padara kameras pieejamas, lai tās varētu izmantot no citām ierīcēm",
+  "Expose the cameras so they can be used from other devices ({{hostname}}:{{port}}, using {{token}})": "Padara kameras pieejamas, lai tās varētu izmantot no citām ierīcēm ({{hostname}}:{{port}}, izmantojot {{token}})",
+  "Auto": "Auto",
+  "Automatic rotation": "Automātiska pagriešana",
+  "Rotation": "Pagriešana"
 }

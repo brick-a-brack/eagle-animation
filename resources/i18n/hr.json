@@ -469,5 +469,15 @@
   "The cache is there to improve the application's performance and can be safely deleted": "Predmemorija služi za poboljšanje performansi aplikacije i može se sigurno izbrisati",
   "Clearing cache…": "Brisanje predmemorije…",
   "Clear cache": "Obriši predmemoriju",
-  "Clear cache ({{size}})": "Obriši predmemoriju ({{size}})"
+  "Clear cache ({{size}})": "Obriši predmemoriju ({{size}})",
+  "Camera disabled": "Kamera onemogućena",
+  "Connect an external USB camera": "Poveži vanjsku USB kameru",
+  "Default framerate": "Zadani broj sličica u sekundi",
+  "Framerate used for new projects": "Broj sličica u sekundi za nove projekte",
+  "Share cameras": "Dijeli kamere",
+  "Expose the cameras so they can be used from other devices": "Izlaže kamere kako bi se mogle koristiti s drugih uređaja",
+  "Expose the cameras so they can be used from other devices ({{hostname}}:{{port}}, using {{token}})": "Izlaže kamere kako bi se mogle koristiti s drugih uređaja ({{hostname}}:{{port}}, pomoću {{token}})",
+  "Auto": "Auto",
+  "Automatic rotation": "Automatska rotacija",
+  "Rotation": "Rotacija"
 }

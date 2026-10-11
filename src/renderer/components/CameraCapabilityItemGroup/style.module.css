@@ -1,0 +1,29 @@
+/* The whole line as one pill: the boolean button and the control it governs share a
+   single surface, so they read as one setting rather than two.
+
+   Capped at the width of the widest standard control — CustomSlider's 300px, Select
+   stops at 250px — so a group lines up with the plain rows above and below it instead
+   of running wider than them. */
+.row {
+  align-items: center;
+  background-color: var(--color-theme-medium);
+  border-radius: 44px;
+  display: flex;
+  gap: var(--space-small);
+  max-width: 500px;
+  padding: var(--space-tiny);
+  position: relative;
+  width: 100%;
+}
+
+.control {
+  align-items: center;
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  padding-right: var(--space-medium);
+}
+
+.control > * {
+  width: 100%;
+}

@@ -1,4 +1,3 @@
-import { isIos } from '@braintree/browser-detection';
 import DesktopNavigation from '@components/DesktopNavigation';
 import HomeStats from '@components/HomeStats';
 import HomeToolbar from '@components/HomeToolbar';
@@ -11,10 +10,12 @@ import Tour from '@components/Tour';
 import UpdateBanner from '@components/UpdateBanner';
 import VersionTagOverlay from '@components/VersionTagOverlay';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import useAppCapabilities from '@hooks/useAppCapabilities';
 import useDiscordActivity from '@hooks/useDiscordActivity';
 import useFullscreen from '@hooks/useFullscreen';
 import useProjects from '@hooks/useProjects';
 import useSettings from '@hooks/useSettings';
+import useToucanCameraServer from '@hooks/useToucanCameraServer';
 import faDownLeftAndUpRightToCenter from '@icons/faDownLeftAndUpRightToCenter';
 import faGear from '@icons/faGear';
 import faKeyboard from '@icons/faKeyboard';
@@ -31,9 +32,11 @@ const HomeView = ({ t }) => {
   const { projects, actions: projectsActions } = useProjects();
 
   const { settings } = useSettings();
+  const { appCapabilities } = useAppCapabilities();
   const navigate = useNavigate();
   const { isFullscreen, enterFullscreen, exitFullscreen } = useFullscreen();
   useDiscordActivity({ description: t('Ready to animate') });
+  useToucanCameraServer();
 
   const [search, setSearch] = useState('');
   const [favoritesOnly, setFavoritesOnly] = useState(false);
@@ -128,15 +131,15 @@ const HomeView = ({ t }) => {
   const primaryActions = [];
 
   const secondaryActions = [
-    ...(settings?.EVENT_MODE_ENABLED ? [{ label: t('Sync list'), icon: faListCheck, onClick: handleAction('SYNC_LIST') }] : []),
-    ...(!isIos()
+    ...(settings?.EVENT_MODE_ENABLED && appCapabilities.includes('BACKGROUND_SYNC') ? [{ label: t('Sync list'), icon: faListCheck, onClick: handleAction('SYNC_LIST') }] : []),
+    ...(appCapabilities.includes('FULLSCREEN')
       ? [
           isFullscreen
             ? { label: t('Exit fullscreen'), icon: faDownLeftAndUpRightToCenter, onClick: handleAction('EXIT_FULLSCREEN') }
             : { label: t('Fullscreen'), icon: faUpRightAndDownLeftFromCenter, onClick: handleAction('ENTER_FULLSCREEN') },
         ]
       : []),
-    { label: t('Shortcuts'), icon: faKeyboard, onClick: handleAction('SHORTCUTS') },
+    ...(appCapabilities.includes('SHORTCUTS') ? [{ label: t('Shortcuts'), icon: faKeyboard, onClick: handleAction('SHORTCUTS') }] : []),
     { label: t('Settings'), icon: faGear, onClick: handleAction('SETTINGS') },
   ];
 

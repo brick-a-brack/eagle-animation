@@ -1,0 +1,92 @@
+EAGLE ANIMATION - GOOGLE PLAY STORE LISTING (EN)
+================================================
+
+
+------------------------------------------------
+SHORT DESCRIPTION (max 80 characters)
+------------------------------------------------
+
+RECOMMENDED:
+Free, open-source stop motion studio. Onion skin, grid tools, no ads.   [69]
+
+ALTERNATIVES:
+Make stop motion films. Free, open-source, no ads, no account needed.   [69]
+Free stop motion animation studio. All tools included, no ads, no cost. [71]
+Animate frame by frame. Free and open-source stop motion for everyone.  [70]
+
+
+------------------------------------------------
+FULL DESCRIPTION (max 4000 characters)
+------------------------------------------------
+
+Eagle Animation is a free, open-source stop motion animation studio. Shoot
+your film frame by frame, preview it instantly, and export it as a video.
+No ads, no account, no paid upgrade - every feature is included.
+
+Built by Brick a Brack, the non-profit behind Brickfilms.com, for LEGO
+brickfilms, clay animation, paper cut-outs and anything else you can move
+one frame at a time.
+
+
+ANIMATE WITH THE RIGHT TOOLS
+
+- Onion skin: see the previous frames through the live view and nail every
+  movement.
+- Difference mode: instantly spot what moved between two frames.
+- Grid and guides: classic grid, center lines and margins, with adjustable
+  opacity, lines and columns.
+- Live playback: play, loop, or short play the last frames to check your
+  animation without leaving the camera.
+- Friendly timeline: duplicate, deduplicate, hide, reorder or delete frames
+  in a single tap.
+
+
+SHOOT LIKE A PRO
+
+- Full manual camera control: exposure, shutter speed, ISO, aperture, white
+  balance, focus, brightness, contrast, saturation, sharpness and zoom.
+- Frame averaging: capture several shots and merge them automatically to
+  remove picture noise.
+- Masking: capture two shots and paint away what you want to hide - no green
+  screen needed.
+- Aspect ratios: 4:3, 16:9, cinema, square, story, social media or your own
+  custom ratio.
+- Multi-scene projects: split your film into scenes and keep everything
+  organised.
+
+
+EXPORT YOUR FILM
+
+- Export to video in H264, HEVC, ProRes, VP8 or VP9, up to your camera's
+  full resolution.
+- Choose your animation framerate, and a different output framerate if you
+  need one.
+- Automatically duplicate the first and last frames, or any duplicated
+  frame.
+- Export the raw frames as JPEG, PNG or WEBP to finish your film in any
+  video editor.
+
+
+ANIMATE EVERYWHERE
+
+Eagle Animation also runs on Windows, macOS, Linux and directly in your web
+browser, so you can start on your phone and carry on at your desk.
+
+Available in 23 languages: English, French, German, Spanish, Italian,
+Portuguese, Polish, Dutch, Russian, Czech, Slovak, Slovenian, Croatian,
+Romanian, Hungarian, Bulgarian, Greek, Danish, Swedish, Finnish, Latvian,
+Lithuanian and Esperanto.
+
+
+FREE AND OPEN SOURCE
+
+Eagle Animation is published under the GPLv3 licence and developed in the
+open on GitHub. No ads, no subscription, no locked features - just a tool
+made by animators, for animators.
+
+Join our Discord community to get help, share your films and suggest
+features: https://discord.gg/S9R6bXeU7m
+
+Website: https://eagle-animation.com
+Web app: https://app.eagle-animation.com
+Source code: https://github.com/brick-a-brack/eagle-animation

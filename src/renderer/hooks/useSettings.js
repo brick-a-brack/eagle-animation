@@ -1,4 +1,4 @@
-import { PARTNER_API } from '@config-web';
+import { DEFAULT_FPS, PARTNER_API } from '@config-web';
 import { currentLanguage, setLanguage } from '@i18n';
 import { useCallback, useEffect, useState } from 'react';
 
@@ -12,6 +12,7 @@ const DEFAULT_SETTINGS = {
   AVERAGING_VALUE: 3,
   LANGUAGE: currentLanguage(),
   SHORT_PLAY: 20,
+  DEFAULT_FPS,
   RATIO_OPACITY: 0.5,
   GRID_OPACITY: 1,
   GRID_MODES: ['GRID'], // GRID | CENTER | MARGINS
@@ -25,52 +26,77 @@ const DEFAULT_SETTINGS = {
   EVENT_MODE_ENABLED: false,
   EVENT_KEY: '',
   EVENT_API: PARTNER_API,
-  COMPATIBILITY_MODE_CAMERAS: false,
+  TOUCAN_CAMERA_SERVER_DISABLED: false,
+  TOUCAN_CAMERA_SERVER_EXPOSE: false,
   TELEMETRY_ENABLED: true,
   TOURS_COMPLETED: [], // Keys of the guided tours the user has already seen
 };
 
+// Settings are shared process-wide: several components call useSettings() at the
+// same time (a view, a form, useToucanCameraServer…) and they must all see a write
+// made through any one of them. Without this, an instance kept the value it loaded
+// at mount and silently went stale.
+let CURRENT_SETTINGS = null;
+let SETTINGS_LISTENERS = [];
+
+// setSettings is a read-modify-write: two overlapping calls would start from the
+// same state, the later one silently dropping the change made by the other.
+let SETTINGS_WRITE_QUEUE = Promise.resolve();
+
+const broadcastSettings = (settings) => {
+  CURRENT_SETTINGS = settings;
+  window.setTelemetryEnabled?.(settings.TELEMETRY_ENABLED !== false);
+  SETTINGS_LISTENERS.forEach((listener) => listener(settings));
+};
+
 function useSettings() {
-  const [settings, setSettings] = useState(null);
+  const [settings, setSettings] = useState(CURRENT_SETTINGS);
+
+  // Subscribe to writes made by any other instance
+  useEffect(() => {
+    SETTINGS_LISTENERS.push(setSettings);
+    return () => {
+      SETTINGS_LISTENERS = SETTINGS_LISTENERS.filter((listener) => listener !== setSettings);
+    };
+  }, []);
 
   // Initial load
   useEffect(() => {
     window.EA('GET_SETTINGS').then((definedSettings) => {
-      const merged = { ...DEFAULT_SETTINGS, ...definedSettings };
-      window.setTelemetryEnabled?.(merged.TELEMETRY_ENABLED !== false);
-      setSettings(merged);
+      broadcastSettings({ ...DEFAULT_SETTINGS, ...definedSettings });
     });
   }, []);
 
   // Refresh action
   const actionRefreshSettings = useCallback(async () => {
     const definedSettings = await window.EA('GET_SETTINGS');
-    const merged = { ...DEFAULT_SETTINGS, ...definedSettings };
-    window.setTelemetryEnabled?.(merged.TELEMETRY_ENABLED !== false);
-    setSettings(merged);
+    broadcastSettings({ ...DEFAULT_SETTINGS, ...definedSettings });
   }, []);
 
   // Set action
-  const actionSetSettings = useCallback(async (newSettings) => {
-    // Compute settings object
-    const definedSettings = await window.EA('GET_SETTINGS');
-    let computedNewSettings = {
-      ...DEFAULT_SETTINGS,
-      ...definedSettings,
-      ...newSettings,
-    };
-    if (computedNewSettings.GRID_MODES.length === 0) {
-      computedNewSettings.GRID_MODES = ['GRID'];
-    }
+  const actionSetSettings = useCallback((newSettings) => {
+    SETTINGS_WRITE_QUEUE = SETTINGS_WRITE_QUEUE.catch(() => {}).then(async () => {
+      // Build on the in-memory value, kept up to date by every write: re-reading the
+      // store would turn a momentary read failure into a save of the defaults.
+      const definedSettings = CURRENT_SETTINGS || (await window.EA('GET_SETTINGS'));
+      let computedNewSettings = {
+        ...DEFAULT_SETTINGS,
+        ...definedSettings,
+        ...newSettings,
+      };
+      if (computedNewSettings.GRID_MODES.length === 0) {
+        computedNewSettings.GRID_MODES = ['GRID'];
+      }
 
-    // Update language
-    if (computedNewSettings.LANGUAGE) {
-      setLanguage(computedNewSettings.LANGUAGE);
-    }
+      // Update language
+      if (computedNewSettings.LANGUAGE) {
+        setLanguage(computedNewSettings.LANGUAGE);
+      }
 
-    window.setTelemetryEnabled?.(computedNewSettings.TELEMETRY_ENABLED !== false);
-    setSettings(computedNewSettings);
-    await window.EA('SAVE_SETTINGS', { settings: computedNewSettings });
+      broadcastSettings(computedNewSettings);
+      await window.EA('SAVE_SETTINGS', { settings: computedNewSettings });
+    });
+    return SETTINGS_WRITE_QUEUE;
   }, []);
 
   return {

@@ -23,7 +23,7 @@ const openedDb = db.open();
 
 const time = () => Math.floor(new Date().getTime() / 1000);
 
-export const generateProjectObject = (name) => ({
+export const generateProjectObject = (name, framerate = DEFAULT_FPS) => ({
   title: name,
   version: VERSION,
   creation: time(),
@@ -34,16 +34,16 @@ export const generateProjectObject = (name) => ({
     {
       id: uuidv4(),
       title: '',
-      framerate: DEFAULT_FPS,
+      framerate: Number(framerate) || DEFAULT_FPS,
       pictures: [],
       deleted: false,
     },
   ],
 });
 
-export const createProject = async (name) => {
+export const createProject = async (name, framerate = DEFAULT_FPS) => {
   await openedDb;
-  return db.projects.add({ project: generateProjectObject(name) });
+  return db.projects.add({ project: generateProjectObject(name, framerate) });
 };
 
 export const getAllProjects = async () => {

@@ -2,6 +2,7 @@ import CustomSlider from '@components/CustomSlider';
 import Heading from '@components/Heading';
 import NumberInput from '@components/NumberInput';
 import Switch from '@components/Switch';
+import { DEFAULT_FPS } from '@config-web';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import faArrowsRepeat from '@icons/faArrowsRepeat';
 import faDiamondHalfStroke from '@icons/faDiamondHalfStroke';
@@ -15,7 +16,7 @@ import { withTranslation } from 'react-i18next';
 
 import * as style from './style.module.css';
 
-const ToolsWindow = ({ t, gridStatus = false, differenceStatus = false, onionValue = 1, loopStatus = false, shortPlayStatus = false, fps = 12, framePosition = false, onAction = null }) => {
+const ToolsWindow = ({ t, gridStatus = false, differenceStatus = false, onionValue = 1, loopStatus = false, shortPlayStatus = false, fps = DEFAULT_FPS, framePosition = false, onAction = null }) => {
   const form = useForm({
     mode: 'all',
     defaultValues: {

@@ -4,6 +4,7 @@ import Heading from '@components/Heading';
 import Input from '@components/Input';
 import NumberInput from '@components/NumberInput';
 import Select from '@components/Select';
+import { DEFAULT_FPS } from '@config-web';
 import { parseRatio } from '@core/ratio';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
@@ -11,7 +12,7 @@ import { withTranslation } from 'react-i18next';
 
 import * as style from './style.module.css';
 
-const SceneSettingsWindow = ({ t, onSceneSettingsChange = () => {}, onSceneDelete = () => {}, title = '', fps = 12, ratio = null, canDelete = false }) => {
+const SceneSettingsWindow = ({ t, onSceneSettingsChange = () => {}, onSceneDelete = () => {}, title = '', fps = DEFAULT_FPS, ratio = null, canDelete = false }) => {
   const RATIOS = [
     { value: '', label: t('Automatic') },
     { value: '4:3', label: '4:3 ' + t('(Old TV)') },

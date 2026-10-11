@@ -10,7 +10,7 @@ import { withTranslation } from 'react-i18next';
 
 import * as style from './style.module.css';
 
-const PictureWindow = ({ t, isHidden = false, canUseMaskingEditor = false, duplicateCount = 1, onAction = null }) => {
+const PictureWindow = ({ t, isHidden = false, canUseMaskingEditor = false, duplicateCount = 1, maxDuplicateCount = Infinity, onAction = null }) => {
   const handleAction = (action) => () => {
     if (onAction) {
       onAction(action);
@@ -35,7 +35,7 @@ const PictureWindow = ({ t, isHidden = false, canUseMaskingEditor = false, dupli
           <FontAwesomeIcon icon={faImages} className={style.icon} />
           {t('Duplicate frame')}
         </span>
-        <NumberInput key={duplicateCount} min={1} defaultValue={duplicateCount} onValueChange={(value) => onAction && onAction('SET_DUPLICATE_COUNT', value)} />
+        <NumberInput key={duplicateCount} min={1} max={maxDuplicateCount} defaultValue={duplicateCount} onValueChange={(value) => onAction && onAction('SET_DUPLICATE_COUNT', value)} />
       </div>
 
       {canUseMaskingEditor && (

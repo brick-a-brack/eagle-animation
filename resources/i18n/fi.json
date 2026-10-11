@@ -465,5 +465,15 @@
   "The cache is there to improve the application's performance and can be safely deleted": "Välimuisti parantaa sovelluksen suorituskykyä, ja sen voi poistaa turvallisesti",
   "Clearing cache…": "Tyhjennetään välimuistia…",
   "Clear cache": "Tyhjennä välimuisti",
-  "Clear cache ({{size}})": "Tyhjennä välimuisti ({{size}})"
+  "Clear cache ({{size}})": "Tyhjennä välimuisti ({{size}})",
+  "Camera disabled": "Kamera poistettu käytöstä",
+  "Connect an external USB camera": "Yhdistä ulkoinen USB-kamera",
+  "Default framerate": "Oletuskuvataajuus",
+  "Framerate used for new projects": "Uusien projektien kuvataajuus",
+  "Share cameras": "Jaa kamerat",
+  "Expose the cameras so they can be used from other devices": "Asettaa kamerat saataville, jotta niitä voi käyttää muilta laitteilta",
+  "Expose the cameras so they can be used from other devices ({{hostname}}:{{port}}, using {{token}})": "Asettaa kamerat saataville, jotta niitä voi käyttää muilta laitteilta ({{hostname}}:{{port}}, tunnuksella {{token}})",
+  "Auto": "Auto",
+  "Automatic rotation": "Automaattinen kierto",
+  "Rotation": "Kierto"
 }

@@ -14,7 +14,7 @@ const exists = async (path) => {
 };
 
 // Generate empty project
-export const generateProjectObject = (name) => ({
+export const generateProjectObject = (name, framerate = DEFAULT_FPS) => ({
   title: name,
   version: VERSION,
   creation: time(),
@@ -25,7 +25,7 @@ export const generateProjectObject = (name) => ({
     {
       id: randomUUID(),
       title: '',
-      framerate: DEFAULT_FPS,
+      framerate: Number(framerate) || DEFAULT_FPS,
       pictures: [],
       deleted: false,
     },
@@ -100,11 +100,11 @@ export const projectSave = async (path, data, updateTime = true) => {
 };
 
 // Project create
-export const createProject = async (path, name) => {
+export const createProject = async (path, name, framerate = DEFAULT_FPS) => {
   const directoryName = randomUUID();
   const projectPath = join(path, directoryName);
   await mkdirp(projectPath);
-  await projectSave(projectPath, generateProjectObject(name));
+  await projectSave(projectPath, generateProjectObject(name, framerate));
   return getProjectData(projectPath);
 };
 

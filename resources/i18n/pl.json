@@ -486,5 +486,15 @@
   "The cache is there to improve the application's performance and can be safely deleted": "Pamięć podręczna służy do poprawy wydajności aplikacji i można ją bezpiecznie usunąć",
   "Clearing cache…": "Czyszczenie pamięci podręcznej…",
   "Clear cache": "Wyczyść pamięć podręczną",
-  "Clear cache ({{size}})": "Wyczyść pamięć podręczną ({{size}})"
+  "Clear cache ({{size}})": "Wyczyść pamięć podręczną ({{size}})",
+  "Camera disabled": "Kamera wyłączona",
+  "Connect an external USB camera": "Podłącz zewnętrzną kamerę USB",
+  "Default framerate": "Domyślna częstotliwość klatek",
+  "Framerate used for new projects": "Częstotliwość klatek dla nowych projektów",
+  "Share cameras": "Udostępnij kamery",
+  "Expose the cameras so they can be used from other devices": "Udostępnia kamery, aby można było ich używać z innych urządzeń",
+  "Expose the cameras so they can be used from other devices ({{hostname}}:{{port}}, using {{token}})": "Udostępnia kamery, aby można było ich używać z innych urządzeń ({{hostname}}:{{port}}, przy użyciu {{token}})",
+  "Auto": "Auto",
+  "Automatic rotation": "Automatyczny obrót",
+  "Rotation": "Obrót"
 }

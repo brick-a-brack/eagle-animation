@@ -465,5 +465,15 @@
   "The cache is there to improve the application's performance and can be safely deleted": "A gyorsítótár az alkalmazás teljesítményét javítja, és biztonságosan törölhető",
   "Clearing cache…": "Ürítés folyamatban…",
   "Clear cache": "Gyorsítótár ürítése",
-  "Clear cache ({{size}})": "Gyorsítótár ürítése ({{size}})"
+  "Clear cache ({{size}})": "Gyorsítótár ürítése ({{size}})",
+  "Camera disabled": "Kamera letiltva",
+  "Connect an external USB camera": "Külső USB-kamera csatlakoztatása",
+  "Default framerate": "Alapértelmezett képkockasebesség",
+  "Framerate used for new projects": "Az új projektekhez használt képkockasebesség",
+  "Share cameras": "Kamerák megosztása",
+  "Expose the cameras so they can be used from other devices": "Elérhetővé teszi a kamerákat, hogy más eszközökről is használhatók legyenek",
+  "Expose the cameras so they can be used from other devices ({{hostname}}:{{port}}, using {{token}})": "Elérhetővé teszi a kamerákat, hogy más eszközökről is használhatók legyenek ({{hostname}}:{{port}}, ezzel: {{token}})",
+  "Auto": "Auto",
+  "Automatic rotation": "Automatikus elfordulás",
+  "Rotation": "Elfordulás"
 }

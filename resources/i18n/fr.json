@@ -488,5 +488,15 @@
   "The cache is there to improve the application's performance and can be safely deleted": "Le cache sert à améliorer les performances de l'application et peut être supprimé sans risque",
   "Clearing cache…": "Vidage du cache…",
   "Clear cache": "Vider le cache",
-  "Clear cache ({{size}})": "Vider le cache ({{size}})"
+  "Clear cache ({{size}})": "Vider le cache ({{size}})",
+  "Camera disabled": "Caméra désactivée",
+  "Connect an external USB camera": "Connecter une caméra USB externe",
+  "Default framerate": "IPS par défaut",
+  "Framerate used for new projects": "IPS utilisé pour les nouveaux projets",
+  "Share cameras": "Partager les caméras",
+  "Expose the cameras so they can be used from other devices": "Expose les caméras pour qu'elles soient utilisables depuis d'autres appareils",
+  "Expose the cameras so they can be used from other devices ({{hostname}}:{{port}}, using {{token}})": "Expose les caméras pour qu'elles soient utilisables depuis d'autres appareils ({{hostname}}:{{port}}, avec {{token}})",
+  "Auto": "Auto",
+  "Automatic rotation": "Rotation automatique",
+  "Rotation": "Rotation"
 }

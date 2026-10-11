@@ -1,13 +1,10 @@
 .bgd {
-  background: rgb(0 0 0 / 0%);
   height: 100vh;
   left: 0;
-  opacity: 1;
   overflow: hidden;
   pointer-events: none;
   position: fixed;
   top: 0;
-  transition: background-color 0.3s ease-in-out;
   user-select: none;
   width: 100%;
   z-index: 999999;
@@ -19,10 +16,13 @@
   bottom: 0;
   box-shadow: 0 0 10px 0 rgb(114 114 114 / 10%);
   box-sizing: border-box;
-  max-height: 100vh;
-  min-height: 35vh;
+  max-height: calc(100vh - var(--safe-area-top));
+  min-height: 20vh;
   opacity: 0;
   overflow: auto;
+  padding-bottom: var(--safe-area-bottom);
+  padding-left: var(--safe-area-left);
+  padding-right: var(--safe-area-right);
   position: fixed;
   transform: translate(0%, 101%);
   transition:
@@ -41,7 +41,6 @@
 }
 
 .opened {
-  background: rgb(0 13 22 / 40%);
   pointer-events: all;
 }
 
@@ -57,7 +56,7 @@
   height: 1.25rem;
   opacity: 1;
   position: absolute;
-  right: var(--space-medium);
+  right: calc(var(--space-medium) + var(--safe-area-right));
   top: var(--space-medium);
   transition: opacity 0.3s ease-in-out;
   user-select: none;

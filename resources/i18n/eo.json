@@ -479,5 +479,15 @@
   "The cache is there to improve the application's performance and can be safely deleted": "La kaŝmemoro servas por plibonigi la rendimenton de la aplikaĵo kaj povas esti forigita sendanĝere",
   "Clearing cache…": "Malplenigado de la kaŝmemoro…",
   "Clear cache": "Malplenigi la kaŝmemoron",
-  "Clear cache ({{size}})": "Malplenigi la kaŝmemoron ({{size}})"
+  "Clear cache ({{size}})": "Malplenigi la kaŝmemoron ({{size}})",
+  "Camera disabled": "Kamerao malŝaltita",
+  "Connect an external USB camera": "Konekti eksteran USB-kameraon",
+  "Default framerate": "Defaŭltaj bildoj je sekundo",
+  "Framerate used for new projects": "Bildoj je sekundo por novaj projektoj",
+  "Share cameras": "Kunhavigi kameraojn",
+  "Expose the cameras so they can be used from other devices": "Disponebligas la kameraojn por ke ili estu uzeblaj de aliaj aparatoj",
+  "Expose the cameras so they can be used from other devices ({{hostname}}:{{port}}, using {{token}})": "Disponebligas la kameraojn por ke ili estu uzeblaj de aliaj aparatoj ({{hostname}}:{{port}}, uzante {{token}})",
+  "Auto": "Aŭto",
+  "Automatic rotation": "Aŭtomata turno",
+  "Rotation": "Turno"
 }

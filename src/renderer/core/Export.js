@@ -18,7 +18,8 @@ export const ExportFrames = async (
     exportMaskingLayers: false,
   },
   onProgress = () => {},
-  onBufferCreate = () => {}
+  onBufferCreate = () => {},
+  onBufferCreateFromUrl = null
 ) => {
   const emitProgress = (v) => (typeof onProgress === 'function' ? onProgress(v) : null);
   const resolution = floorResolution(opts.resolution);
@@ -72,24 +73,31 @@ export const ExportFrames = async (
 
     // If buffer is not cached, compute it
     if (!cachedBuffers.has(`${file.type}:${file.id}`)) {
-      const frameArrayBuffer = await fetch(
-        getPictureLink(file.link, {
-          ...(copiedResolution && copiedResolution.width ? { w: copiedResolution.width } : {}),
-          ...(copiedResolution && copiedResolution.height ? { h: copiedResolution.height } : {}),
-          ...(copiedResolution
-            ? {
-                m: 'cover',
-                q: 100,
-              }
-            : {}),
-          ...(typeof opts.forceFileExtension !== 'undefined' ? { f: computedExtension } : {}),
-          c: false,
-        })
-      ).then((res) => res.arrayBuffer());
-
-      // Write file on disk/ram
+      const pictureLink = getPictureLink(file.link, {
+        ...(copiedResolution && copiedResolution.width ? { w: copiedResolution.width } : {}),
+        ...(copiedResolution && copiedResolution.height ? { h: copiedResolution.height } : {}),
+        ...(copiedResolution
+          ? {
+              m: 'cover',
+              q: 100,
+            }
+          : {}),
+        ...(typeof opts.forceFileExtension !== 'undefined' ? { f: computedExtension } : {}),
+        c: false,
+      });
       const bufferId = v4();
-      await onBufferCreate(bufferId, Buffer.from(frameArrayBuffer));
+
+      if (onBufferCreateFromUrl) {
+        // The backend renders the frame from this link on its own. It still gets
+        // the framing decided here, but a full-resolution frame never travels
+        // through the renderer — on Android that crossing is base64 over Binder.
+        await onBufferCreateFromUrl(bufferId, pictureLink);
+      } else {
+        // Write file on disk/ram
+        const frameArrayBuffer = await fetch(pictureLink).then((res) => res.arrayBuffer());
+        await onBufferCreate(bufferId, Buffer.from(frameArrayBuffer));
+      }
+
       cachedBuffers.set(`${file.type}:${file.id}`, bufferId);
     }
 
@@ -105,6 +113,7 @@ export const ExportFrames = async (
       extension: computedExtension,
       mimeType: extensionToMimeType(computedExtension),
       bufferId: cachedBuffers.get(`${file.type}:${file.id}`),
+      link: file.link,
     });
   }
 

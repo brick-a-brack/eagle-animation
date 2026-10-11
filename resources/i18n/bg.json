@@ -465,5 +465,15 @@
   "The cache is there to improve the application's performance and can be safely deleted": "Кешът служи за подобряване на производителността на приложението и може безопасно да бъде изтрит",
   "Clearing cache…": "Кешът се изчиства…",
   "Clear cache": "Изчистване на кеша",
-  "Clear cache ({{size}})": "Изчистване на кеша ({{size}})"
+  "Clear cache ({{size}})": "Изчистване на кеша ({{size}})",
+  "Camera disabled": "Камерата е изключена",
+  "Connect an external USB camera": "Свързване на външна USB камера",
+  "Default framerate": "Кадрова честота по подразбиране",
+  "Framerate used for new projects": "Кадрова честота за новите проекти",
+  "Share cameras": "Споделяне на камерите",
+  "Expose the cameras so they can be used from other devices": "Предоставя камерите, за да могат да се използват от други устройства",
+  "Expose the cameras so they can be used from other devices ({{hostname}}:{{port}}, using {{token}})": "Предоставя камерите, за да могат да се използват от други устройства ({{hostname}}:{{port}}, чрез {{token}})",
+  "Auto": "Авто",
+  "Automatic rotation": "Автоматично завъртане",
+  "Rotation": "Завъртане"
 }

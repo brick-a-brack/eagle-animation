@@ -1,5 +1,6 @@
+import { isIos } from '@braintree/browser-detection';
 import { getEncodingProfile, getFFmpegArgs, parseFFmpegLogs } from '@common/ffmpeg';
-import { LS_SETTINGS } from '@config-web';
+import { LS_CAMERA_SETTINGS, LS_SETTINGS } from '@config-web';
 import { extensionToMimeType } from '@core/frameTypes';
 import { fetchFile } from '@ffmpeg/util';
 import { saveAs } from 'file-saver';
@@ -110,7 +111,8 @@ export const Actions = {
     return Promise.all(projects.map((d) => computeProject(d)));
   },
   NEW_PROJECT: async (evt, { title }) => {
-    const id = await createProject(title);
+    const settings = await Actions.GET_SETTINGS();
+    const id = await createProject(title, settings?.DEFAULT_FPS);
     const project = await getProject(id);
     return computeProject(project);
   },
@@ -161,6 +163,25 @@ export const Actions = {
       ...settings,
     };
   },
+  GET_CAMERA_SETTINGS: async (evt, { cameraId }) => {
+    try {
+      return JSON.parse(localStorage.getItem(LS_CAMERA_SETTINGS))?.[cameraId] || {};
+    } catch (err) {
+      return {};
+    }
+  },
+  SAVE_CAMERA_SETTINGS: async (evt, { cameraId, settings }) => {
+    let allSettings = {};
+    try {
+      allSettings = JSON.parse(localStorage.getItem(LS_CAMERA_SETTINGS)) || {};
+    } catch (err) {
+      allSettings = {};
+    }
+    localStorage.setItem(LS_CAMERA_SETTINGS, JSON.stringify({ ...allSettings, [cameraId]: settings || {} }));
+    return {
+      ...settings,
+    };
+  },
   SYNC: async () => {
     return null;
   },
@@ -168,9 +189,12 @@ export const Actions = {
     return [];
   },
   APP_CAPABILITIES: async () => {
-    const capabilities = ['EXPORT_VIDEO', 'EXPORT_VIDEO_H264', 'EXPORT_VIDEO_VP8', 'EXPORT_VIDEO_PRORES', 'EXPORT_FRAMES', 'EXPORT_FRAMES_ZIP'];
+    const capabilities = ['SHORTCUTS', 'EXPORT_VIDEO', 'EXPORT_VIDEO_H264', 'EXPORT_VIDEO_VP8', 'EXPORT_VIDEO_PRORES', 'EXPORT_FRAMES', 'EXPORT_FRAMES_ZIP'];
     if (await isWebCodecsAvailable('hevc')) capabilities.push('EXPORT_VIDEO_HEVC');
     if (await isWebCodecsAvailable('vp9')) capabilities.push('EXPORT_VIDEO_VP9');
+    if (!isIos()) {
+      capabilities.push('FULLSCREEN');
+    }
     return capabilities;
   },
   EXPORT_SELECT_PATH: async (evt, { compress_as_zip = false }) => {
@@ -254,7 +278,10 @@ export const Actions = {
     }
 
     if (mode === 'video') {
-      const fps = custom_output_framerate ? custom_output_framerate_number : project.project.scenes[trackId].framerate;
+      // Two distinct rates: the animation plays at the scene framerate, while the
+      // custom output framerate only changes the rate of the video file itself.
+      const animationFps = project.project.scenes[trackId].framerate;
+      const outputFps = custom_output_framerate && custom_output_framerate_number ? Math.max(animationFps, Number(custom_output_framerate_number)) : animationFps;
       const useWebCodecs = await isWebCodecsAvailable(format);
 
       if (useWebCodecs) {
@@ -264,7 +291,7 @@ export const Actions = {
           frameBuffers.push({ buffer });
         }
 
-        const result = await exportWithWebCodecs(frameBuffers, format, fps, (progress) => {
+        const result = await exportWithWebCodecs(frameBuffers, format, animationFps, outputFps, (progress) => {
           sendEvent('FFMPEG_PROGRESS', { progress });
         });
 
@@ -303,5 +330,7 @@ export const Actions = {
     return true;
   },
   DISCORD_ACTIVITY: () => {},
-  GET_TOUCAN_CAMERA_SERVER_CONFIG: () => null,
+  TOUCAN_CAMERA_SERVER_GET_CONFIG: () => null,
+  TOUCAN_CAMERA_SERVER_SET_CONFIG: () => null,
+  TOUCAN_CAMERA_SERVER_STOP: () => null,
 };

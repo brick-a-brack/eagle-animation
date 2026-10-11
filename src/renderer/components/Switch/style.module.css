@@ -30,6 +30,15 @@
   width: 18px;
 }
 
+.disabled {
+  cursor: not-allowed;
+  opacity: 0.2;
+}
+
+.disabled .slider {
+  cursor: not-allowed;
+}
+
 input:checked + .slider {
   background-color: var(--color-primary);
 }
@@ -40,9 +49,4 @@ input:focus + .slider {
 
 input:checked + .slider::before {
   transform: translateX(19px);
-}
-
-.disabled {
-  cursor: not-allowed;
-  opacity: 0.2;
 }

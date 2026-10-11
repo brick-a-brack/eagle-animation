@@ -290,6 +290,18 @@ const Export = ({ t }) => {
       });
     };
 
+    // When the backend can render an export frame from its link, hand it the link
+    // instead of the bytes — it saves a full round-trip of every frame.
+    const createBufferFromUrl = appCapabilities.includes('EXPORT_BUFFER_FROM_URL')
+      ? async (bufferId, url) => {
+          await window.EA('EXPORT_BUFFER_FROM_URL', {
+            project_id: id,
+            buffer_id: bufferId,
+            url,
+          });
+        }
+      : null;
+
     const exportSettings = {
       duplicateFramesCopy: data.duplicateFramesCopy,
       duplicateFramesAuto: data.mode === 'send' ? true : data.duplicateFramesAuto,
@@ -303,12 +315,13 @@ const Export = ({ t }) => {
     window.track('project_exported', { projectId: project.id, ...data, ...exportSettings });
 
     // Compute all frames
-    const frames = await ExportFrames(id, Number(track), files, exportSettings, (p) => setFrameRenderingProgress(p), createBuffer);
+    const frames = await ExportFrames(id, Number(track), files, exportSettings, (p) => setFrameRenderingProgress(p), createBuffer, createBufferFromUrl);
 
     // Save frames / video on the disk
     await window.EA('EXPORT', {
       frames: frames.map(({ mimeType, bufferId, ...e }) => ({ ...e, buffer_id: bufferId, mime_type: mimeType })),
       output_path: outputPath,
+      export_resolution: resolution ?? null,
       mode: data.mode,
       format: data.format,
       framerate: project?.scenes?.[Number(track)]?.framerate,

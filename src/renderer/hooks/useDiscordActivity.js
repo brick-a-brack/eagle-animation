@@ -3,21 +3,21 @@ import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
 function useDiscordActivity(options = { description: null, actionIcon: null, actionTitle: null }) {
-  if (IS_DEV) {
-    return null;
-  }
-
   const { t } = useTranslation();
+  const { description = null, actionIcon = null, actionTitle = null } = options;
+
   useEffect(() => {
-    (async () => {
-      await window.EA('DISCORD_ACTIVITY', {
-        description: options.description || null,
-        actionIcon: options.actionIcon || null,
-        actionTitle: options.actionTitle || null,
-        applicationTitle: t('Free Stop Motion Software'),
-      });
-    })();
-  }, [options]);
+    if (IS_DEV) {
+      return;
+    }
+
+    window.EA('DISCORD_ACTIVITY', {
+      description: description || null,
+      actionIcon: actionIcon || null,
+      actionTitle: actionTitle || null,
+      applicationTitle: t('Free Stop Motion Software'),
+    });
+  }, [description, actionIcon, actionTitle, t]);
 
   return null;
 }

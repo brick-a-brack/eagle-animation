@@ -10,12 +10,13 @@ import Input from '@components/Input';
 import NumberInput from '@components/NumberInput';
 import Select from '@components/Select';
 import Switch from '@components/Switch';
-import { DEVICE, LANGUAGES } from '@config-web';
+import { TOUCAN_CAMERA_SERVER_AVAILABLE, LANGUAGES } from '@config-web';
 import { formatFileSize } from '@core/format';
 import useAppCapabilities from '@hooks/useAppCapabilities';
 import useAppVersion from '@hooks/useAppVersion';
 import useCache from '@hooks/useCache';
 import useDataFolder from '@hooks/useDataFolder';
+import useToucanCameraServer from '@hooks/useToucanCameraServer';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { withTranslation } from 'react-i18next';
@@ -29,6 +30,7 @@ const SettingsForm = ({ settings = {}, onUpdate = () => {}, t }) => {
   const { path: dataFolderPath, actions: dataFolderActions } = useDataFolder();
   const { currentVersion, latestVersion, canBeUpdated, actions: appVersionActions } = useAppVersion();
   const { size: cacheSize, isClearing: isClearingCache, actions: cacheActions } = useCache(appCapabilities.includes('CLEAR_CACHE'));
+  const { config: toucanCameraServerConfig } = useToucanCameraServer();
   const form = useForm({
     mode: 'all',
     defaultValues: settings,
@@ -99,6 +101,9 @@ const SettingsForm = ({ settings = {}, onUpdate = () => {}, t }) => {
 
         <Heading h={1}>{t('Playback and navigation')}</Heading>
 
+        <FormGroup label={t('Default framerate')} description={t('Framerate used for new projects')}>
+          <NumberInput register={register('DEFAULT_FPS')} min={1} max={60} tag={t('FPS')} />
+        </FormGroup>
         <FormGroup label={t('Short play')} description={t('Number of frames to play when short play is enabled')}>
           <NumberInput register={register('SHORT_PLAY')} min={1} />
         </FormGroup>
@@ -127,12 +132,30 @@ const SettingsForm = ({ settings = {}, onUpdate = () => {}, t }) => {
             <Switch register={register('SOUNDS')} />
           </div>
         </FormGroup>
-        {DEVICE === 'ELECTRON' && (
-          <FormGroup label={t('Use camera compatibility mode')} description={t('Disables DSLR and remote cameras, may limit available camera settings')}>
-            <div>
-              <Switch register={register('COMPATIBILITY_MODE_CAMERAS')} />
-            </div>
-          </FormGroup>
+        {TOUCAN_CAMERA_SERVER_AVAILABLE && (
+          <>
+            <FormGroup label={t('Use camera compatibility mode')} description={t('Disables DSLR and remote cameras, may limit available camera settings')}>
+              <div>
+                <Switch register={register('TOUCAN_CAMERA_SERVER_DISABLED')} />
+              </div>
+            </FormGroup>
+            <FormGroup
+              label={t('Share cameras')}
+              description={
+                toucanCameraServerConfig?.expose && toucanCameraServerConfig?.port
+                  ? t('Expose the cameras so they can be used from other devices ({{hostname}}:{{port}}, using {{token}})', {
+                      hostname: toucanCameraServerConfig.shareHostname || toucanCameraServerConfig.hostname,
+                      port: toucanCameraServerConfig.port,
+                      token: toucanCameraServerConfig.token,
+                    })
+                  : t('Expose the cameras so they can be used from other devices')
+              }
+            >
+              <div>
+                <Switch register={register('TOUCAN_CAMERA_SERVER_EXPOSE')} disabled={watch('TOUCAN_CAMERA_SERVER_DISABLED')} />
+              </div>
+            </FormGroup>
+          </>
         )}
 
         <Divider />
