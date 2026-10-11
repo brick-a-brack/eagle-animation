@@ -3,20 +3,15 @@
     "sourceType": "module",
     "ecmaVersion": 2022
   },
-  "extends": ["eslint:recommended", "plugin:react/recommended", "plugin:react/jsx-runtime", "@electron-toolkit", "@electron-toolkit/eslint-config-prettier"],
+  "extends": ["eslint:recommended", "plugin:react/recommended", "plugin:react/jsx-runtime", "plugin:react-hooks/recommended", "@electron-toolkit", "@electron-toolkit/eslint-config-prettier"],
   "rules": {
     "react/prop-types": "off",
-    "simple-import-sort/imports": ["error", {
-      "groups": [
-        ["^\\u0000"],
-        ["^node:"],
-        ["^@?\\w"],
-        ["^"],
-        ["^\\."],
-        ["^.+\\.?(graphql)$"],
-        ["^.+\\.?(css)$"]
-      ]
-    }],
+    "simple-import-sort/imports": [
+      "error",
+      {
+        "groups": [["^\\u0000"], ["^node:"], ["^@?\\w"], ["^"], ["^\\."], ["^.+\\.?(graphql)$"], ["^.+\\.?(css)$"]]
+      }
+    ],
     "simple-import-sort/exports": "error"
   },
   "env": {
