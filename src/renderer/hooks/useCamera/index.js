@@ -150,7 +150,16 @@ function useCamera(options = {}) {
         return;
       }
       activeCameraIdRef.current = cameraId;
-      await camera.connect({ setStream: setStreamRef.current });
+      const storedSettings = await loadCameraSettings(cameraId).catch(() => ({}));
+      try {
+        await camera.connect({ setStream: setStreamRef.current }, storedSettings);
+      } catch (err) {
+        // Free the slot so the next attempt retries instead of being skipped
+        console.error('📷 Camera connection failed', err);
+        activeCameraIdRef.current = null;
+        triggerEvent('disconnect');
+        return;
+      }
       // Refresh device list after getUserMedia so real deviceIds become available
       // (browsers return empty deviceIds before permission is granted).
       const updatedCameras = await getCameras(compatibilityMode);
@@ -167,7 +176,7 @@ function useCamera(options = {}) {
         });
       });
     },
-    [triggerEvent, compatibilityMode, restoreCameraSettings]
+    [triggerEvent, compatibilityMode, restoreCameraSettings, loadCameraSettings]
   );
 
   // Action to set stream callback

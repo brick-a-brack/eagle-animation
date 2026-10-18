@@ -1,5 +1,22 @@
 import isFirefox from '@braintree/browser-detection/is-firefox';
 
+// Tried in order when the requested resolution refuses to start: some UVC cameras
+// advertise a top mode (often their photo mode) their firmware cannot stream, and
+// getUserMedia then aborts after a ~10s timeout
+const FALLBACK_RESOLUTIONS = [
+  [3840, 2160],
+  [2560, 1440],
+  [1920, 1080],
+  [1280, 720],
+  [640, 480],
+];
+
+// Errors meaning "that mode did not start", worth retrying with a smaller one
+const RETRYABLE_STREAM_ERRORS = ['AbortError', 'NotReadableError', 'OverconstrainedError'];
+
+// How long we wait for the stream to deliver its first frame
+const STREAM_READY_TIMEOUT = 10000;
+
 class Webcam {
   constructor(deviceId = null) {
     this.stream = false;
@@ -8,39 +25,70 @@ class Webcam {
     this._captureVideo = null;
     this.width = false;
     this.height = false;
+    this._lastWorkingSize = null;
   }
 
   get id() {
     return this?.deviceId || null;
   }
 
-  initStream(width = undefined, height = undefined) {
-    // eslint-disable-next-line no-async-promise-executor
-    return new Promise(async (resolve, reject) => {
-      this.stream = await navigator.mediaDevices
-        .getUserMedia({
-          video: {
-            deviceId: this.deviceId ? { exact: this.deviceId } : undefined,
-            ...(isFirefox()
-              ? {
-                  width: { min: 1, ideal: 1920, max: 99999 },
-                  height: { min: 1, ideal: 1080, max: 99999 },
-                }
-              : {
-                  width: width || 99999,
-                  height: height || 99999,
-                  ...(!width && !height ? { frameRate: { min: 1, ideal: 15, max: 60 } } : {}),
-                }),
-          },
-          audio: false,
-        })
-        .catch(reject);
+  _buildConstraints(width, height) {
+    return {
+      deviceId: this.deviceId ? { exact: this.deviceId } : undefined,
+      ...(isFirefox()
+        ? {
+            width: { min: 1, ideal: width || 1920, max: 99999 },
+            height: { min: 1, ideal: height || 1080, max: 99999 },
+          }
+        : {
+            width: width || 99999,
+            height: height || 99999,
+            ...(!width && !height ? { frameRate: { min: 1, ideal: 15, max: 60 } } : {}),
+          }),
+    };
+  }
 
-      // Internal video element used only for capture fallback
-      this._captureVideo = document.createElement('video');
-      this._captureVideo.muted = true;
-      this._captureVideo.srcObject = this.stream;
+  // Requested size first, then smaller ones, so a camera whose top mode cannot
+  // start still gets a working stream instead of none at all
+  async _openStream(width, height) {
+    // Reuse the last size that actually streamed, asking for the max mode again
+    // would cost another timeout on a camera that already failed to start it
+    const [targetWidth, targetHeight] = width && height ? [width, height] : this._lastWorkingSize || [width, height];
+    const candidates = [[targetWidth, targetHeight], ...FALLBACK_RESOLUTIONS.filter(([w, h]) => !targetWidth || !targetHeight || w * h < targetWidth * targetHeight)];
+
+    let lastError = null;
+    for (const [w, h] of candidates) {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: this._buildConstraints(w, h), audio: false });
+        const settings = stream.getVideoTracks()?.[0]?.getSettings?.() || {};
+        if (settings.width && settings.height) {
+          this._lastWorkingSize = [settings.width, settings.height];
+        }
+        return stream;
+      } catch (err) {
+        lastError = err;
+        if (!RETRYABLE_STREAM_ERRORS.includes(err?.name)) {
+          break;
+        }
+        console.warn(`📷 Resolution ${w || 'max'}×${h || 'max'} did not start (${err.name}), trying a lower one`);
+      }
+    }
+
+    throw lastError || new Error('CAMERA_STREAM_UNAVAILABLE');
+  }
+
+  async initStream(width = undefined, height = undefined) {
+    this.stream = await this._openStream(width, height);
+
+    // Internal video element used only for capture fallback
+    this._captureVideo = document.createElement('video');
+    this._captureVideo.muted = true;
+    this._captureVideo.srcObject = this.stream;
+
+    await new Promise((resolve, reject) => {
+      const timeout = setTimeout(() => reject(new Error('CAMERA_STREAM_TIMEOUT')), STREAM_READY_TIMEOUT);
       this._captureVideo.addEventListener('canplay', () => {
+        clearTimeout(timeout);
         this._captureVideo.play();
         this.width = this._captureVideo.videoWidth;
         this.height = this._captureVideo.videoHeight;
@@ -380,7 +428,11 @@ class Webcam {
     this.setStream = setStream;
     this.settings = settings;
 
-    await this.initStream();
+    // Start on the stored resolution when there is one: asking for the max mode
+    // costs a long timeout on cameras whose top mode cannot stream
+    const [width, height] = `${settings?.video_stream_format || ''}`.split('×').map((e) => parseInt(e, 10));
+
+    await this.initStream(Number.isFinite(width) ? width : undefined, Number.isFinite(height) ? height : undefined);
 
     return true;
   }
