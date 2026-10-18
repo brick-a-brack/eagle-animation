@@ -6,21 +6,12 @@ on:
     branches:
       - 'master'
       - 'dev'
-      - 'feature/android'
+      - 'feature/pipeline'
 
 jobs:
-  release:
-    name: Build & package
-    runs-on: ${{ matrix.versions.os }}
-
-    strategy:
-      matrix:
-        versions: [
-          {os: "ubuntu-latest", type: "web" },
-          {os: "ubuntu-latest", type: "app" },
-          {os: "windows-latest", type: "app" },
-          {os: "macos-latest", type: "app" }
-        ]
+  web:
+    name: Eagle Animation for Web
+    runs-on: ubuntu-latest
 
     steps:
       - name: Clone source code
@@ -28,58 +19,10 @@ jobs:
         with:
           fetch-depth: 1
 
-      - name: Use Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-
-      - name: Installing Linux bundling dependencies
-        if: ${{ (matrix.versions.os == 'ubuntu-latest') && (matrix.versions.type == 'app') }}
-        uses: awalsh128/cache-apt-pkgs-action@latest
-        with:
-          packages: flatpak flatpak-builder rpm
-          version: 1.0
-
-      - name: Install dependencies
-        run: npm i --force
-
-      - name: Install dependencies (Sharp for Linux)
-        if: ${{ (matrix.versions.os == 'ubuntu-latest') && (matrix.versions.type == 'app') }}
-        run: |
-          npm install --cpu=x64 --os=linux sharp --force
-
-      - name: Install dependencies (Sharp for macOS)
-        if: ${{ (matrix.versions.os == 'macos-latest') }}
-        run: |
-          npm install --cpu=x64 --os=darwin sharp --force
-          npm install --cpu=arm64 --os=darwin sharp --force
-
-      - name: Packaging Windows
-        if: ${{ (matrix.versions.os == 'windows-latest') && (matrix.versions.type == 'app') }}
-        run: |
-          echo "VITE_COMMIT_HASH=${{ github.sha }}" >> .env
-          npm run build:win
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Packaging MacOS
-        if: ${{ (matrix.versions.os == 'macos-latest') && (matrix.versions.type == 'app') }}
-        run: |
-          echo "VITE_COMMIT_HASH=${{ github.sha }}" >> .env
-          npm run build:mac
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  
-      - name: Packaging Linux
-        if: ${{ (matrix.versions.os == 'ubuntu-latest') && (matrix.versions.type == 'app') }}
-        run: |
-          echo "VITE_COMMIT_HASH=${{ github.sha }}" >> .env
-          npm run build:linux
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Prepare build environment
+        uses: ./.github/actions/prepare
 
       - name: Packaging Web
-        if: ${{ (matrix.versions.os == 'ubuntu-latest') && (matrix.versions.type == 'web') }}
         run: |
           echo "VITE_PUBLIC_URL=${{ secrets.RUN_PUBLIC_URL }}" >> .env
           echo "VITE_COMMIT_HASH=${{ github.sha }}" >> .env
@@ -87,14 +30,27 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Archiving Web
+        run: |
+          mkdir -p binaries
+          archive="$PWD/binaries/Eagle-Animation-$(node -p "require('./package.json').version")-web.zip"
+          cd out/web && zip -qr "$archive" .
+
+      - name: Upload files
+        uses: actions/upload-artifact@v4
+        with:
+          name: artifacts-web
+          path: binaries/Eagle-Animation-*
+          retention-days: 7
+
       - name: Install and configure rclone
-        if: ${{ (matrix.versions.os == 'ubuntu-latest') && (matrix.versions.type == 'web') && (github.ref == 'refs/heads/master') }}
+        if: ${{ github.ref == 'refs/heads/master' }}
         run: |
           echo "${{ secrets.RCLONE_CONFIG }}" > /tmp/rclone.conf
           sudo -v ; curl https://rclone.org/install.sh | sudo bash
-          
+
       - name: Upload assets to Cloudflare (Release)
-        if: ${{ (matrix.versions.os == 'ubuntu-latest') && (matrix.versions.type == 'web') && (github.ref == 'refs/heads/master') }}
+        if: ${{ github.ref == 'refs/heads/master' }}
         run: |
           mv out/web/index.html ./
           mv out/web/sw.js ./ || true
@@ -102,12 +58,133 @@ jobs:
           rclone --config /tmp/rclone.conf copy index.html backblaze:/eagle-app/
           rclone --config /tmp/rclone.conf copy sw.js backblaze:/eagle-app/ || true
 
-  android:
-    name: Build & package (Android)
+  linux:
+    name: Eagle Animation for Linux
     runs-on: ubuntu-latest
 
-    permissions:
-      contents: write
+    steps:
+      - name: Clone source code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Prepare build environment
+        uses: ./.github/actions/prepare
+        with:
+          sharp: linux
+          apt-packages: flatpak flatpak-builder rpm
+
+      - name: Packaging Linux
+        run: |
+          echo "VITE_COMMIT_HASH=${{ github.sha }}" >> .env
+          npm run build:linux
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload files
+        uses: actions/upload-artifact@v4
+        with:
+          name: artifacts-linux
+          path: |
+            binaries/Eagle-Animation-*
+            !binaries/*.blockmap
+          retention-days: 7
+
+  windows:
+    name: Eagle Animation for Windows
+    runs-on: windows-latest
+
+    steps:
+      - name: Clone source code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Prepare build environment
+        uses: ./.github/actions/prepare
+
+      - name: Packaging Windows
+        run: |
+          echo "VITE_COMMIT_HASH=${{ github.sha }}" >> .env
+          npm run build:win
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload files
+        uses: actions/upload-artifact@v4
+        with:
+          name: artifacts-windows
+          path: |
+            binaries/Eagle-Animation-*
+            !binaries/*.blockmap
+          retention-days: 7
+
+  macos:
+    name: Eagle Animation for macOS
+    runs-on: macos-latest
+
+    steps:
+      - name: Clone source code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Prepare build environment
+        uses: ./.github/actions/prepare
+        with:
+          sharp: darwin
+
+      - name: Packaging macOS
+        run: |
+          echo "VITE_COMMIT_HASH=${{ github.sha }}" >> .env
+          npm run build:mac
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload files
+        uses: actions/upload-artifact@v4
+        with:
+          name: artifacts-macos
+          path: |
+            binaries/Eagle-Animation-*
+            !binaries/*.blockmap
+          retention-days: 7
+
+  # Electron 37 still runs on macOS 11/12, which Electron 44 dropped.
+  macos-legacy:
+    name: Eagle Animation for macOS (Legacy)
+    runs-on: macos-latest
+
+    steps:
+      - name: Clone source code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Prepare build environment
+        uses: ./.github/actions/prepare
+        with:
+          sharp: darwin
+
+      - name: Packaging macOS (legacy, macOS 11+)
+        run: |
+          echo "VITE_COMMIT_HASH=${{ github.sha }}" >> .env
+          npm run build:mac:legacy
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload files
+        uses: actions/upload-artifact@v4
+        with:
+          name: artifacts-macos-legacy
+          path: |
+            binaries/Eagle-Animation-*
+            !binaries/*.blockmap
+          retention-days: 7
+
+  android:
+    name: Eagle Animation for Android
+    runs-on: ubuntu-latest
 
     steps:
       - name: Clone source code
@@ -178,20 +255,9 @@ jobs:
       - name: Upload files
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ env.auto_version_name }}
+          name: artifacts-android
           path: binaries/Eagle-Animation-*
           retention-days: 7
-
-      - name: Attach files to the release
-        #if: ${{ github.ref == 'refs/heads/master' || github.ref == 'refs/heads/dev' }}
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          tag="v${{ env.auto_version }}"
-          if ! gh release view "$tag" > /dev/null 2>&1; then
-            gh release create "$tag" --draft --title "$tag" --notes ""
-          fi
-          gh release upload "$tag" binaries/Eagle-Animation-* --clobber
 
       - name: Publish to Play Store
         if: ${{ github.ref == 'refs/heads/master' }}
@@ -201,3 +267,42 @@ jobs:
           packageName: com.brickabrack.eagleanimation
           releaseFiles: binaries/${{ env.artifact_name }}.aab
           track: production
+
+  # Single place where the release assets are attached: every build job only
+  # uploads its own artifacts, this one collects them and pushes the whole set.
+  release:
+    name: Attach artifacts to the release
+    runs-on: ubuntu-latest
+    needs:
+      - web
+      - linux
+      - windows
+      - macos
+      - macos-legacy
+      - android
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Clone source code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Download every artifact
+        uses: actions/download-artifact@v4
+        with:
+          path: binaries
+          pattern: artifacts-*
+          merge-multiple: true
+
+      - name: Attach files to the release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          tag="v$(node -p "require('./package.json').version")"
+          if ! gh release view "$tag" > /dev/null 2>&1; then
+            gh release create "$tag" --draft --title "$tag" --notes ""
+          fi
+          gh release upload "$tag" binaries/Eagle-Animation-* --clobber
