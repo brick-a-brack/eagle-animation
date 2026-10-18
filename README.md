@@ -1,4 +1,4 @@
-# EagleAnimation
+# Eagle Animation
 
 [![Official Website](docs/tags/website.svg)](https://eagle-animation.com/) [![Web App](docs/tags/webapp.svg)](https://app.eagle-animation.com/)
 [![Discord](docs/tags/discord.svg)](https://discord.gg/S9R6bXeU7m) [![Brickfilms.com](docs/tags/brickfilms.svg)](https://brickfilms.com/)
