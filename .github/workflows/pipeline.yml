@@ -41,7 +41,7 @@ jobs:
         with:
           name: artifacts-web
           path: binaries/Eagle-Animation-*
-          retention-days: 7
+          retention-days: 1
 
   linux:
     name: Eagle Animation for Linux
@@ -73,7 +73,7 @@ jobs:
           path: |
             binaries/Eagle-Animation-*
             !binaries/*.blockmap
-          retention-days: 7
+          retention-days: 1
 
   windows:
     name: Eagle Animation for Windows
@@ -102,7 +102,7 @@ jobs:
           path: |
             binaries/Eagle-Animation-*
             !binaries/*.blockmap
-          retention-days: 7
+          retention-days: 1
 
   macos:
     name: Eagle Animation for macOS
@@ -133,7 +133,7 @@ jobs:
           path: |
             binaries/Eagle-Animation-*
             !binaries/*.blockmap
-          retention-days: 7
+          retention-days: 1
 
   # Electron 37 still runs on macOS 11/12, which Electron 44 dropped.
   macos-legacy:
@@ -165,7 +165,7 @@ jobs:
           path: |
             binaries/Eagle-Animation-*
             !binaries/*.blockmap
-          retention-days: 7
+          retention-days: 1
 
   android:
     name: Eagle Animation for Android
@@ -242,7 +242,7 @@ jobs:
         with:
           name: artifacts-android
           path: binaries/Eagle-Animation-*
-          retention-days: 7
+          retention-days: 1
 
   # Gate between the builds and the publications: downstream jobs wait on this
   # one only, which keeps the dependency graph readable.
