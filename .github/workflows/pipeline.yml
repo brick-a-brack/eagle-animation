@@ -42,6 +42,7 @@ jobs:
           name: artifacts-web
           path: binaries/Eagle-Animation-*
           retention-days: 1
+          overwrite: true
 
   linux:
     name: Eagle Animation for Linux
@@ -74,6 +75,7 @@ jobs:
             binaries/Eagle-Animation-*
             !binaries/*.blockmap
           retention-days: 1
+          overwrite: true
 
   windows:
     name: Eagle Animation for Windows
@@ -103,6 +105,7 @@ jobs:
             binaries/Eagle-Animation-*
             !binaries/*.blockmap
           retention-days: 1
+          overwrite: true
 
   macos:
     name: Eagle Animation for macOS
@@ -134,6 +137,7 @@ jobs:
             binaries/Eagle-Animation-*
             !binaries/*.blockmap
           retention-days: 1
+          overwrite: true
 
   # Electron 37 still runs on macOS 11/12, which Electron 44 dropped.
   macos-legacy:
@@ -166,6 +170,7 @@ jobs:
             binaries/Eagle-Animation-*
             !binaries/*.blockmap
           retention-days: 1
+          overwrite: true
 
   android:
     name: Eagle Animation for Android
@@ -243,6 +248,7 @@ jobs:
           name: artifacts-android
           path: binaries/Eagle-Animation-*
           retention-days: 1
+          overwrite: true
 
   # Gate between the builds and the publications: downstream jobs wait on this
   # one only, which keeps the dependency graph readable.
@@ -297,7 +303,22 @@ jobs:
           if [ "$draft" = "missing" ]; then
             gh release create "$tag" --draft --title "$tag" --notes "" --target "${{ github.sha }}"
           fi
-          gh release upload "$tag" binaries/Eagle-Animation-* --clobber
+          # gh uploads the assets of one invocation concurrently: when a response
+          # is lost it retries and collides with the asset it just created, and
+          # --clobber only deletes what existed when the command started. One file
+          # per invocation keeps each upload independently retryable, so --clobber
+          # can clear the half-written asset left by a previous attempt.
+          for file in binaries/Eagle-Animation-*; do
+            for attempt in 1 2 3; do
+              if gh release upload "$tag" "$file" --clobber; then
+                continue 2
+              fi
+              echo "::warning::Upload of $file failed (attempt $attempt/3)"
+              sleep $((attempt * 5))
+            done
+            echo "::error::Unable to upload $file"
+            exit 1
+          done
 
   # Platform publications run alongside the release attachment, and only from
   # master.
