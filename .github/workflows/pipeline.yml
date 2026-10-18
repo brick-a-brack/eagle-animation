@@ -244,10 +244,10 @@ jobs:
           path: binaries/Eagle-Animation-*
           retention-days: 7
 
-  # Single place where the release assets are attached: every build job only
-  # uploads its own artifacts, this one collects them and pushes the whole set.
-  release:
-    name: Attach artifacts to the release
+  # Gate between the builds and the publications: downstream jobs wait on this
+  # one only, which keeps the dependency graph readable.
+  builds:
+    name: All builds succeeded
     runs-on: ubuntu-26.04
     needs:
       - web
@@ -256,6 +256,17 @@ jobs:
       - macos
       - macos-legacy
       - android
+
+    steps:
+      - name: Builds summary
+        run: echo "Every build succeeded, moving on to the publications."
+
+  # Single place where the release assets are attached: every build job only
+  # uploads its own artifacts, this one collects them and pushes the whole set.
+  release:
+    name: Publish (Github)
+    runs-on: ubuntu-26.04
+    needs: builds
 
     permissions:
       contents: write
@@ -278,17 +289,22 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           tag="v$(node -p "require('./package.json').version")"
-          if ! gh release view "$tag" > /dev/null 2>&1; then
-            gh release create "$tag" --draft --title "$tag" --notes ""
+          draft=$(gh release view "$tag" --json isDraft -q .isDraft 2>/dev/null || echo missing)
+          if [ "$draft" = "false" ]; then
+            echo "::error::$tag is already published, refusing to overwrite its assets. Bump the version in package.json."
+            exit 1
+          fi
+          if [ "$draft" = "missing" ]; then
+            gh release create "$tag" --draft --title "$tag" --notes "" --target "${{ github.sha }}"
           fi
           gh release upload "$tag" binaries/Eagle-Animation-* --clobber
 
-  # Platform publications run once the whole set of artifacts is attached to the
-  # release, and only from master.
+  # Platform publications run alongside the release attachment, and only from
+  # master.
   publish-web:
     name: Publish (Web)
     runs-on: ubuntu-26.04
-    needs: release
+    needs: builds
     if: ${{ github.ref == 'refs/heads/master' }}
 
     steps:
@@ -319,7 +335,7 @@ jobs:
   publish-android:
     name: Publish (Android)
     runs-on: ubuntu-26.04
-    needs: release
+    needs: builds
     if: ${{ github.ref == 'refs/heads/master' }}
 
     steps:
