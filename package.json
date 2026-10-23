@@ -92,7 +92,7 @@
     "buffer": "^6.0.3",
     "electron": "^44.7.2",
     "electron-builder": "^26.15.3",
-    "electron-vite": "^5.0.0",
+    "electron-vite": "^6.0.0",
     "eslint": "8.57.0",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-simple-import-sort": "^14.0.0",
