@@ -1,9 +1,9 @@
 import isFirefox from '@braintree/browser-detection/is-firefox';
 
 // Tried in order when the requested resolution refuses to start: some UVC cameras
-// advertise a top mode (often their photo mode) their firmware cannot stream, and
-// getUserMedia then aborts after a ~10s timeout
+// advertise a top mode (often their photo mode) their firmware cannot stream
 const FALLBACK_RESOLUTIONS = [
+  [4000, 3000],
   [3840, 2160],
   [2560, 1440],
   [1920, 1080],
@@ -12,10 +12,90 @@ const FALLBACK_RESOLUTIONS = [
 ];
 
 // Errors meaning "that mode did not start", worth retrying with a smaller one
-const RETRYABLE_STREAM_ERRORS = ['AbortError', 'NotReadableError', 'OverconstrainedError'];
+const RETRYABLE_STREAM_ERRORS = ['AbortError', 'TimeoutError', 'NotReadableError', 'TrackStartError', 'OverconstrainedError', 'ConstraintNotSatisfiedError'];
 
-// How long we wait for the stream to deliver its first frame
-const STREAM_READY_TIMEOUT = 10000;
+// Budget for one attempt, from getUserMedia to the first frame. getUserMedia alone
+// can hang ~10s on a mode the firmware cannot start, so we don't wait for it
+const STREAM_ATTEMPT_TIMEOUT = 5000;
+
+const stopStream = (stream) => {
+  stream?.getTracks?.()?.forEach((track) => {
+    track.stop();
+    track.enabled = false;
+  });
+};
+
+// Opens a stream and waits for its first frame, the only real proof the mode works:
+// some cameras accept the constraints then never deliver anything. Whatever is still
+// pending once the budget is spent gets released, so a dead mode doesn't keep the
+// device busy for the next try.
+const openStream = (constraints) =>
+  new Promise((resolve, reject) => {
+    let stream = null;
+    let video = null;
+    let settled = false;
+
+    const timeout = setTimeout(() => {
+      settled = true;
+      stopStream(stream);
+      if (video) {
+        video.srcObject = null;
+      }
+      const err = new Error('CAMERA_STREAM_TIMEOUT');
+      err.name = 'TimeoutError';
+      reject(err);
+    }, STREAM_ATTEMPT_TIMEOUT);
+
+    navigator.mediaDevices.getUserMedia({ video: constraints, audio: false }).then(
+      (opened) => {
+        stream = opened;
+        // Arrived after we gave up on it
+        if (settled) {
+          stopStream(stream);
+          return;
+        }
+
+        // Internal video element used only for capture fallback
+        video = document.createElement('video');
+        video.muted = true;
+        video.srcObject = stream;
+        video.addEventListener(
+          'canplay',
+          () => {
+            settled = true;
+            clearTimeout(timeout);
+            video.play();
+            resolve({ stream, video });
+          },
+          { once: true }
+        );
+      },
+      (err) => {
+        clearTimeout(timeout);
+        reject(err);
+      }
+    );
+  });
+
+// The attempts to make, best first: each size as a native mode (`exact`) before
+// asking the browser to scale. `exact` says straight away when the camera has no
+// such mode, where a plain constraint is never refused and costs a whole timeout.
+const buildAttempts = (width, height) => {
+  const target = width && height ? [width, height] : null;
+  const smaller = FALLBACK_RESOLUTIONS.filter(([w, h]) => !target || w * h < target[0] * target[1]);
+  // No target means "give me your best mode", which only makes sense unconstrained
+  const attempts = target
+    ? [
+        { size: target, exact: true },
+        { size: target, exact: false },
+      ]
+    : [{ size: null, exact: false }];
+  for (const size of smaller) {
+    attempts.push({ size, exact: true }, { size, exact: false });
+  }
+
+  return attempts;
+};
 
 class Webcam {
   constructor(deviceId = null) {
@@ -25,16 +105,23 @@ class Webcam {
     this._captureVideo = null;
     this.width = false;
     this.height = false;
-    this._lastWorkingSize = null;
+    this._failedSizes = new Set();
   }
 
   get id() {
     return this?.deviceId || null;
   }
 
-  _buildConstraints(width, height) {
+  _buildConstraints(size, exact = false) {
+    const [width, height] = size || [];
+    const deviceId = this.deviceId ? { exact: this.deviceId } : undefined;
+
+    if (exact) {
+      return { deviceId, width: { exact: width }, height: { exact: height } };
+    }
+
     return {
-      deviceId: this.deviceId ? { exact: this.deviceId } : undefined,
+      deviceId,
       ...(isFirefox()
         ? {
             width: { min: 1, ideal: width || 1920, max: 99999 },
@@ -48,56 +135,42 @@ class Webcam {
     };
   }
 
-  // Requested size first, then smaller ones, so a camera whose top mode cannot
-  // start still gets a working stream instead of none at all
-  async _openStream(width, height) {
-    // Reuse the last size that actually streamed, asking for the max mode again
-    // would cost another timeout on a camera that already failed to start it
-    const [targetWidth, targetHeight] = width && height ? [width, height] : this._lastWorkingSize || [width, height];
-    const candidates = [[targetWidth, targetHeight], ...FALLBACK_RESOLUTIONS.filter(([w, h]) => !targetWidth || !targetHeight || w * h < targetWidth * targetHeight)];
-
+  // Requested size first, then smaller ones, so a camera whose top mode cannot start
+  // still gets a working stream instead of none at all
+  async initStream(width = undefined, height = undefined) {
     let lastError = null;
-    for (const [w, h] of candidates) {
+
+    for (const { size, exact } of buildAttempts(width, height)) {
       try {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: this._buildConstraints(w, h), audio: false });
-        const settings = stream.getVideoTracks()?.[0]?.getSettings?.() || {};
-        if (settings.width && settings.height) {
-          this._lastWorkingSize = [settings.width, settings.height];
+        const { stream, video } = await openStream(this._buildConstraints(size, exact));
+        this.stream = stream;
+        this._captureVideo = video;
+        this.width = video.videoWidth;
+        this.height = video.videoHeight;
+        this._failedSizes.delete(`${this.width}×${this.height}`);
+        if (this.setStream) {
+          this.setStream('video', this.stream);
         }
-        return stream;
+        return;
       } catch (err) {
         lastError = err;
+
+        // Not a native mode: the scaled attempt right after still has a chance
+        if (exact && RETRYABLE_STREAM_ERRORS.includes(err?.name)) {
+          continue;
+        }
+
+        if (size) {
+          this._failedSizes.add(`${size[0]}×${size[1]}`);
+        }
         if (!RETRYABLE_STREAM_ERRORS.includes(err?.name)) {
           break;
         }
-        console.warn(`📷 Resolution ${w || 'max'}×${h || 'max'} did not start (${err.name}), trying a lower one`);
+        console.warn(`📷 Resolution ${size ? size.join('×') : 'max'} did not start (${err.name}), trying a lower one`);
       }
     }
 
     throw lastError || new Error('CAMERA_STREAM_UNAVAILABLE');
-  }
-
-  async initStream(width = undefined, height = undefined) {
-    this.stream = await this._openStream(width, height);
-
-    // Internal video element used only for capture fallback
-    this._captureVideo = document.createElement('video');
-    this._captureVideo.muted = true;
-    this._captureVideo.srcObject = this.stream;
-
-    await new Promise((resolve, reject) => {
-      const timeout = setTimeout(() => reject(new Error('CAMERA_STREAM_TIMEOUT')), STREAM_READY_TIMEOUT);
-      this._captureVideo.addEventListener('canplay', () => {
-        clearTimeout(timeout);
-        this._captureVideo.play();
-        this.width = this._captureVideo.videoWidth;
-        this.height = this._captureVideo.videoHeight;
-        if (this.setStream) {
-          this.setStream('video', this.stream);
-        }
-        resolve();
-      });
-    });
   }
 
   _listResolutions(capabilities) {
@@ -130,6 +203,11 @@ class Webcam {
 
     for (const resolution of list) {
       const [width, height] = resolution;
+      // The list is built from the width/height maxima, which can cross into modes
+      // the camera doesn't actually have: drop the ones we already saw fail
+      if (this._failedSizes.has(`${width}×${height}`)) {
+        continue;
+      }
       if (width <= widthCapabilities.max && width >= widthCapabilities.min && height <= heightCapabilities.max && height >= heightCapabilities.min) {
         allowedResolutions.push(resolution);
       }
@@ -138,8 +216,38 @@ class Webcam {
     return allowedResolutions;
   }
 
+  // Changing the resolution through applyConstraints asks the driver to restart the
+  // source. On a mode the camera doesn't have, it fails with "Source failed to
+  // restart" and leaves the track dead for good — every later call then fails too,
+  // whatever the resolution. Reopening the stream is the only reliable way.
+  async _applyResolution(value) {
+    const [width, height] = `${value}`.split('×').map((e) => parseInt(e, 10));
+    if (!width || !height) {
+      return;
+    }
+
+    const previous = [this.width, this.height];
+    this._release();
+
+    try {
+      await this.initStream(width, height);
+    } catch (err) {
+      console.error('📷 Resolution change failed, restoring the previous one', err);
+      await this.initStream(...previous);
+      throw err;
+    }
+  }
+
   async applyCapability(key, value) {
     console.log(`📷 Set ${key}=${value}`);
+
+    if (key === 'video_stream_format') {
+      return this._applyResolution(value);
+    }
+
+    if (!this?.stream?.getVideoTracks?.()?.[0]) {
+      return null;
+    }
 
     const settings = this?.stream?.getVideoTracks()?.[0]?.getSettings() || {};
     const mediaStreamTrack = this.stream.getVideoTracks()[0];
@@ -168,14 +276,6 @@ class Webcam {
 
     const toApply = [
       {
-        ...(key === 'video_stream_format'
-          ? {
-              width: parseInt(value.split('×')[0], 10),
-              height: parseInt(value.split('×')[1], 10),
-              frameRate: { min: 1, ideal: 15, max: 60 },
-              resizeMode: 'crop-and-scale',
-            }
-          : {}),
         ...(cap === 'focusMode' ? { focusDistance: settings.focusDistance } : {}),
         ...(cap === 'focusDistance' ? { focusMode: settings.focusMode } : {}),
         ...(cap === 'exposureTime'
@@ -207,12 +307,9 @@ class Webcam {
       },
     ];
 
-    //console.log('[CAMERA]', 'Apply setting', cap, value);
-    await mediaStreamTrack
-      .applyConstraints({
-        advanced: toApply,
-      })
-      .catch(console.error);
+    // Let the caller know when the camera refused the value, so a broken setting
+    // doesn't get stored and replayed at every launch
+    await mediaStreamTrack.applyConstraints({ advanced: toApply });
 
     return null;
   }
@@ -474,22 +571,20 @@ class Webcam {
     }
   }
 
-  async disconnect() {
-    // Stop the capture tracks first…
-    if (this.stream) {
-      this.stream.getTracks().forEach((track) => {
-        track.stop();
-        track.enabled = false;
-      });
-      this.stream = null;
-    }
+  // Frees the device, most webcams only allow one open stream at a time
+  _release() {
+    stopStream(this.stream);
+    this.stream = null;
 
-    // Clear object
     if (this._captureVideo) {
       this._captureVideo.pause();
       this._captureVideo.srcObject = null;
       this._captureVideo = null;
     }
+  }
+
+  async disconnect() {
+    this._release();
 
     // Release the display element owned by PreviewStream too.
     if (this.setStream) {

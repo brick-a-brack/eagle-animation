@@ -580,7 +580,7 @@ const Animator = ({ t }) => {
   };
 
   const handleCapabilityChange = async (id, value) => {
-    cameraActions.setCapability(id, value);
+    await cameraActions.setCapability(id, value);
   };
 
   const handleDevicesRefresh = async () => {

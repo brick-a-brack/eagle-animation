@@ -273,23 +273,34 @@ const CameraCapabilitySwitchItem = ({ id, disabled = false, value, onCapabilityC
 };
 
 export const CameraCapabilityItem = withTranslation()(({ type, t, value, onCapabilityChange, ...props }) => {
-  const [stateValue, setStateValue] = useState(value);
+  // Optimistic value, kept only while a change of ours is in flight: once the camera
+  // has answered we show what it actually settled on, which may be another value
+  const [pendingValue, setPendingValue] = useState(null);
   const ref = useRef({ timeout: null, value: null });
 
   const handleChange = useCallback(
-    (id, value) => {
-      ref.current.value = value;
-      setStateValue(value);
+    (id, newValue) => {
+      ref.current.value = newValue;
+      setPendingValue({ value: newValue });
 
       if (!ref.current.timeout) {
-        ref.current.timeout = setTimeout(() => {
+        ref.current.timeout = setTimeout(async () => {
           ref.current.timeout = null;
-          onCapabilityChange(id, ref?.current?.value);
+          try {
+            await onCapabilityChange(id, ref?.current?.value);
+          } finally {
+            // Don't drop the guess if the user changed the value again meanwhile
+            if (!ref.current.timeout) {
+              setPendingValue(null);
+            }
+          }
         }, 100);
       }
     },
     [onCapabilityChange]
   );
+
+  const stateValue = pendingValue ? pendingValue.value : value;
 
   if (type === 'RANGE') {
     return <CameraCapabilityRangeItem {...props} onCapabilityChange={handleChange} value={stateValue} t={t} />;

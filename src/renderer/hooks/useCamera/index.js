@@ -143,6 +143,24 @@ function useCamera(options = {}) {
     [loadCameraSettings]
   );
 
+  // The camera may have started on a lower resolution than the stored one (a mode
+  // its firmware cannot stream): realign the stored value so we neither re-apply
+  // the broken mode right after, nor pay its timeout again on the next launch
+  const syncStoredResolution = useCallback(
+    async (camera, cameraId, storedSettings = {}) => {
+      const capabilities = await camera.getCapabilities();
+      const actualFormat = capabilities.find((c) => c.id === 'video_stream_format')?.value || null;
+      if (!actualFormat || actualFormat.includes('undefined') || storedSettings?.video_stream_format === actualFormat) {
+        return;
+      }
+      if (storedSettings?.video_stream_format) {
+        console.warn(`📷 Resolution ${storedSettings.video_stream_format} unavailable, keeping ${actualFormat}`);
+      }
+      await saveCameraSetting(cameraId, 'video_stream_format', actualFormat);
+    },
+    [saveCameraSetting]
+  );
+
   // Connect a camera instance and wire up its stream.
   const connectCamera = useCallback(
     async (camera, cameraId) => {
@@ -154,16 +172,30 @@ function useCamera(options = {}) {
       try {
         await camera.connect({ setStream: setStreamRef.current }, storedSettings);
       } catch (err) {
-        // Free the slot so the next attempt retries instead of being skipped
         console.error('📷 Camera connection failed', err);
-        activeCameraIdRef.current = null;
-        triggerEvent('disconnect');
+        // Free the slot so the next attempt retries instead of being skipped
+        if (activeCameraIdRef.current === cameraId) {
+          activeCameraIdRef.current = null;
+          triggerEvent('disconnect');
+        }
         return;
       }
+
+      // Another camera was selected while we were connecting: this one is orphan
+      if (activeCameraIdRef.current !== cameraId) {
+        try {
+          camera.disconnect();
+        } catch (e) {
+          console.error(e);
+        }
+        return;
+      }
+
       // Refresh device list after getUserMedia so real deviceIds become available
       // (browsers return empty deviceIds before permission is granted).
       const updatedCameras = await getCameras(compatibilityMode);
       setDevices(updatedCameras.map(applyCameraLabel));
+      await syncStoredResolution(camera, cameraId, storedSettings).catch(console.error);
       await restoreCameraSettings(camera, cameraId).catch(console.error);
       triggerEvent('connect');
       camera.getCapabilities().then((caps) => {
@@ -176,7 +208,7 @@ function useCamera(options = {}) {
         });
       });
     },
-    [triggerEvent, compatibilityMode, restoreCameraSettings, loadCameraSettings]
+    [triggerEvent, compatibilityMode, restoreCameraSettings, loadCameraSettings, syncStoredResolution]
   );
 
   // Action to set stream callback
@@ -247,11 +279,22 @@ function useCamera(options = {}) {
   // Action set capability
   const actionSetCapability = useCallback(
     async (id, value) => {
-      if (currentCamera) {
-        saveCameraSetting(currentCameraId, id, value).catch(console.error);
-        await currentCamera?.applyCapability(id, value);
-        const newState = await currentCamera?.getCapabilities();
-        setCameraCapabilities(newState);
+      if (!currentCamera) {
+        return;
+      }
+      try {
+        await currentCamera.applyCapability(id, value);
+      } catch (e) {
+        console.error(e);
+      }
+      const newState = await currentCamera.getCapabilities();
+      setCameraCapabilities(newState);
+
+      // Store the resolution the camera actually settled on, not the requested one:
+      // a refused mode would otherwise be replayed at every launch
+      const applied = id === 'video_stream_format' ? newState.find((c) => c.id === id)?.value : value;
+      if (applied !== undefined) {
+        saveCameraSetting(currentCameraId, id, applied).catch(console.error);
       }
     },
     [currentCamera, currentCameraId, saveCameraSetting]
