@@ -9,8 +9,12 @@ import sharp from 'sharp';
 import { parseResizeArguments } from '../../common/resizer';
 import { PROJECTS_PATH, RESIZER_CACHE_PATH } from '../config';
 
+// Bump this when the resize pipeline changes: entries cached by a previous
+// version are then ignored instead of serving a stale render.
+const CACHE_VERSION = 'v2';
+
 const getUniqueCacheKey = ({ w, h, m, q, i, f, path }) => {
-  let key = '';
+  let key = `${CACHE_VERSION}_`;
   if (path) key += `${path}_`;
   if (w) key += `w${w}_`;
   if (h) key += `h${h}_`;
@@ -120,15 +124,18 @@ export const ImageRoute = async (request) => {
   try {
     // Create a Sharp instance
     const inputBuf = await readFile(diskPath);
-    let img = sharp(inputBuf);
+    // autoOrient applies the EXIF Orientation before anything else, so resizes
+    // use the displayed dimensions and the output matches the web build, where
+    // the browser orients the frame on decode.
+    let img = sharp(inputBuf, { autoOrient: true });
 
     // Metadata only
     if (i === 'json') {
       // Get image metadata
       const size = await img.metadata();
       const infos = JSON.stringify({
-        width: size.width,
-        height: size.height,
+        width: size.autoOrient?.width || size.width,
+        height: size.autoOrient?.height || size.height,
       });
 
       // Write to disk cache
