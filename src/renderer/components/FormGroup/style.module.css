@@ -87,9 +87,3 @@
     width: 60%;
   }
 }
-
-@media screen and (width <=400px) {
-  .description {
-    display: none;
-  }
-}
