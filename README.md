@@ -3,14 +3,15 @@
 [![Official Website](docs/tags/website.svg)](https://eagle-animation.com/) [![Web App](docs/tags/webapp.svg)](https://app.eagle-animation.com/)
 [![Discord](docs/tags/discord.svg)](https://discord.gg/S9R6bXeU7m) [![Brickfilms.com](docs/tags/brickfilms.svg)](https://brickfilms.com/)
 
-**EagleAnimation** is an awesome, free and open-source stop motion animation software. It is available for Windows, macOS, Linux, Android and also works with any web browser. It's a great alternative to _Stop
-Motion Studio_, _Dragon Frame_, _Zu3D_, _AnimaShooter_ and _Boats Animator_.
+**EagleAnimation** is an awesome, free and open-source stop motion animation software. It is available for Windows, macOS, Linux, Android and also works with any web browser. It's a great alternative
+to _Stop Motion Studio_, _Dragon Frame_, _Zu3D_, _AnimaShooter_ and _Boats Animator_.
 
 💬 **Join our [Discord community](https://discord.gg/S9R6bXeU7m)!** Get help with the app, share your animations, suggest features and chat with other animators and the team.
 
-![Eagle Animation in use by Gwen Movies and Nanomega](docs/imgs/img_5.jpg)
+![Eagle Animation in use by Gwen Movies and Nanomega](docs/banner.jpg)
 
-👉 _This project is supported by Brick à Brack, the non-profit organization that owns [Brickfilms.com](https://brickfilms.com/) - The biggest brickfilming community, you can join us, it's free and without ads!_ 🎥
+👉 _This project is supported by Brick à Brack, the non-profit organization that owns [Brickfilms.com](https://brickfilms.com/) - The biggest brickfilming community, you can join us, it's free and
+without ads!_ 🎥
 
 ## Features
 
@@ -53,7 +54,7 @@ Eagle Animation is compatible webcams and some DSLR cameras. The list of support
 
 ### Is there a mobile version of Eagle Animation?
 
-An Android version is available, it's not available on iOS yet but you can use [the Web hosted version](https://app.eagle-animation.com/) on tablets.
+An Android version is available, it's not available on iOS yet but you can use [the Web hosted version](https://app.eagle-animation.com/).
 
 ## Contribute
 
@@ -91,6 +92,14 @@ Some variables can be configured using a `.env` file, values with a "\*" are req
 - Run `npm run start:electron` to launch the application in dev mode.
 - Run `npm run start:web` to launch the web app in dev mode.
 
+### Store assets
+
+The Google Play screenshots are generated from `promo/`: texts, colors and captures are data, the slides are drawn on a canvas.
+
+- Run `npm run promo:assets` to generate **every asset**, in every language and every format, into `out/promo/<lang>/<format>/*.png`.
+
+Only part of them: `npm run promo:assets -- --lang fr --format mobile`. See [promo/README.md](promo/README.md) for what to edit.
+
 ### Telemetry
 
 To improve the quality of **Eagle Animation**, runtime errors and application events are automatically reported to developers using [PostHog](https://posthog.com/).
@@ -115,7 +124,7 @@ Some features are device-dependent or platform-limited. Here's a summary table.
 
 1. Including Chromium-based browsers (Edge, Brave, Opera, Arc, etc.).
 2. Webcam settings are only supported on Windows and Linux.
-3. Canon support on Windows, additional devices supported on macOS and Linux.
+3. Canon, Sony and Nikon support on Windows, additional devices supported on macOS and Linux.
 4. Using WebUSB, can require advanced configuration on Windows.
 
 ## Camera support and implementation

@@ -30,6 +30,8 @@
     "build:win": "electron-vite build && electron-builder --win",
     "build:mac": "electron-vite build && electron-builder --mac --universal",
     "build:linux": "electron-vite build && electron-builder --linux",
+    "promo:assets": "node scripts/build-promo-assets.mjs",
+    "promo:assets:zip": "node scripts/build-promo-assets.mjs --zip",
     "postinstall": "install-electron && electron-builder install-app-deps && node scripts/install-toucan-camera-server.js",
     "extract-strings": "i18next-scanner",
     "lint:eslint": "eslint ./src/ --ext .js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --ignore-path .gitignore --fix --max-warnings 0 --no-ignore",
