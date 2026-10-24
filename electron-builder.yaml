@@ -3,6 +3,11 @@ productName: Eagle Animation
 #compression: maximum
 nativeRebuilder: legacy
 
+# The app has no electron-updater: version checks read the raw package.json on
+# GitHub. Without this, electron-builder still writes latest-mac.yml and
+# latest-linux.yml from the repository field, even when publishing is disabled.
+publish: null
+
 # Re-signs toucan-camera-server and every bundled third-party Mach-O library
 # (Canon/Sony/Nikon SDKs, libgphoto2 plugins, ...) after packaging. Without this,
 # dyld rejects some of them ("code signature invalid") and the server crashes on
@@ -38,6 +43,9 @@ win:
     - zip
 
 mac:
+  # Electron 44 requires macOS 13+; macOS 11/12 are covered by
+  # electron-builder.legacy.yaml, which packages Electron 37.
+  minimumSystemVersion: '13.0'
   x64ArchFiles: "**/{node_modules/@img,node_modules/ffmpeg-static,node_modules/sharp,toucan-camera-server/bin}/**"
   artifactName: Eagle-Animation-${version}-mac.${ext}
   executableName: Eagle Animation

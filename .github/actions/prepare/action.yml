@@ -1,0 +1,49 @@
+name: Prepare build environment
+description: Installs Node.js, the npm dependencies and the platform-specific extras shared by every build job.
+
+inputs:
+  node-version:
+    description: Node.js version to install.
+    required: false
+    default: '24'
+  sharp:
+    description: 'Platform to install the extra sharp prebuilds for: linux, darwin or none.'
+    required: false
+    default: 'none'
+  apt-packages:
+    description: Space-separated apt packages to install before building. Empty to skip.
+    required: false
+    default: ''
+
+runs:
+  using: composite
+  steps:
+    - name: Use Node.js
+      uses: actions/setup-node@v7
+      with:
+        node-version: ${{ inputs.node-version }}
+
+    - name: Installing bundling dependencies
+      if: ${{ inputs.apt-packages != '' }}
+      uses: awalsh128/cache-apt-pkgs-action@latest
+      with:
+        packages: ${{ inputs.apt-packages }}
+        version: 1.0
+
+    - name: Install dependencies
+      shell: bash
+      run: npm i --force
+
+    # sharp ships one prebuilt binary per platform/arch, and packaging for another
+    # machine than the runner (or for a universal macOS build) needs them all.
+    - name: Install dependencies (Sharp for Linux)
+      if: ${{ inputs.sharp == 'linux' }}
+      shell: bash
+      run: npm install --cpu=x64 --os=linux sharp --force
+
+    - name: Install dependencies (Sharp for macOS)
+      if: ${{ inputs.sharp == 'darwin' }}
+      shell: bash
+      run: |
+        npm install --cpu=x64 --os=darwin sharp --force
+        npm install --cpu=arm64 --os=darwin sharp --force
