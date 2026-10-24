@@ -250,6 +250,41 @@ jobs:
           retention-days: 1
           overwrite: true
 
+  promo:
+    name: Eagle Animation promo assets
+    runs-on: ubuntu-26.04
+
+    steps:
+      - name: Clone source code
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 1
+
+      - name: Prepare build environment
+        uses: ./.github/actions/prepare
+
+      # playwright-core ships no browser, and the CLI must match its version so
+      # the download lands where playwright-core looks for it.
+      - name: Install Chromium
+        run: npx --yes playwright@$(node -p "require('playwright-core/package.json').version") install --with-deps chromium
+
+      - name: Rendering promo assets
+        run: npm run promo:assets
+
+      - name: Archiving promo assets
+        run: |
+          mkdir -p binaries
+          archive="$PWD/binaries/Eagle-Animation-$(node -p "require('./package.json').version")-promo.zip"
+          cd out/promo && zip -qr "$archive" .
+
+      - name: Upload files
+        uses: actions/upload-artifact@v7
+        with:
+          name: artifacts-promo
+          path: binaries/Eagle-Animation-*
+          retention-days: 1
+          overwrite: true
+
   # Gate between the builds and the publications: downstream jobs wait on this
   # one only, which keeps the dependency graph readable.
   builds:
@@ -262,6 +297,7 @@ jobs:
       - macos
       - macos-legacy
       - android
+      - promo
 
     steps:
       - name: Builds summary
