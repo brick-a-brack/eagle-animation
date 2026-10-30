@@ -29,7 +29,7 @@
     "build:unpack": "electron-vite build && electron-builder --dir",
     "build:win": "electron-vite build && electron-builder --win -p never",
     "build:mac": "electron-vite build && electron-builder --mac --universal -p never",
-    "build:mac:legacy": "electron-vite build && electron-builder --mac --universal -c electron-builder.legacy.yaml -p never",
+    "build:mac:legacy": "node scripts/install-toucan-camera-server.js --legacy && electron-vite build && electron-builder --mac --universal -c electron-builder.legacy.yaml -p never",
     "build:linux": "electron-vite build && electron-builder --linux -p never",
     "promo:assets": "node scripts/build-promo-assets.mjs",
     "promo:assets:zip": "node scripts/build-promo-assets.mjs --zip",
