@@ -4,16 +4,21 @@ const path = require('path');
 const { execFileSync } = require('child_process');
 const extract = require('extract-zip');
 
-const TOUCAN_CAMERA_SERVER_VERSION = '0.0.20';
+const TOUCAN_CAMERA_SERVER_VERSION = '0.0.22';
 
 const RELEASES = {
   windows: `https://github.com/brick-a-brack/toucan-camera-server/releases/download/v${TOUCAN_CAMERA_SERVER_VERSION}/toucan-camera-server-windows.zip`,
   macos: `https://github.com/brick-a-brack/toucan-camera-server/releases/download/v${TOUCAN_CAMERA_SERVER_VERSION}/toucan-camera-server-macos.zip`,
+  'macos-legacy': `https://github.com/brick-a-brack/toucan-camera-server/releases/download/v${TOUCAN_CAMERA_SERVER_VERSION}/toucan-camera-server-macos-legacy.zip`,
   linux: `https://github.com/brick-a-brack/toucan-camera-server/releases/download/v${TOUCAN_CAMERA_SERVER_VERSION}/toucan-camera-server-linux.zip`,
   android: `https://github.com/brick-a-brack/toucan-camera-server/releases/download/v${TOUCAN_CAMERA_SERVER_VERSION}/toucan-camera-lib-android.zip`,
 };
 
 const ANDROID_LIB_ABI = 'arm64-v8a';
+
+// Build for older macOS (see electron-builder.legacy.yaml), which needs the
+// legacy server build; passed by `npm run build:mac:legacy`.
+const LEGACY = process.argv.includes('--legacy');
 
 function getPlatformKey() {
   switch (process.platform) {
@@ -89,13 +94,17 @@ async function main() {
     return;
   }
 
-  const url = RELEASES[platform];
+  const releaseKey = LEGACY && platform === 'macos' ? 'macos-legacy' : platform;
+  const url = RELEASES[releaseKey];
   const binDir = path.join(__dirname, '../', 'toucan-camera-server/bin', platform);
   const archivePath = path.join(__dirname, '../', 'toucan-camera-server/', `toucan-camera-server-${platform}.zip`);
 
+  // Drop any previously installed build, so a legacy install never keeps
+  // libraries from the regular one (and the other way around)
+  fs.rmSync(binDir, { recursive: true, force: true });
   fs.mkdirSync(binDir, { recursive: true });
 
-  console.log(`🐦 toucan-camera-server: downloading binaries for ${platform}...`);
+  console.log(`🐦 toucan-camera-server: downloading binaries for ${releaseKey}...`);
   await download(url, archivePath);
 
   console.log(`🐦 toucan-camera-server: extracting to /bin/${platform}/...`);

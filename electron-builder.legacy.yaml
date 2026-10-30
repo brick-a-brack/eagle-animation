@@ -1,0 +1,15 @@
+# Legacy macOS build.
+#
+# Electron 44 requires macOS 13 (Ventura), while Electron 37 still runs on
+# macOS 11 (Big Sur). Rather than downgrading the `electron` devDependency for
+# everyone, electron-builder is told to bundle another runtime: the compiled
+# code is identical, only the packaged Electron differs.
+#
+# Electron 37 is out of the upstream support window (no more security patches),
+# so this build is best-effort for old machines, not the recommended download.
+extends: ./electron-builder.yaml
+electronVersion: 37.10.3
+
+mac:
+  minimumSystemVersion: '11.0'
+  artifactName: Eagle-Animation-${version}-mac-legacy.${ext}
