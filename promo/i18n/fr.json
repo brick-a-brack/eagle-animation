@@ -39,5 +39,10 @@
   "chipVideo": "Vidéo",
   "chipFrames": "Séquence d’images",
   "chipEditors": "Prêt au montage",
-  "appName": "Eagle Animation"
+  "appName": "Eagle Animation",
+  "front_url": "brickfilms.com/events",
+  "back_site": "eagle-animation.com",
+  "front_intro": "Retrouvez votre brickfilm sur",
+  "front_hint": "en utilisant le code ci-dessous",
+  "back_thanks": "Merci d’avoir utilisé"
 }
