@@ -56,7 +56,9 @@ jobs:
         run: gh release download "$tag" --pattern 'Eagle-Animation-*-web.zip' --dir binaries
 
       - name: Unpacking the Web bundle
-        run: unzip -q binaries/Eagle-Animation-*-web.zip -d out/web
+        run: |
+          mkdir -p out/web
+          unzip -q binaries/Eagle-Animation-*-web.zip -d out/web
 
       - name: Install and configure rclone
         run: |
