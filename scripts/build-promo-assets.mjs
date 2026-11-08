@@ -21,9 +21,9 @@ const ROOT = resolve(import.meta.dirname, '..');
 const RENDER_PAGE = `<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><title>renderer</title><link rel="icon" href="data:,"></head><body>
 <script type="module">
-  import { FORMAT_KEYS, LANGUAGES, SLIDES } from '/promo/content.js';
+  import { FORMAT_KEYS, LANGUAGES } from '/promo/content.js';
   import { waitForFonts } from '/promo/render/fonts.js';
-  import { renderSlideToCanvas, slideFileName } from '/promo/render/index.js';
+  import { renderSlideToCanvas, slideCount, slideFileName } from '/promo/render/index.js';
   import { loadScreenshots } from '/promo/render/screenshots.js';
 
   await loadScreenshots();
@@ -32,7 +32,7 @@ const RENDER_PAGE = `<!doctype html>
   window.EA = {
     formats: FORMAT_KEYS,
     languages: LANGUAGES,
-    slideCount: SLIDES.length,
+    slideCount: Object.fromEntries(FORMAT_KEYS.map((format) => [format, slideCount(format)])),
     fileName: slideFileName,
     renderBase64: (format, index, lang) =>
       renderSlideToCanvas(format, index, lang).toDataURL('image/png').slice('data:image/png;base64,'.length),
@@ -120,7 +120,7 @@ async function main() {
     for (const lang of langs) {
       const zip = options.zip ? new JSZip() : null;
       for (const format of formats) {
-        for (let index = 0; index < available.slideCount; index += 1) {
+        for (let index = 0; index < available.slideCount[format]; index += 1) {
           const { name, base64 } = await page.evaluate(([f, i, l]) => ({ name: window.EA.fileName(f, i, l), base64: window.EA.renderBase64(f, i, l) }), [format, index, lang]);
           const png = Buffer.from(base64, 'base64');
           const relative = join(lang, format, name);
