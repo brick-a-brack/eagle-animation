@@ -41,6 +41,10 @@ win:
   target:
     - portable
     - zip
+    - nsis
+
+nsis:
+  artifactName: Eagle-Animation-${version}-win-setup.${ext}
 
 mac:
   # Electron 44 requires macOS 13+; macOS 11/12 are covered by
