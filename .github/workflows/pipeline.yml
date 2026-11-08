@@ -1,7 +1,14 @@
 name: Eagle Animation - Build & package
 
 on:
+  # A manual run can target a tag: the build then uses that tag's source and its
+  # assets go to that tag's draft release instead of the current package.json one.
   workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag to build and publish (ex: v1.2.3), empty for the selected branch'
+        required: false
+        default: ''
   push:
     branches:
       - 'master'
@@ -17,6 +24,7 @@ jobs:
       - name: Clone source code
         uses: actions/checkout@v7
         with:
+          ref: ${{ inputs.tag }}
           fetch-depth: 1
 
       - name: Prepare build environment
@@ -52,6 +60,7 @@ jobs:
       - name: Clone source code
         uses: actions/checkout@v7
         with:
+          ref: ${{ inputs.tag }}
           fetch-depth: 1
 
       - name: Prepare build environment
@@ -85,6 +94,7 @@ jobs:
       - name: Clone source code
         uses: actions/checkout@v7
         with:
+          ref: ${{ inputs.tag }}
           fetch-depth: 1
 
       - name: Prepare build environment
@@ -115,6 +125,7 @@ jobs:
       - name: Clone source code
         uses: actions/checkout@v7
         with:
+          ref: ${{ inputs.tag }}
           fetch-depth: 1
 
       - name: Prepare build environment
@@ -148,6 +159,7 @@ jobs:
       - name: Clone source code
         uses: actions/checkout@v7
         with:
+          ref: ${{ inputs.tag }}
           fetch-depth: 1
 
       - name: Prepare build environment
@@ -180,6 +192,7 @@ jobs:
       - name: Clone source code
         uses: actions/checkout@v7
         with:
+          ref: ${{ inputs.tag }}
           fetch-depth: 1
 
       - name: Use Node.js
@@ -258,6 +271,7 @@ jobs:
       - name: Clone source code
         uses: actions/checkout@v7
         with:
+          ref: ${{ inputs.tag }}
           fetch-depth: 1
 
       - name: Prepare build environment
@@ -303,22 +317,59 @@ jobs:
       - name: Builds summary
         run: echo "Every build succeeded, moving on to the publications."
 
-  # Single place where the release assets are attached: every build job only
-  # uploads its own artifacts, this one collects them and pushes the whole set.
-  release:
-    name: Publish (Github)
+  # Tells the publication job whether there is somewhere to publish to, so the
+  # job is skipped instead of failing when no draft release is waiting.
+  release-check:
+    name: Look for a draft release
     runs-on: ubuntu-26.04
     needs: builds
 
-    permissions:
-      contents: write
+    outputs:
+      tag: ${{ steps.draft.outputs.tag }}
+      found: ${{ steps.draft.outputs.found }}
 
     steps:
       - name: Clone source code
         uses: actions/checkout@v7
         with:
+          ref: ${{ inputs.tag }}
           fetch-depth: 1
 
+      # Assets are only ever attached to a draft release: a missing release or an
+      # already published one is a no-op, never an error.
+      - name: Check the release state
+        id: draft
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          tag="${{ inputs.tag }}"
+          [ -n "$tag" ] || tag="v$(node -p "require('./package.json').version")"
+          state=$(gh release view "$tag" --json isDraft -q .isDraft 2>/dev/null || echo missing)
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+          if [ "$state" = "true" ]; then
+            echo "found=true" >> "$GITHUB_OUTPUT"
+            echo "::notice::$tag is a draft release, its assets will be attached."
+          else
+            echo "found=false" >> "$GITHUB_OUTPUT"
+            if [ "$state" = "missing" ]; then
+              echo "::notice::No release for $tag, skipping the Github publication."
+            else
+              echo "::notice::$tag is already published, skipping the Github publication."
+            fi
+          fi
+
+  # Single place where the release assets are attached: every build job only
+  # uploads its own artifacts, this one collects them and pushes the whole set.
+  release:
+    name: Publish (Github)
+    runs-on: ubuntu-26.04
+    needs: release-check
+    if: ${{ needs.release-check.outputs.found == 'true' }}
+
+    permissions:
+      contents: write
+
+    steps:
       - name: Download every artifact
         uses: actions/download-artifact@v8
         with:
@@ -329,16 +380,9 @@ jobs:
       - name: Attach files to the release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          tag: ${{ needs.release-check.outputs.tag }}
         run: |
-          tag="v$(node -p "require('./package.json').version")"
-          draft=$(gh release view "$tag" --json isDraft -q .isDraft 2>/dev/null || echo missing)
-          if [ "$draft" = "false" ]; then
-            echo "::error::$tag is already published, refusing to overwrite its assets. Bump the version in package.json."
-            exit 1
-          fi
-          if [ "$draft" = "missing" ]; then
-            gh release create "$tag" --draft --title "$tag" --notes "" --target "${{ github.sha }}"
-          fi
           # gh uploads the assets of one invocation concurrently: when a response
           # is lost it retries and collides with the asset it just created, and
           # --clobber only deletes what existed when the command started. One file
@@ -355,57 +399,3 @@ jobs:
             echo "::error::Unable to upload $file"
             exit 1
           done
-
-  # Platform publications run alongside the release attachment, and only from
-  # master.
-  publish-web:
-    name: Publish (Web)
-    runs-on: ubuntu-26.04
-    needs: builds
-    if: ${{ github.ref == 'refs/heads/master' }}
-
-    steps:
-      - name: Download the Web bundle
-        uses: actions/download-artifact@v8
-        with:
-          name: artifacts-web
-          path: binaries
-
-      - name: Unpacking the Web bundle
-        run: unzip -q binaries/Eagle-Animation-*-web.zip -d out/web
-
-      - name: Install and configure rclone
-        run: |
-          echo "${{ secrets.RCLONE_CONFIG }}" > /tmp/rclone.conf
-          sudo -v ; curl https://rclone.org/install.sh | sudo bash
-
-      # index.html and sw.js are copied last, so the shell is never served while
-      # the assets it references are still missing.
-      - name: Upload assets to Cloudflare
-        run: |
-          mv out/web/index.html ./
-          mv out/web/sw.js ./ || true
-          rclone --config /tmp/rclone.conf copy out/web/ backblaze:/eagle-app/
-          rclone --config /tmp/rclone.conf copy index.html backblaze:/eagle-app/
-          rclone --config /tmp/rclone.conf copy sw.js backblaze:/eagle-app/ || true
-
-  publish-android:
-    name: Publish (Android)
-    runs-on: ubuntu-26.04
-    needs: builds
-    if: ${{ github.ref == 'refs/heads/master' }}
-
-    steps:
-      - name: Download the Android bundle
-        uses: actions/download-artifact@v8
-        with:
-          name: artifacts-android
-          path: binaries
-
-      - name: Publish to Play Store
-        uses: r0adkll/upload-google-play@v1
-        with:
-          serviceAccountJsonPlainText: ${{ secrets.ANDROID_PUBLISH_SERVICE_ACCOUNT }}
-          packageName: com.brickabrack.eagleanimation
-          releaseFiles: binaries/Eagle-Animation-*-android.aab
-          track: production

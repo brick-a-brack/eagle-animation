@@ -41,9 +41,17 @@ runs:
       shell: bash
       run: npm install --cpu=x64 --os=linux sharp --force
 
+    # npm prunes every other arch on each --cpu install, so universal builds name
+    # both packages explicitly. The check fails the job rather than ship one arch.
     - name: Install dependencies (Sharp for macOS)
       if: ${{ inputs.sharp == 'darwin' }}
       shell: bash
       run: |
-        npm install --cpu=x64 --os=darwin sharp --force
-        npm install --cpu=arm64 --os=darwin sharp --force
+        sharp=$(node -p "require('./node_modules/sharp/package.json').version")
+        libvips=$(node -p "require('./node_modules/sharp/package.json').optionalDependencies['@img/sharp-libvips-darwin-x64']")
+        npm install --no-save --force \
+          "@img/sharp-darwin-x64@$sharp" "@img/sharp-libvips-darwin-x64@$libvips" \
+          "@img/sharp-darwin-arm64@$sharp" "@img/sharp-libvips-darwin-arm64@$libvips"
+        for pkg in sharp-darwin-x64 sharp-libvips-darwin-x64 sharp-darwin-arm64 sharp-libvips-darwin-arm64; do
+          test -f "node_modules/@img/$pkg/package.json" || { echo "::error::Missing @img/$pkg"; exit 1; }
+        done
