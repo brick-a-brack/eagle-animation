@@ -45,6 +45,8 @@ win:
 
 nsis:
   artifactName: Eagle-Animation-${version}-win-setup.${ext}
+  # Keeps the Windows uninstall entry stable across versions, for WinGet upgrades.
+  uninstallDisplayName: ${productName}
 
 mac:
   # Electron 44 requires macOS 13+; macOS 11/12 are covered by
