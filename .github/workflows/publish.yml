@@ -96,3 +96,42 @@ jobs:
           packageName: com.brickabrack.eagleanimation
           releaseFiles: binaries/Eagle-Animation-*-android.aab
           track: production
+
+  # Opens a PR on microsoft/winget-pkgs from the brick-a-brack fork.
+  publish-winget:
+    name: Publish (WinGet)
+    runs-on: ubuntu-26.04
+    needs: target
+
+    permissions:
+      contents: read
+
+    steps:
+      # The first version is submitted by hand: the action fails until it is merged.
+      - name: Check if WinGet needs this version
+        id: winget
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ needs.target.outputs.tag }}
+        run: |
+          base=repos/microsoft/winget-pkgs/contents/manifests/b/BrickABrack/EagleAnimation
+          submit=true
+          if ! versions=$(gh api "$base" --jq '.[].name' 2>gh-error.txt); then
+            grep -q 'HTTP 404' gh-error.txt || { cat gh-error.txt; exit 1; }
+            submit=false
+            echo "::notice::The package is not on WinGet yet, skipping the submission."
+          elif grep -Fxq "${tag#v}" <<< "$versions"; then
+            submit=false
+            echo "::notice::$tag is already on WinGet, skipping the submission."
+          fi
+          echo "submit=$submit" >> "$GITHUB_OUTPUT"
+
+      # The regex excludes the portable build, which is not an installer.
+      - name: Submit the installer to WinGet
+        if: ${{ steps.winget.outputs.submit == 'true' }}
+        uses: vedantmgoyal9/winget-releaser@v2
+        with:
+          identifier: BrickABrack.EagleAnimation
+          installers-regex: '-win-setup\.exe$'
+          release-tag: ${{ needs.target.outputs.tag }}
+          token: ${{ secrets.WINGET_TOKEN }}

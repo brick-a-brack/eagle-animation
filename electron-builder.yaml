@@ -43,6 +43,9 @@ win:
     - zip
     - nsis
 
+portable:
+  artifactName: Eagle-Animation-${version}-win-portable.${ext}
+
 nsis:
   artifactName: Eagle-Animation-${version}-win-setup.${ext}
   # Keeps the Windows uninstall entry stable across versions, for WinGet upgrades.
