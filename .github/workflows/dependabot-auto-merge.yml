@@ -1,0 +1,99 @@
+name: Eagle Animation - Dependabot auto-merge
+
+on:
+  pull_request:
+    branches:
+      - 'dev'
+
+permissions: {}
+
+jobs:
+  check:
+    name: Check eligibility
+    runs-on: ubuntu-26.04
+    if: ${{ github.event.pull_request.user.login == 'dependabot[bot]' }}
+
+    permissions:
+      contents: read
+      pull-requests: read
+
+    outputs:
+      eligible: ${{ steps.filter.outputs.eligible }}
+
+    steps:
+      - name: Read Dependabot metadata
+        id: metadata
+        uses: dependabot/fetch-metadata@v3
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      # A PR grouping several packages is only eligible if all of them are listed.
+      - name: Match the allowlist and the update type
+        id: filter
+        env:
+          NAMES: ${{ steps.metadata.outputs.dependency-names }}
+          UPDATE_TYPE: ${{ steps.metadata.outputs.update-type }}
+          ALLOWED: |
+            i18next-browser-languagedetector
+            i18next-http-backend
+            mediabunny
+            posthog-js
+            react-hook-form
+            react-i18next
+            react-router-dom
+        run: |
+          eligible=true
+          case "$UPDATE_TYPE" in
+            version-update:semver-patch|version-update:semver-minor) ;;
+            *) eligible=false ;;
+          esac
+          [ -n "$NAMES" ] || eligible=false
+          for dep in $(echo "$NAMES" | tr ',' ' '); do
+            grep -Fxq "$dep" <<< "$ALLOWED" || eligible=false
+          done
+          echo "eligible=$eligible" >> "$GITHUB_OUTPUT"
+          echo "::notice::$NAMES ($UPDATE_TYPE): eligible=$eligible"
+
+  # Installing runs the updated packages' scripts, so this job stays read-only.
+  build:
+    name: Quick Web Build
+    runs-on: ubuntu-26.04
+    needs: check
+    if: ${{ needs.check.outputs.eligible == 'true' }}
+
+    permissions:
+      contents: read
+
+    steps:
+      - name: Clone source code
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 1
+          persist-credentials: false
+
+      - name: Prepare build environment
+        uses: ./.github/actions/prepare
+
+      - name: Packaging Web
+        run: npm run build:web
+
+  merge:
+    name: Approve and merge
+    runs-on: ubuntu-26.04
+    needs: build
+
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      # The head commit check refuses to merge anything but the commit just built.
+      - name: Approve and merge the PR
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          # Approving depends on a repo setting; a refusal must not block the merge.
+          gh pr review "$PR_URL" --approve || echo "::warning::Approval refused, merging anyway"
+          gh pr merge "$PR_URL" --merge --match-head-commit "$HEAD_SHA"
