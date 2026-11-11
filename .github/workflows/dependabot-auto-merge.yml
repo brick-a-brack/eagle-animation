@@ -41,6 +41,8 @@ jobs:
             react-hook-form
             react-i18next
             react-router-dom
+            stylelint-config-standard
+            stylelint
         run: |
           eligible=true
           case "$UPDATE_TYPE" in
