@@ -8,16 +8,19 @@ import GridRatioPreview from '@components/GridRatioPreview';
 import Heading from '@components/Heading';
 import Input from '@components/Input';
 import NumberInput from '@components/NumberInput';
+import OscHelpWindow from '@components/OscHelpWindow';
 import Select from '@components/Select';
 import Switch from '@components/Switch';
-import { TOUCAN_CAMERA_SERVER_AVAILABLE, LANGUAGES } from '@config-web';
+import Window from '@components/Window';
+import { LANGUAGES, TOUCAN_CAMERA_SERVER_AVAILABLE } from '@config-web';
 import { formatFileSize } from '@core/format';
 import useAppCapabilities from '@hooks/useAppCapabilities';
 import useAppVersion from '@hooks/useAppVersion';
 import useCache from '@hooks/useCache';
 import useDataFolder from '@hooks/useDataFolder';
+import useOscStatus from '@hooks/useOscStatus';
 import useToucanCameraServer from '@hooks/useToucanCameraServer';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { withTranslation } from 'react-i18next';
 
@@ -25,12 +28,18 @@ import gridCenterIcon from './assets/center.png';
 import gridBasicIcon from './assets/grid.png';
 import gridMarginsIcon from './assets/margins.png';
 
+import * as style from './style.module.css';
+
+const LOCAL_HOSTS = ['localhost', '127.0.0.1', '::1'];
+
 const SettingsForm = ({ settings = {}, onUpdate = () => {}, t }) => {
   const { appCapabilities } = useAppCapabilities();
   const { path: dataFolderPath, actions: dataFolderActions } = useDataFolder();
   const { currentVersion, latestVersion, canBeUpdated, actions: appVersionActions } = useAppVersion();
   const { size: cacheSize, isClearing: isClearingCache, actions: cacheActions } = useCache(appCapabilities.includes('CLEAR_CACHE'));
   const { config: toucanCameraServerConfig } = useToucanCameraServer();
+  const { status: oscStatus } = useOscStatus(appCapabilities.includes('OSC'));
+  const [showOscHelp, setShowOscHelp] = useState(false);
   const form = useForm({
     mode: 'all',
     defaultValues: settings,
@@ -45,6 +54,16 @@ const SettingsForm = ({ settings = {}, onUpdate = () => {}, t }) => {
   }, [JSON.stringify(formValues)]);
 
   const LNGS_OPTIONS = [...LANGUAGES].sort((a, b) => (a.label > b.label ? 1 : -1));
+
+  // Two apps can't bind the same port on one machine, so equal ports only work with a remote target
+  const oscPortsConflict = Number(watch('OSC_LISTEN_PORT')) === Number(watch('OSC_TARGET_PORT')) && LOCAL_HOSTS.includes(`${watch('OSC_TARGET_HOST') || ''}`.trim().toLowerCase());
+
+  const oscStatusLabel = {
+    DISABLED: t('Disabled'),
+    STARTING: t('Starting…'),
+    LISTENING: t('Listening on {{addresses}}', { addresses: (oscStatus?.addresses || []).join(', ') || '-' }),
+    ERROR: t('Error: {{message}}', { message: oscStatus?.message || t('Unknown') }),
+  }[oscStatus?.state || 'DISABLED'];
 
   const toggleGridMode = (mode) => {
     const currentModes = watch('GRID_MODES') || [];
@@ -232,6 +251,67 @@ const SettingsForm = ({ settings = {}, onUpdate = () => {}, t }) => {
           />
         </FormGroup>
 
+        {appCapabilities.includes('OSC') && (
+          <>
+            <Divider />
+
+            <Heading h={1}>{t('Remote control (OSC)')}</Heading>
+
+            <FormGroup label={t('Enable OSC')} description={t('Control the app and receive its events from OSC tools such as TouchOSC, Companion or QLC+')}>
+              <div>
+                <Switch register={register('OSC_ENABLED')} />
+              </div>
+            </FormGroup>
+            <FormGroup label={t('How does it work?')} description={t('Configuration, supported actions and events')}>
+              <div>
+                <Button size="small" label={t('Show help')} onClick={() => setShowOscHelp(true)} />
+              </div>
+            </FormGroup>
+
+            {watch('OSC_ENABLED') && (
+              <>
+                <FormGroup label={t('Status')} description={<span className={oscStatus?.state === 'ERROR' ? style.error : ''}>{oscStatusLabel}</span>} />
+                <FormGroup label={t('Protocol')} description={t('Network protocol used to send and receive OSC messages')}>
+                  <Select
+                    options={[
+                      { value: 'udp', label: 'UDP' },
+                      { value: 'tcp', label: 'TCP' },
+                    ]}
+                    control={control}
+                    register={register('OSC_PROTOCOL')}
+                  />
+                </FormGroup>
+                <FormGroup label={t('Listening host')} description={t('127.0.0.1 accepts messages from this computer only, 0.0.0.0 from any device on the network')}>
+                  <Input control={control} register={register('OSC_LISTEN_HOST')} />
+                </FormGroup>
+                <FormGroup label={t('Listening port')} description={t('Port on which Eagle Animation receives actions')}>
+                  <NumberInput register={register('OSC_LISTEN_PORT')} min={1} max={65535} />
+                </FormGroup>
+                <FormGroup label={t('Target host')} description={t('Address of the device that receives the events')}>
+                  <Input control={control} register={register('OSC_TARGET_HOST')} />
+                </FormGroup>
+                <FormGroup
+                  label={t('Target port')}
+                  description={
+                    oscPortsConflict ? (
+                      <span className={style.warning}>{t('The target is on this computer: both ports must be different, two apps can not listen on the same port')}</span>
+                    ) : (
+                      t('Port on which events are sent')
+                    )
+                  }
+                >
+                  <NumberInput register={register('OSC_TARGET_PORT')} min={1} max={65535} />
+                </FormGroup>
+                <FormGroup label={t('Send played frames')} description={t('Send an event for every frame displayed during playback, can generate a lot of traffic')}>
+                  <div>
+                    <Switch register={register('OSC_SEND_FRAME_PLAYED')} />
+                  </div>
+                </FormGroup>
+              </>
+            )}
+          </>
+        )}
+
         <Divider />
 
         <Heading h={1}>{t('Workshops features')}</Heading>
@@ -266,6 +346,9 @@ const SettingsForm = ({ settings = {}, onUpdate = () => {}, t }) => {
           </>
         )}
       </FormLayout>
+      <Window isOpened={showOscHelp} onClose={() => setShowOscHelp(false)}>
+        <OscHelpWindow />
+      </Window>
     </form>
   );
 };

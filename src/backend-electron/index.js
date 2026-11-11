@@ -7,7 +7,10 @@ import { app, BrowserWindow, ipcMain, protocol, shell } from 'electron';
 
 import icon from '../../resources/icon.png?asset';
 import actions from './actions';
+import { PROJECTS_PATH } from './config';
+import { applyOscSettings, setOscHandlers, stopOsc } from './core/osc';
 import { ImageRoute } from './core/routes';
+import { getSettings } from './core/settings';
 import { shutdownToucanCameraServer } from './core/toucan';
 
 let sendToRenderer = () => null;
@@ -75,6 +78,13 @@ app.whenReady().then(() => {
 
   createWindow();
 
+  // sendToRenderer is replaced when the window is recreated, so it is resolved at call time
+  setOscHandlers({
+    onAction: (action) => sendToRenderer('OSC_ACTION', { action }),
+    onStatus: (status) => sendToRenderer('OSC_STATUS', status),
+  });
+  getSettings(PROJECTS_PATH).then(applyOscSettings);
+
   app.on('activate', function () {
     // On macOS it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
@@ -96,6 +106,7 @@ app.on('window-all-closed', () => {
 // camera indicator in the parent terminal / VS Code).
 app.on('before-quit', () => {
   shutdownToucanCameraServer();
+  stopOsc();
 });
 
 const handleTerminationSignal = (signal) => {

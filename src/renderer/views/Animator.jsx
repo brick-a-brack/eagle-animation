@@ -22,6 +22,7 @@ import { parseRatio } from '@core/ratio';
 import useAppCapabilities from '@hooks/useAppCapabilities';
 import useCamera from '@hooks/useCamera';
 import useDiscordActivity from '@hooks/useDiscordActivity';
+import useOscBridge from '@hooks/useOscBridge';
 import useProject from '@hooks/useProject';
 import useSettings from '@hooks/useSettings';
 import faArrowLeft from '@icons/faArrowLeft';
@@ -239,6 +240,40 @@ const Animator = ({ t }) => {
     }
   }, [devices, settings, currentCameraId]);
 
+  // Snapshot sent to OSC, built before the loading early return since hooks can't be called after it
+  const oscPictures = (project?.scenes?.[track]?.pictures || []).filter((e) => !e.deleted);
+  const oscState =
+    project && settings
+      ? {
+          projectId: `${id}`,
+          projectName: project.title || '',
+          sceneIndex: Number(track),
+          frameId: currentFrameId,
+          frameIndex: currentFrameId === false ? -1 : oscPictures.findIndex((p) => p.id === currentFrameId),
+          totalFrames: oscPictures.length,
+          liveView: currentFrameId === false,
+          playing: isPlaying,
+          capturing: isTakingPicture,
+          loop: loopStatus,
+          shortPlay: shortPlayStatus,
+          onion: Math.round((parseFloat(onionValue) || 0) * 100) / 100,
+          grid: gridStatus,
+          mute: !settings.SOUNDS,
+          fps,
+          cameraId: currentCameraId ? `${currentCameraId}` : '',
+          cameraName: devices?.find((device) => device.id === currentCameraId)?.label || '',
+          deviceIds: (devices || []).map((device) => `${device.id}`),
+        }
+      : null;
+
+  // Updated on every render with the latest handleAction closure
+  const oscActionRef = useRef(null);
+  const { emitEvent } = useOscBridge({
+    enabled: appCapabilities.includes('OSC') && !!settings?.OSC_ENABLED,
+    state: oscState,
+    onAction: (action) => oscActionRef.current?.(action),
+  });
+
   const handleImportPicture = useCallback((blob) => projectActions.addFrame(track, blob), [projectActions, track]);
 
   const handleSelectFrame = useCallback((selectedFrameId) => {
@@ -306,6 +341,12 @@ const Animator = ({ t }) => {
       setStartedAt((oldValue) => (oldValue ? oldValue : new Date().getTime() / 1000));
 
       const numberOfFramesToTake = Number(nbPicturesToTake !== null ? nbPicturesToTake : settings.CAPTURE_FRAMES) || 1;
+      emitEvent('capture_started', { count: numberOfFramesToTake });
+
+      // New frames go before the selected frame, or at the end on live view / during playback
+      const selectedIndex = pictures.findIndex((p) => p.id === currentFrameId);
+      const insertionIndex = isPlaying || selectedIndex === -1 ? pictures.length : selectedIndex;
+      let addedFrames = 0;
       for (let i = 0; i < numberOfFramesToTake; i++) {
         const nbFramesToTakeForAvg = (settings.AVERAGING_ENABLED ? Number(settings.AVERAGING_VALUE) : 1) || 1;
         try {
@@ -330,6 +371,8 @@ const Animator = ({ t }) => {
           // Save frame
           if (pendingBackgroundFrame || maskingMode === 'DISABLED') {
             await projectActions.addFrame(track, frame, isPlaying ? false : currentFrameId, pendingBackgroundFrame || null);
+            emitEvent('picture_taken', { frameIndex: insertionIndex + addedFrames, totalFrames: pictures.length + addedFrames + 1 });
+            addedFrames++;
           } else if (maskingMode === 'UNIQUE' || !pendingBackgroundFrame) {
             setPendingBackgroundFrame(await projectActions.savePicture(track, frame));
           }
@@ -343,13 +386,21 @@ const Animator = ({ t }) => {
             playSound(soundError);
           }
           console.error('Failed to take a picture', err);
+          emitEvent('capture_error', { message: err?.message || `${err}` });
         }
       }
+      emitEvent('capture_finished', { count: addedFrames });
 
       flushSync(() => {
         setIsTakingPicture(false);
       });
     };
+
+  const emitFrameDurationChange = (offset) => {
+    if (!currentFrame) return;
+    const length = Math.min(MAX_FRAME_DUPLICATION, Math.max(1, (currentFrame.length || 1) + offset));
+    if (length !== (currentFrame.length || 1)) emitEvent('frame_duration_changed', { frameIndex: framePosition - 1, length });
+  };
 
   const actionsEvents = {
     PLAY: () => {
@@ -417,9 +468,13 @@ const Animator = ({ t }) => {
       // Show right frame and execute deletion
       playerRef.current.showFrame(newId);
       projectActions.deleteFrame(track, frameIdToDelete);
+      emitEvent('frame_deleted', { frameIndex: pictures.findIndex((p) => p.id === frameIdToDelete) });
       window.track('frame_deleted', { projectId: `${id}`, trackId: `${track}`, frameId: `${frameIdToDelete}` });
     },
     BACK: () => {
+      navigate('/');
+    },
+    HOME: () => {
       navigate('/');
     },
     FRAME_LEFT: () => {
@@ -494,6 +549,7 @@ const Animator = ({ t }) => {
       const currentFps = project?.scenes?.[track]?.framerate || Number(settings?.DEFAULT_FPS) || DEFAULT_FPS;
       const currentRatio = project?.scenes?.[track]?.ratio || null;
       await projectActions.addScene(t('Untitled scene #{{index}}', { index: newVisualIndex }), currentFps, currentRatio);
+      emitEvent('scene_added', { sceneIndex: newIndex });
       window.track('scene_added', { projectId: `${id}`, trackId: `${newIndex}` });
       navigate(`/animator/${id}/${newIndex}`);
       setActiveWindow(null);
@@ -509,10 +565,14 @@ const Animator = ({ t }) => {
       window.track('scene_deleted', { projectId: `${id}`, trackId: `${indexToDelete}` });
     },
     UNDO: () => {
-      if (!isPlaying) projectActions.undo();
+      if (isPlaying) return;
+      projectActions.undo();
+      emitEvent('undo');
     },
     REDO: () => {
-      if (!isPlaying) projectActions.redo();
+      if (isPlaying) return;
+      projectActions.redo();
+      emitEvent('redo');
     },
     SHOW_TOOLS: () => {
       if (currentFrameId === false) {
@@ -530,18 +590,22 @@ const Animator = ({ t }) => {
     },
     HIDE_FRAME: async () => {
       projectActions.applyHiddenFrameStatus(track, currentFrameId, !currentFrame?.hidden);
+      if (currentFrame) emitEvent('frame_hidden', { frameIndex: framePosition - 1, hidden: !currentFrame.hidden });
       window.track('frame_hidden', { projectId: `${id}`, trackId: `${track}`, frameId: `${currentFrameId}`, hidden: !currentFrame?.hidden });
     },
     DUPLICATE: async () => {
       projectActions.applyDuplicateFrameOffset(track, currentFrameId, 1);
+      emitFrameDurationChange(1);
       window.track('frame_duplicated', { projectId: `${id}`, trackId: `${track}`, frameId: `${currentFrameId}`, offset: 1 });
     },
     CLONE: async () => {
       projectActions.cloneFrame(track, currentFrameId);
+      if (currentFrame) emitEvent('frame_cloned', { frameIndex: framePosition - 1 });
       window.track('frame_cloned', { projectId: `${id}`, trackId: `${track}`, frameId: `${currentFrameId}` });
     },
     DEDUPLICATE: async () => {
       projectActions.applyDuplicateFrameOffset(track, currentFrameId, -1);
+      emitFrameDurationChange(-1);
       window.track('frame_duplicated', { projectId: `${id}`, trackId: `${track}`, frameId: `${currentFrameId}`, offset: -1 });
     },
     SET_DUPLICATE_COUNT: (value) => {
@@ -549,6 +613,7 @@ const Animator = ({ t }) => {
       const offset = target - (currentFrame?.length || 1);
       if (!offset) return;
       projectActions.applyDuplicateFrameOffset(track, currentFrameId, offset);
+      emitFrameDurationChange(offset);
       window.track('frame_duplicated', { projectId: `${id}`, trackId: `${track}`, frameId: `${currentFrameId}`, offset });
     },
     MUTE: () => {
@@ -573,6 +638,13 @@ const Animator = ({ t }) => {
     MASKING_EDITOR: () => {
       setActiveWindow('masking');
     },
+  };
+
+  // The masking editor is a full screen edit session, remote actions must not change the frame under it
+  oscActionRef.current = (action) => {
+    if (activeWindow !== 'masking') {
+      handleAction(action);
+    }
   };
 
   const handlePlayerInit = (setStream) => {

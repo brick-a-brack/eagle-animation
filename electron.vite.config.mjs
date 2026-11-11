@@ -17,7 +17,12 @@ const escapeForRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 // packages that locate their own assets through __dirname (ffmpeg-static, sharp).
 const nodeExternals = ['electron', /^electron\/.+/, ...builtinModules.flatMap((m) => [m, `node:${m}`])];
 
-const dependencyExternals = Object.keys(dependencies).flatMap((name) => [name, new RegExp(`^${escapeForRegExp(name)}/`)]);
+// ESM-only packages can't be require()d from the CommonJS main bundle, they must be inlined
+const bundledDependencies = ['osc-min'];
+
+const dependencyExternals = Object.keys(dependencies)
+  .filter((name) => !bundledDependencies.includes(name))
+  .flatMap((name) => [name, new RegExp(`^${escapeForRegExp(name)}/`)]);
 
 const commonJsOutput = {
   format: 'cjs',
@@ -40,7 +45,7 @@ export default defineConfig(({ mode }) => {
         },
         sourcemap: true,
       },
-      plugins: [externalizeDepsPlugin()],
+      plugins: [externalizeDepsPlugin({ exclude: bundledDependencies })],
     },
     preload: {
       build: {
