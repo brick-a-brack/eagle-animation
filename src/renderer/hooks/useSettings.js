@@ -1,3 +1,4 @@
+import { OSC_DEFAULT_SETTINGS } from '@common/osc';
 import { DEFAULT_FPS, PARTNER_API } from '@config-web';
 import { currentLanguage, setLanguage } from '@i18n';
 import { useCallback, useEffect, useState } from 'react';
@@ -30,6 +31,7 @@ const DEFAULT_SETTINGS = {
   TOUCAN_CAMERA_SERVER_EXPOSE: false,
   TELEMETRY_ENABLED: true,
   TOURS_COMPLETED: [], // Keys of the guided tours the user has already seen
+  ...OSC_DEFAULT_SETTINGS,
 };
 
 // Settings are shared process-wide: several components call useSettings() at the

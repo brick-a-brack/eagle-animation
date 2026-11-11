@@ -1,6 +1,7 @@
 import { readFile, rename, writeFile } from 'node:fs/promises';
 import { format } from 'node:path';
 
+import { OSC_DEFAULT_SETTINGS } from '../../common/osc';
 import { DEFAULT_FPS } from '../../config';
 
 const defaultSettings = {
@@ -17,6 +18,7 @@ const defaultSettings = {
   GRID_LINES: 3,
   GRID_COLUMNS: 3,
   EVENT_KEY: '',
+  ...OSC_DEFAULT_SETTINGS,
 };
 
 // Get settings

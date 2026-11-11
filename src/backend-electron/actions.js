@@ -12,6 +12,7 @@ import { uploadFile } from './core/api';
 import { clearCache, getCacheSize } from './core/cache';
 import { setDiscordActivity } from './core/discord';
 import { exportProjectScene, exportSaveTemporaryBuffer, getSyncList, saveSyncList } from './core/export';
+import { applyOscSettings, getOscStatus, sendOscEvent, setOscState } from './core/osc';
 import { createProject, deleteProject, getProjectData, getProjectsList, projectSave, savePicture } from './core/projects';
 import { getCameraSettings, getSettings, saveCameraSettings, saveSettings } from './core/settings';
 import { getToucanCameraServerConfig, setToucanCameraServerConfig, stopToucanCameraServer } from './core/toucan';
@@ -136,7 +137,9 @@ const actions = {
     return getSettings(PROJECTS_PATH);
   },
   SAVE_SETTINGS: async (evt, { settings }) => {
-    return saveSettings(PROJECTS_PATH, settings);
+    const savedSettings = await saveSettings(PROJECTS_PATH, settings);
+    applyOscSettings(savedSettings);
+    return savedSettings;
   },
   GET_CAMERA_SETTINGS: async (evt, { cameraId }) => {
     return getCameraSettings(PROJECTS_PATH, cameraId);
@@ -188,6 +191,7 @@ const actions = {
       'SHORTCUTS',
       'LOCAL_DATA_FOLDER',
       'CLEAR_CACHE',
+      'OSC',
     ];
     return capabilities;
   },
@@ -312,6 +316,17 @@ const actions = {
       smallImageText: actionTitle || null,
       largeImageText: applicationTitle || null,
     });
+  },
+  EVENT: async (evt, { name, ...payload } = {}) => {
+    sendOscEvent(name, payload);
+    return null;
+  },
+  OSC_SET_STATE: async (evt, state) => {
+    setOscState(state);
+    return null;
+  },
+  OSC_GET_STATUS: async () => {
+    return getOscStatus();
   },
   TOUCAN_CAMERA_SERVER_GET_CONFIG: async () => {
     return getToucanCameraServerConfig();

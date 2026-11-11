@@ -197,6 +197,16 @@ export const Actions = {
     }
     return capabilities;
   },
+  // OSC needs UDP/TCP sockets, which browsers can't open
+  EVENT: async () => {
+    return null;
+  },
+  OSC_SET_STATE: async () => {
+    return null;
+  },
+  OSC_GET_STATUS: async () => {
+    return { state: 'DISABLED', message: null, addresses: [] };
+  },
   EXPORT_SELECT_PATH: async (evt, { compress_as_zip = false }) => {
     currentDirectory = null;
 

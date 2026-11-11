@@ -23,6 +23,7 @@ without ads!_ 🎥
 - ⚙️ **Adjust camera settings** - Control and adjust your camera settings.
 - 🪄 **Frame averaging** - Capture several frames and merge them to reduce picture noise automatically.
 - ✂️ **Masking** - Capture two shots and paint away what you want to hide, no green screen needed.
+- 🎛️ **Remote control** - Drive the app from TouchOSC, a Stream Deck or QLC+ and sync your lights with captures using [OSC](docs/OSC.md) (desktop app).
 - 🥖 **Oui-Oui-Baguette** - The software is available in several languages to allow everyone to use it.
 
 ## Get started
