@@ -479,5 +479,12 @@
   "Expose the cameras so they can be used from other devices ({{hostname}}:{{port}}, using {{token}})": "Padara kameras pieejamas, lai tās varētu izmantot no citām ierīcēm ({{hostname}}:{{port}}, izmantojot {{token}})",
   "Auto": "Auto",
   "Automatic rotation": "Automātiska pagriešana",
-  "Rotation": "Pagriešana"
+  "Rotation": "Pagriešana",
+  "Uploading {{percent}}%": "Augšupielāde {{percent}}%",
+  "Retrying": "Mēģina vēlreiz",
+  "Failed": "Neizdevās",
+  "Attempt {{attempt}}/{{max}}": "Mēģinājums {{attempt}}/{{max}}",
+  "Retries: {{retries}}": "Atkārtojumi: {{retries}}",
+  "Sent": "Nosūtīti",
+  "Remaining to send": "Atlicis nosūtīt"
 }

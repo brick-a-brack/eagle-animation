@@ -492,5 +492,12 @@
   "Expose the cameras so they can be used from other devices ({{hostname}}:{{port}}, using {{token}})": "Espone le fotocamere affinché possano essere usate da altri dispositivi ({{hostname}}:{{port}}, con {{token}})",
   "Auto": "Auto",
   "Automatic rotation": "Rotazione automatica",
-  "Rotation": "Rotazione"
+  "Rotation": "Rotazione",
+  "Uploading {{percent}}%": "Caricamento {{percent}}%",
+  "Retrying": "Nuovo tentativo",
+  "Failed": "Non riuscito",
+  "Attempt {{attempt}}/{{max}}": "Tentativo {{attempt}}/{{max}}",
+  "Retries: {{retries}}": "Tentativi ripetuti: {{retries}}",
+  "Sent": "Inviati",
+  "Remaining to send": "Da inviare"
 }

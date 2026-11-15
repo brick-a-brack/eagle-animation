@@ -489,5 +489,12 @@
   "Expose the cameras so they can be used from other devices ({{hostname}}:{{port}}, using {{token}})": "Disponebligas la kameraojn por ke ili estu uzeblaj de aliaj aparatoj ({{hostname}}:{{port}}, uzante {{token}})",
   "Auto": "Aŭto",
   "Automatic rotation": "Aŭtomata turno",
-  "Rotation": "Turno"
+  "Rotation": "Turno",
+  "Uploading {{percent}}%": "Alŝutado {{percent}}%",
+  "Retrying": "Reprovante",
+  "Failed": "Malsukcesis",
+  "Attempt {{attempt}}/{{max}}": "Provo {{attempt}}/{{max}}",
+  "Retries: {{retries}}": "Reprovoj: {{retries}}",
+  "Sent": "Senditaj",
+  "Remaining to send": "Restas sendi"
 }

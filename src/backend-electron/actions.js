@@ -8,12 +8,12 @@ import { join } from 'path-browserify';
 import { getEncodingProfile } from '../common/ffmpeg';
 import { CONTRIBUTE_REPOSITORY } from '../config';
 import { PROJECTS_PATH } from './config';
-import { uploadFile } from './core/api';
 import { clearCache, getCacheSize } from './core/cache';
 import { setDiscordActivity } from './core/discord';
 import { exportProjectScene, exportSaveTemporaryBuffer, getSyncList, saveSyncList } from './core/export';
 import { createProject, deleteProject, getProjectData, getProjectsList, projectSave, savePicture } from './core/projects';
 import { getCameraSettings, getSettings, saveCameraSettings, saveSettings } from './core/settings';
+import { getSyncListWithState, runSync } from './core/sync';
 import { getToucanCameraServerConfig, setToucanCameraServerConfig, stopToucanCameraServer } from './core/toucan';
 import { selectFile, selectFolder } from './core/utils';
 
@@ -144,34 +144,12 @@ const actions = {
   SAVE_CAMERA_SETTINGS: async (evt, { cameraId, settings }) => {
     return saveCameraSettings(PROJECTS_PATH, cameraId, settings);
   },
-  SYNC: async () => {
-    let syncList = await getSyncList(PROJECTS_PATH);
-    for (let i = 0; i < syncList.length; i++) {
-      const syncElement = syncList[i];
-      try {
-        if (!syncElement.isUploaded) {
-          console.log(`☁️ Sync start ${syncElement.publicCode} (${syncElement.apiKey})`);
-          await uploadFile({
-            sendMethod: syncElement.sendMethod,
-            endpoint: syncElement.apiEndpoint,
-            apiKey: syncElement.apiKey,
-            code: syncElement.publicCode,
-            email: syncElement.email,
-            fileExtension: syncElement.fileExtension,
-            filePath: join(PROJECTS_PATH, '/.sync/', syncElement.fileName),
-          });
-          syncList[i].isUploaded = true;
-          await saveSyncList(PROJECTS_PATH, syncList);
-          console.log(`✅ Sync finished ${syncElement.publicCode} (${syncElement.apiKey})`);
-        }
-      } catch (err) {
-        console.log(`❌ Sync failed ${syncElement.publicCode} (${syncElement.apiKey})`, err);
-      }
-    }
+  SYNC: async (evt, args, sendToRenderer) => {
+    runSync(PROJECTS_PATH, (state) => sendToRenderer?.('SYNC_PROGRESS', state));
+    return true;
   },
   GET_SYNC_LIST: async () => {
-    const syncList = await getSyncList(PROJECTS_PATH);
-    return syncList;
+    return getSyncListWithState(PROJECTS_PATH);
   },
   APP_CAPABILITIES: async () => {
     const capabilities = [
@@ -300,7 +278,7 @@ const actions = {
         },
       ]);
 
-      actions.SYNC();
+      actions.SYNC(evt, {}, sendToRenderer);
     }
 
     return true;

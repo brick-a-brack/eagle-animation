@@ -500,5 +500,12 @@
   "Expose the cameras so they can be used from other devices ({{hostname}}:{{port}}, using {{token}})": "Padaro kameras pasiekiamas, kad jas būtų galima naudoti iš kitų įrenginių ({{hostname}}:{{port}}, naudojant {{token}})",
   "Auto": "Auto",
   "Automatic rotation": "Automatinis pasukimas",
-  "Rotation": "Pasukimas"
+  "Rotation": "Pasukimas",
+  "Uploading {{percent}}%": "Įkeliama {{percent}} %",
+  "Retrying": "Bandoma iš naujo",
+  "Failed": "Nepavyko",
+  "Attempt {{attempt}}/{{max}}": "Bandymas {{attempt}}/{{max}}",
+  "Retries: {{retries}}": "Pakartotiniai bandymai: {{retries}}",
+  "Sent": "Išsiųsta",
+  "Remaining to send": "Liko išsiųsti"
 }

@@ -482,5 +482,12 @@
   "Expose the cameras so they can be used from other devices ({{hostname}}:{{port}}, using {{token}})": "Открывает доступ к камерам, чтобы их можно было использовать с других устройств ({{hostname}}:{{port}}, с {{token}})",
   "Auto": "Авто",
   "Automatic rotation": "Автоматический поворот",
-  "Rotation": "Поворот"
+  "Rotation": "Поворот",
+  "Uploading {{percent}}%": "Загрузка {{percent}}%",
+  "Retrying": "Повторная попытка",
+  "Failed": "Ошибка",
+  "Attempt {{attempt}}/{{max}}": "Попытка {{attempt}}/{{max}}",
+  "Retries: {{retries}}": "Повторы: {{retries}}",
+  "Sent": "Отправлено",
+  "Remaining to send": "Осталось отправить"
 }
