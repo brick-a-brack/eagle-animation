@@ -11,12 +11,13 @@ let isSyncing = false;
 let syncRequested = false;
 
 // Re-read the list before saving so items appended during an upload are not lost
-const updateSyncItem = async (path, fileName, patch) => {
+const updateSyncItem = async (path, fileName, patch, send) => {
   const list = await getSyncList(path);
   await saveSyncList(
     path,
     list.map((item) => (item.fileName === fileName ? { ...item, ...patch } : item))
   );
+  send('SYNC_LIST_UPDATED', { fileName });
 };
 
 const withLiveState = (item) => ({
@@ -31,7 +32,7 @@ export const getSyncListWithState = async (path) => {
   return list.map(withLiveState);
 };
 
-const syncItem = async (path, item, notify) => {
+const syncItem = async (path, item, send) => {
   const { fileName } = item;
   let retries = item.retries || 0;
   let lastProgressAt = 0;
@@ -41,7 +42,7 @@ const syncItem = async (path, item, notify) => {
     const now = Date.now();
     if (force || now - lastProgressAt >= PROGRESS_THROTTLE_MS) {
       lastProgressAt = now;
-      notify({ fileName, retries, maxAttempts: UPLOAD_RETRIES, ...liveState[fileName] });
+      send('SYNC_PROGRESS', { fileName, retries, maxAttempts: UPLOAD_RETRIES, ...liveState[fileName] });
     }
   };
 
@@ -61,19 +62,19 @@ const syncItem = async (path, item, notify) => {
         retries += 1;
         const error = err?.message || String(err);
         emit({ status: attempt < UPLOAD_RETRIES ? 'retrying' : 'error', error }, true);
-        await updateSyncItem(path, fileName, { retries, lastError: error });
+        await updateSyncItem(path, fileName, { retries, lastError: error }, send);
       },
     });
     delete liveState[fileName];
-    await updateSyncItem(path, fileName, { isUploaded: true, lastError: null });
-    notify({ fileName, retries, isUploaded: true, status: 'uploaded' });
+    send('SYNC_PROGRESS', { fileName, retries, isUploaded: true, status: 'uploaded' });
+    await updateSyncItem(path, fileName, { isUploaded: true, lastError: null }, send);
     console.log(`✅ Sync finished ${item.publicCode} (${item.apiKey})`);
   } catch (err) {
     console.log(`❌ Sync failed ${item.publicCode} (${item.apiKey})`, err);
   }
 };
 
-export const runSync = async (path, notify = () => {}) => {
+export const runSync = async (path, send = () => {}) => {
   // Calls during a running sync are merged into one extra pass
   if (isSyncing) {
     syncRequested = true;
@@ -85,7 +86,7 @@ export const runSync = async (path, notify = () => {}) => {
       syncRequested = false;
       const list = await getSyncList(path);
       for (const item of list.filter((e) => !e.isUploaded)) {
-        await syncItem(path, item, notify);
+        await syncItem(path, item, send);
       }
     } while (syncRequested);
   } finally {

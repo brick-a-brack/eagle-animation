@@ -145,7 +145,7 @@ const actions = {
     return saveCameraSettings(PROJECTS_PATH, cameraId, settings);
   },
   SYNC: async (evt, args, sendToRenderer) => {
-    runSync(PROJECTS_PATH, (state) => sendToRenderer?.('SYNC_PROGRESS', state));
+    runSync(PROJECTS_PATH, (channel, value) => sendToRenderer?.(channel, value));
     return true;
   },
   GET_SYNC_LIST: async () => {
@@ -277,6 +277,7 @@ const actions = {
           apiEndpoint: endpoint,
         },
       ]);
+      sendToRenderer?.('SYNC_LIST_UPDATED', {});
 
       actions.SYNC(evt, {}, sendToRenderer);
     }
