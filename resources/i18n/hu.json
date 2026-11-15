@@ -475,5 +475,16 @@
   "Expose the cameras so they can be used from other devices ({{hostname}}:{{port}}, using {{token}})": "Elérhetővé teszi a kamerákat, hogy más eszközökről is használhatók legyenek ({{hostname}}:{{port}}, ezzel: {{token}})",
   "Auto": "Auto",
   "Automatic rotation": "Automatikus elfordulás",
-  "Rotation": "Elfordulás"
+  "Rotation": "Elfordulás",
+  "Uploading {{percent}}%": "Feltöltés {{percent}}%",
+  "Retrying": "Újrapróbálkozás",
+  "Failed": "Sikertelen",
+  "Attempt {{attempt}}/{{max}}": "{{attempt}}/{{max}}. próbálkozás",
+  "Retries: {{retries}}": "Újrapróbálkozások: {{retries}}",
+  "Sent": "Elküldve",
+  "Remaining to send": "Hátralévő",
+  "In queue (#{{position}})": "Sorban ({{position}}.)",
+  "In queue": "Sorban",
+  "Waiting for next sync": "Várakozás a következő szinkronizálásra",
+  "{{queued}} in queue": "{{queued}} sorban"
 }

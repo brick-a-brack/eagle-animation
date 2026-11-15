@@ -479,5 +479,16 @@
   "Expose the cameras so they can be used from other devices ({{hostname}}:{{port}}, using {{token}})": "Expune camerele pentru a putea fi folosite de pe alte dispozitive ({{hostname}}:{{port}}, folosind {{token}})",
   "Auto": "Auto",
   "Automatic rotation": "Rotire automată",
-  "Rotation": "Rotire"
+  "Rotation": "Rotire",
+  "Uploading {{percent}}%": "Se încarcă {{percent}}%",
+  "Retrying": "Se reîncearcă",
+  "Failed": "Eșuat",
+  "Attempt {{attempt}}/{{max}}": "Încercarea {{attempt}}/{{max}}",
+  "Retries: {{retries}}": "Reîncercări: {{retries}}",
+  "Sent": "Trimise",
+  "Remaining to send": "Rămase de trimis",
+  "In queue (#{{position}})": "În coadă (nr. {{position}})",
+  "In queue": "În coadă",
+  "Waiting for next sync": "Se așteaptă următoarea sincronizare",
+  "{{queued}} in queue": "{{queued}} în coadă"
 }

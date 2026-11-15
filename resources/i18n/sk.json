@@ -482,5 +482,16 @@
   "Expose the cameras so they can be used from other devices ({{hostname}}:{{port}}, using {{token}})": "Sprístupní kamery, aby sa dali používať z iných zariadení ({{hostname}}:{{port}}, pomocou {{token}})",
   "Auto": "Auto",
   "Automatic rotation": "Automatické otočenie",
-  "Rotation": "Otočenie"
+  "Rotation": "Otočenie",
+  "Uploading {{percent}}%": "Nahrávanie {{percent}} %",
+  "Retrying": "Opakovanie",
+  "Failed": "Zlyhalo",
+  "Attempt {{attempt}}/{{max}}": "Pokus {{attempt}}/{{max}}",
+  "Retries: {{retries}}": "Opakovania: {{retries}}",
+  "Sent": "Odoslané",
+  "Remaining to send": "Zostáva odoslať",
+  "In queue (#{{position}})": "V poradí (č. {{position}})",
+  "In queue": "V poradí",
+  "Waiting for next sync": "Čaká na ďalšiu synchronizáciu",
+  "{{queued}} in queue": "V poradí: {{queued}}"
 }

@@ -475,5 +475,16 @@
   "Expose the cameras so they can be used from other devices ({{hostname}}:{{port}}, using {{token}})": "Предоставя камерите, за да могат да се използват от други устройства ({{hostname}}:{{port}}, чрез {{token}})",
   "Auto": "Авто",
   "Automatic rotation": "Автоматично завъртане",
-  "Rotation": "Завъртане"
+  "Rotation": "Завъртане",
+  "Uploading {{percent}}%": "Качване {{percent}}%",
+  "Retrying": "Нов опит",
+  "Failed": "Неуспешно",
+  "Attempt {{attempt}}/{{max}}": "Опит {{attempt}}/{{max}}",
+  "Retries: {{retries}}": "Повторни опити: {{retries}}",
+  "Sent": "Изпратени",
+  "Remaining to send": "Оставащи за изпращане",
+  "In queue (#{{position}})": "На опашка (№{{position}})",
+  "In queue": "На опашка",
+  "Waiting for next sync": "Изчаква следващата синхронизация",
+  "{{queued}} in queue": "{{queued}} на опашка"
 }

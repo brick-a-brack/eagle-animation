@@ -475,5 +475,16 @@
   "Expose the cameras so they can be used from other devices ({{hostname}}:{{port}}, using {{token}})": "Asettaa kamerat saataville, jotta niitä voi käyttää muilta laitteilta ({{hostname}}:{{port}}, tunnuksella {{token}})",
   "Auto": "Auto",
   "Automatic rotation": "Automaattinen kierto",
-  "Rotation": "Kierto"
+  "Rotation": "Kierto",
+  "Uploading {{percent}}%": "Lähetetään {{percent}} %",
+  "Retrying": "Yritetään uudelleen",
+  "Failed": "Epäonnistui",
+  "Attempt {{attempt}}/{{max}}": "Yritys {{attempt}}/{{max}}",
+  "Retries: {{retries}}": "Uudelleenyritykset: {{retries}}",
+  "Sent": "Lähetetty",
+  "Remaining to send": "Lähettämättä",
+  "In queue (#{{position}})": "Jonossa (nro {{position}})",
+  "In queue": "Jonossa",
+  "Waiting for next sync": "Odottaa seuraavaa synkronointia",
+  "{{queued}} in queue": "Jonossa: {{queued}}"
 }

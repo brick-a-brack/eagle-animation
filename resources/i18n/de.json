@@ -489,5 +489,16 @@
   "Expose the cameras so they can be used from other devices ({{hostname}}:{{port}}, using {{token}})": "Gibt die Kameras frei, damit sie von anderen Geräten verwendet werden können ({{hostname}}:{{port}}, mit {{token}})",
   "Auto": "Auto",
   "Automatic rotation": "Automatische Drehung",
-  "Rotation": "Drehung"
+  "Rotation": "Drehung",
+  "Uploading {{percent}}%": "Hochladen {{percent}}%",
+  "Retrying": "Erneuter Versuch",
+  "Failed": "Fehlgeschlagen",
+  "Attempt {{attempt}}/{{max}}": "Versuch {{attempt}}/{{max}}",
+  "Retries: {{retries}}": "Wiederholungen: {{retries}}",
+  "Sent": "Gesendet",
+  "Remaining to send": "Noch zu senden",
+  "In queue (#{{position}})": "In Warteschlange (Nr. {{position}})",
+  "In queue": "In Warteschlange",
+  "Waiting for next sync": "Wartet auf nächste Synchronisierung",
+  "{{queued}} in queue": "{{queued}} in Warteschlange"
 }

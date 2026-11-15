@@ -475,5 +475,16 @@
   "Expose the cameras so they can be used from other devices ({{hostname}}:{{port}}, using {{token}})": "Gör kamerorna tillgängliga så att de kan användas från andra enheter ({{hostname}}:{{port}}, med {{token}})",
   "Auto": "Auto",
   "Automatic rotation": "Automatisk rotation",
-  "Rotation": "Rotation"
+  "Rotation": "Rotation",
+  "Uploading {{percent}}%": "Laddar upp {{percent}} %",
+  "Retrying": "Försöker igen",
+  "Failed": "Misslyckades",
+  "Attempt {{attempt}}/{{max}}": "Försök {{attempt}}/{{max}}",
+  "Retries: {{retries}}": "Omförsök: {{retries}}",
+  "Sent": "Skickade",
+  "Remaining to send": "Kvar att skicka",
+  "In queue (#{{position}})": "I kö (nr {{position}})",
+  "In queue": "I kö",
+  "Waiting for next sync": "Väntar på nästa synkronisering",
+  "{{queued}} in queue": "{{queued}} i kö"
 }
