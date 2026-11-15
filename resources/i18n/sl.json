@@ -491,5 +491,9 @@
   "Attempt {{attempt}}/{{max}}": "Poskus {{attempt}}/{{max}}",
   "Retries: {{retries}}": "Ponovni poskusi: {{retries}}",
   "Sent": "Poslano",
-  "Remaining to send": "Preostalo za pošiljanje"
+  "Remaining to send": "Preostalo za pošiljanje",
+  "In queue (#{{position}})": "V čakalni vrsti (št. {{position}})",
+  "In queue": "V čakalni vrsti",
+  "Waiting for next sync": "Čaka na naslednjo sinhronizacijo",
+  "{{queued}} in queue": "V čakalni vrsti: {{queued}}"
 }

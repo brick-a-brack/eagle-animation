@@ -489,5 +489,9 @@
   "Attempt {{attempt}}/{{max}}": "Попытка {{attempt}}/{{max}}",
   "Retries: {{retries}}": "Повторы: {{retries}}",
   "Sent": "Отправлено",
-  "Remaining to send": "Осталось отправить"
+  "Remaining to send": "Осталось отправить",
+  "In queue (#{{position}})": "В очереди (№{{position}})",
+  "In queue": "В очереди",
+  "Waiting for next sync": "Ожидает следующей синхронизации",
+  "{{queued}} in queue": "В очереди: {{queued}}"
 }

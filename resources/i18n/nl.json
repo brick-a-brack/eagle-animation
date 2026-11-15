@@ -482,5 +482,9 @@
   "Attempt {{attempt}}/{{max}}": "Poging {{attempt}}/{{max}}",
   "Retries: {{retries}}": "Herhalingen: {{retries}}",
   "Sent": "Verzonden",
-  "Remaining to send": "Nog te verzenden"
+  "Remaining to send": "Nog te verzenden",
+  "In queue (#{{position}})": "In wachtrij (#{{position}})",
+  "In queue": "In wachtrij",
+  "Waiting for next sync": "Wacht op volgende synchronisatie",
+  "{{queued}} in queue": "{{queued}} in wachtrij"
 }

@@ -482,5 +482,9 @@
   "Attempt {{attempt}}/{{max}}": "Försök {{attempt}}/{{max}}",
   "Retries: {{retries}}": "Omförsök: {{retries}}",
   "Sent": "Skickade",
-  "Remaining to send": "Kvar att skicka"
+  "Remaining to send": "Kvar att skicka",
+  "In queue (#{{position}})": "I kö (nr {{position}})",
+  "In queue": "I kö",
+  "Waiting for next sync": "Väntar på nästa synkronisering",
+  "{{queued}} in queue": "{{queued}} i kö"
 }

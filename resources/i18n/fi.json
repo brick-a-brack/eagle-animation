@@ -482,5 +482,9 @@
   "Attempt {{attempt}}/{{max}}": "Yritys {{attempt}}/{{max}}",
   "Retries: {{retries}}": "Uudelleenyritykset: {{retries}}",
   "Sent": "Lähetetty",
-  "Remaining to send": "Lähettämättä"
+  "Remaining to send": "Lähettämättä",
+  "In queue (#{{position}})": "Jonossa (nro {{position}})",
+  "In queue": "Jonossa",
+  "Waiting for next sync": "Odottaa seuraavaa synkronointia",
+  "{{queued}} in queue": "Jonossa: {{queued}}"
 }

@@ -499,5 +499,9 @@
   "Attempt {{attempt}}/{{max}}": "Tentativa {{attempt}}/{{max}}",
   "Retries: {{retries}}": "Novas tentativas: {{retries}}",
   "Sent": "Enviados",
-  "Remaining to send": "Por enviar"
+  "Remaining to send": "Por enviar",
+  "In queue (#{{position}})": "Na fila (n.º {{position}})",
+  "In queue": "Na fila",
+  "Waiting for next sync": "A aguardar a próxima sincronização",
+  "{{queued}} in queue": "{{queued}} na fila"
 }

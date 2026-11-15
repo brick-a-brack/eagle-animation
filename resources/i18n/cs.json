@@ -489,5 +489,9 @@
   "Attempt {{attempt}}/{{max}}": "Pokus {{attempt}}/{{max}}",
   "Retries: {{retries}}": "Opakování: {{retries}}",
   "Sent": "Odesláno",
-  "Remaining to send": "Zbývá odeslat"
+  "Remaining to send": "Zbývá odeslat",
+  "In queue (#{{position}})": "Ve frontě (č. {{position}})",
+  "In queue": "Ve frontě",
+  "Waiting for next sync": "Čeká na další synchronizaci",
+  "{{queued}} in queue": "Ve frontě: {{queued}}"
 }

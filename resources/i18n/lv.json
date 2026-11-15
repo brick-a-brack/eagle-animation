@@ -486,5 +486,9 @@
   "Attempt {{attempt}}/{{max}}": "Mēģinājums {{attempt}}/{{max}}",
   "Retries: {{retries}}": "Atkārtojumi: {{retries}}",
   "Sent": "Nosūtīti",
-  "Remaining to send": "Atlicis nosūtīt"
+  "Remaining to send": "Atlicis nosūtīt",
+  "In queue (#{{position}})": "Rindā (Nr. {{position}})",
+  "In queue": "Rindā",
+  "Waiting for next sync": "Gaida nākamo sinhronizāciju",
+  "{{queued}} in queue": "Rindā: {{queued}}"
 }

@@ -482,5 +482,9 @@
   "Attempt {{attempt}}/{{max}}": "Forsøg {{attempt}}/{{max}}",
   "Retries: {{retries}}": "Genforsøg: {{retries}}",
   "Sent": "Sendt",
-  "Remaining to send": "Mangler at sende"
+  "Remaining to send": "Mangler at sende",
+  "In queue (#{{position}})": "I kø (nr. {{position}})",
+  "In queue": "I kø",
+  "Waiting for next sync": "Venter på næste synkronisering",
+  "{{queued}} in queue": "{{queued}} i kø"
 }

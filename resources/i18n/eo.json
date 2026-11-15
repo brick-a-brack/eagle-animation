@@ -496,5 +496,9 @@
   "Attempt {{attempt}}/{{max}}": "Provo {{attempt}}/{{max}}",
   "Retries: {{retries}}": "Reprovoj: {{retries}}",
   "Sent": "Senditaj",
-  "Remaining to send": "Restas sendi"
+  "Remaining to send": "Restas sendi",
+  "In queue (#{{position}})": "En vico (n-ro {{position}})",
+  "In queue": "En vico",
+  "Waiting for next sync": "Atendante la sekvan sinkronigon",
+  "{{queued}} in queue": "{{queued}} en vico"
 }

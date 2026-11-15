@@ -496,5 +496,9 @@
   "Attempt {{attempt}}/{{max}}": "Versuch {{attempt}}/{{max}}",
   "Retries: {{retries}}": "Wiederholungen: {{retries}}",
   "Sent": "Gesendet",
-  "Remaining to send": "Noch zu senden"
+  "Remaining to send": "Noch zu senden",
+  "In queue (#{{position}})": "In Warteschlange (Nr. {{position}})",
+  "In queue": "In Warteschlange",
+  "Waiting for next sync": "Wartet auf nächste Synchronisierung",
+  "{{queued}} in queue": "{{queued}} in Warteschlange"
 }

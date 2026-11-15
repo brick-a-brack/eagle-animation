@@ -507,5 +507,9 @@
   "Attempt {{attempt}}/{{max}}": "Bandymas {{attempt}}/{{max}}",
   "Retries: {{retries}}": "Pakartotiniai bandymai: {{retries}}",
   "Sent": "Išsiųsta",
-  "Remaining to send": "Liko išsiųsti"
+  "Remaining to send": "Liko išsiųsti",
+  "In queue (#{{position}})": "Eilėje (Nr. {{position}})",
+  "In queue": "Eilėje",
+  "Waiting for next sync": "Laukiama kito sinchronizavimo",
+  "{{queued}} in queue": "Eilėje: {{queued}}"
 }

@@ -482,5 +482,9 @@
   "Attempt {{attempt}}/{{max}}": "Προσπάθεια {{attempt}}/{{max}}",
   "Retries: {{retries}}": "Επαναλήψεις: {{retries}}",
   "Sent": "Απεσταλμένα",
-  "Remaining to send": "Απομένουν για αποστολή"
+  "Remaining to send": "Απομένουν για αποστολή",
+  "In queue (#{{position}})": "Σε αναμονή (#{{position}})",
+  "In queue": "Σε αναμονή",
+  "Waiting for next sync": "Αναμονή για τον επόμενο συγχρονισμό",
+  "{{queued}} in queue": "{{queued}} σε αναμονή"
 }

@@ -13,6 +13,14 @@
   width: 98%;
 }
 
+.item.active {
+  border-color: var(--color-primary);
+}
+
+.item.done {
+  opacity: 0.7;
+}
+
 .icon {
   align-items: center;
   display: flex;
@@ -90,6 +98,7 @@
 .statusUploading,
 .statusRetrying,
 .statusError,
+.statusQueued,
 .statusPending {
   align-items: center;
   display: flex;
@@ -98,6 +107,11 @@
 
 .statusUploaded {
   color: var(--color-primary);
+  font-weight: 600;
+}
+
+.statusQueued {
+  color: var(--color-white);
   font-weight: 600;
 }
 
@@ -126,6 +140,7 @@
 .statusUploading svg,
 .statusRetrying svg,
 .statusError svg,
+.statusQueued svg,
 .statusPending svg {
   height: 20px;
   width: 20px;
@@ -135,6 +150,7 @@
 .statusUploading span,
 .statusRetrying span,
 .statusError span,
+.statusQueued span,
 .statusPending span {
   font-size: var(--font-size-6);
 }
