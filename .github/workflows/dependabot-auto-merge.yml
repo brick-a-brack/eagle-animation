@@ -43,6 +43,9 @@ jobs:
             react-router-dom
             stylelint-config-standard
             stylelint
+            rimraf
+            react-i18next
+            discord-api-types
         run: |
           eligible=true
           case "$UPDATE_TYPE" in
