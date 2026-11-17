@@ -162,6 +162,8 @@ const Animator = ({ t }) => {
   const [pendingBackgroundFrame, setPendingBackgroundFrame] = useState(false);
   const [sceneEditingIndex, setSceneEditingIndex] = useState(Number(track) || 0);
   const maskingEditorRef = useRef(null);
+  const isClosingMaskingEditorRef = useRef(false);
+  const [isSavingMask, setIsSavingMask] = useState(false);
 
   const { project, actions: projectActions } = useProject({ id });
 
@@ -599,19 +601,30 @@ const Animator = ({ t }) => {
   };
 
   const handleCloseMaskingEditor = async () => {
-    // Get new images
-    const d = await maskingEditorRef.current.exportLayers();
-    if (d && d?.frame && d?.layers?.transparent) {
-      await projectActions.updateFrame(track, currentFrame?.id, d.frame, undefined, undefined, d.layers.transparent);
+    // A second click while the layers encode would save the frame twice
+    if (isClosingMaskingEditorRef.current) {
+      return;
     }
+    isClosingMaskingEditorRef.current = true;
+    setIsSavingMask(true);
 
-    // Close editor
-    setActiveWindow(null);
+    try {
+      const d = await maskingEditorRef.current?.exportLayers().catch((err) => {
+        console.error('Failed to export the masking layers', err);
+        return null;
+      });
 
-    // Force player sync
-    setTimeout(() => {
-      playerRef.current.showFrame(currentFrame?.id);
-    }, 0);
+      // Stay open until the frame is written, closing earlier briefly shows the old picture
+      if (d?.frame && d?.layers?.transparent) {
+        await projectActions.updateFrame(track, currentFrame?.id, d.frame, undefined, undefined, d.layers.transparent).catch((err) => {
+          console.error('Failed to save the masked frame', err);
+        });
+      }
+    } finally {
+      setActiveWindow(null);
+      setIsSavingMask(false);
+      isClosingMaskingEditorRef.current = false;
+    }
   };
 
   const frameCaptureMode = maskingMode !== 'DISABLED' && !isPlaying ? (pendingBackgroundFrame ? 'FOREGROUND' : 'BACKGROUND') : null;
@@ -836,10 +849,11 @@ const Animator = ({ t }) => {
             />
           </Window>
           <Window isOpened={activeWindow === 'masking' && !isPlaying} onClose={handleCloseMaskingEditor} isFullScreen={true}>
-            {currentFrame && currentFrame?.masking && (
+            {activeWindow === 'masking' && currentFrame?.masking && (
               <MaskingWindow
                 key={currentFrame.id}
                 ref={maskingEditorRef}
+                isSaving={isSavingMask}
                 backgroundLayer={currentFrame?.masking?.background?.link || null}
                 foregroundLayer={currentFrame?.masking?.foreground?.link || null}
                 transparentLayer={currentFrame?.masking?.transparent?.link || null}

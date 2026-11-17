@@ -199,6 +199,12 @@ class Player extends Component {
         if (this.state.frameIndex !== newFrameIndex) {
           this.setState({ frameIndex: newFrameIndex });
         }
+
+        // Same frame with a new picture (masking editor): the old one would stay on screen
+        const newFrame = this.frames[newFrameIndex];
+        if (newFrame && newFrame.link !== previousFrame.link) {
+          this.drawFrame(newFrame.link || false);
+        }
       }
 
       // Force redraw last frame for onion skin
