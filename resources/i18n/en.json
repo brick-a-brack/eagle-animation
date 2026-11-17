@@ -496,5 +496,6 @@
   "Expose the cameras so they can be used from other devices ({{hostname}}:{{port}}, using {{token}})": "Expose the cameras so they can be used from other devices ({{hostname}}:{{port}}, using {{token}})",
   "Auto": "Auto",
   "Automatic rotation": "Automatic rotation",
-  "Rotation": "Rotation"
+  "Rotation": "Rotation",
+  "Saving...": "Saving..."
 }
