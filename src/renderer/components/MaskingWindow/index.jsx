@@ -12,12 +12,19 @@ import { withTranslation } from 'react-i18next';
 
 import * as style from './style.module.css';
 
-const MaskingWindow = forwardRef(function MaskingWindow({ backgroundLayer = null, foregroundLayer = null, transparentLayer = null, t }, ref) {
+const MaskingWindow = forwardRef(function MaskingWindow({ backgroundLayer = null, foregroundLayer = null, transparentLayer = null, isSaving = false, t }, ref) {
   const [selectedTab, setSelectedTab] = useState('REMOVE');
   const [brushSize, setBrushSize] = useState(50);
   const [brushBlurSize, setBrushBlurSize] = useState(25);
 
   const editorRef = useRef(null);
+
+  // The saved frame lands in the project before the window closes, reloading the layers then would be wasted work
+  const layersRef = useRef({ backgroundLayer, foregroundLayer, transparentLayer });
+  if (!isSaving) {
+    layersRef.current = { backgroundLayer, foregroundLayer, transparentLayer };
+  }
+  const layers = layersRef.current;
 
   useImperativeHandle(ref, () => ({
     exportLayers() {
@@ -54,9 +61,9 @@ const MaskingWindow = forwardRef(function MaskingWindow({ backgroundLayer = null
       <MaskingEditor
         brushSize={brushSize}
         brushBlurSize={brushBlurSize}
-        backgroundLayer={backgroundLayer}
-        foregroundLayer={foregroundLayer}
-        transparentLayer={transparentLayer}
+        backgroundLayer={layers.backgroundLayer}
+        foregroundLayer={layers.foregroundLayer}
+        transparentLayer={layers.transparentLayer}
         mode={selectedTab}
         ref={editorRef}
       />
@@ -89,6 +96,13 @@ const MaskingWindow = forwardRef(function MaskingWindow({ backgroundLayer = null
         </div>
       </div>
       <div />
+
+      {isSaving && (
+        <div className={style.savingOverlay}>
+          <span className={style.loader} />
+          <div className={style.savingText}>{t('Saving...')}</div>
+        </div>
+      )}
     </div>
   );
 });

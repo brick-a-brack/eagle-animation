@@ -475,5 +475,6 @@
   "Expose the cameras so they can be used from other devices ({{hostname}}:{{port}}, using {{token}})": "Stelt de camera's beschikbaar zodat ze vanaf andere apparaten gebruikt kunnen worden ({{hostname}}:{{port}}, met {{token}})",
   "Auto": "Auto",
   "Automatic rotation": "Automatische rotatie",
-  "Rotation": "Rotatie"
+  "Rotation": "Rotatie",
+  "Saving...": "Opslaan..."
 }

@@ -163,6 +163,7 @@ const Animator = ({ t }) => {
   const [sceneEditingIndex, setSceneEditingIndex] = useState(Number(track) || 0);
   const maskingEditorRef = useRef(null);
   const isClosingMaskingEditorRef = useRef(false);
+  const [isSavingMask, setIsSavingMask] = useState(false);
 
   const { project, actions: projectActions } = useProject({ id });
 
@@ -605,6 +606,7 @@ const Animator = ({ t }) => {
       return;
     }
     isClosingMaskingEditorRef.current = true;
+    setIsSavingMask(true);
 
     try {
       const d = await maskingEditorRef.current?.exportLayers().catch((err) => {
@@ -612,14 +614,15 @@ const Animator = ({ t }) => {
         return null;
       });
 
-      // The layers are encoded, the editor and its full-size canvases can go away
-      setActiveWindow(null);
-
-      // The player redraws the frame by itself once its new picture lands in the project
+      // Stay open until the frame is written, closing earlier briefly shows the old picture
       if (d?.frame && d?.layers?.transparent) {
-        await projectActions.updateFrame(track, currentFrame?.id, d.frame, undefined, undefined, d.layers.transparent);
+        await projectActions.updateFrame(track, currentFrame?.id, d.frame, undefined, undefined, d.layers.transparent).catch((err) => {
+          console.error('Failed to save the masked frame', err);
+        });
       }
     } finally {
+      setActiveWindow(null);
+      setIsSavingMask(false);
       isClosingMaskingEditorRef.current = false;
     }
   };
@@ -850,6 +853,7 @@ const Animator = ({ t }) => {
               <MaskingWindow
                 key={currentFrame.id}
                 ref={maskingEditorRef}
+                isSaving={isSavingMask}
                 backgroundLayer={currentFrame?.masking?.background?.link || null}
                 foregroundLayer={currentFrame?.masking?.foreground?.link || null}
                 transparentLayer={currentFrame?.masking?.transparent?.link || null}
