@@ -1,9 +1,9 @@
 /* Open Sans by @fontsource */
-@import '@fontsource/open-sans/400.css';
-@import '@fontsource/open-sans/500.css';
-@import '@fontsource/open-sans/600.css';
-@import '@fontsource/open-sans/700.css';
-@import '@fontsource/open-sans/800.css';
+@import url('@fontsource/open-sans/400.css');
+@import url('@fontsource/open-sans/500.css');
+@import url('@fontsource/open-sans/600.css');
+@import url('@fontsource/open-sans/700.css');
+@import url('@fontsource/open-sans/800.css');
 
 html,
 body {

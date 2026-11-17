@@ -1,0 +1,46 @@
+.layout {
+  align-items: flex-start;
+  box-sizing: border-box;
+  display: flex;
+  gap: var(--space-huge);
+  margin: auto;
+  max-width: 1100px;
+  padding: var(--space-big) 1%;
+  width: 98%;
+}
+
+.tabs {
+  flex-shrink: 0;
+  position: sticky;
+  top: var(--space-big);
+  width: 240px;
+}
+
+.content {
+  flex-grow: 1;
+  min-width: 0;
+}
+
+@media screen and (width <=768px) {
+  .layout {
+    flex-direction: column;
+    gap: 0;
+    max-width: none;
+    padding: 0;
+    width: 100%;
+  }
+
+  .tabs {
+    background: var(--color-theme-dark);
+    border-bottom: 2px solid var(--color-theme-medium);
+    top: 0;
+    width: 100%;
+    z-index: 1;
+  }
+
+  .content {
+    box-sizing: border-box;
+    padding: var(--space-big) 3%;
+    width: 100%;
+  }
+}

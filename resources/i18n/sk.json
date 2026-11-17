@@ -482,5 +482,6 @@
   "Expose the cameras so they can be used from other devices ({{hostname}}:{{port}}, using {{token}})": "Sprístupní kamery, aby sa dali používať z iných zariadení ({{hostname}}:{{port}}, pomocou {{token}})",
   "Auto": "Auto",
   "Automatic rotation": "Automatické otočenie",
-  "Rotation": "Otočenie"
+  "Rotation": "Otočenie",
+  "Workshops": "Dielne"
 }

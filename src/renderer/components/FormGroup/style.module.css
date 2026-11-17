@@ -5,13 +5,13 @@
   width: 100%;
 }
 
-.formGroup>div:nth-child(1) {
+.formGroup > div:nth-child(1) {
   display: flex;
   flex-direction: column;
   width: 65%;
 }
 
-.formGroup>div:nth-child(2) {
+.formGroup > div:nth-child(2) {
   display: flex;
   justify-content: flex-end;
   width: 35%;
@@ -46,44 +46,41 @@
 }
 
 @media screen and (width <=700px) {
-  .formGroup>div:nth-child(1) {
+  .formGroup > div:nth-child(1) {
     width: 60%;
   }
 
-  .formGroup>div:nth-child(2) {
+  .formGroup > div:nth-child(2) {
     width: 40%;
   }
 }
 
 @media screen and (width <=600px) {
-  .formGroup>div:nth-child(1) {
+  .formGroup > div:nth-child(1) {
     width: 55%;
   }
 
-  .formGroup>div:nth-child(2) {
+  .formGroup > div:nth-child(2) {
     width: 45%;
   }
 }
 
-
 @media screen and (width <=500px) {
-  .formGroup>div:nth-child(1) {
+  .formGroup > div:nth-child(1) {
     width: 50%;
   }
 
-  .formGroup>div:nth-child(2) {
+  .formGroup > div:nth-child(2) {
     width: 50%;
   }
 }
 
-
-@media (orientation: landscape) and (width <=700px),
-(orientation: landscape) and (height <=500px) {
-  .formGroup>div:nth-child(1) {
+@media (orientation: landscape) and (width <=700px), (orientation: landscape) and (height <=500px) {
+  .formGroup > div:nth-child(1) {
     width: 40%;
   }
 
-  .formGroup>div:nth-child(2) {
+  .formGroup > div:nth-child(2) {
     width: 60%;
   }
 }

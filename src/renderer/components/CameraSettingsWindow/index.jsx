@@ -231,7 +231,7 @@ const RemoteCameraSettingsWindow = withTranslation()(({ onDevicesListRefresh }) 
   return <PeersList peers={peers} onConnect={handleConnect} onDelete={handleDelete} />;
 });
 
-const BasicCameraSettingsTab = withTranslation()(({ t, onDevicesListRefresh = () => { }, onSettingsChange = () => { }, devices = [], settings = {}, currentCameraId = null }) => {
+const BasicCameraSettingsTab = withTranslation()(({ t, onDevicesListRefresh = () => {}, onSettingsChange = () => {}, devices = [], settings = {}, currentCameraId = null }) => {
   // Only seed the fields this form actually edits. Spreading the whole settings
   // object would make the form re-emit unrelated keys (e.g. TOURS_COMPLETED) on
   // every change, overwriting values owned by other code paths with a stale
@@ -320,7 +320,7 @@ const BasicCameraSettingsTab = withTranslation()(({ t, onDevicesListRefresh = ()
   );
 });
 
-const CameraSettingsWindow = ({ t, cameraCapabilities, onCapabilityChange, onDevicesListRefresh = () => { }, onSettingsChange = () => { }, devices = [], settings = {}, currentCameraId = null }) => {
+const CameraSettingsWindow = ({ t, cameraCapabilities, onCapabilityChange, onDevicesListRefresh = () => {}, onSettingsChange = () => {}, devices = [], settings = {}, currentCameraId = null }) => {
   const [selectedTab, setSelectedTab] = useState('CAMERAS');
 
   const tabs = getCapabilitiesTabs(cameraCapabilities, t);

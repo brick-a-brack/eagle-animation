@@ -1,22 +1,26 @@
 import Button from '@components/Button';
 import ButtonsGroup from '@components/ButtonsGroup';
 import CustomSlider from '@components/CustomSlider';
-import Divider from '@components/Divider';
 import FormGroup from '@components/FormGroup';
-import FormLayout from '@components/FormLayout';
 import GridRatioPreview from '@components/GridRatioPreview';
 import Heading from '@components/Heading';
 import Input from '@components/Input';
 import NumberInput from '@components/NumberInput';
+import SectionTabs from '@components/SectionTabs';
 import Select from '@components/Select';
 import Switch from '@components/Switch';
-import { TOUCAN_CAMERA_SERVER_AVAILABLE, LANGUAGES } from '@config-web';
+import { LANGUAGES, TOUCAN_CAMERA_SERVER_AVAILABLE } from '@config-web';
 import { formatFileSize } from '@core/format';
 import useAppCapabilities from '@hooks/useAppCapabilities';
 import useAppVersion from '@hooks/useAppVersion';
 import useCache from '@hooks/useCache';
 import useDataFolder from '@hooks/useDataFolder';
 import useToucanCameraServer from '@hooks/useToucanCameraServer';
+import faCamera from '@icons/faCamera';
+import faCrosshairs from '@icons/faCrosshairs';
+import faListCheck from '@icons/faListCheck';
+import faPlay from '@icons/faPlay';
+import faSliders from '@icons/faSliders';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { withTranslation } from 'react-i18next';
@@ -25,7 +29,9 @@ import gridCenterIcon from './assets/center.png';
 import gridBasicIcon from './assets/grid.png';
 import gridMarginsIcon from './assets/margins.png';
 
-const SettingsForm = ({ settings = {}, onUpdate = () => {}, t }) => {
+import * as style from './style.module.css';
+
+const SettingsForm = ({ settings = {}, onUpdate = () => {}, section = null, onSectionChange = () => {}, t }) => {
   const { appCapabilities } = useAppCapabilities();
   const { path: dataFolderPath, actions: dataFolderActions } = useDataFolder();
   const { currentVersion, latestVersion, canBeUpdated, actions: appVersionActions } = useAppVersion();
@@ -52,220 +58,251 @@ const SettingsForm = ({ settings = {}, onUpdate = () => {}, t }) => {
     setValue('GRID_MODES', newModes);
   };
 
-  return (
-    <form id="settings">
-      <FormLayout>
-        <Heading h={1}>{t('General')}</Heading>
-
-        <FormGroup label={t('Language')} description={t('The application language to use')}>
-          <Select options={LNGS_OPTIONS} control={control} register={register('LANGUAGE')} />
-        </FormGroup>
-        <FormGroup label={t('Allow telemetry')} description={t('Send anonymous usage data to help improve the application')}>
-          <div>
-            <Switch register={register('TELEMETRY_ENABLED')} />
-          </div>
-        </FormGroup>
-        <FormGroup label={t('Update')} description={t('Stay up to date to enjoy the latest features and improvements')}>
-          <Button
-            size="small"
-            color="primary"
-            disabled={!canBeUpdated}
-            onClick={canBeUpdated ? appVersionActions.openUpdatePage : undefined}
-            label={canBeUpdated ? t('Update to {{version}}', { version: latestVersion }) : t('Already up to date ({{version}})', { version: currentVersion || t('Unknown') })}
-          />
-        </FormGroup>
-        {appCapabilities.includes('LOCAL_DATA_FOLDER') && (
-          <FormGroup label={t('Data folder')} description={dataFolderPath || t('(Unknown)')}>
-            <Button size="small" label={t('Open folder')} onClick={dataFolderActions.openDataFolder} />
+  const sections = [
+    {
+      id: 'general',
+      label: t('General'),
+      icon: faSliders,
+      content: (
+        <>
+          <FormGroup label={t('Language')} description={t('The application language to use')}>
+            <Select options={LNGS_OPTIONS} control={control} register={register('LANGUAGE')} />
           </FormGroup>
-        )}
-        {appCapabilities.includes('CLEAR_CACHE') && (
-          <FormGroup label={t('Cache')} description={t("The cache is there to improve the application's performance and can be safely deleted")}>
+          <FormGroup label={t('Allow telemetry')} description={t('Send anonymous usage data to help improve the application')}>
             <div>
-              <Button
-                size="small"
-                disabled={isClearingCache || cacheSize === 0}
-                onClick={cacheActions.clearCache}
-                label={isClearingCache ? t('Clearing cache…') : cacheSize === null ? t('Clear cache') : t('Clear cache ({{size}})', { size: formatFileSize(cacheSize) })}
-              />
+              <Switch register={register('TELEMETRY_ENABLED')} />
             </div>
           </FormGroup>
-        )}
-        <FormGroup label={t('Tutorial')} description={t('Reset the tutorial, it will be shown on the next visit')}>
-          <div>
-            <Button size="small" label={t('Reset')} disabled={(watch('TOURS_COMPLETED') || []).length === 0} onClick={() => setValue('TOURS_COMPLETED', [])} />
-          </div>
-        </FormGroup>
-
-        <Divider />
-
-        <Heading h={1}>{t('Playback and navigation')}</Heading>
-
-        <FormGroup label={t('Default framerate')} description={t('Framerate used for new projects')}>
-          <NumberInput register={register('DEFAULT_FPS')} min={1} max={60} tag={t('FPS')} />
-        </FormGroup>
-        <FormGroup label={t('Short play')} description={t('Number of frames to play when short play is enabled')}>
-          <NumberInput register={register('SHORT_PLAY')} min={1} />
-        </FormGroup>
-        <FormGroup label={t('Play from the begining')} description={t('Always play the animation from the first frame')}>
-          <div>
-            <Switch register={register('PLAY_FROM_BEGINING')} />
-          </div>
-        </FormGroup>
-        <FormGroup label={t('Show live view when looped')} description={t('Display live view when loop mode is active for playback')}>
-          <div>
-            <Switch register={register('LOOP_SHOW_LIVE')} />
-          </div>
-        </FormGroup>
-        <FormGroup label={t('Skip hidden frames on navigation')} description={t('Skip hidden frames when navigating through the animation using keyboard')}>
-          <div>
-            <Switch register={register('SKIP_HIDDEN_FRAMES')} />
-          </div>
-        </FormGroup>
-
-        <Divider />
-
-        <Heading h={1}>{t('Capture')}</Heading>
-
-        <FormGroup label={t('Sound effects')} description={t('Play sound effects when you take or remove a frame')}>
-          <div>
-            <Switch register={register('SOUNDS')} />
-          </div>
-        </FormGroup>
-        {TOUCAN_CAMERA_SERVER_AVAILABLE && (
-          <>
-            <FormGroup label={t('Use camera compatibility mode')} description={t('Disables DSLR and remote cameras, may limit available camera settings')}>
+          <FormGroup label={t('Update')} description={t('Stay up to date to enjoy the latest features and improvements')}>
+            <Button
+              size="small"
+              color="primary"
+              disabled={!canBeUpdated}
+              onClick={canBeUpdated ? appVersionActions.openUpdatePage : undefined}
+              label={canBeUpdated ? t('Update to {{version}}', { version: latestVersion }) : t('Already up to date ({{version}})', { version: currentVersion || t('Unknown') })}
+            />
+          </FormGroup>
+          {appCapabilities.includes('LOCAL_DATA_FOLDER') && (
+            <FormGroup label={t('Data folder')} description={dataFolderPath || t('(Unknown)')}>
+              <Button size="small" label={t('Open folder')} onClick={dataFolderActions.openDataFolder} />
+            </FormGroup>
+          )}
+          {appCapabilities.includes('CLEAR_CACHE') && (
+            <FormGroup label={t('Cache')} description={t("The cache is there to improve the application's performance and can be safely deleted")}>
               <div>
-                <Switch register={register('TOUCAN_CAMERA_SERVER_DISABLED')} />
+                <Button
+                  size="small"
+                  disabled={isClearingCache || cacheSize === 0}
+                  onClick={cacheActions.clearCache}
+                  label={isClearingCache ? t('Clearing cache…') : cacheSize === null ? t('Clear cache') : t('Clear cache ({{size}})', { size: formatFileSize(cacheSize) })}
+                />
               </div>
             </FormGroup>
-            <FormGroup
-              label={t('Share cameras')}
-              description={
-                toucanCameraServerConfig?.expose && toucanCameraServerConfig?.port
-                  ? t('Expose the cameras so they can be used from other devices ({{hostname}}:{{port}}, using {{token}})', {
-                      hostname: toucanCameraServerConfig.shareHostname || toucanCameraServerConfig.hostname,
-                      port: toucanCameraServerConfig.port,
-                      token: toucanCameraServerConfig.token,
-                    })
-                  : t('Expose the cameras so they can be used from other devices')
-              }
-            >
-              <div>
-                <Switch register={register('TOUCAN_CAMERA_SERVER_EXPOSE')} disabled={watch('TOUCAN_CAMERA_SERVER_DISABLED')} />
-              </div>
-            </FormGroup>
-          </>
-        )}
-
-        <Divider />
-
-        <Heading h={1}>{t('Grid and ratio')}</Heading>
-
-        <FormGroup label={t('Preview')} description={t('Preview of your grid and ratio settings')} labelPosition="top">
-          <GridRatioPreview
-            gridModes={watch('GRID_MODES')}
-            gridOpacity={parseFloat(watch('GRID_OPACITY'))}
-            gridColumns={Number(watch('GRID_COLUMNS'))}
-            gridLines={Number(watch('GRID_LINES'))}
-            ratioLayerOpacity={parseFloat(watch('RATIO_OPACITY'))}
-          />
-        </FormGroup>
-
-        <FormGroup label={t('Grid modes')} description={t('Grid modes to use for the grid display')}>
-          <ButtonsGroup
-            actions={[
-              {
-                title: t('Classic grid'),
-                onClick: () => toggleGridMode('GRID'),
-                icon: gridBasicIcon,
-                selected: (watch('GRID_MODES') || []).includes('GRID'),
-                warning: Number(watch('GRID_COLUMNS')) === 0 && Number(watch('GRID_LINES')) === 0 ? t('Grid will not display with current settings') : '',
-              },
-              {
-                title: t('Center'),
-                onClick: () => toggleGridMode('CENTER'),
-                icon: gridCenterIcon,
-                selected: (watch('GRID_MODES') || []).includes('CENTER'),
-              },
-              {
-                title: t('Margins'),
-                onClick: () => toggleGridMode('MARGINS'),
-                icon: gridMarginsIcon,
-                selected: (watch('GRID_MODES') || []).includes('MARGINS'),
-              },
-            ]}
-            merge={true}
-          />
-        </FormGroup>
-
-        <FormGroup label={t('Grid opacity')} description={t('The opacity of the grid layer')}>
-          <CustomSlider
-            step={0.01}
-            min={0}
-            max={1}
-            value={watch('GRID_OPACITY')}
-            onChange={(value) => {
-              setValue('GRID_OPACITY', value);
-            }}
-          />
-        </FormGroup>
-        {watch('GRID_MODES')?.includes('GRID') && (
-          <FormGroup label={t('Grid rows')} description={t('Number of rows of the grid layer')}>
-            <NumberInput register={register('GRID_LINES')} min={0} max={12} />
+          )}
+          <FormGroup label={t('Tutorial')} description={t('Reset the tutorial, it will be shown on the next visit')}>
+            <div>
+              <Button size="small" label={t('Reset')} disabled={(watch('TOURS_COMPLETED') || []).length === 0} onClick={() => setValue('TOURS_COMPLETED', [])} />
+            </div>
           </FormGroup>
-        )}
-        {watch('GRID_MODES')?.includes('GRID') && (
-          <FormGroup label={t('Grid columns')} description={t('Number of columns of the grid layer')}>
-            <NumberInput register={register('GRID_COLUMNS')} min={0} max={12} />
+        </>
+      ),
+    },
+    {
+      id: 'playback',
+      label: t('Playback and navigation'),
+      icon: faPlay,
+      content: (
+        <>
+          <FormGroup label={t('Default framerate')} description={t('Framerate used for new projects')}>
+            <NumberInput register={register('DEFAULT_FPS')} min={1} max={60} tag={t('FPS')} />
           </FormGroup>
-        )}
-        <FormGroup label={t('Ratio opacity')} description={t('The opacity of aspect ratio layer')}>
-          <CustomSlider
-            step={0.01}
-            min={0}
-            max={1}
-            value={watch('RATIO_OPACITY')}
-            onChange={(value) => {
-              setValue('RATIO_OPACITY', value);
-            }}
-          />
-        </FormGroup>
+          <FormGroup label={t('Short play')} description={t('Number of frames to play when short play is enabled')}>
+            <NumberInput register={register('SHORT_PLAY')} min={1} />
+          </FormGroup>
+          <FormGroup label={t('Play from the begining')} description={t('Always play the animation from the first frame')}>
+            <div>
+              <Switch register={register('PLAY_FROM_BEGINING')} />
+            </div>
+          </FormGroup>
+          <FormGroup label={t('Show live view when looped')} description={t('Display live view when loop mode is active for playback')}>
+            <div>
+              <Switch register={register('LOOP_SHOW_LIVE')} />
+            </div>
+          </FormGroup>
+          <FormGroup label={t('Skip hidden frames on navigation')} description={t('Skip hidden frames when navigating through the animation using keyboard')}>
+            <div>
+              <Switch register={register('SKIP_HIDDEN_FRAMES')} />
+            </div>
+          </FormGroup>
+        </>
+      ),
+    },
+    {
+      id: 'capture',
+      label: t('Capture'),
+      icon: faCamera,
+      content: (
+        <>
+          <FormGroup label={t('Sound effects')} description={t('Play sound effects when you take or remove a frame')}>
+            <div>
+              <Switch register={register('SOUNDS')} />
+            </div>
+          </FormGroup>
+          {TOUCAN_CAMERA_SERVER_AVAILABLE && (
+            <>
+              <FormGroup label={t('Use camera compatibility mode')} description={t('Disables DSLR and remote cameras, may limit available camera settings')}>
+                <div>
+                  <Switch register={register('TOUCAN_CAMERA_SERVER_DISABLED')} />
+                </div>
+              </FormGroup>
+              <FormGroup
+                label={t('Share cameras')}
+                description={
+                  toucanCameraServerConfig?.expose && toucanCameraServerConfig?.port
+                    ? t('Expose the cameras so they can be used from other devices ({{hostname}}:{{port}}, using {{token}})', {
+                        hostname: toucanCameraServerConfig.shareHostname || toucanCameraServerConfig.hostname,
+                        port: toucanCameraServerConfig.port,
+                        token: toucanCameraServerConfig.token,
+                      })
+                    : t('Expose the cameras so they can be used from other devices')
+                }
+              >
+                <div>
+                  <Switch register={register('TOUCAN_CAMERA_SERVER_EXPOSE')} disabled={watch('TOUCAN_CAMERA_SERVER_DISABLED')} />
+                </div>
+              </FormGroup>
+            </>
+          )}
+        </>
+      ),
+    },
+    {
+      id: 'grid',
+      label: t('Grid and ratio'),
+      icon: faCrosshairs,
+      content: (
+        <>
+          <FormGroup label={t('Preview')} description={t('Preview of your grid and ratio settings')} labelPosition="top">
+            <GridRatioPreview
+              gridModes={watch('GRID_MODES')}
+              gridOpacity={parseFloat(watch('GRID_OPACITY'))}
+              gridColumns={Number(watch('GRID_COLUMNS'))}
+              gridLines={Number(watch('GRID_LINES'))}
+              ratioLayerOpacity={parseFloat(watch('RATIO_OPACITY'))}
+            />
+          </FormGroup>
 
-        <Divider />
+          <FormGroup label={t('Grid modes')} description={t('Grid modes to use for the grid display')}>
+            <ButtonsGroup
+              actions={[
+                {
+                  title: t('Classic grid'),
+                  onClick: () => toggleGridMode('GRID'),
+                  icon: gridBasicIcon,
+                  selected: (watch('GRID_MODES') || []).includes('GRID'),
+                  warning: Number(watch('GRID_COLUMNS')) === 0 && Number(watch('GRID_LINES')) === 0 ? t('Grid will not display with current settings') : '',
+                },
+                {
+                  title: t('Center'),
+                  onClick: () => toggleGridMode('CENTER'),
+                  icon: gridCenterIcon,
+                  selected: (watch('GRID_MODES') || []).includes('CENTER'),
+                },
+                {
+                  title: t('Margins'),
+                  onClick: () => toggleGridMode('MARGINS'),
+                  icon: gridMarginsIcon,
+                  selected: (watch('GRID_MODES') || []).includes('MARGINS'),
+                },
+              ]}
+              merge={true}
+            />
+          </FormGroup>
 
-        <Heading h={1}>{t('Workshops features')}</Heading>
-
-        <FormGroup label={t('Enable workshop features')} description={t('Enable features related to stop motion workshops')}>
-          <div>
-            <Switch register={register('EVENT_MODE_ENABLED')} />
-          </div>
-        </FormGroup>
-
-        {watch('EVENT_MODE_ENABLED') && (
-          <>
-            <FormGroup label={t('Recommended number of frames')} description={t('Number of frames allowed before displaying a warning message')}>
-              <NumberInput register={register('LIMIT_NUMBER_OF_FRAMES')} min={0} />
+          <FormGroup label={t('Grid opacity')} description={t('The opacity of the grid layer')}>
+            <CustomSlider
+              step={0.01}
+              min={0}
+              max={1}
+              value={watch('GRID_OPACITY')}
+              onChange={(value) => {
+                setValue('GRID_OPACITY', value);
+              }}
+            />
+          </FormGroup>
+          {watch('GRID_MODES')?.includes('GRID') && (
+            <FormGroup label={t('Grid rows')} description={t('Number of rows of the grid layer')}>
+              <NumberInput register={register('GRID_LINES')} min={0} max={12} />
             </FormGroup>
-
-            <FormGroup label={t('Recommended activity duration')} description={t('Duration in minutes on the animator page before displaying a warning message')}>
-              <NumberInput register={register('LIMIT_ACTIVITY_DURATION')} min={0} />
+          )}
+          {watch('GRID_MODES')?.includes('GRID') && (
+            <FormGroup label={t('Grid columns')} description={t('Number of columns of the grid layer')}>
+              <NumberInput register={register('GRID_COLUMNS')} min={0} max={12} />
             </FormGroup>
+          )}
+          <FormGroup label={t('Ratio opacity')} description={t('The opacity of aspect ratio layer')}>
+            <CustomSlider
+              step={0.01}
+              min={0}
+              max={1}
+              value={watch('RATIO_OPACITY')}
+              onChange={(value) => {
+                setValue('RATIO_OPACITY', value);
+              }}
+            />
+          </FormGroup>
+        </>
+      ),
+    },
+    {
+      id: 'workshops',
+      label: t('Workshops'),
+      icon: faListCheck,
+      content: (
+        <>
+          <FormGroup label={t('Enable workshop features')} description={t('Enable features related to stop motion workshops')}>
+            <div>
+              <Switch register={register('EVENT_MODE_ENABLED')} />
+            </div>
+          </FormGroup>
 
-            {appCapabilities.includes('BACKGROUND_SYNC') && (
-              <>
-                <FormGroup label={t('Partner API endpoint')} description={t('The URL of the API to use for workshop mode')}>
-                  <Input control={control} register={register('EVENT_API')} />
-                </FormGroup>
+          {watch('EVENT_MODE_ENABLED') && (
+            <>
+              <FormGroup label={t('Recommended number of frames')} description={t('Number of frames allowed before displaying a warning message')}>
+                <NumberInput register={register('LIMIT_NUMBER_OF_FRAMES')} min={0} />
+              </FormGroup>
 
-                <FormGroup label={t('Partner API key')} description={t('The authentification key of the API for workshop mode')}>
-                  <Input control={control} register={register('EVENT_KEY')} />
-                </FormGroup>
-              </>
-            )}
-          </>
-        )}
-      </FormLayout>
+              <FormGroup label={t('Recommended activity duration')} description={t('Duration in minutes on the animator page before displaying a warning message')}>
+                <NumberInput register={register('LIMIT_ACTIVITY_DURATION')} min={0} />
+              </FormGroup>
+
+              {appCapabilities.includes('BACKGROUND_SYNC') && (
+                <>
+                  <FormGroup label={t('Partner API endpoint')} description={t('The URL of the API to use for workshop mode')}>
+                    <Input control={control} register={register('EVENT_API')} />
+                  </FormGroup>
+
+                  <FormGroup label={t('Partner API key')} description={t('The authentification key of the API for workshop mode')}>
+                    <Input control={control} register={register('EVENT_KEY')} />
+                  </FormGroup>
+                </>
+              )}
+            </>
+          )}
+        </>
+      ),
+    },
+  ];
+
+  const currentSection = sections.find((s) => s.id === section) || sections[0];
+
+  return (
+    <form id="settings" className={style.layout}>
+      <SectionTabs className={style.tabs} tabs={sections.map(({ id, label, icon }) => ({ id, label, icon }))} selected={currentSection.id} onChange={onSectionChange} />
+      <div className={style.content} key={currentSection.id}>
+        <Heading h={1}>{currentSection.label}</Heading>
+        {currentSection.content}
+      </div>
     </form>
   );
 };
