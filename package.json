@@ -81,7 +81,7 @@
     "react-keyboard-event-handler": "^1.5.4",
     "react-router-dom": "^7.18.5",
     "react-select": "^5.10.2",
-    "react-tooltip": "^6.0.11",
+    "react-tooltip": "^6.0.12",
     "rimraf": "^6.1.4",
     "sharp": "^0.35.5",
     "source-map-support": "^0.5.21",
