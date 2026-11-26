@@ -79,7 +79,7 @@
     "react-hook-form": "^7.92.0",
     "react-i18next": "^18.0.2",
     "react-keyboard-event-handler": "^1.5.4",
-    "react-router-dom": "^7.18.5",
+    "react-router-dom": "^7.18.6",
     "react-select": "^5.10.2",
     "react-tooltip": "^6.0.11",
     "rimraf": "^6.1.4",
